@@ -1,0 +1,42 @@
+<div class="well">
+    <ul class="pager">
+      <li class="previous">
+        <a href="#">&larr; 前一页</a>
+      </li>
+      <li>
+      	<% if (sessionStorage.getItem('docPrint') == 'true') { %>
+      		<a href="#" class="print"><b>打&nbsp;&nbsp;印</b></a>
+      	<% } %>
+      	<span style='padding-left:10px'></span>
+      	<% if (sessionStorage.getItem('docTestified') == 'true') { %>
+      		<a href="#" class="testify"><b>出&nbsp;&nbsp;证</b></a>
+      	<% } %>
+      </li>
+      <li class="next">
+        <a href="#">后一页 &rarr;</a>
+      </li>
+    </ul>
+
+    <div id="document-page">
+    </div>
+
+    <ul class="pager">
+      <li class="previous">
+        <a href="#">&larr; 前一页</a>
+      </li>
+      <li>
+      	<% if (sessionStorage.getItem('docPrint') == 'true') { %>
+      		<a href="#" class="print"><b>打&nbsp;&nbsp;印</b></a>
+      	<% } %>
+      	<span style='padding-left:10px'></span>
+      	<% if (sessionStorage.getItem('docTestified') == 'true') { %>
+      		<a href="#" class="testify"><b>出&nbsp;&nbsp;证</b></a>
+      	<% } %>
+      </li>
+      <li class="next">
+        <a href="#">后一页 &rarr;</a>
+      </li>
+    </ul>
+
+</div>
+<iframe id="downloadFrame" style="display: none"></iframe>

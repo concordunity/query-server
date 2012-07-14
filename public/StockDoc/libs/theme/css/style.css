@@ -1,0 +1,59 @@
+﻿
+/* ---------------------
+	公共样式
+	common.css
+	author: ado
+	date: 2012-3-10
+   --------------------- */
+@charset "utf-8";
+
+/* header */
+.headerLayer1 { width:100%; float:left; height:63px; background: url(../images/t_bg.jpg) repeat-x left top; position:relative; }
+.headerLayer1 h1 { float: left; width: 485px; height: 63px; overflow: hidden; text-indent: -100em;background: url(../images/logo.jpg) repeat-x left top;  }
+.headerLayer1 p a { position: absolute; top: 32px; width: 70px; text-indent: -100em; overflow: hidden; cursor: pointer; }
+
+.headerLayer1 #userInfoBtn { left: 150px; }
+.menu { width:100%; float:left; height:38px; background: url(../images/t_menu_bg.jpg) repeat-x left top; position:relative; z-index:999;}
+
+.header #t_yhxx {position: absolute; top: 29px; left:490px;width:268px; height:30px; line-height:30px; background:url(../images/welcome_bg2.png) no-repeat; color:#FFF; padding-left:35px;}
+.header #t_exit{position: absolute; top: 0; right:0;width:331px; height:63px; background:url(../images/t_bg_r.jpg) no-repeat;}
+
+.headerLayer1 #logo{float:left; width:500px; height:72px; background:url(../images/t_logo.jpg);}
+
+.t_btn{ position: absolute; top: 25px; right:11px;width:75px; height:19px; background:url(../images/t_btn.png) no-repeat !important;/* FF IE7 */
+background-repeat: no-repeat;
+_filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/t_btn.png'); /* IE6 */
+_ background-image: none;  color:#FFF; display:block;padding:6px 0 0 34px; cursor:pointer;}
+.header #t_exit a{ color:#FFF; text-decoration:none;}
+
+.noneBorder { border: 0; }
+
+.table_title{ height:32px; background:#EDEDED; border-bottom:1px solid #999999; line-height:32px; padding-left:15px; margin-bottom:15px;}
+.table_title span{ font-size:14px; font-weight:700; width:101px; background: url(../images/tab_tbg.jpg) no-repeat; text-align:center; height:33px; display:inline-block;}
+
+.commonTable{ font-size:14px;margin:10px auto; width:800px}
+
+.commonTable th{ height:36px; line-height:36px; padding:4px 0; width:200px; background:none; text-align:right; font-weight:100; padding-right:4px;}
+.commonTable td{ height:36px; line-height:36px; padding:4px 0; }
+
+.commonTable .input01{ width:225px; border:1px solid #BFBFBF; background: url(../images/input_bg1.jpg) repeat-x; height:26px; line-height:26px; padding:0 0 0 3px;}
+.commonTable .btn01{ width:83px; background: url(../images/access_btn.jpg) repeat-x; height:30px; line-height:30px; color:#FFF; font-size:14px; font-weight:700; cursor:pointer;}
+.commonTable .searchBtn{ width:200px; text-align:left;}
+
+.commonTable2{ font-size:14px;margin:10px auto; width:800px}
+.commonTable2 td{ height:26px; padding:4px 0; vertical-align:top; }
+
+.btn02{ width:89px; background: url(../images/return_btn.jpg) repeat-x; height:32px; line-height:30px; color:#FFF; font-size:14px; font-weight:700; cursor:pointer;}
+
+
+
+
+.return{ position: fixed;bottom:60px; right:0; width:150px;
+_position:absolute;
+_bottom:auto;
+_top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,30)||0)-(parseInt(this.currentStyle.marginBottom,20)||0)));}
+
+.picBox4{float:right;margin:10px;width:260px; }
+.picBox4 dt{ width:260px; height:250px;border:1px solid  #ccc; padding:1px;  }
+.picBox4 dd{ height:20px; text-align:center;}
+.print_btn{ width:83px; float:right; background: url(../images/print_btn.jpg) repeat-x; height:30px; line-height:30px; color:#FFF; font-size:14px; font-weight:700; cursor:pointer; display:block; text-align:center;}

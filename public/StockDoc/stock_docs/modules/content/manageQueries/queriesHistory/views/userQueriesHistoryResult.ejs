@@ -1,0 +1,25 @@
+<table id="tbUserQueryHistory" style="width: 100%">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>报关单号</th>
+			<th>单证类型</th>
+			<th>申报关区</th>
+			<th>浏览用户</th>
+			<th>浏览时间</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i = 0; i < data.length; i++) { 
+			var record = data[i]; %>
+			<tr>
+			<td><%== (i + 1) %></td>
+			<td><%== record.doc_id %></td>
+			<td><%== record.doc_type %></td>
+			<td><%== record.org %></td>
+			<td><%== record.email %></td>
+			<td><%== record.created_at %></td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>

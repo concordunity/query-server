@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Search Box</title>
+	</head>
+	<body>
+  
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="search-box"></div>
+        </div>
+      </div>
+    </div>
+    
+    <button id="button1">By User</button>
+    <button id="button2">By Doc</button>
+    <button id="button3">Advanced</button>
+    <button id="button4">Not Search</button>
+  
+  <script type='text/javascript' src='../../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/stats/search').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          category: "",
+          id: "",
+          page: "",
+          document: {
+              pageCount: 0,
+              pages: [],
+              currentPage: 0,
+              directory: ""
+          }
+      });
+      
+      $('#search-box').docview_stats_search({clientState: state});
+      $('#button1').click(function() {
+        $.route.attrs({'category':'stats', 'subcategory':'by_user'}, true);
+      });
+      $('#button2').click(function() {
+        $.route.attrs({'category':'stats', 'subcategory':'by_doc'}, true);
+      });
+      $('#button3').click(function() {
+        $.route.attrs({'category':'stats', 'subcategory':'advanced'}, true);
+      });
+      $('#button4').click(function() {
+        $.route.attrs({'category':'manage_accounts'}, true);
+      });
+    });
+  </script>
+	</body>
+</html>

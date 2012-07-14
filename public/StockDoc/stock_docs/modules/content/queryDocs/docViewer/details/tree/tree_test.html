@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Details Tree</title>
+	</head>
+	<body>
+    <div id="tree"></div>
+    
+    <button id="button">Change Route</div>
+  
+  <script type='text/javascript' src='../../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/details/tree').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          category: "",
+          id: "",
+          page: "",
+          document: {
+              pageCount: 0,
+              pages: [],
+              currentPage: 0,
+              directory: ""
+          }
+      });
+      
+      
+      $('#tree').docview_details_tree({clientState: state});
+      $('#button').click(function() {
+        $.route.attrs({ "category": "document", "id": "103420121342000022" }, true);
+      });
+    });
+  </script>
+	</body>
+</html>

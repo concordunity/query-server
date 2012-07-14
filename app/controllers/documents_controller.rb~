@@ -1,0 +1,273 @@
+
+require 'net/http'
+require 'uri'
+
+class DocumentsController < ApplicationController
+  load_and_authorize_resource
+  # GET /documents
+  # GET /documents.json
+
+  respond_to :html, :json
+  def index
+    @documents = Document.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @documents }
+    end
+  end
+
+  def multi_query
+    if (can? :multi_query, :Document)
+      @documents = Document.where(:doc_id => params[:doc_id])
+    else
+      @documents = Qdoc.where(:doc_id => params[:doc_id])
+    end
+
+    if @documents.empty?
+      raise ActiveRecord::RecordNotFound
+    end
+    respond_to do |format|
+      format.html # index.html.erb                                                                                              
+      format.json { render json: @documents }
+    end
+
+    #respond_with(@documents)
+  end
+
+  def search_docs
+    @documents = Document.order(:doc_id)
+    if !params[:org].blank?
+      @documents = @documents.where(:org => params[:org])
+    end
+
+    if !params[:org_applied].blank?
+      @documents = @documents.where(:org_applied => params[:org_applied])
+    end
+
+
+    start_date = params["edcStartDate"]
+    end_date = params["edcEndDate"]
+
+    if start_date != end_date
+      # @documents = @documents.where(:edc_date => start_date.to_date..end_date.to_date)
+      @documents = @documents.where(:created_at => start_date.to_date..end_date.to_date)
+    end
+
+
+    if params[:docInquired] == '1'
+      @documents = @documents.where(:inquired => true)
+    end
+
+    if params[:checkedout] == '1'
+      @documents = @documents.where(:checkedout => true)
+    end
+
+
+    if !params[:total].blank?
+      @documents = @documents.reorder('rand()').limit(params[:total].to_i) #,  :order => "rand()")
+    end
+
+
+    respond_to do |format|
+      format.html # index.html.erb                                                                                              
+      format.json { render json: @documents }    
+    end
+
+  end
+
+  def query
+    # check user's privileges
+    if (can? :search_docs, :Document)
+      @document = Document.find_by_doc_id(params[:doc_id])
+    else
+      @document = Qdoc.find_by_doc_id(params[:doc_id])
+    end
+    if @document
+
+      #filters = params[:filter]
+      #if filter.empty?
+      uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
+      #else
+      #  uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
+      res = Net::HTTP.get_response(uri)
+      response = JSON.parse(res.body)
+
+      # Create query_history record.
+      #response = { :name => 'test', 'info' => 'good' }
+      qh = QueryHistory.create(:user_id=> current_user.id,
+                               :doc_id => @document.doc_id,
+                               :org => @document.org,
+                               :doc_type => @document.doc_type,
+                               :ip => current_user.current_sign_in_ip,
+                               :email => current_user.email,
+                               :print => false)
+    else
+      raise ActiveRecord::RecordNotFound
+    end
+
+    #  TODO(weidong): error processing.
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: { :doc_info => @document,
+          :image_info => response } }
+    end
+  end
+
+  # GET /documents/1
+  # GET /documents/1.json
+  def show
+    @document = Qdoc.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @document }
+    end
+  end
+
+  # GET /documents/new
+  # GET /documents/new.json
+  def new
+    @document = Document.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @document }
+    end
+  end
+
+  # GET /documents/1/edit
+  def edit
+    @document = Document.find(params[:id])
+  end
+
+  def inquire
+    @document = Document.find_by_doc_id(params[:doc_id])
+    if @document.nil?
+      raise ActiveRecord::RecordNotFound
+    end
+    if params[:caction] == 'add'
+      caction = 'add inquiry'
+      @document.inquired = true
+    else
+      caction = 'remove inquiry'
+      @document.inquired = false
+    end
+    @document.save
+    dh = add_history(caction)
+    respond_to do |format|
+      format.html { redirect_to document_url }
+      format.json { render json: { :dh_info => dh } }
+    end 
+
+  end
+
+  def checkout
+    @document = Document.find_by_doc_id(params[:doc_id])
+
+    if @document.nil?
+      raise ActiveRecord::RecordNotFound
+    end
+
+    if params[:caction] == 'checkout'
+      @document.checkedout = true
+      caction = 'document checkout'
+    else
+      @document.checkedout = false
+      caction = 'document return'
+    end
+
+    @document.save
+    dh = add_history(caction)
+    respond_to do |format|
+      format.html { redirect_to document_url }
+      format.json { render json: { :dh_info => dh } }
+    end 
+
+
+  end
+
+  # POST /documents
+  # POST /documents.json
+  def create
+    @document = Document.new(params[:document])
+
+    respond_to do |format|
+      if @document.save
+        format.html { redirect_to @document, notice: 'Document was successfully created.' }
+        format.json { render json: @document, status: :created, location: @document }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @document.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /documents/1
+  # PUT /documents/1.json
+  def update
+    @document = Document.find(params[:id])
+
+    respond_to do |format|
+      if @document.update_attributes(params[:document])
+        format.html { redirect_to @document, notice: 'Document was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @document.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /documents/1
+  # DELETE /documents/1.json
+  def destroy
+    @document = Document.find(params[:id])
+    @document.destroy
+
+    respond_to do |format|
+      format.html { redirect_to documents_url }
+      format.json { head :no_content }
+    end
+  end
+
+  def print
+    dir = params[:tmp_folder]
+    doc_id = params[:doc_id]
+    @document = Document.find_by_doc_id(doc_id)
+    add_history('print')
+    if dir
+      filepath = "#{Rails.root}/files/#{dir}/wm#{doc_id}.pdf" 
+      send_file(filepath, :filename => "wm#{doc_id}.pdf", :type => "application/pdf")
+    else
+      filepath = "#{Rails.root}/files/#{doc_id}/wm#{doc_id}.pdf" 
+      send_file(filepath, :filename => "wm#{doc_id}.pdf", :type => "application/pdf")
+    end
+  end
+
+  def testify
+    dir = params[:tmp_folder]
+    doc_id = params[:doc_id]
+    @document = Document.find_by_doc_id(doc_id)
+    add_history('testify')
+    if dir
+      filepath = "#{Rails.root}/files/#{dir}/#{doc_id}.pdf" 
+      send_file(filepath, :filename => "#{doc_id}.pdf", :type => "application/pdf")
+    else
+      filepath = "#{Rails.root}/files/#{doc_id}/#{doc_id}.pdf" 
+      send_file(filepath, :filename => "#{doc_id}.pdf", :type => "application/pdf")
+    end
+  end
+
+  private
+  
+  private
+  def add_history(action)
+    dh = DocumentHistory.create(:action =>  t('doc.' + action),
+                                :user_id=> current_user.id,
+                                :doc_id => @document.doc_id,
+                                :ip => current_user.current_sign_in_ip,
+                                :email => current_user.email)
+    return dh
+  end
+end

@@ -1,0 +1,22 @@
+
+  <div class="search-form well">
+   <% if (this.single) { %>
+<%== $.View('//docview/search/views/single_doc_form.ejs') %>
+<% } %>
+
+   <% if (this.multi) { %>
+   <%== $.View('//docview/search/views/multiple_doc_form.ejs') %>
+<% } %>
+   <% if (this.advanced) { %>
+   <%== $.View('//docview/search/views/advanced_form.ejs') %>
+<% } %>
+   <% if (this.by_doc_source) { %>
+   <%== $.View('//docview/search/views/by_doc_source.ejs') %>
+<% } %>
+   <%== $.View('//docview/search/views/personal_history.ejs') %>
+  </div>
+
+<div class="personal_history">
+<div class="self_history">
+</div>
+</div>

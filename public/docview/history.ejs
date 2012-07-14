@@ -1,0 +1,16 @@
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th>Document ID</th>
+            <th>Time</th>
+            <th>User</th>
+            <th>IP</th>
+        </tr>
+    </thead>
+    <tbody>
+    
+    <% for(var i = 0; i < this.length; i++) { %>
+        <%== $.View('//docview/history_row.ejs', this[i]) %>
+    <% } %>
+    </tbody>
+</table>

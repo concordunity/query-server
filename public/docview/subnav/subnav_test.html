@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Sidebar</title>
+	</head>
+	<body>
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+      <div id="sidebar">
+    </div>
+  </div>
+  </div>
+  
+  <button id="button-1">Search</button>
+  <button id="button-2">Stats</button>
+  <button id="button-3">Manage Docs</button>
+  <button id="button-4">Manage Permissions</button>
+  
+  <script type='text/javascript' src='../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/route', 'docview/subnav').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          access: {
+              search: {
+                  single: true,
+                  multi: false,
+                  advanced: true
+              },
+              stats: {
+                  history: true,
+                  stats: false,
+                  usage: true
+              },
+              manage_docs: {
+                  inquiries: true,
+                  check: true,
+                  copy: false,
+                  print: false,
+                  testify: true
+              },
+              manage_accounts: {
+                  users: true,
+                  roles: false
+              }
+          },
+          nav: {
+            search: "single",
+            stats: "history",
+            manage_docs: "inquiries",
+            manage_accounts: "users"
+          }
+      });
+      
+      $('#sidebar').docview_subnav({clientState: state});
+      
+      $('#button-1').click(function() {
+        $.route.attrs({'category':'search'}, true);
+      });
+      $('#button-2').click(function() {
+        $.route.attrs({'category':'stats'}, true);
+      });
+      $('#button-3').click(function() {
+        $.route.attrs({'category':'manage_docs'}, true);
+      });
+      $('#button-4').click(function() {
+        $.route.attrs({'category':'manage_accounts'}, true);
+      });      
+    });
+  </script>
+	</body>
+</html>

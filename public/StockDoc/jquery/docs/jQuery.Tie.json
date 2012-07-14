@@ -1,0 +1,1 @@
+c({"name": "jQuery.Tie", "type": "class", "comment": "<p>@core</p>\n\n<p>The $.fn.tie plugin binds form elements and controllers with \nmodels and vice versa.  The result is that a change in \na model will automatically update the form element or controller\nAND a change event on the element will update the model.</p>", "src": "jquery/tie/tie.js", "line": 2, "children": []})

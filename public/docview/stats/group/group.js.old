@@ -1,0 +1,81 @@
+steal(
+	'jquery/controller',
+	'jquery/view/ejs',
+    'jquery/controller/view',
+    'jquery/dom/route',
+    'jquery/lang/observe/delegate',
+    'docview/models',
+    'docview/multi',
+    'docview/bootstrap/bootstrap.css'
+)
+
+// View templates
+.then(
+    './views/init.ejs',
+    './views/doc_group_table.ejs',
+    './views/doc_group_row.ejs',
+    './views/new_doc_group.ejs'
+)
+
+.then(function($) {
+
+    /*
+    * Form for grouping documents together
+    */
+    $.Controller('Docview.Stats.Group',
+    /* @Static */
+    {
+    },
+    /* @Prototype */
+    {
+        init: function() {
+            this.element.html(this.view('init', {}));
+
+            // Hide box until route conditions are met
+            this.element.hide();
+        },
+        '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
+            //console.log(newVal, oldVal);
+            if (newVal === "create_group" &&
+		$.route.attr('category') === "stats") {
+		this.reload();
+                this.element.show();
+            }
+            else if (newVal !== undefined) {
+                this.element.hide();
+            }
+        },
+	reload: function() {
+	    Docview.Models.DocGroup.findAll(this.proxy('listGroups'), this.proxy('failure'));
+	},
+
+	listGroups: function(data) {
+	    this.doc_groups = data;
+	    this.element.find('.doc-group-list').html(this.view('doc_group_table', data));
+	},
+	failure: function(error) {
+	    console.log(error);
+	},
+	formSubmit : function(ids) {
+	    Docview.Models.File.createGroup(ids, function() {console.log('lol')}, function() {console.log('lol2')});
+	},
+        '#new-doc-group-btn click': function() {
+            // Load up the creation form
+
+	    console.log("trying to attach docview multi ....");
+
+            $('#new-doc-group').html(this.view('new_doc_group'));
+	    $('#new-doc-group form div.multi_holder').docview_multi({});
+        },
+	'form submit': function(el, ev) {
+            ev.preventDefault();
+	    var ctrl = $('#new-doc-group form div.multi_holder');
+	    if (ctrl.docview_multi("validateInput", el)) {
+		Docview.Models.File.createGroup(
+		    ctrl.docview_multi("getIds"),
+		    function() {console.log('lol')},
+		    function() {console.log('lol2')});
+            }
+	}
+    });
+});

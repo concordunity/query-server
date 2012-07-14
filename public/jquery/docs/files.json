@@ -1,0 +1,1 @@
+c({"name": "files", "type": "attribute", "comment": "<p>{\"path/to/file.js\" : [\"file2/thing.js\", ...]}</p>", "src": "jquery/buildAll.js", "line": 13, "children": []})

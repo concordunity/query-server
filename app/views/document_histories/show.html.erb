@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Doc:</b>
+  <%= @document_history.doc_id %>
+</p>
+
+<p>
+  <b>Action:</b>
+  <%= @document_history.action %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @document_history.email %>
+</p>
+
+<p>
+  <b>Ip:</b>
+  <%= @document_history.ip %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @document_history.user_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_document_history_path(@document_history) %> |
+<%= link_to 'Back', document_histories_path %>

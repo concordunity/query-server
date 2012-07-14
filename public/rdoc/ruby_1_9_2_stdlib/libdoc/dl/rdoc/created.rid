@@ -1,0 +1,20 @@
+Mon, 27 Feb 2012 16:41:19 -0700
+dl/callback/mkcallback.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/cfunc.c	Mon, 27 Feb 2012 16:08:17 -0700
+dl/cptr.c	Mon, 27 Feb 2012 16:08:17 -0700
+dl/dl.c	Mon, 27 Feb 2012 16:08:17 -0700
+dl/handle.c	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/callback.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/cparser.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/func.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/import.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/pack.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/stack.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/struct.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/types.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl/value.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/lib/dl.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/win32/lib/Win32API.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/win32/lib/win32/registry.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/win32/lib/win32/resolv.rb	Mon, 27 Feb 2012 16:08:17 -0700
+dl/win32/lib/win32/sspi.rb	Mon, 27 Feb 2012 16:08:17 -0700

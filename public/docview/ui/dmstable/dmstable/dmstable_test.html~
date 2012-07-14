@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Alert Box</title>
+	</head>
+	<body>
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="alerts">
+  </div>
+  </div>
+  
+  <button id="button-1">Info</button>
+  <button id="button-2">Error</button>
+  <button id="button-3">Warning</button>
+  <button id="button-4">Success</button>
+  
+  <script type='text/javascript' src='../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/route', 'docview/alerts').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          alert: {
+            type: "info",
+            heading: "Herp",
+            message: "derp"
+          }
+      });
+      
+      
+      $('#alerts').docview_alerts({clientState: state});
+      
+      $('#button-1').click(function() {
+        state.attr('alert', {
+            type: "info",
+            heading: "Come",
+            message: "dfawefweerp"
+        });
+      });
+      $('#button-2').click(function() {
+        state.attr('alert', {
+            type: "error",
+            heading: "On",
+            message: "derfawefwep"
+        });
+      });
+      $('#button-3').click(function() {
+        state.attr('alert', {
+            type: "warning",
+            heading: "And",
+            message: "derp"
+        });
+      });
+      $('#button-4').click(function() {
+//        state.attr('alert', {
+//            type: "success",
+//            heading: "Slam",
+//            message: "derfawefaawegp"
+//        });
+
+    var msgs = new Array();
+    msgs.push("this is at est 1");
+    msgs.push("this is at est 2");
+
+      $('#alerts').docview_alerts('showMessages', 'success', 'test', msgs);
+
+      });      
+    });
+  </script>
+	</body>
+</html>

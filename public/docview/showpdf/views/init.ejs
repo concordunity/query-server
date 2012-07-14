@@ -1,0 +1,45 @@
+
+
+
+<form class="form form-horizontal showpdf" action="/print/printpdf" method="post">
+<legend>此功能只能在授权范围内使用，同时系统将保存日志记录。</legend>
+
+
+
+<div class="row-fluid">
+<div class="span12">
+
+ <fieldset class="control-group">
+<label class="control-label"> 报关单号: </label>
+
+
+<% var label =''; var hi = false;
+   if (tag === 'mod') {
+      label = '删改单';
+      hi = true;
+   } else if (tag === 'tax') {
+      label = '退补税';
+      hi = true;
+   }
+
+   if (hi) {
+%>
+<input type="hidden" name="mod" value="1"/>
+<%
+}
+%>
+<div class="controls">
+<input type="text" name="doc_id" readonly="readonly" value="<%= doc_id %>" style="height:25px;" />
+<%= label %>
+</div>
+</fieldset>
+
+ <fieldset class="control-group">
+<input type="hidden" name="doc_type" value="<%= doc_type %>"/>
+</fieldset>
+<button type="submit" class="btn btn-primary">确认<%= doc_type == 'print' ? '打印' : '出证' %></button>
+</div>
+</div>
+</form>
+
+Adobe 阅读器 10.10可以下载以下安装包。<a href="/AdbeRdr1010_zh_CN.exe">AdbeRdr1010_zh_CN.exe</a>

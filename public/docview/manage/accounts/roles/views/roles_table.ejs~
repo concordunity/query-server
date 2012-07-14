@@ -1,0 +1,17 @@
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th><%= $.i18n._('label.role.name') %></th>
+            <th><%= $.i18n._('label.role.auths') %></th>
+            <th><%= $.i18n._('label.role.action') %></th>
+        </tr>
+    </thead>
+    <tbody>
+    
+    <% for(var i = 0; i < this.length; i++) { %>
+        <%== $.View('//docview/manage/accounts/roles/views/role_row.ejs', this[i]) %>
+    <% } %>
+        
+        
+    </tbody>
+</table>

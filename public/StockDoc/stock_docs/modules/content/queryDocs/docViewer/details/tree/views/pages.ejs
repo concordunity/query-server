@@ -1,0 +1,10 @@
+<% var pageCount = 1; %>
+<% for (var i = 0; i < this.length; i++) { %>
+    <li class="nav-header"><%= this[i].type %> (<%= this[i].pages.length %>)</li>
+    <% for (var j = 0; j < this[i].pages.length; j++) { %>
+        <li class="page-<%= pageCount %>">
+            <a href="#<%= pageCount %>">第 <%= pageCount %> 页</a>
+        </li>
+        <% pageCount++; %>
+    <% } %>
+<% } %>

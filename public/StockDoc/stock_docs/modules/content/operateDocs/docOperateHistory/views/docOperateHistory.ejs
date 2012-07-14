@@ -1,0 +1,23 @@
+<table id="tbDocOperateHistory" style="width: 100%">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>操作用户</th>
+			<th>操作内容</th>
+			<th>操作IP</th>
+			<th>操作时间</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for (var i = 0; i < data.length; i++) { 
+			var record = data[i]; %>
+			<tr>
+			<td><%== (i + 1) %></td>
+			<td><%== record.email %></td>
+			<td><%== record.action %></td>
+			<td><%== record.ip %></td>
+			<td><%== record.created_at %></td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>

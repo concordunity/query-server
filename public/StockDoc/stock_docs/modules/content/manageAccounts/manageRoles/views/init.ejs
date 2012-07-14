@@ -1,0 +1,96 @@
+<h4>请选择角色名称</h4>
+<div  style='padding-top:3px'>
+<div id='dRoleSelector' style="float: left; padding-right: 20px">
+	<select id="sRoleSelector">
+		<% for (var i = 0; i < roles.length; i++) { %>
+			<option value=<%== roles[i].id %>><%== roles[i].display_name %></option>
+		<% } %>
+	</select>
+</div>
+<div id='dAction'>
+	<button id="btnUpdateRole">
+		更改角色权限
+	</button>
+	<button id="btnDeleteRole">
+		删除角色
+	</button>
+	<span style='padding-left:80px'></span>
+	<input id="iRoleName" type="text" placeholder="请在这里输入新的角色名称">
+	<button id="btnCreateRole">
+		新增角色
+	</button>
+</div>
+</div>
+<br />
+<div id='dPermissionTree'>
+	<h4>权限结构图</h4>
+	<form id="fPermission">
+		<table width="80%">
+			<tr>
+				<td>
+				<div id='dQueryDocsPermission' class='expander' >
+					<h4>单证查询权限</h4>
+					<div>
+						<input id='cbQueryDocsBySingleBarcode' name='aQueryDocByBarcode' type='checkbox' />
+						<label for='cbQueryDocsBySingleBarcode' >按照报关单号单票查询</label></br/>
+						<input id='cbQueryDocsByMultiBarcodes' name='aQueryDocsByBarcodes' type='checkbox' />
+						<label for='cbQueryDocsByMultiBarcodes' >按报关单号批量查询</label></br/>
+						<input id='cbQueryDocsByAdvancedConditions' name='aQueryDocsByConditions' type='checkbox' />
+						<label for='cbQueryDocsByAdvancedConditions'>特定条件组合查询</label></br/>
+					</div>
+				</div></td>
+				<td>
+				<div id='dManageQueryPermission' class='expander' >
+					<h4>查询管理权限</h4>
+					<div>
+						<input id='cbManageQueries' name='aManageQueries' type='checkbox' />
+						<label for='cbManageQueries'>查阅历史</label></br/>
+						<input id='cbPerformanceStatis' name='aPerformanceStatis' type='checkbox' />
+						<label for='cbPerformanceStatis' >绩效统计</label></br/>
+						<input id='cbUsabilityStatis' name='aUsabilityStatis' type='checkbox' />
+						<label for='cbUsabilityStatis'>使用统计</label></br/>
+					</div>
+				</div></td>
+				<td>
+				<div id='dOperateDocPermission' class='expander' >
+					<h4>单证操作权限</h4>
+					<div>
+						<input id='cbOperateInvolved' name='aOperateInvolved' type='checkbox' />
+						<label for='cbOperateInvolved' >添加/撤销涉案标志</label></br/>
+						<input id='cbOperateLended' name='aOperateLended' type='checkbox' />
+						<label for='cbOperateLended' >电子档案借阅/归还</label></br/>
+						<input id='cbOperateHistory' name='aOperateHistory' type='checkbox' />
+						<label for='cbOperateHistory' >单证操作历史查询</label></br/>
+						<input id='cbOperateTestified' name='aOperateTestified' type='checkbox' />
+						<label for='cbOperateTestified'>允许出证</label></br/>
+						<input id='cbOperatePrint' name='aOperatePrint' type='checkbox' />
+						<label for='cbOperatePrint'>允许打印</label></br/>
+					</div>
+				</div></td>
+				<td>
+				<div id='dManageAccountsPermission' class='expander' >
+					<h4>账户管理权限</h4>
+					<div>
+						<input id='cbManageUsers' name='aManageUsers' type='checkbox' />
+						<label for='cbManageUsers' >用户管理</label></br/>
+						<input id='cbManageRoles' name='aManageRoles' type='checkbox' />
+						<label for='cbManageRoles' >角色权限管理</label></br/>
+					</div>
+				</div></td>
+			</tr>
+			<!-- <tr>
+				
+				<td>
+				<div id='dSetProfilePermission' class='expander' >
+					<h4>个人设置权限</h4>
+					<div>
+						<input id='cbUpdateProfile' name='aUpdateProfile' type='checkbox' disabled="true" checked="checked" />
+						<label for='cbUpdateProfile' >修改个人信息</label></br/>
+						<input id='cbUpdatePassword' name='aUpdatePassword' type='checkbox' disabled="true" checked="checked" />
+						<label for='cbUpdatePassword' >修改密码</label></br/>
+					</div>
+				</div></td>
+			</tr> -->
+		</table>
+	</form>
+</div>

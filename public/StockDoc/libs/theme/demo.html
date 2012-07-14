@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>随机组合查阅界面</title>
+<link href="css/common.css" rel="stylesheet" type="text/css" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script language="javascript" type="text/javascript" src="js/my97DatePicker/WdatePicker.js"></script>
+<style>
+html {
+	overflow-x:hidden;
+}
+</style>
+</head>
+
+<body class="bodyLayout">
+<table  class="commonTable">
+  <tr>
+    <td colspan="3"><div class="table_title"><span>模糊查阅</span></div></td>
+  </tr>
+  <tr>
+    <th>请输入查询份数</th>
+    <td><input type="text" name="textfield" id="textfield" class="input01"/>
+      份</td>
+    <td class="searchBtn"><input type="submit" name="button" id="button" value=" 查 阅"  class="btn01"/></td>
+  </tr>
+</table>
+<table class="commonTable">
+  <tr>
+    <td colspan="3"><div class="table_title"><span>条件查阅</span></div></td>
+  </tr>
+  <tr>
+    <th>申报关区</th>
+    <td><input type="text" name="textfield2" id="textfield2" class="input01"/></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <th>理单关区</th>
+    <td><input type="text" name="textfield2" id="textfield2" class="input01"/></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <th>时间段</th>
+    <td><input id="d11" type="text" onClick="WdatePicker()" class="dateInput"/>
+      至
+      <input id="d12" type="text" onClick="WdatePicker()" class="dateInput"/></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <th>进出口种类</th>
+    <td><select name="1" class="input01">
+        <option value="1" >请选择进出口种类</option>
+      </select>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <th>保存年限</th>
+    <td><input type="text" name="textfield3" id="textfield3" class="input01"/></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <th>查阅份数</th>
+    <td><input type="text" name="textfield3" id="textfield3" class="input01"/>
+      份 </td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <th>&nbsp;</th>
+    <td><input type="checkbox" name="ck1" id="ck1" />
+      <label for="ck1">删改单</label>
+      <input type="checkbox" name="ck2" id="ck2" />
+      <label for="ck2">退补税</label>
+      <input type="checkbox" name="ck3" id="ck3" />
+      <label for="ck3">其他补充</label></td>
+    <td class="searchBtn"><input type="submit" name="button2" id="button2" value=" 查 阅"  class="btn01"/></td>
+  </tr>
+</table>
+<div class="return">
+  <input type="submit" name="button3" id="button3" value="返 回"  class="btn02"/>
+</div>
+</body>
+</html>

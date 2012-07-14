@@ -1,0 +1,41 @@
+div#dMainContainer {
+	padding: 105px 10px 10px 10px;
+	text-align: left
+}
+div.wijmo-wijdropdown {
+	height: 25px;
+}
+td.wijgridtd {
+	text-align: center;
+}
+th.wijgridth {
+	text-align: center;
+}
+.sidebar-nav {
+	padding: 10px 0;
+	text-align: left
+}
+img.grid-icon {
+	width: 20px;
+	height: 20px
+}
+span.content-title {
+	font-size: 1.2em;
+	font-weight: bold;
+	line-height: 40px;
+}
+form span.form-label {
+	display: inline-block;
+	width: 80px;
+	text-align: right;
+	vertical-align: top;
+	padding-top: 10px;
+}
+form div.form-item {
+	padding-left: 10px;
+	display: inline-block;
+	padding: 5px;
+}
+ul#css3menu li a.nav_hide {
+	display: none;
+}

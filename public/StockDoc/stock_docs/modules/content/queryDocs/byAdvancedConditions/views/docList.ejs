@@ -1,0 +1,39 @@
+<div id="dDocList">
+	<table id="tbDocQueryList" style="width: 100%">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>报关单号</th>
+				<th>单证类型</th>
+				<th>申报关区</th>
+				<th>理单关区</th>
+				<th>是否涉案</th>
+				<th>是否借出</th>
+				<th>理单日期</th>
+				<th>电子入档日期</th>
+				<th>单证详情</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for (var i = 0; i < data.length; i++) { 
+				var record = data[i]; %>
+				<tr>
+					<td><%== (i + 1) %></td>
+					<td><%== record.doc_id %></td>
+					<td><%== record.doc_type %></td>
+					<td><%== record.org %></td>
+					<td><%== record.org_applied %></td>
+					<td><%== record.inquired ? '是':'否' %></td>
+					<td><%== record.checkedout ? '是':'否' %></td>
+					<td><%== record.edc_date %></td>
+					<td><%== record.created_at %></td>
+					<td><a href=<%= '#' + record.doc_id %> class='showDocDetail'> <img src='resources/imgs/actions/find.png' class="grid-icon"></img> </a></td>
+				</tr>
+			<% } %>
+		</tbody>
+	</table>
+</div>
+<div id="dDocDetail" style='display:none'>
+	<button id="btnBack2List" style='left:20px;bottom:5px'>返回列表</button>
+	<div id="dShowDocDetail"></div>
+</div>

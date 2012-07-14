@@ -1,0 +1,44 @@
+<div>
+	<button id="btnCreateUser">
+		创建新用户
+	</button>
+</div>
+<div id="dUserManagment" style="padding-top: 10px">
+	<table id="tbUsers">
+		<thead>
+			<th>序号</th><th>用户</th><th>角色</th>
+			<th>修改用户</th><th>删除用户</th>
+		</thead>
+		<tbody>
+			<% var size = data.users.length;
+			for(var i = 0; i < size; i ++) {
+			var user = data.users[i].email;
+			var role = data.roles[i][0].display_name; %>
+			<tr>
+				<td width="30%"><%= (i+1) %></td>
+				<td class="user" width="30%"><%= user %></td>
+				<td><%= role %></td>
+				<td><a href='javascript://' class='updateUser'>
+					<div>
+						<div class="data-wrapper" style="display: none">
+							<span class="user-id"><%= data.users[i].id%></span>
+							<span class="role-id"><%= data.roles[i][0].id%></span>
+							<span class="user"><%= user %></span>
+						</div>
+						<img src='resources/imgs/actions/update.png' class="grid-icon"></img> </a>
+					</div>
+				</td>
+				<td><a href='javascript://' class='deleteUser'> 
+					<div>
+						<div class="data-wrapper" style="display: none">
+							<span class="user-id"><%= data.users[i].id%></span>
+						</div>
+						<img src='resources/imgs/actions/delete.png' class="grid-icon"></img> </a>
+					</div>
+				</td>
+			</tr>
+			<% } %>
+		</tbody>
+	</table>
+</div>
+<div id="dialogUserDetail" title="用户信息" class="dialog" style="display: none"></div>

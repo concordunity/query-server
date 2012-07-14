@@ -1,0 +1,21 @@
+db/migrate/20120509014835_create_doc_groups.rb db/migrate/20120509014843_create_doc_group_entries.rb app/controllers app/models
+config/routes.rb 
+
+public/docview/single
+public/docview/multil
+public/docview/dgselect
+public/docview/details
+public/docview/search
+public/docview/manage
+public/docview/sou
+public/docview/stats
+public/docview/login
+public/docview/subnav
+public/docview/nav
+public/docview/views
+public/docview/models
+public/docview/alerts
+public/docview/history
+
+
+

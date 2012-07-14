@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>File Details (a.k.a. the entire viewer)</title>
+	</head>
+	<body>
+    <div id="file-details"></div>
+    
+    <button id="button">Display Document Details</div>
+  
+  <script type='text/javascript' src='../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/details').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          category: "",
+          id: "",
+          page: "",
+          search: {
+              ids: [],
+              filters: [6]
+          },
+          document: {
+              pageCount: 0,
+              pages: [],
+              currentPage: 0,
+              directory: ""
+          }
+      });
+      
+      
+      $('#file-details').docview_details({clientState: state});
+      $('#button').click(function() {
+        $.route.attrs({ "category": "document", "id": "103420121342000022" }, true);
+      });
+    });
+  </script>
+	</body>
+</html>

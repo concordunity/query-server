@@ -1,0 +1,41 @@
+
+/* ---------------------
+	公共样式
+	common.css
+	author: ado
+	date: 2012-3-10
+   --------------------- */
+
+#page-wrap							{ width: 800px; margin: 1px 0 0 100px; } 
+a									{ text-decoration: none; }
+ul									{ list-style: none; }
+
+/* 
+	LEVEL ONE
+*/
+ul.dropdown                         { position: relative;}
+ul.dropdown li                      { font-weight: bold; float: left; zoom: 1; font-size:14px; height:36px; background:url(../images/t_menu_span.jpg) right no-repeat; line-height:36px;}
+ul.dropdown a:hover		            { color: #FFF; }
+ul.dropdown li a                    { display: block; padding: 0 25px;}
+
+ul.dropdown li:last-child a         { border-right: none;} /* Doesn't work in IE */
+ul.dropdown li.hover,
+ul.dropdown li:hover                { background: url(../images/t_menu_sel.jpg) repeat-x;position: relative; color:#fff; }
+/*ul.dropdown li.hover a              { color:#FFF; }*/
+
+
+/* 
+	LEVEL TWO
+*/
+ul.dropdown ul 						{ width: 170px; visibility: hidden; position: absolute; top: 100%; left: 0; color: #000; border: 1px solid #ccc;}
+ul.dropdown ul li 					{ font-weight: normal; background: #f6f6f6; color: #f00; 
+									  border-bottom: 1px solid #ccc; float: none; font-size:12px; }
+ul.dropdown ul li:hover                { background:#30688D;color:#fff; }
+                                    /* IE 6 & 7 Needs Inline Block */
+ul.dropdown ul li a					{ border-right: none; width: 100%; display: inline-block; color:#000;} 
+
+/* 
+	LEVEL THREE
+*/
+ul.dropdown ul ul 					{ left: 100%; top: 0; }
+ul.dropdown li:hover > ul 			{ visibility: visible; }

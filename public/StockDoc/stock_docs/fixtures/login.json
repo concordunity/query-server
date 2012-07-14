@@ -1,0 +1,46 @@
+{
+	"error": "Success",
+	"web_links": [
+		{
+			"action": "query",
+			"controller": "Document",
+			"created_at": null,
+			"description": "\u00e6\u0152\u2030\u00e6\u0160\u00a5\u00e5\u2026\u00b3\u00e5\u008d\u2022\u00e5\u008f\u00b7\u00e5\u008d\u2022\u00e7\u00a5\u00a8\u00e6\u0178\u00a5\u00e9\u02dc\u2026",
+			"id": 2,
+			"menu1": null,
+			"menu2": null,
+			"name": "aQueryDocByBarcode",
+			"updated_at": null
+		}, {
+			"action": "report",
+			"controller": "report",
+			"created_at": null,
+			"description": "\u00e7\u00bb\u00a9\u00e6\u2022\u02c6\u00e7\u00bb\u0178\u00e8\u00ae\u00a1",
+			"id": 7,
+			"menu1": null,
+			"menu2": null,
+			"name": "aPerformanceStatis",
+			"updated_at": null
+		}, {
+			"action": "checkout",
+			"controller": "Document",
+			"created_at": null,
+			"description": "\u00e7\u201d\u00b5\u00e5\u00ad\u0090\u00e6\u00a1\u00a3\u00e6\u00a1\u02c6\u00e5\u20ac\u0178\u00e9\u02dc\u2026/\u00e5\u00bd\u2019\u00e8\u00bf\u02dc",
+			"id": 11,
+			"menu1": null,
+			"menu2": null,
+			"name": "aOperateLended",
+			"updated_at": null
+		}, {
+			"action": "manage_user",
+			"controller": "auth",
+			"created_at": null,
+			"description": "\u00e7\u201d\u00a8\u00e6\u02c6\u00b7\u00e7\u00ae\u00a1\u00e7\u0090\u2020",
+			"id": 14,
+			"menu1": null,
+			"menu2": null,
+			"name": "aManageUsers",
+			"updated_at": null
+		}
+	]
+}

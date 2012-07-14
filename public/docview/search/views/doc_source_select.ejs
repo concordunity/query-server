@@ -1,0 +1,6 @@
+<select name="source">
+ <option value=0>不限</option>
+<% for (var i=0; i < this.length; i++) { %>
+ <option value=<%==this[i].id %>><%== this[i].name %></option>
+<% } %>
+</select>

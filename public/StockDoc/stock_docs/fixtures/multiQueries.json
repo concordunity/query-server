@@ -1,0 +1,33 @@
+[
+	{
+		"checkedout": null,
+		"created_at": "2012-03-19T16:03:47Z",
+		"doc_id": "222520121252011021",
+		"doc_type": "JK3Y",
+		"folder_id": 3,
+		"id": 6,
+		"inquired": null,
+		"label": null,
+		"modified": null,
+		"org": "2225",
+		"org_applied": "2225",
+		"pages": 14,
+		"serial_number": "230012111",
+		"updated_at": "2012-03-19T16:03:47Z"
+	}, {
+		"checkedout": null,
+		"created_at": "2012-03-19T16:03:47Z",
+		"doc_id": "222520121252011025",
+		"doc_type": "JK3Y",
+		"folder_id": 3,
+		"id": 10,
+		"inquired": null,
+		"label": null,
+		"modified": null,
+		"org": "2225",
+		"org_applied": "2225",
+		"pages": 11,
+		"serial_number": "230012115",
+		"updated_at": "2012-03-19T16:03:47Z"
+	}
+]

@@ -1,0 +1,16 @@
+div.expander {
+	padding: 10px;
+}
+div.expander label {
+	padding-left: 10px;
+	line-height: 35px;
+	display:inline;
+}
+div.expander hr {
+	margin : 5px 0;
+	border:none;
+	border-top:1px dotted black;
+}
+#dPermissionTree table td {
+	width : 20%;
+}

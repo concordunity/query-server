@@ -1,0 +1,35 @@
+<html>
+<head>
+<script type="text/javascript">
+
+function getDoc() {
+  var url = document.location.href;
+  var pos = url.indexOf('?');
+
+  if (pos == -1) {
+    doc_id = "220120121012010018";
+  } else {
+    doc_id = url.substring(pos + 1);
+  }
+
+  return doc_id;
+}
+
+function printDoc() {
+     Pdf2.setShowToolbar(false);
+     Pdf2.printWithDialog();  
+}
+</script>
+</head>
+
+<body onLoad='printDoc();'>
+
+<object id="Pdf2" name="Pdf2" classid="clsid:CA8A9780-280D-11CF-A24D-444553540000" width="100%" height="100%">
+     <param name='src' value
+</object>
+
+
+<h3>打印功能只支持 IE 环境下的 Adobe Acrobat PDF 阅读器</h3>
+
+</body>
+</html>

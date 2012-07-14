@@ -1,0 +1,12 @@
+.Wdate{
+	background:#fff url(datePicker.gif) repeat-x right;
+}
+/*	background:#fff url(datePicker.gif) no-repeat left;*/
+.WdateFmtErr{
+	font-weight:bold;
+	color:red;
+}
+.read_Wdate{
+	background:#CCCCCC url(read_wate.jpg) no-repeat left;
+	
+}
