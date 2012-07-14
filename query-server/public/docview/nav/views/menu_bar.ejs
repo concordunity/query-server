@@ -1,0 +1,41 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container-fluid">
+      <a class="brand" href="#"><img src="img/nav-logo.png" /></a>
+      <div class="nav-collapse">
+        <ul class="nav main-nav">
+          <% if (this.search) { %>
+              <li class="">
+                <a href="#search"><i class="icon-search icon-white"></i> <%= $.i18n._('menu_search') %> </a>
+              </li>
+          <% } %>
+          <% if (this.manage_docs) { %>
+              <li class="">
+                <a href="#manage_docs"><i class="icon-file icon-white"></i> <%= $.i18n._('menu_operation') %> </a>
+              </li>
+          <% } %>
+          <% if (this.stats) { %>
+              <li class="">
+                <a href="#stats"><i class="icon-th-list icon-white"></i> <%= $.i18n._('menu_report') %></a>
+              </li>
+          <% } %>
+
+          <% if (this.manage_accounts) { %>
+              <li class="">
+                <a href="#manage_accounts"><i class="icon-user icon-white"></i> <%= $.i18n._('menu_accounts') %></a>
+              </li>
+          <% } %>
+
+        </ul>
+        <ul class="nav side-nav pull-right">
+          <li class="user-info">
+            <a href="#settings"><i class="icon-cog icon-white"></i> <%= this.user.fullname %></a>
+          </li>
+          <li class="logout">
+            <a href="#logout"><i class="icon-arrow-right icon-white"></i> <%= $.i18n._('menu_logout') %></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<tr <%= this%>>
+    <td>
+<%
+if (this.access_info == "denied") {
+%>
+权限不足，不能查阅 <%= this.doc_id %> 
+<% } else if (this.access_info == "inquired") { %>
+缉私局等扣留, 不能查阅 <%= this.doc_id %> 
+<% } else { %>
+
+<a href="#"><%= this.doc_id %></a>
+<% } %>
+
+</td>
+    <td><%= this.doc_type %></td>
+    <td><%= this.serial_number %></td>
+    <td>
+        <% if (this.inquired) { %>
+            是
+        <% } else { %>
+            否
+        <% } %>
+    </td>
+    <td>
+        <% if (this.checkedout) { %>
+            是
+        <% } else { %>
+            否
+        <% } %>
+    </td>
+    <td><%= this.pages %></td>
+</tr>

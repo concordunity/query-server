@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>User Management</title>
+	</head>
+	<body style="padding: 50px;">
+    <div id="users"></div>
+    
+    <button id="button">Manage Docs</button>
+    <button id="button2">Manage Users</button>
+    <button id="button3">Manage Roles</button>
+  
+  <script type='text/javascript' src='../../../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/manage/accounts/users').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          category: "",
+          id: "",
+          page: "",
+          document: {
+              pageCount: 0,
+              pages: [],
+              currentPage: 0,
+              directory: ""
+          }
+      });
+      
+      
+      $('#users').docview_manage_accounts_users({clientState: state});
+      
+      $('#button').click(function() {
+        $.route.attrs({ "category": "manage_docs", "subcategory": "inquiries" }, true);
+      });
+      $('#button2').click(function() {
+        $.route.attrs({ "category": "manage_accounts", "subcategory": "users" }, true);
+      });
+      $('#button3').click(function() {
+        $.route.attrs({ "category": "manage_accounts", "subcategory": "roles" }, true);
+      });
+    });
+  </script>
+	</body>
+</html>

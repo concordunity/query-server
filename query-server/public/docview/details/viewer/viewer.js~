@@ -1,0 +1,81 @@
+steal(
+    'jquery/controller',
+    'jquery/view/ejs',
+    'jquery/controller/view',
+    'jquery/dom/route',
+    'jquery/lang/observe/delegate',
+    'docview/models'
+).then(
+    'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js'
+).then(
+    'libs/iviewer/jquery.mousewheel.min.js'
+).then (
+    './views/viewer.ejs',
+    './views/image.ejs',
+    'libs/iviewer/jquery.iviewer.css',
+    'libs/iviewer/jquery.iviewer.js'
+).then(function($) {
+    $.Controller('Docview.Details.Viewer',
+    /* @Static */
+    {
+    },
+    /* @Prototype */
+    {
+        init: function() {
+            this.element.html(this.view('viewer', {}));
+        },
+        '.next click': function(el, ev) {
+            ev.preventDefault();
+            var currentPage = this.options.clientState.document.current;
+            if (currentPage < this.options.clientState.document.pages.length) {
+                this.options.clientState.attr('document').attr('current', currentPage + 1);
+            }
+        },
+	'.original click' : function(el,ev) {
+	    //console.log(this.element.find("img").attr('src'));
+	    window.open(this.element.find("img").attr('src'), target='_blank');
+	},
+        '.previous click': function(el, ev) {
+            ev.preventDefault();
+            var currentPage = this.options.clientState.document.current;
+            if (currentPage > 1) {
+                this.options.clientState.attr('document').attr('current', currentPage - 1);
+            }
+        },        
+        // document: {
+        //    pages: [] // Array of pages
+        //    directory: "" // Location of image
+        //    metadata: {} // metadata
+        //    groups: [subgroup, subgroup, ...] // groups of images
+        // }
+        '{clientState} document.current change': function(el, ev, attr, how, newVal, oldVal) {
+            if (how === "set" || how === "add") {
+		$('#pageno').html('第 '+newVal+' 页');
+                var dir = this.options.clientState.document.directory;
+                var docId = this.options.clientState.document.metadata.doc_id;
+                var file = this.options.clientState.document.pages[newVal - 1];
+                this.element.find('.document-page').html(
+                    this.view('image'));
+		var imagePath = dir + docId + '/' + docId + '/' + file;
+
+		//console.log("imagepath is ", imagePath);
+
+		//console.log("imagepath is ", this.element.find('div.doc-image'));
+		this.element.find('div.image-viewer').iviewer({
+		    src : imagePath,
+		    zoom_delta : 1.1
+		});
+
+		//, {
+               //         thumbnail: dir + docId + '/' + docId + '/thumb/t_' + file,
+                 //       original: dir + docId + '/' + docId + '/' + file
+                   // })
+               // );
+            }
+        }
+        
+        // Have details.js control tree and viewer
+        // viewer watches client state on docs to know what to cache
+        
+    });
+});

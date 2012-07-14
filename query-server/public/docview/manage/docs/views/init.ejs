@@ -1,0 +1,24 @@
+<div id="manage-docs-container" class="well">
+  <div class="manage-doc-forms">
+<% if (this.inquire) { %>
+  <%== $.View('//docview/manage/docs/views/inquire_form.ejs') %>
+<% } %>
+<% if (this.check) { %>
+  <%== $.View('//docview/manage/docs/views/checkout_form.ejs') %>
+<% } %>
+<% if (this.print) { %>
+  <%== $.View('//docview/manage/docs/views/print_form.ejs') %>
+<% } %>
+<% if (this.testify) { %>
+  <%== $.View('//docview/manage/docs/views/court_form.ejs') %>
+<% } %>
+<% if (this.dh_report) { %>
+  <%== $.View('//docview/manage/docs/views/dh_report.ejs') %>
+<% } %>
+  </div>
+</div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+        <div id="docs_history"></div>
+    </div>
+  </div>

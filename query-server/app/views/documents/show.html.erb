@@ -1,0 +1,60 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Doc:</b>
+  <%= @document.doc_id %>
+</p>
+
+<p>
+  <b>Pages:</b>
+  <%= @document.pages %>
+</p>
+
+<p>
+  <b>Folder:</b>
+  <%= @document.folder %>
+</p>
+
+<p>
+  <b>Doc type:</b>
+  <%= @document.doc_type %>
+</p>
+
+<p>
+  <b>Org:</b>
+  <%= @document.org %>
+</p>
+
+<p>
+  <b>Org applied:</b>
+  <%= @document.org_applied %>
+</p>
+
+<p>
+  <b>Modified:</b>
+  <%= @document.modified %>
+</p>
+
+<p>
+  <b>Checkedout:</b>
+  <%= @document.checkedout %>
+</p>
+
+<p>
+  <b>Inquired:</b>
+  <%= @document.inquired %>
+</p>
+
+<p>
+  <b>Label:</b>
+  <%= @document.label %>
+</p>
+
+<p>
+  <b>Serial number:</b>
+  <%= @document.serial_number %>
+</p>
+
+
+<%= link_to 'Edit', edit_document_path(@document) %> |
+<%= link_to 'Back', documents_path %>

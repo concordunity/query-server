@@ -1,0 +1,97 @@
+
+系统目前单证电子档案总数为 <%= docs_total %>, 总计页数为 <%= pages_total %>,
+查阅总数为 <%= query_total %>, 查阅率约 <%= query_p %>
+
+<p>&nbsp;</p>
+
+<% if (groupby == '2' || groupby == '3') {
+ var theading = '用户名';
+  if (groupby == '3') {
+      theading = '角色';
+  }
+%>
+<table class="table table-condensed">
+<thead>
+<tr>
+ <th><%== theading %></th>
+ <th>查阅量</th>
+ <th>查阅率</th>
+ <th>查阅量占比</th>
+</tr>
+ </thead>
+
+<tbody>
+<%
+
+ $.each(query_stats, function(k, v) {
+%>
+<tr> <td><%== k %></td>
+ <td><%== v.num_queries %></td>
+ <td><%== v.percentage_q %></td>
+ <td><%== v.percentage_qq %></td>
+</tr>
+<% }); %>
+
+
+</tbody>
+</table>
+<%
+}
+%>
+
+<%
+if (groupby == '1' || groupby == '4') {
+ var theading = '关区';
+  if (groupby == '4') {
+      theading = '月份';
+  }
+ %>
+
+<table class="table table-condensed">
+<thead>
+<tr>
+ <th><%== theading %></th>
+<% if (groupby == '4') { %>
+<th>关区</th>
+<% } %>
+
+ <th>档案总数(指定时间段内)</th>
+ <th>总页数</th>
+ <th>查阅量</th>
+<% if (groupby == '1') { %>
+ <th>查阅率</th>
+<% } %>
+
+ <th>查阅量占比</th>
+</tr>
+ </thead>
+
+<tbody>
+<%
+ var i = 1;
+ $.each(query_stats, function(key, value) {
+%>
+<tr> <td><%== key %></td>
+ <td><%== value.num_docs %></td>
+
+<% if (groupby == '4') { %>
+
+ <td><%== value.org %></td>
+
+<% } %>
+ <td><%== value.num_pages %></td>
+ <td><%== value.num_queries %></td>
+<% if (groupby == '1') { %>
+ <td><%== value.percentage_q %></td>
+<% } %>
+ <td><%== value.percentage_qq %></td>
+
+</tr>
+<% }); %>
+
+</tbody>
+</table>
+
+<%  
+ }
+%>

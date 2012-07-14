@@ -1,0 +1,75 @@
+             new_user_session GET    /users/login(.:format)                      devise/sessions#new
+                 user_session POST   /users/login(.:format)                      devise/sessions#create
+         destroy_user_session GET    /users/logout(.:format)                     devise/sessions#destroy
+                user_password POST   /users/password(.:format)                   devise/passwords#create
+            new_user_password GET    /users/password/new(.:format)               devise/passwords#new
+           edit_user_password GET    /users/password/edit(.:format)              devise/passwords#edit
+                              PUT    /users/password(.:format)                   devise/passwords#update
+     cancel_user_registration GET    /users/cancel(.:format)                     devise/registrations#cancel
+            user_registration POST   /users(.:format)                            devise/registrations#create
+        new_user_registration GET    /users/sign_up(.:format)                    devise/registrations#new
+       edit_user_registration GET    /users/edit(.:format)                       devise/registrations#edit
+                              PUT    /users(.:format)                            devise/registrations#update
+                              DELETE /users(.:format)                            devise/registrations#destroy
+              query_histories GET    /query_histories(.:format)                  query_histories#index
+                              POST   /query_histories(.:format)                  query_histories#create
+            new_query_history GET    /query_histories/new(.:format)              query_histories#new
+           edit_query_history GET    /query_histories/:id/edit(.:format)         query_histories#edit
+                query_history GET    /query_histories/:id(.:format)              query_histories#show
+                              PUT    /query_histories/:id(.:format)              query_histories#update
+                              DELETE /query_histories/:id(.:format)              query_histories#destroy
+            special_documents GET    /special_documents(.:format)                special_documents#index
+                              POST   /special_documents(.:format)                special_documents#create
+         new_special_document GET    /special_documents/new(.:format)            special_documents#new
+        edit_special_document GET    /special_documents/:id/edit(.:format)       special_documents#edit
+             special_document GET    /special_documents/:id(.:format)            special_documents#show
+                              PUT    /special_documents/:id(.:format)            special_documents#update
+                              DELETE /special_documents/:id(.:format)            special_documents#destroy
+        multi_query_documents POST   /documents/multi_query(.:format)            documents#multi_query
+        search_docs_documents POST   /documents/search_docs(.:format)            documents#search_docs
+            inquire_documents POST   /documents/inquire(.:format)                documents#inquire
+           checkout_documents POST   /documents/checkout(.:format)               documents#checkout
+                    documents GET    /documents(.:format)                        documents#index
+                              POST   /documents(.:format)                        documents#create
+                 new_document GET    /documents/new(.:format)                    documents#new
+                edit_document GET    /documents/:id/edit(.:format)               documents#edit
+                     document GET    /documents/:id(.:format)                    documents#show
+                              PUT    /documents/:id(.:format)                    documents#update
+                              DELETE /documents/:id(.:format)                    documents#destroy
+                      folders GET    /folders(.:format)                          folders#index
+                              POST   /folders(.:format)                          folders#create
+                   new_folder GET    /folders/new(.:format)                      folders#new
+                  edit_folder GET    /folders/:id/edit(.:format)                 folders#edit
+                       folder GET    /folders/:id(.:format)                      folders#show
+                              PUT    /folders/:id(.:format)                      folders#update
+                              DELETE /folders/:id(.:format)                      folders#destroy
+                    web_links GET    /web_links(.:format)                        web_links#index
+                              POST   /web_links(.:format)                        web_links#create
+                 new_web_link GET    /web_links/new(.:format)                    web_links#new
+                edit_web_link GET    /web_links/:id/edit(.:format)               web_links#edit
+                     web_link GET    /web_links/:id(.:format)                    web_links#show
+                              PUT    /web_links/:id(.:format)                    web_links#update
+                              DELETE /web_links/:id(.:format)                    web_links#destroy
+                        roles GET    /roles(.:format)                            roles#index
+                              POST   /roles(.:format)                            roles#create
+                     new_role GET    /roles/new(.:format)                        roles#new
+                    edit_role GET    /roles/:id/edit(.:format)                   roles#edit
+                         role GET    /roles/:id(.:format)                        roles#show
+                              PUT    /roles/:id(.:format)                        roles#update
+                              DELETE /roles/:id(.:format)                        roles#destroy
+                         root        /                                           welcome#welcome
+                                     /docs/:doc_id(.:format)                     documents#query {:doc_id=>/\d{18}/}
+                                     /docs/print/:doc_id(.:format)               documents#print {:doc_id=>/\d{18}/}
+                                     /docs/testify/:doc_id(.:format)             documents#testify {:doc_id=>/\d{18}/}
+                                     /root/docimages/:a/:b(.:format)             welcome#img
+                                     /qh/u/:username(.:format)                   query_histories#byuser {:username=>/[^\/]+/}
+                                     /qh/d/:doc_id(.:format)                     query_histories#bydoc
+ document_histories_dh_report        /document_histories/dh_report(.:format)     document_histories#dh_report
+document_histories_dh_special        /document_histories/dh_special(.:format)    document_histories#dh_special
+                                     /document_histories/query/:doc_id(.:format) document_histories#query
+                     accounts GET    /accounts(.:format)                         accounts#index
+                              POST   /accounts(.:format)                         accounts#newuser
+                              PUT    /accounts/:id(.:format)                     accounts#update
+                              DELETE /accounts/:id(.:format)                     accounts#destroy
+           accounts_get_links        /accounts/get_links(.:format)               accounts#get_links
+               accounts_chpwd POST   /accounts/chpwd(.:format)                   accounts#change_password

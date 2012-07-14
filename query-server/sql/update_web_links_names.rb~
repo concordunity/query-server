@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+
+{"aQueryDocByBarcode"=>"按报关单号单票查阅",
+"aQueryDocsByBarcodes"=>"按报关单号批量查阅",
+"aQueryDocsByConditions"=>"特定条件组合查阅",
+"aManageQueries"=>"查阅历史",
+"aPerformanceStatis"=>"绩效统计",
+"aUsabilityStatis"=>"使用统计",
+"aOperateInvolved"=>"添加/撤销涉案标志",
+"aOperateLended"=>"电子档案借阅/归还",
+"aOperateTestified"=>"出证处理",
+"aOperatePrint"=>"打印",
+"aOperateHistory"=>"单证操作历史查询",
+"aManageUsers"=>"用户管理",
+"aManageRoles"=>"角色权限管理",
+"aCreateGroup"=>"单证跟踪管理",
+"aStatsByUser"=>"查看单证查阅历史",
+"aStatsByDoc"=>"使用统计",
+"aStatsAdvanced"=>"添加/撤销涉案标志",
+"aQueryBySource"=>"单证暂存"
+}.collect {|key,value| a=WebLink.find_by_name(key);a.description=value;a.save}

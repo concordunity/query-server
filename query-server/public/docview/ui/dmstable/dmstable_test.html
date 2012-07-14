@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+<meta charset="utf-8">
+		<title>DmsTable</title>
+	</head>
+	<body>
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="dms-table">
+  </div>
+  </div>
+  
+  
+  <script type='text/javascript' src='../../../steal/steal.js'></script>
+  <script type='text/javascript'>
+
+function format_row_data(data) {
+  var result = new Array();
+
+  $.each(data, function(index, v) {
+     result.push(v);
+  });
+    return result;
+  }
+steal('jquery/dom/route', 'docview/ui/dmstable', 'docview/models').then(function($) {
+var aaData=[];
+
+    var table_options = {
+     aaData: aaData,
+
+     col_def_path : "//docview/ui/dmstable/views/",
+      aoColumns: [
+{"mDataProp":"username", mLabel : '用户名'},
+                        {"mDataProp":"fullname", mLabel : '全名'},
+                        {"mDataProp":"roles", mLabel : '角色'},
+                        {"mDataProp":"orgs", mLabel : '关区'},
+                        {"mDataProp":"doc_type", mLabel : '进出口类别'},
+                        {"mDataProp":null, mLabel : '操作'},
+                 ],
+      file_name: "user_info",
+      row_formatter : format_row_data 
+    };
+
+    $('#dms-table').docview_ui_dmstable({table_options : table_options});
+    var controller = $('#dms-table').controller();
+
+
+            Docview.Models.User.findAll({},
+                     function(data) {controller.addData(data) },
+function(e) {
+                }
+);
+
+
+    $("#export_data").click(function(){
+	controller.saveToExcel();
+    });
+
+    });
+  </script>
+	</body>
+</html>

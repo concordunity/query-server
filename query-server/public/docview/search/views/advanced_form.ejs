@@ -1,0 +1,76 @@
+﻿<form class="advanced form-horizontal">
+    <fieldset>
+     <div class="control-group">
+      <label  class="control-label" for="frm_total">随机抽样份数</label>
+      <div class="controls">
+         <input name="total" id="frm_total" type="text"/>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label  class="control-label" for="frm_org">理单关区</label>
+     <div class="controls">
+      <select id="frm_org" name="org" style="width: 120px;">
+          <option value="">不限</option>
+          <option value="2225">外港</option>
+          <option value="2218">保税区</option>
+          <option value="2210">浦东</option>
+          <option value="2201">浦江</option>
+          <option value="2202">吴淞</option>
+          <option value="2203">虹桥机场</option>
+          <option value="2204">闵开发区</option>
+          <option value="2208">吴淞(宝山)</option>
+          <option value="2233">浦东机场</option>
+       </select>
+     </div>
+    </div>
+
+    <div class="control-group">
+      <label  class="control-label" for="frm_total">申报关区</label>
+           <div class="controls">
+         <select id="frm_org_applied" name="org_applied" style="width: 120px;">
+          <option value="">不限</option>
+          <option value="2225">外港</option>
+          <option value="2218">保税区</option>
+          <option value="2210">浦东</option>
+          <option value="2201">浦江</option>
+          <option value="2202">吴淞</option>
+          <option value="2203">虹桥机场</option>
+          <option value="2204">闵开发区</option>
+          <option value="2208">吴淞(宝山)</option>
+          <option value="2233">浦东机场</option>
+       </select>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label  class="control-label" for="frm_doctype">进出口种类</label>
+      <div class="controls">
+      <select id="frm_docType"  name="doc_type" style="width: 80px;">
+          <option value="">不限</option>
+          <option value="JK">进口</option>
+          <option value="CK">出口</option>
+      </select> 年限
+        <select id="frm_years" name="years" style="width: 80px;">
+           <option value="">不限</option>
+           <option value="3">3年</option>
+           <option value="5">5年</option>
+           <option value="11">11年</option>
+       </select>
+      </div>
+ 
+   </div>
+
+   <div class="control-group">
+   <div class="controls">
+<input type="checkbox" name="isMod" values="1"/>删改单 
+<input type="checkbox" name="isTax" values="1"/>退补税
+</div>
+   </div>
+
+   <div class="control-group daterange-holder">
+</div>
+</fieldset>
+<div class="row-fluid"> 
+    <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button>    <%== $.View('//docview/search/views/filters_form.ejs', {type: "advanced"}) %></div>
+</form>

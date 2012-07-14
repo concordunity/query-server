@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Router</title>
+	</head>
+	<body>
+    <div id="header"></div>
+    <button id="button">Change Route Data</button>
+  
+  <script type='text/javascript' src='../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('docview/router').then(function($) {
+      $('body').docview_router();
+      
+      $('#button').click(function() {
+        $.route.attr('page', 'users');
+      });
+    });
+  </script>
+	</body>
+</html>

@@ -1,0 +1,21 @@
+.login-splash {
+    width: 580px;
+    height: 100px;
+    background-color: #203f5c;
+    background-image: url("../img/login-splash.png");
+    margin-bottom: 20px;
+}
+
+.docview_login .well {
+    background-color: #203f5c !important;
+}
+
+.docview_login label {
+    color: #ffffff !important;
+}
+
+.login-page {
+    background-color: #204e70 !important;
+    background-image: -moz-linear-gradient(center top , #8db9dc, #204e70) !important;
+    background-repeat: repeat-x;
+}

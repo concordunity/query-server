@@ -1,0 +1,11 @@
+<tr <%= this%>>
+    <td><%= this.name %></td>
+
+    <td><%= this.display_name %></td>
+    <td>
+        <button class="btn btn-mini edit-role"><i class="icon-edit icon-blue"></i><%= $.i18n._('btn.edit') %></button>
+        <button class="btn btn-mini btn-danger delete-role" data-loading-text="Deleting..." autocomplete="off">
+            <i class="icon-trash icon-white"></i><%= $.i18n._('btn.delete') %>
+        </button>
+    </td>
+</tr>

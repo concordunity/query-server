@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Search Results</title>
+	</head>
+	<body>
+    <div id="results"></div>
+    
+    <button id="button">Start Search</div>
+  
+  <script type='text/javascript' src='../../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/search/results').then(function($) {
+      // Client State
+      var state = new $.Observe({
+          category: "",
+          id: "",
+          page: "",
+          search: {
+              ids: [],
+              filters: [6]
+          },
+          document: {
+            pages: [],
+            directory: "",
+            metadata: {},
+            groups: []
+          }
+      });
+      
+      $('#results').docview_search_results({clientState: state});
+      $('#button').click(function() {
+        $.route.attrs({category: "search", subcategory: "multi"}, true);
+        state.attr('search', {
+          ids: [123456789, 123345, 124124125],
+          filters: [2,6]
+        });
+      });
+    });
+  </script>
+	</body>
+</html>

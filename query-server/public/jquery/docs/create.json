@@ -1,0 +1,1 @@
+c({"name": "create", "params": {"newItem": {"description": "", "type": "Object", "optional": false, "order": 0, "name": "newItem"}}, "ret": {"type": "undefined", "description": ""}, "type": "function", "comment": "", "src": "jquery/model/store/store.js", "line": 142, "children": []})

@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="utf-8">
+	<head>
+		<title>存量单据电子化查询系统</title>
+	</head>
+
+	<body>
+
+
+<form>
+<input id="tcode" name="type" value="" type="text"/>
+<button>Submit</button>
+</form>
+
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+<div class="container-fluid">
+  <div class="row-fluid">
+     <div id="qh_history"></div>
+  </div> 
+</div> 
+
+
+
+<script type='text/javascript' src='../steal/steal.js'></script>
+<script type='text/javascript'>
+
+steal('jquery/dom/route', 'docview/ui/history')
+.then('libs/development-bundle/ui/jquery-ui-1.8.19.custom.js')
+.then(function($) {
+  $('#qh_history').docview_ui_history({th_options: {}});
+  $('#qh_history').docview_ui_history("query", {});
+
+var py_codes = [ "ht", "fp", "zxqd", "tyd", "dlbgsqwtxys", "jckdybgd",
+"jckstbgd", "yjckhwbgdfyj", "ycdzm", "jckhwzmszm",
+"gzsfdhgzyjns", "hgcytzs", "hghwjcjld", "hwzsjcjxgdz",
+"jckhwbgdxgcxxgdz", "hgjgshxgdz", "jckskbzjxgdz",
+"hgjfktzs", "hgthd", "wtdlht", "rjhwtgd", "gtfwjkxkz",
+"zdjkxkz", "jkhwzjtyxgdz", "hgzbjjktz", "hgjckhwhyjdxgdz",
+"jgzyrds", "glxgdz", "qksms", "spypjzp", "jckxkz",
+"lywxhjsjkxkz", "crjhwtgd", "bwwzyxjckzms",
+"jsywjckzxz", "hjjqzpjckzxzhpj", "ypjckzxz",
+"mmcphsbjkxkz", "jkyptgd", "jksytgd", "jcknydjzm",
+"yhdyxcjcjxkz", "hfplcptgzm", "mzypjckzxz",
+"ydhxphjglfxtzd", "yxzpjkpzdhjmtqd", "nxzslxd",
+"gspewyhsljkmhpez", "gbgspezm", "syITAsldspytrdzm",
+"gspezm", "rlyczyclckcjzm", "fjckysdzwzspml",
+"mybzwpjkspd", "jsjkhtdjz", "gxjsckqrzm", "ylydxypjckpj",
+"fsxypjckpj", "ywwzpzwj", "txzyd", "ajxsysd",
+"zybljmshwskdbzm", "zybljmshwskdbyqzm", "jkhwyczgsm",
+"tssqs", "srths", "jckhwycdbcsbd", "hgbzskgzs",
+"tyhwdsppzjdzs", "qtxxhgdjddz "];
+
+var tcodes = ["合同", "发票", "装箱清单", "提（运）单", "代理报关授权委托协议书", "进出口打印报关单", 
+"进出口手填报关单", "原进出口货物报关单复印件（索赔时提供）", "原产地证明", "进出口货物征免税证明",
+ "各种税费的海关专用缴纳书", "海关查验通知书", "海关货物查验记录单", "货物暂时进出境相关单证", 
+"进出口货物报关单修改撤销相关单证", "海关价格审核相关单证", "进出口税款保证金相关单证", 
+"海关交（付）款通知书", "海关提货单", "委托代理合同", "入境货物通关单", "固体废物进口许可证",
+ "自动进口许可证", "进口货物直接退运相关单证", "海关滞报金缴款通知", "海关进出口货物化验鉴定相关单证",
+ "价格专业认定书", "归类相关单证", "情况说明书", "商品样品及照片", "进口许可证", 
+"两用物项和技术进口许可证", "出/入境货物通关单（毛坯钻石用）", "濒危物种允许进口证明书", 
+"精神药物进(出)口准许证", "黄金及其制品进出口准许证或批件", "药品进出口准许证", 
+"密码产品和设备进口许可证", "进口药品通关单", "进口兽药通关单", "进出口农药登记证明", 
+"银行调运现钞进出境许可证", "合法捕捞产品通关证明", "麻醉药品进出口准许证", 
+"有毒化学品环境管理放行通知单", "音像制品进口批准单或节目提取单", "内销征税联系单",
+ "关税配额外优惠税率进口棉花配额证", "国别关税配额证明", "适用ITA税率的商品用途认定证明", 
+"关税配额证明", "人类遗传资源材料出口、出境证明", "非《进出口野生动植物种商品目录》物种证明",
+ "民用爆炸物品进口审批单", "技术进口合同登记证", "高新技术出口确认证明", "医疗用毒性药品进出口批件", 
+"放射性药品进出口批件", "援外物资批准文件", "掏箱作业单", "案件线索移送单",
+ "准予办理减免税货物税款担保证明", "准予办理减免税货物税款担保延期证明", "进口货物原产资格申明",
+ "退税申请书", "收入退还书", "进出口货物原产地补充申报单", "海关补征税款告知书", 
+"退运货物的商品品质鉴定证书", "其他需向海关递交的单证"];
+
+
+var cache = { 't' : ["test", "Test", "Tester"]};
+$("#tcode" ).autocomplete({
+source: function( request, response ) {
+var term = request.term;
+console.log("We are searching for ", term);
+var ret = new Array();
+
+for (var i = 0; i < tcodes.length; i++) {
+  var txt_i = "" + (i+1);
+  var txt_code = tcodes[i];
+  var py_code = py_codes[i];
+  if (txt_i.indexOf(term) != -1 ||
+		    txt_code.indexOf(term) != -1 ||
+		    py_code.indexOf(term)!= -1) {		    
+    ret.push(txt_i + ' ' + tcodes[i]);
+  }
+}
+
+response(ret);
+return;
+}
+});
+
+
+});
+</script>
+</body>
+</html>
+

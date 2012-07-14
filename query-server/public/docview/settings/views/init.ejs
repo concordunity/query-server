@@ -1,0 +1,13 @@
+<form class='update-password'>
+<legend>修改密码</legend>
+    <fieldset class="control-group">
+    <label><%= $.i18n._('label.user.password.edit') %></label>
+    <input name="password" type="password" />
+    	   </fieldset>
+    <fieldset class="control-group">
+        <label><%= $.i18n._('label.user.pass_confirm') %></label>
+        <input name="password-confirm" type="password" />
+    </fieldset>
+        <button type="submit" class="btn btn-primary" data-loading-text="Saving..." autocomplete="off"><%= $.i18n._('btn.save') %></button>
+</form>
+

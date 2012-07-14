@@ -1,0 +1,13 @@
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th><%= $.i18n._('label.doc_group.name') %></th>
+            <th><%= $.i18n._('label.doc_ids') %></th>
+            <th><%= $.i18n._('label.role.action') %></th>
+        </tr>
+    </thead>
+    <tbody>
+    
+    <% for(var i = 0; i < this.length; i++) { %>
+        <%== $.View('//docview/stats/group/views/doc_group_row.ejs', this[i]) %>
+    <% } %>

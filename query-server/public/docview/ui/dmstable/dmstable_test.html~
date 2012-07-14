@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>DmsTable</title>
+	</head>
+	<body>
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="dms-table">
+  </div>
+  </div>
+  
+  
+  <script type='text/javascript' src='../../../steal/steal.js'></script>
+  <script type='text/javascript'>
+
+function format_row_data(data) {
+  var result = new Array();
+
+  $.each(data, function(index, v) {
+     result.push(v);
+  });
+    return result;
+  }
+steal('jquery/dom/route', 'docview/ui/dmstable').then(function($) {
+var aaData=[];
+
+    var table_options = {
+//      aaData: aaData,
+      aoColumns: [
+       {mDataProp:"doc_type", mLabel : 'Type'
+},
+                        {"mDataProp":"fullname", mLabel : 'Type'},
+                        {"mDataProp":"email", mLabel : 'Email'},
+                        {"mDataProp":"created_at", mLabel : 'Date'}
+                 ],
+      file_name: "user_info",
+      row_formatter : format_row_data 
+    };
+
+    $('#dms-table').docview_ui_dmstable({table_options : table_options});
+    var controller = $('#dms-table').controller();
+
+
+$.ajax({
+                url: '/graph_picture/test_user',
+                type : 'get',
+                success : function(data) {
+                     controller.setData(data);
+                },
+                error : function(e) {
+                }
+});
+
+
+    $("#export_data").click(function(){
+	controller.saveToExcel();
+    });
+
+    });
+  </script>
+	</body>
+</html>
