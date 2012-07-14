@@ -29,3 +29,30 @@ steal(
 });
 
 EOF
+
+
+cat > $BASEDIR/$w/${w}_test.html <<EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>$w Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="${w}-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/$w').then(function(\$) {
+
+
+ }); 
+ </script>
+        </body>
+</html>
+
+EOF
