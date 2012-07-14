@@ -1,1 +1,0 @@
-steal("funcunit/qunit", "./stockdocuments_test.js");
