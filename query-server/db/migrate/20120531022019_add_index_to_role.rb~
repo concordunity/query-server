@@ -1,0 +1,4 @@
+class AddIndexToRole < ActiveRecord::Migration
+  def change
+  end
+end

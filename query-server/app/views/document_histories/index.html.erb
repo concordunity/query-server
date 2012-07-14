@@ -1,0 +1,31 @@
+<h1>Listing document_histories</h1>
+
+<table>
+  <tr>
+    <th>Doc</th>
+    <th>Action</th>
+    <th>Email</th>
+    <th>Ip</th>
+    <th>User</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @document_histories.each do |document_history| %>
+  <tr>
+    <td><%= document_history.doc_id %></td>
+    <td><%= document_history.action %></td>
+    <td><%= document_history.email %></td>
+    <td><%= document_history.ip %></td>
+    <td><%= document_history.user_id %></td>
+    <td><%= link_to 'Show', document_history %></td>
+    <td><%= link_to 'Edit', edit_document_history_path(document_history) %></td>
+    <td><%= link_to 'Destroy', document_history, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Document history', new_document_history_path %>

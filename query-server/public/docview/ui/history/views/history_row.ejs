@@ -1,0 +1,31 @@
+<tr <%= this.data %>>
+  <td>
+
+<% var to_show = data.doc_id;
+   var showButtons = false;
+   if (!to_show) {
+      to_show = '批量查阅: ' + data.bulkids;
+      showButtons = true;
+   }  
+%>
+<%= to_show %></td>
+  <td><%= this.data.created_at %>
+<% if (showButtons) { %>
+     <br><button class="btn btn-mini save-docgroup"><i class="icon-star icon-blue"></i>存为单证组</button><button class="btn btn-mini redo-multi"><i class="icon-search icon-blue"></i>重新查阅</button>
+<% } %>
+
+
+</td>
+
+<% if (th_options.include_user) { %>
+  <td><% if (data.action) { %>
+<%= data.email + ' ' + data.action %>
+<% }  else { %>
+
+<%=  data.email %>
+<% } %>
+</td>
+
+<% } %>
+  <td><%= this.data.ip %></td>
+</tr>

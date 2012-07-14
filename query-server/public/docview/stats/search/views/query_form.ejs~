@@ -1,0 +1,70 @@
+<form class="stats_query form-horizontal">
+<p class="help-block">请输入条件，相关内容为空则不限该条件。</p>
+
+<div class="row-fluid">
+<div class="span6">   
+ <fieldset>
+
+    <div class="control-group">
+       <label class="control-label">报关单号</label>
+       <div class="single_sou_holder"></div>
+   </div>
+
+    <div class="control-group">
+       <label class="control-label">单证组</label>
+       <div class="dg_select_holder controls"></div>
+   </div>
+
+
+    <div class="control-group">
+         <label  class="control-label">申报关区</label>
+         <div class="controls">
+            <select name="org" style="width: 120px;">
+              <option value="">不限</option>
+              <option value="2225">外港海关</option>
+              <option value="2218">保税区</option>
+              <option value="2210">浦东</option>
+              <option value="2201">浦江</option>
+              <option value="2202">吴淞</option>
+              <option value="2203">虹桥机场</option>
+              <option value="2204">闵开发区</option>
+              <option value="2208">吴淞(宝山)</option>
+              <option value="2233">浦东机场</option>
+           </select>
+        </div>
+    </div>
+</fieldset>
+</div>
+
+<div class="span6">
+<fieldset>
+
+    <div class="control-group">
+        <label class="control-label">用户名</label>
+        <div class="controls">
+              <input name="username" id="frm_total" type="text"/>
+        </div>
+    </div>
+
+   <div class="control-group">
+    <label class="control-label" for="frm_edcStartDate">日期</label>
+      <div class="controls">
+<% var d = new Date(); var month = 1 + d.getMonth();var day=d.getDate();
+ var today = d.getFullYear() + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day; 
+ d.setMonth(d.getMonth() -1); month = 1+ d.getMonth(); day = d.getDate();
+ var lastMonth = d.getFullYear() + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+%>
+      <input name="start_date" class="input-date" value="<%= lastMonth %>" data-date-format="yyyy-mm-dd" type="text" style="width: 100px;" /> 到
+      <input name="end_date" class="input-date" type="text"  value="<%= today %>"  data-date-format="yyyy-mm-dd" style="width: 100px;" />
+      </div>
+</div>
+
+    </fieldset>
+</div>
+
+    <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i>搜索</button>
+
+</div>
+</form>
+
+

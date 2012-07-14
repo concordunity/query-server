@@ -1,0 +1,17 @@
+steal(
+    'jquery/controller',
+    'jquery/view/ejs',
+    'jquery/controller/view'
+).then(
+    './views/init.ejs'
+).then(function($) {
+    $.Controller('Docview.Ui.dmstable', {}, {
+        init : function() {
+           this.element.html(this.view('init'));
+        },
+
+        show : function() {
+        }
+});
+});
+

@@ -1,0 +1,293 @@
+# -*- coding: utf-8 -*-
+class MonitoringDataController < ApplicationController
+  skip_before_filter :verify_authenticity_token
+  skip_before_filter :authenticate_user!
+
+  respond_to :json
+
+  def get_json
+    host = params[:host]
+    from_to = [ params[:from_ts], params[:to_ts]]
+    varname = params[:varname]
+    
+    step = params[:step]      
+    time_for_date = ActiveSupport::OrderedHash
+    MonitoringData.where({ :host => host,:ts => from_to[0]..from_to[1] }).order(:ts).all.collect { |t|
+				      time_for_date[t.ts] = [] if time_for_date[t.ts]
+				      time_for_date[t.ts] << t 
+			}
+
+    results = {"disk" => ActiveSupport::OrderedHash.new,"memory"=>[]}
+
+    time_for_date.collect {|current_time,some_info|
+
+	memory_value = [0.0,0.0]
+	disk_hash = {}
+
+	some_info.each {|single_record|
+		if (single_record.varname == "df.1kblocks.free" || single_record.varname == "df.1kblocks.total") && !single_record.labels.split(" ").include?("fstype=tmpfs")
+
+			single_record.labels.split(" ").collect {|item|
+				db=item.split("=")
+            
+				if db[0]=="mount" && db[1].match(/^\//)
+                                   results["disk"][db[1]]=[] if results["disk"][db[1]].nil?
+				   disk_hash[db[1]] = [0.0,0.0] if disk_hash[db[1]].nil?
+				   disk_hash[db[1]][0] = single_record.value if single_record.varname == "df.1kblocks.free"
+				   disk_hash[db[1]][1] = single_record.value if single_record.varname == "df.1kblocks.total"
+                                end
+			}
+		end
+	 	memory_value[0] = single_record.value if single_record.varname == "proc.meminfo.memfree"
+	 	memory_value[1] = single_record.value if single_record.varname == "proc.meminfo.memtotal"
+	}
+	disk_hask.collect {|key,value|
+		results["disk"][key] = [] if results["disk"][key].nil?
+		results["disk"][key] << [current_time * 1000,number_to_pro(value)]
+	}
+	results["memory"] << [current_time * 1000,number_to_pro(memory_value)]
+     }
+
+    render json: results
+    #respond_with(results)
+  end
+
+  def number_to_pro(arr)
+	return arr[1].to_f == 0 ? 0.00 : format("%.3f",(arr[1]-arr[0])*100/arr[1].to_f)
+  end
+
+
+  def get_mem_usage
+  end
+
+  # input: host, from_ts, to_ts
+  def get_disk_uage
+    totals = query_data(params[:host], 'df.1kblocks.total', params[:from_ts], params[:to_ts])
+    frees = query_data(params[:host], 'df.1kblocks.free', params[:from_ts], params[:to_ts])
+    # filter out tmpfs
+
+    # extract key : mount="/"
+    
+  end
+
+
+  # input: host, varname, from_ts, to_ts
+  # output: map: key: label, value: [ [ts, val], [ts, val], ...] (ordered)
+  def get_json_2
+    results = query_data(params[:host], params[:varname], params[:from_ts], params[:to_ts])
+  end
+
+  private
+  # input: host, varname, from_ts, to_ts
+  # output: map: key: label, value: [ [ts, val], [ts, val], ...] (ordered)
+  def query_data(host, varname, from_ts, to_ts)
+
+
+
+    MonitoringData.where({ :host => host,:ts => from_to[0]..from_to[1] }).order(:ts).all.collect { |t|
+				      time_for_date[t.ts] = [] if time_for_date[t.ts]
+				      time_for_date[t.ts] << t 
+			}
+    MonitoringData.where(["host = ? AND varname = ? AND ts >= ? AND ts <= ?",
+                          host,varname,from_to[0],from_to[1]]).each_with_index do |record,index|
+        result[:timestamp] << record.ts
+        result[:label] << record.value
+      end
+     json_data = send_json(result,step,from_to) 
+     render json: json_data 
+     
+  end
+  
+  def send_json(result,step,from_to)
+      tmp_time_arr = []
+      tmp_value_arr = []
+      from_to[0].to_i.step(from_to[1].to_i,step.to_i) {|item|
+          index_value = result[:timestamp].find_index(item.to_s)
+          tmp_time_arr = item
+          tmp_value_arr = result[:label][index_value]
+        }
+      result[:timestamp]=tmp_time_arr.to_s
+      result[:label]=tmp_value_arr
+      return result
+  end
+
+
+
+  def index
+    result = {}
+    DatabaseComputer.order("computer_name,data_type").collect {|item|
+      result[item.computer_name] = [] if result[item.computer_name].blank?
+      result[item.computer_name] << item.data_type
+    }
+    @result = result
+  end
+
+  def graph_picture
+    result = {}
+    DatabaseComputer.where(["computer_name = ? and data_type = ?",
+                            params[:computer_name],
+                            params[:data_type]])
+      .order("computer_name,data_type").collect {|db|
+        #例如返回A-cpu的所有数据
+      result[db.computer_name] = {} if result[db.computer_name].blank?
+      tmp_hash = {}
+      item = db.database_sort
+      item.time_name
+      item.time_type
+      item.step_value
+      item.calibration
+      item.start_time
+
+      #item.start_time.strftime("%s")
+      tmp_hash[:title_time] = []
+      tmp_hash[:data_value] = []
+      
+      end_title = db.database_records.maximum("title_time")
+      start_title = end_title-item.calibration
+      step_value = item.step_value
+      start_title.step(end_title, step_value) { |title|
+
+        begin
+          tmp_c = db.database_records.find_by_title_time(title)
+          tmp_data_value = tmp_c.data_value
+        rescue
+          tmp_data_value = 0
+        end
+        tmp_hash[:title_time] << Time.at(title).strftime("%H:%M")
+        tmp_hash[:data_value] << tmp_data_value
+      }
+      
+      result[db.computer_name][db.data_type]=tmp_hash
+      
+    }
+    p result
+    @result = result
+    @computer_name = params[:computer_name]
+    @data_type= params[:data_type]
+  end
+
+  ####
+  # 从C端发过来的请求进行解析存库
+  ####
+  def add_record_way
+    p '---add_record----'
+    add_record(params,"memory")
+    add_record(params,"cpu")
+    add_record(params,"disk")
+    render :index
+  end
+  
+  def svg
+    type = case params[:type]
+           when "image/png"
+             ext = ".png"
+             '-m image/png'
+           when "image/jpeg"
+             ext = ".jpg"
+             '-m image/jpeg'
+           when "application/pdf"
+             ext = ".pdf"
+             '-m application/pdf'
+           when "image/svg+xml"
+             ext = ".svg"
+             ''
+           end
+
+    width = params[:width]
+    radm = Time.now.to_i.to_s + rand(1000000).to_s
+    radm_path = Rails.root + "third-party/jar/radm/#{radm}.svg"
+    image_path = Rails.root + "third-party/jar/images/#{radm}"
+    #FileUtils.mkdir radm_path unless File.exist?(radm_path)
+
+    File.open(radm_path, "w") do |file|
+      file.puts params[:svg]
+    end
+    jar_path = File.join(Rails.root,"third-party", "jar", "batik-rasterizer.jar")
+    cmd = "java -jar #{jar_path} #{type} -d #{image_path} #{width} #{radm_path}"
+    p cmd
+    system(cmd) if type && type != ""
+    if ext == ".svg"
+      file = radm_path
+    else
+      file = File.join(Rails.root,"third-party/", "jar", "images", radm, "#{radm}#{ext}")
+    end
+    send_file file
+
+  end
+
+        ###
+        # 添加新记录
+        ###
+        def add_record(params,tmp_tag)
+                computer_name = params[:computer_name]
+                tmp_table = DatabaseComputer.find_by_computer_name_and_data_type(computer_name,tmp_tag)
+
+                tmp_table = create_database_computer(params,tmp_tag) if tmp_table.blank?
+                append_database_record(tmp_table,params,tmp_tag)
+
+        end
+
+        ###
+        # 创建数据库
+        ###
+        def create_database_computer(params,type)
+                computer_name = params[:computer_name]
+
+                result = DatabaseComputer.create do |item|
+                        item.computer_name = computer_name
+                        if type == "memory"
+                                tmp_a = DatabaseSort.find_by_time_type("hours")
+                                item.database_sort_id = tmp_a.id
+                                item.data_type = "memory"
+                        elsif type == "cpu"
+                                tmp_a = DatabaseSort.find_by_time_type("hours")
+                                item.database_sort_id = tmp_a.id
+                                item.data_type = "cpu"
+                        elsif type == 'disk'
+                                tmp_a = DatabaseSort.find_by_time_type("day")
+                                item.database_sort_id = 2
+                                item.data_type = "disk"
+                        end
+
+                end
+                return result
+        end
+
+        ###
+        # 更新新记录
+        ###
+        def append_database_record(tmp_table,params,type)
+                title_time=params[:second]
+                begin
+                        tmp_dc = DatabaseRecord.find_by_database_computer_id_and_title_time(tmp_table.id,title_time)
+                rescue
+                        tmp_dc=[]
+                end
+                unless tmp_dc.blank?
+                        if type == "memory"
+                                item.data_value = params[:memory]
+                        elsif type == "cpu"
+                                item.data_value = params[:cpu]
+                        elsif type == 'disk'
+                                item.data_value = params[:disk]
+                        end
+                else
+                        DatabaseRecord.create do |item|
+                                item.database_computer_id = tmp_table.id
+                                item.title_time = title_time
+                                if type == "memory"
+                                        item.data_value = params[:memory]
+                                elsif type == "cpu"
+                                        item.data_value = params[:cpu]
+                                elsif type == 'disk'
+                                        item.data_value = params[:disk]
+                                end
+
+                        end
+                end
+
+        end
+
+
+
+end

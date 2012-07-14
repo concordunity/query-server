@@ -1,0 +1,74 @@
+
+bootstrap.css
+Line 2782
+
+
+// bootstrap.css
+.dropdown-menu {
+
+/min-width: 160px
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Import data
+2. Sanned docs
+3. In processing
+4. Change to real
+
+///////////////////
+5. PDF
+6. UI
+7. API
+
+///////////////////
+
+H2000
+
+8. Batch approval
+
+9. H2000 平挂
+
+用户导出。
+
+===============
+
+CS / 接受模块
+增加作业模块
+
+科思达合作 在现场
+
+===============
+需求文档， 和设计方案
+
+增加 文档
+===============
+
+
+Auth
+====
+
+H2000 ==>  
+
+222520121252011024
+
+
+
+

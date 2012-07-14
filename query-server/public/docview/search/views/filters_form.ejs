@@ -1,0 +1,400 @@
+<button type="button" class="btn" data-toggle="collapse" data-target="#filters-<%= this.type %>">
+    <%= $.i18n._('btn.filter') %>
+</button>
+<div id="filters-<%= this.type %>" class="collapse">
+<fieldset class="control-group filters">
+
+        <!--button type="button" class="btn select-all">Select All</button-->
+
+
+
+
+    <!--legend>Filter your results by...</legend-->
+<table>
+<tr>
+<td colspan="5" align="center"> 
+          <button type="button" class="btn btn-info deselect-all">清空选项</button>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='1'>合同</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='2'>发票</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='3'>装箱清单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='4'>提（运）单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='5'>代理报关授权委托协议书</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='6'>进出口打印报关单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='7'>进出口手填报关单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='8'>原进出口货物报关单复印件（索赔时提供）</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='9'>原产地证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='10'>进出口货物征免税证明</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='11'>各种税费的海关专用缴纳书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='12'>海关查验通知书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='13'>海关货物查验记录单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='14'>货物暂时进出境相关单证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='15'>进出口货物报关单修改撤销相关单证</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='16'>海关价格审核相关单证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='17'>进出口税款保证金相关单证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='18'>海关交（付）款通知书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='19'>海关提货单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='20'>委托代理合同</label>
+</td>
+</tr>
+
+<tr>
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='21'>入境货物通关单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='22'>固体废物进口许可证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='23'>自动进口许可证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='41'>进口货物直接退运相关单证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='42'>海关滞报金缴款通知</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='43'>海关进出口货物化验鉴定相关单证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='44'>价格专业认定书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='45'>归类相关单证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='46'>情况说明书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='47'>商品样品及照片</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='48'>进口许可证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='49'>两用物项和技术进口许可证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='50'>出/入境货物通关单（毛坯钻石用）</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='51'>濒危物种允许进口证明书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='52'>精神药物进(出)口准许证</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='53'>黄金及其制品进出口准许证或批件</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='54'>药品进出口准许证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='55'>密码产品和设备进口许可证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='56'>进口药品通关单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='57'>进口兽药通关单</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='58'>进出口农药登记证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='59'>银行调运现钞进出境许可证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='60'>合法捕捞产品通关证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='61'>麻醉药品进出口准许证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='62'>有毒化学品环境管理放行通知单</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='63'>音像制品进口批准单或节目提取单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='64'>内销征税联系单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='65'>关税配额外优惠税率进口棉花配额证</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='66'>国别关税配额证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='67'>适用ITA税率的商品用途认定证明</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='68'>关税配额证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='69'>人类遗传资源材料出口、出境证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='70'>非《进出口野生动植物种商品目录》物种证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='71'>民用爆炸物品进口审批单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='72'>技术进口合同登记证</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='73'>高新技术出口确认证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='74'>医疗用毒性药品进出口批件</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='75'>放射性药品进出口批件</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='76'>援外物资批准文件</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='77'>掏箱作业单</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='78'>案件线索移送单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='79'>准予办理减免税货物税款担保证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='80'>准予办理减免税货物税款担保延期证明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='81'>进口货物原产资格申明</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='82'>退税申请书</label>
+</td>
+</tr>
+<tr>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='83'>收入退还书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='84'>进出口货物原产地补充申报单</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='85'>海关补征税款告知书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='86'>退运货物的商品品质鉴定证书</label>
+</td>
+
+  <td>
+<label class="checkbox">
+  <input type='checkbox' name='filter'  value='99'>其他需向海关递交的单证</label>
+</td>
+</tr>
+</table>
+
+</fieldset>
+</div>

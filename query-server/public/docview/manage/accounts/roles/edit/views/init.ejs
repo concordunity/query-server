@@ -1,0 +1,51 @@
+<form class="form edit-role-form">
+    <legend> <%= $.i18n._('label.editing_role') + role.name %></legend>
+    <div class="row-fluid">
+  <div class="span3">
+<h4>单证查阅权限</h4>
+<ul style="list-style-type:none;">
+<li><input name="aQueryDocByBarcode" type="checkbox"/>单票查阅</li>
+<li><input name="aQueryDocsByBarcodes" type="checkbox"/>批量查阅</li>
+<li><input name="aQueryDocsByConditions" type="checkbox"/>随机抽样查阅 </li>
+<li><input name="aQueryBySource" type="checkbox"/>单证暂存</li>
+</ul>
+ </div>
+
+<div class="span3">
+  <h4>单证操作权限</h4>
+<ul style="list-style-type:none;">
+<li><input name='aOperateInvolved' type='checkbox' />添加/撤销涉案标志</li>
+<li><input name='aOperateLended' type='checkbox' />电子档案借出/归还</li>
+<li><input name='aOperatePrint' type='checkbox' />打印</li>
+<li><input name='aOperateTestified' type='checkbox' />出证</li>
+<li><input name='aOperateHistory' type='checkbox' />操作历史</li>
+</ul>
+</div>
+
+ <div class="span3">
+<h4>查阅管理权限</h4>
+<ul style="list-style-type:none;">
+<li><input name="aManageQueries" type="checkbox" />查阅历史</li>
+<li><input name="aCreateGroup" type="checkbox" />单证组管理</li>
+<li><input name="aPerformanceStatis" type="checkbox"/>绩效统计</li>
+<li><input name="aUsabilityStatis" type="checkbox" />涉案/借出单证清单</li>
+</ul>
+ </div>
+
+<div class="span3">
+<h4>系统管理权限</h4>
+<ul style="list-style-type:none;">
+  <li><input name='aManageUsers' type='checkbox' />用户管理</li>
+  <li><input name='aManageRoles' type='checkbox' />权限管理</li>
+</ul>
+
+</div>
+
+  <div class="pull-right">
+        <button type="submit" class="btn btn-primary" data-loading-text="Saving..." autocomplete="off"><%= $.i18n._('btn.save') %></button>
+        <button type="button" class="btn cancel-edit" data-loading-text="Cancel" autocomplete="off">
+<%= $.i18n._('btn.cancel') %></button>
+    </div>
+
+</form>
+

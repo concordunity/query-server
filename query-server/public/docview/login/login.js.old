@@ -1,0 +1,205 @@
+steal(
+	'jquery/controller',
+	'jquery/view/ejs',
+    'jquery/controller/view',
+    'jquery/dom/route',
+    'jquery/lang/observe/delegate',
+    'docview/models',
+    
+    // The rest of the application
+    'docview/nav',
+    'docview/subnav',
+    'docview/alerts',
+    'docview/search',
+    'docview/search/results',
+    'docview/manage/accounts/users',
+    'docview/manage/accounts/roles',
+    'docview/manage/docs',
+    'docview/details',
+    'docview/stats/group',
+    'docview/bootstrap/bootstrap.css',
+    './login.css'
+)
+
+// View templates
+.then (
+    './views/login_menu.ejs'
+)
+
+.then(function($) {
+
+    /*
+    *   Gateway to the rest of the application. After a successful login,
+    *   the rest of the application will be displayed.
+    */
+    $.Controller('Docview.Login',
+    /* @Static */
+    {
+    },
+    /* @Prototype */
+    {
+        init: function(options) {
+            this.element.html(this.view('login_menu', {}));
+        },
+        '#login-form submit': function(el, ev) {
+            ev.preventDefault();
+            var username = el.find('input[name="username"]').val();
+            var password = el.find('input[name="password"]').val();
+            
+            if (username !== "" && password !== "") {
+                // Lock the login button
+                el.find('.btn-primary').button('loading');
+                
+                Docview.Models.User.login(
+                    { commit: 'Sign in', user : { username : username, password : password } },
+                    this.proxy('getAccessList'), this.proxy('loginError')
+                );
+            }
+        },
+        loginError: function(error) {
+            this.options.clientState.attr('alert', {
+                type: 'error',
+                heading: $.i18n._('msg.error'),
+                message: $.i18n._('msg.incorrect_login')
+            });
+            this.element.find('.btn-primary').button('reset');
+        },
+        getAccessList: function(user) {
+
+	    this.element.find('.btn-primary').button('reset');
+            // Store user info first
+            this.options.clientState.attr('user', {
+                username: user.email,
+                fullname: user.fullname,
+            });
+        
+            Docview.Models.User.getAccessList(
+                this.proxy('storeAccessList'), this.proxy('accessListError')
+            );
+        },
+        accessListError: function(error) {
+            this.options.clientState.attr('alert', {
+                type: 'error',
+                heading: 'Error: ',
+                message: 'There was a problem accessing your permissions. Please try logging in again.'
+            });
+            this.element.find('.btn-primary').button('reset');
+        },
+        storeAccessList: function(permissions) {
+            // Parse web_links
+            for (var i = 0; i < permissions.web_links.length; i++) {
+                switch (permissions.web_links[i].action) {
+                    // Search
+                    case ("query"):
+                        this.options.clientState.attr('access')
+                            .attr('search').attr('single', true);
+                        break;
+                    case ("multi_query"):
+                        this.options.clientState.attr('access')
+                            .attr('search').attr('multi', true);
+                        break;
+                    case ("search_docs"):
+                        this.options.clientState.attr('access')
+                            .attr('search').attr('advanced', true);
+                        break;
+                        
+                    // Stats
+                    case ("list"):
+                        this.options.clientState.attr('access')
+                            .attr('stats').attr('history', true);
+                        break;
+                    case ("report"):
+                        this.options.clientState.attr('access')
+                            .attr('stats').attr('stats', true);
+                        break;
+                    case ("stats"):
+                        this.options.clientState.attr('access')
+                            .attr('stats').attr('usage', true);
+                        break;
+		case ("create_group"):
+                    this.options.clientState.attr('access')
+                        .attr('stats').attr('create_group', true);
+                    break;
+                case ("by_user"):
+                    this.options.clientState.attr('access')
+                        .attr('stats').attr('by_user', true);
+                    break;
+                case ("by_doc"):
+                    this.options.clientState.attr('access')
+                        .attr('stats').attr('by_doc', true);
+                    break;
+                case ("advanced"):
+                    this.options.clientState.attr('access')
+                        .attr('stats').attr('advanced', true);
+                    break;
+
+
+                        
+                    // Manage docs
+                    case ("inquire"):
+                        this.options.clientState.attr('access')
+                            .attr('manage_docs').attr('inquiries', true);
+                        break;
+                    case ("checkout"):
+                        this.options.clientState.attr('access')
+                            .attr('manage_docs').attr('check', true);
+                        break;
+                    case ("print"):
+                        this.options.clientState.attr('access')
+                            .attr('manage_docs').attr('print', true);
+                        break;
+                    case ("testify"):
+                        this.options.clientState.attr('access')
+                            .attr('manage_docs').attr('testify', true);
+                        break;
+                        
+                    // Manage users
+                    case ("manage_user"):
+                        this.options.clientState.attr('access')
+                            .attr('manage_accounts').attr('users', true);
+                        break;
+                    case ("manage_role"):
+                        this.options.clientState.attr('access')
+                            .attr('manage_accounts').attr('roles', true);
+                        break;                    
+                    
+                    case ("dh_report"):
+                    default:
+                        break;
+                }
+            }
+//            console.log(this.options.clientState.attr('access'));
+            
+            // load app
+            this.loadApp();
+        },
+        loadApp: function() {
+            $('#login').hide();
+            
+            // Change background color
+            $('body').removeClass('login-page');
+        
+        	$('#navigation-header').docview_nav({clientState: this.options.clientState});
+            $('#subnavigation-header').docview_subnav({clientState: this.options.clientState});
+            
+            $('#search-box').docview_search({clientState: this.options.clientState});
+            $('#search-results').docview_search_results({clientState: this.options.clientState});
+            
+            $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
+            $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
+	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
+            
+            // $('#search-results').docview_search_results({clientState: this.options.clientState});
+            // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
+            $('#document-details').docview_details({clientState: this.options.clientState});
+            $('#group-docs').docview_stats_group({clientState: this.options.clientState});
+            this.options.clientState.attr('alert', {
+                type: 'success',
+                heading: $.i18n._('msg.welcome'),
+                message: this.options.clientState.attr('user').attr('fullname')
+            });
+            
+            // TODO: Reload the route so the right thing shows up.
+        }
+    });
+});

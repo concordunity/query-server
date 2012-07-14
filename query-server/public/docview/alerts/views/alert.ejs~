@@ -1,0 +1,5 @@
+<div class="alert alert-<%= this.type %>">
+  <a class="close" data-dismiss="alert">x</a>
+  <strong><%= this.heading %></strong>
+  <%= this.message %>
+</div>

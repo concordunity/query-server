@@ -1,0 +1,19 @@
+
+
+<h3>打印功能只支持 IE 环境下的 Adobe Acrobat PDF 阅读器</h3>
+
+<script type='text/javascript'>
+window.onload = function() {
+  Pdf2.setShowToolbar(false);
+  Pdf2.printWithDialog();
+};
+
+</script>
+<object id="Pdf2" name="Pdf2" classid="clsid:CA8A9780-280D-11CF-A24D-444553540000" width="1" height="1">
+     <param name='src' value='/docs/print?doc_id=<%= @print_doc_url  %>'></param>
+     <param name="toolbar" value="0"/>
+     <param name="#toolbar" value="0"/>
+</object>
+
+
+

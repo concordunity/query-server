@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Top Navigation Menu</title>
+	</head>
+	<body>
+    <div id="header"></div>
+  
+  <script type='text/javascript' src='../../steal/steal.js'></script>
+  <script type='text/javascript'>
+    steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/nav').then(function($) {
+      // Client State
+      var state = new $.Observe({
+        access: {
+            search: {
+                single: true,
+                multi: true,
+                advanced: true
+            },
+            stats: {
+                history: true,
+                stats: true,
+                usage: true
+            },
+            manage_docs: {
+                inquiries: true,
+                check: true,
+                copy: false,
+                print: true,
+                testify: true
+            },
+            manage_accounts: {
+                users: true,
+                roles: true
+            }
+        },
+        user: {
+          fullname: "Yao Ming"
+        }
+      });
+
+      $('#header').docview_nav({clientState: state});
+    });
+  </script>
+	</body>
+</html>

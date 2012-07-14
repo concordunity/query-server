@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+ <title>存量报关单证电子档案API查询子系统</title>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div id="alerts">
+  </div>
+
+  <div id="file-details"></div>
+</div>
+
+  <script type='text/javascript' src='../../steal/steal.js'></script>
+
+  <script type='text/javascript'>
+steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/alerts', 'docview/details').then(function($) {
+
+      // Client State
+      var alert_state = new $.Observe({
+          alert: {
+            type: "info",
+            heading: "Herp",
+            message: "derp"
+          }
+      });
+      
+      
+      $('#alerts').docview_alerts({clientState: alert_state});
+
+      // Client State
+      var state = new $.Observe({
+          category: "",
+          id: "",
+          page: "",
+          search: {
+              ids: [],
+              filters: []
+          },
+         status : 500,
+         access : {
+             manage_docs : { print : false }
+         },
+         document: {
+              pageCount: 0,
+              pages: [],
+              currentPage: 0,
+              directory: ""
+         }
+      });
+      
+      var s_mode = new $.Observe({
+         mode : 'multi'
+      });
+
+    $('#file-details').docview_details({clientState: state,
+                                        searchMode : s_mode });
+
+      var key = window.location.hash;
+      if (key.charAt(0) != '#') {
+         return;
+      }
+
+      var hashVal = key.substring(1);
+      if (hashVal.charAt(0) == '!') {
+         var idval = $.route.attr('id');
+         $('#file-details').docview_details('displayDoc', idVal);
+         return;
+      }
+      var status = 403; 
+
+       $.ajax( {
+           url: '/api/query_status',
+           type: 'post',
+           data: { hash : hashVal },
+           success : function (data) {
+               status = data.status;
+               state.attr('status', status);
+               var error_type = "success";
+               var msg = data.message;
+               var heading = "错误提示：";
+               if (status == 404) {
+                  error_type = "error";
+               } else if (status == 401 || status == 403) {
+                  error_type = "warning";
+               } else if (status == 200) {
+                  heading = "";
+                  msg = "以下单证" + data.doc_id + " 扫描图像信息由存量报关单证电子档案查询API服务提供，原件共 " + data.pages + "页";
+               }
+               if (status == 200) {
+    $('#file-details').docview_details('displayDoc', "#" + data.doc_id);
+//                 $.route.attrs({ "category": "document", "id": "#"+ data.doc_id }, false);
+               }  
+               alert_state.attr('alert', {
+                   type: error_type,
+                   heading: heading,
+                   message: msg
+               });               
+           },
+
+           error : function (xhr, ajaxOptions, thrownError){
+             var status = xhr.status;
+             var message = "系统内部错误";
+             if (status == 400) {
+                message = "您的请求有错误";
+             } else if (status == 403) {
+                message = "服务请求失败，权限不足";
+             }
+                     alert_state.attr('alert', {
+                           type: "error",
+                           heading: "错误提示：",
+                           message: message
+                           });    
+           }
+  });
+});
+  </script>
+</body>
+</html>

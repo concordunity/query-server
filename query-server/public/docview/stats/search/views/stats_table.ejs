@@ -1,0 +1,35 @@
+<table class="table table-condensed">
+	<thead>
+		<tr>
+
+			<th>关区</th>
+			<th>文档总数</th>
+			<th>文档页数</th>
+			<th>查阅总数</th>
+			<th>查阅百分比</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% 	
+			var i = 1;
+			$.each(data, function(key, value) { 
+				var org = key;
+				if (key == 'total') {
+					org = '全部关区';
+				} else if (key == 'total_4') { 
+                                        org = '全部关区 4月份';
+                                } else if (key == 'total_5') { 
+                                        org = '全部关区 5月份';
+                                }
+                 %>
+				<tr>
+
+					<td><%== org %></td>
+					<td><%== value.docs %></td>
+	<td><%== value.pages %></td>	
+					<td><%== value.query %></td>
+					<td><%== (value.percentage == 0) ? '' : value.percentage.toFixed(2) + '%' %></td>
+				</tr> 
+		<% }); %>
+	</tbody>
+</table>

@@ -1,0 +1,41 @@
+<%= form_for(@web_link) do |f| %>
+  <% if @web_link.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@web_link.errors.count, "error") %> prohibited this web_link from being saved:</h2>
+
+      <ul>
+      <% @web_link.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="field">
+    <%= f.label :menu1 %><br />
+    <%= f.text_field :menu1 %>
+  </div>
+  <div class="field">
+    <%= f.label :menu2 %><br />
+    <%= f.text_field :menu2 %>
+  </div>
+  <div class="field">
+    <%= f.label :controller %><br />
+    <%= f.text_field :controller %>
+  </div>
+  <div class="field">
+    <%= f.label :action %><br />
+    <%= f.text_field :action %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

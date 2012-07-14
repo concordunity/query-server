@@ -1,0 +1,15 @@
+
+
+<% if (this.length == 0) { %>
+
+<option value="">你还没有创建单证跟踪组</option>
+<% } else { %>
+<option value="">无</option>
+<% }
+for(var i = 0; i < this.length; i++) { 
+   var dg = this[i];
+%>
+<option value="<%= dg.id %>"><%= dg.name %></option>
+<%
+}
+%>
