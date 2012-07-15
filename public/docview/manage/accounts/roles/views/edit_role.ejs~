@@ -1,5 +1,0 @@
-<tr class="edit-role-<%= role.id %>"  style="border: 2px solid #cccc00">
-<td colspan="3">
-
-</td>
-</tr>
