@@ -1,1 +1,0 @@
-<div class="row-fluid"><img <%= this %> src="<%= this.original %>" style="max-width: 100%;" /></div>
