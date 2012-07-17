@@ -6,7 +6,8 @@
 	<body>
     <div id="document-tree"></div>
     
-    <button id="button">Find Document</div>
+    <button id="button1">New Document</div>
+    <button id="button2">Add Document</div>
   
   <script type='text/javascript' src='../../../../steal/steal.js'></script>
   <script type='text/javascript'>
@@ -20,24 +21,28 @@
                   ids: [],
                   filters: [6]
               },
-              groups: []
+              document: {
+                  pages: [],
+                  directory: "",
+                  metadata: {},
+                  groups: []
+              }
           });
 
           $('#document-tree').docview_ui_details_tree({ clientState: state, details_controller: this });
 
-
-          $('#button').click(function () {
+          $('#button1').click(function () {
               var ctrl = $('div#document-tree').controller();
 
               var groups = new Array();
               var subgroup = new Array();
               var pages = new Array();
-              var label = "123123123123123123";
+              var label = "A123123123123123123";
               pages.push("pic00001.jpg");
               subgroup.push("pic00001.jpg");
               pages.push("pic00002.jpg");
               subgroup.push("pic00002.jpg");
-              groups.push({ type: 1, name: "123213", pages: subgroup });
+              groups.push({ type: 1, name: "单证首页", pages: subgroup });
               var directory = "/docview/ui/formatpdf/jpg/";
               var metadata = "123123123123123123";
               var currDoc = {
@@ -49,6 +54,31 @@
               };
 
               ctrl.addDocTree(currDoc, 1);
+          });
+
+          $('#button2').click(function () {
+              var ctrl = $('div#document-tree').controller();
+
+              var groups = new Array();
+              var subgroup = new Array();
+              var pages = new Array();
+              var label = "B123123123123123123";
+              pages.push("pic00003.jpg");
+              subgroup.push("pic00003.jpg");
+              pages.push("pic00004.jpg");
+              subgroup.push("pic00004.jpg");
+              groups.push({ type: 13, name: "删改单首页", pages: subgroup });
+              var directory = "/docview/ui/formatpdf/jpg/";
+              var metadata = "123123123123123123";
+              var currDoc = {
+                  label: label,
+                  pages: pages,
+                  directory: directory,
+                  metadata: metadata,
+                  groups: groups
+              };
+
+              ctrl.addDocTree(currDoc, 2);
           });
       });
   </script>
