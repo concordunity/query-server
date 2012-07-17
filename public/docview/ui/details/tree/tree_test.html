@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+<meta charset="utf-8">
 		<title>Details Tree</title>
 	</head>
 	<body>
@@ -11,6 +12,36 @@
   
   <script type='text/javascript' src='../../../../steal/steal.js'></script>
   <script type='text/javascript'>
+
+var doc_index = 1;
+
+function addDoc() {
+var doc_id = "12121212121212" + doc_index;
+              var ctrl = $('div#document-tree').controller();
+
+              var groups = new Array();
+              var subgroup = new Array();
+              var pages = new Array();
+              var label = doc_id;
+              pages.push("pic00001.jpg");
+              subgroup.push("pic00001.jpg");
+              pages.push("pic00002.jpg");
+              subgroup.push("pic00002.jpg");
+              groups.push({ type: 1, name: "鍗曡瘉棣栭〉", pages: subgroup });
+              var directory = "/docview/ui/formatpdf/jpg/";
+              var metadata = doc_id;
+              var currDoc = {
+                  label: label,
+                  pages: pages,
+                  directory: directory,
+                  metadata: metadata,
+                  groups: groups
+              };
+
+              ctrl.addDocTree(currDoc, doc_index++);
+
+}
+
       steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/ui/details/tree').then(function ($) {
           // Client State
           var state = new $.Observe({
@@ -32,53 +63,12 @@
           $('#document-tree').docview_ui_details_tree({ clientState: state, details_controller: this });
 
           $('#button1').click(function () {
-              var ctrl = $('div#document-tree').controller();
+              addDoc();
 
-              var groups = new Array();
-              var subgroup = new Array();
-              var pages = new Array();
-              var label = "A123123123123123123";
-              pages.push("pic00001.jpg");
-              subgroup.push("pic00001.jpg");
-              pages.push("pic00002.jpg");
-              subgroup.push("pic00002.jpg");
-              groups.push({ type: 1, name: "单证首页", pages: subgroup });
-              var directory = "/docview/ui/formatpdf/jpg/";
-              var metadata = "123123123123123123";
-              var currDoc = {
-                  label: label,
-                  pages: pages,
-                  directory: directory,
-                  metadata: metadata,
-                  groups: groups
-              };
-
-              ctrl.addDocTree(currDoc, 1);
           });
 
           $('#button2').click(function () {
-              var ctrl = $('div#document-tree').controller();
-
-              var groups = new Array();
-              var subgroup = new Array();
-              var pages = new Array();
-              var label = "B123123123123123123";
-              pages.push("pic00003.jpg");
-              subgroup.push("pic00003.jpg");
-              pages.push("pic00004.jpg");
-              subgroup.push("pic00004.jpg");
-              groups.push({ type: 13, name: "删改单首页", pages: subgroup });
-              var directory = "/docview/ui/formatpdf/jpg/";
-              var metadata = "123123123123123123";
-              var currDoc = {
-                  label: label,
-                  pages: pages,
-                  directory: directory,
-                  metadata: metadata,
-                  groups: groups
-              };
-
-              ctrl.addDocTree(currDoc, 2);
+              addDoc();
           });
       });
   </script>
