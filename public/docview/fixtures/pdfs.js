@@ -4,43 +4,68 @@ steal("jquery/dom/fixture", function() {
 	$.fixture(
 		"GET /pdf_list", function() {
 			var response = {
-				"users": [
-				{
-					"username":"3403298410932751",
-					"fullname":"Weidong Shao",
-					"id":3,
-					"email":"weidongshao@gmail.com",
-					"orgs":"1023,4151,4854",
-					"doc_type":"不限"
+				"doc_info":{
+					"checkedout":false,
+					"created_at":"2012-03-21T13:19:34+08:00",
+					"doc_id":"220120121012010018",
+					"doc_source":null,
+					"doc_type":null,
+					"edc_date":"2012-03-21",
+					"folder_id":3,
+					"id":13,
+					"inquired":false,
+					"label":null,
+					"modified":null,
+					"org":null,
+					"org_applied":null,
+					"pages":5,
+					"phase":null,
+					"serial_number":null,
+					"updated_at":"2012-07-02T13:14:16+08:00",
+					"access_info":null
 				},
-				{
-					"username":"309481230975",
-					"fullname":"Testing Person",
-					"id":5,
-					"email":"haha@gmail.com",
-					"orgs":"1023",
-					"doc_type":"不限"
-				}
-				],
-				"roles": [
-				[{
-					"display_name":"Admin1",
-					"id":2,
-					"name":"Admin1"
-					}],
-					[
+				"directory":"/docimages",
+				"label":"220120121012010018",
+				"special_doc_info":"",
+				"image_info":{
+					"T_blog":[
 					{
-						"display_name":"Mod1",
-						"id":3,
-						"name":"Mod1"
+						"FN":"pic000000.jpg",
+						"TCode":"0",
+						"T":"\u5355\u636e\u9996\u9875",
+						"V":"220120121012010018",
+						"BT":""
 					},
-					{
-						"display_name":"Mod2",
-						"id":4,
-						"name":"Mod2"
-					}
-					]
-					]
+					{"FN":"pic000001.jpg",
+					"TCode":"6",
+					"T":"\u51fa\u53e3\u62a5\u5173\u5355",
+					"V":"",
+					"BT":""
+					},
+					{"FN":"pic000002.jpg",
+					"TCode":"6",
+					"T":"\u51fa\u53e3\u62a5\u5173\u5355",
+					"V":"",
+					"BT":""
+					},
+					{"FN":"pic000003.jpg",
+					"TCode":"6",
+					"T":"\u51fa\u53e3\u62a5\u5173\u5355",
+					"V":"",
+					"BT":""
+					},
+					{"FN":"pic000004.jpg",
+					"TCode":"6",
+					"T":"\u51fa\u53e3\u62a5\u5173\u5355",
+					"V":"",
+					"BT":""
+					},
+					{"FN":"pic000005.jpg",
+					"TCode":"2",
+					"T":"\u53d1\u7968",
+					"V":"",
+					"BT":""}
+					]}
 				}
 				return response;
 			});
