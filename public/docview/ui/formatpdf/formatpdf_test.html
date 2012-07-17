@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>formatpdf Widget Unit Test</title>
+</head>
+<body>
+
+	<div id="formatpdf-test">
+
+	</div>
+
+	<script type='text/javascript' src='../../../steal/steal.js'></script>
+	<script type='text/javascript'>
+
+	function addZero(a,b,c) 
+	{ 
+		var result = [];
+		while(a<b) 
+		{ 
+			t=a+""; 
+			while(t.length<c)t="0"+t; 
+			result.push({jpg:"pic"+t+"00.jpg",id:a});
+			a++; 
+			//document.write(t+"<br>"); 
+		} 
+		return result;
+	} 
+
+	steal(
+		'jquery/dom/route', 'docview/ui/formatpdf','docview/models'
+	).then(function($) {
+
+		$("#formatpdf-test").docview_ui_formatpdf({});
+		var controller = $("#formatpdf-test").controller();
+		var jpg_arr = addZero(0,27,8);
+		controller.list(jpg_arr);
+
+		/*
+		Docview.Models.User.findAll({},
+		function(data){
+		console.log(data.length);
+		controller.list(data);
+		},
+		{});
+		*/
+	}); 
+	</script>
+</body>
+</html>
+

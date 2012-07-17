@@ -1,0 +1,15 @@
+<div class="show_pdf"></div>
+<div class="thumbnails row">
+	<div class="row">
+	<% for(i   = 0;i<this.length;i++){ %>
+		<% if(i%4 == 0	){ %>
+			</div><div class="row">
+			<% }%>
+
+			<%== $.View("//docview/ui/formatpdf/views/column.ejs",{data:this[i],page:i} ) %>
+
+	<% } %>
+</div>
+<div>
+<input id="print_pdf" type="button" name="submit" value="打印"></input>
+</div>
