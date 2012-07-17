@@ -22,7 +22,7 @@ function format_row_data(data) {
   });
     return result;
   }
-    steal('jquery/dom/route', 'docview/ui/dmstable').then(function($) {
+    steal('jquery/dom/route', 'docview/ui/dmstable','docview/fixtures').then(function($) {
 
 
     var table_options = {
@@ -33,14 +33,15 @@ function format_row_data(data) {
 
     $('#dms-table').docview_ui_dmstable({table_options : table_options});
     var controller = $('#dms-table').controller();
-    console.log(controller);
+    /*
+	console.log(controller);
 
     controller.setData([
     ['weidong', '2111 main Street', '408-555-1212', '40'],
     ['weidong2', '2111 main Street', '408-555-1212', '40'],
     ['weidong3', '3111 main Street', '408-555-1212', '40']
     ]);
-	
+	*/
     $("#export_data").click(function(){
 	var controller = $('#dms-table').controller();
 	controller.saveToExcel();

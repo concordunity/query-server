@@ -10,14 +10,16 @@ steal("jquery/dom/fixture", function() {
                         "fullname":"Weidong Shao",
                         "id":3,
                         "email":"weidongshao@gmail.com",
-                        "orgs":"1023,4151,4854"
+                        "orgs":"1023,4151,4854",
+						"doc_type":"不限"
                     },
                     {
                         "username":"309481230975",
                         "fullname":"Testing Person",
                         "id":5,
                         "email":"haha@gmail.com",
-                        "orgs":""
+                        "orgs":"1023",
+						"doc_type":"不限"
                     }
                 ],
                 "roles": [
