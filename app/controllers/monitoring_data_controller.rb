@@ -6,19 +6,25 @@ class MonitoringDataController < ApplicationController
 
   include ActionView::Helpers::NumberHelper
 
+
+  def test_user
+    @users=User.all
+    render :json => @users.to_json
+  end 
+
   def export_data
-        render :text => export_excel
-#       send_file export_excel
+    render :text => export_excel	
+    #	send_file export_excel
   end
 
-##################################################
-#创建sheet
+  ##################################################
+  #创建sheet
   def new_sheet(book,name)
     sheet = book.create_worksheet :name => name
     return sheet
   end
 
-#创建excel
+  #创建excel
   def new_excel(name)
     Spreadsheet.client_encoding = "UTF-8"
     book = Spreadsheet::Workbook.new
@@ -26,41 +32,52 @@ class MonitoringDataController < ApplicationController
     return [book,new_sheet(book,name),bold_heading]
   end
 
-#生成excel
+  #生成excel
   def export_excel
-      title = params[:tableHeader]
-      excel_name = params[:file_name] || "data_info"
-      export_data = params[:tableData]
+    title = params[:tableHeader]
+    titleColumn = params[:tableTitle].split("&")
+    titleColumn.delete("")
 
-      new_path = File.join(Rails.root,"public","docview","export_data", excel_name)
-      if Dir.exists?(new_path)
+    excel_name = params[:file_name] || "data_info"
+    export_data = JSON.parse(params[:tableData])
+    p export_data.length
+    new_path = File.join(Rails.root,"public","docview","export_data", excel_name)
+    if Dir.exists?(new_path)
 
-      else
-        Dir.mkdir(new_path)
-      end
-      book = new_excel(excel_name)
-      book_excel = book[0]
-      book_sheet = book[1]
-      sing_sheet = []
-      sing_sheet << title
-      export_data.each do |item_arr|
-         if item_arr.join(",").match(/[<span>|<\/span>]/)
-                item_arr.each{|unit| unit.match(/<span[^>]*>(.*)<\/span>/)[1]}
-         else
-                sing_sheet << item_arr
-         end
-      end unless export_data.nil?
+    else
 
-      count = -1
-      sing_sheet.each_with_index do |new_sheet,index|
-          book_sheet.insert_row(count+1,new_sheet)
-          count += 1
-      end
-      file_name = File.join(new_path , excel_name + ".xls")
-      book_excel.write(file_name)
+      Dir.mkdir(new_path)      
+    end
+    book = new_excel(excel_name)
+    book_excel = book[0]
+    book_sheet = book[1]
+    sing_sheet = []
+    p title.join("|")
+    sing_sheet << title
+    export_data.each_with_index do |item_arr,index|
+      tmp_row = []
+      
+      titleColumn.each do |column|
+        if item_arr[column].match(/\<span.*?\>(.*?)\<\/span\>/i).nil?
+          tmp_row << item_arr[column]
+        else
+          tmp_row << item_arr[column].match(/\<span.*?\>(.*?)\<\/span\>/i)[1]
+        end
+      end unless item_arr.nil?
+      p tmp_row.join("&")
+      sing_sheet << tmp_row
+    end unless export_data.nil?
 
-      file_name = file_name.sub(File.join(Rails.root,"public"),'')
-      return file_name
+    count = -1
+    sing_sheet.each_with_index do |new_sheet,index|
+      book_sheet.insert_row(count+1,new_sheet)
+      count += 1
+    end
+    file_name = File.join(new_path , excel_name + ".xls")
+    book_excel.write(file_name)
+
+    file_name = file_name.sub(File.join(Rails.root,"public"),'')
+    return file_name
 
   end
 
