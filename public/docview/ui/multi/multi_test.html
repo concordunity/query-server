@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta charset="utf-8">
+                <title>Multi Widget Unit Test</title>
+        </head>
+        <body>
+
+  <button id="button-1">Validate</button>
+  <button id="button-2">SetValue</button>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+<form id="form-multi">
+    <div id="multi-test">  </div>
+    <div id="result"></div>
+</form>
+  </div>
+  </div>
+
+
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+     steal('jquery/dom/route', 'docview/ui/multi').then(function ($) {
+
+         $('#multi-test').docview_ui_multi();
+
+         $('#button-1').click(function (el, ev) {
+             //删除显示的结果
+             $('#form-multi').find('div[class="result-inline"]').remove();
+             var ctrl = $('#multi-test').controller();
+             var result = ctrl.validateInput($('#form-multi'));
+             //显示validateInput的结果
+             var inputField = $('#form-multi').find('div[id="result"]');
+             inputField.append('<div class="result-inline">校验方法的结果：' + result + '</div>');
+             inputField.append('<div class="result-inline">录入单证号：' + ctrl.getIds() + '</div>');
+         });
+
+         $('#button-2').click(function (el, ev) {
+             //删除显示的结果
+             $('#form-multi').find('div[class="result-inline"]').remove();
+             $('#multi-test').docview_ui_multi('getIds', $('#form-multi'));
+             var ctrl = $('#multi-test').controller();
+             ctrl.setUIValue("123123123123123123 123123123123123115");
+         });
+
+     }); 
+ </script>
+        </body>
+</html>
+
