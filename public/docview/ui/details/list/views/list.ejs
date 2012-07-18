@@ -1,3 +1,10 @@
+<div>
+<input id="print_page" type="button" name="submit" value="打印"></input>
+<input id="setHide" type="button" value="隐藏" ></input>
+<input id="setShow" type="button" value="显示" ></input>
+<input id="setList" type="button" value="列表" ></input>
+<input id="listContent" type="text" stype="width:200px;height:200px;" ></input>
+</div>  
 <div class="show_pdf"></div>
 <div class="thumbnails row">
 	<div class="row">
@@ -9,9 +16,4 @@
 			<%== $.View("//docview/ui/details/list/views/column.ejs",{data:this[i],page:i} ) %>
 
 	<% } %>
-</div>
-<div>
-<input id="print_page" type="button" name="submit" value="打印"></input>
-<input id="setHide" type="button" value="隐藏" ></input>
-<input id="setShow" type="button" value="显示" ></input>
 </div>

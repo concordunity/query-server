@@ -50,8 +50,18 @@ steal(
             });
             this.element.find('div.image-viewer').iviewer('loadImage', el.attr("src"));
         },
-        setData : function(){
-                    
+        addJpg : function(data){
+		var result = [];
+		$.each(data,function(index,value){
+                    result.push({jpg:value,id:index});
+                });
+		return result;
+	} ,
+        "#setList click" : function(el,ev){
+            
+            var controller = $("#list-test").controller();
+            var text_value = controller.addJpg($("#listContent").attr("value").split(","))
+            controller.list(text_value);
         },
         "#print_page click" : function(el,ev){
             var page_arr = [];
