@@ -6,6 +6,13 @@
     </head>
     <body>
         <div class="container-fluid">
+            <div class="buttons">
+                <button id="button1">print option</button>
+                <!--
+                <button id="button2">Add Document</button>
+                <button id="button3">Delete all</button>
+                -->
+            </div>
             <div class="row-fluid">
                 <div id="details-test">  </div>
             </div>
@@ -18,26 +25,46 @@
     </style>
     <script type='text/javascript' src='../../../steal/steal.js'></script>
     <script type='text/javascript'>
-        steal('jquery/dom/route', 'docview/ui/details', 'docview/models', 'docview/fixtures').then(function($) {
+        steal('jquery/dom/route', 'docview/ui/details', 'docview/models', 'docview/fixtures').then(function ($) {
             var state = new $.Observe({
-                search : {
+                search: {
                     filters: [],
                     ids: []
                 },
-                access : {
-                    manage_docs : {
-                        print : false,
+                access: {
+                    manage_docs: {
+                        print: false,
                         testify: false
                     }
                 }
             });
+
             var s_mode = new $.Observe({
-                mode : 'single'
+                mode: 'single'
             });
-            $('#details-test').docview_ui_details({clientState: state,
-                searchMode : s_mode});
+
+            $('#details-test').docview_ui_details({ clientState: state,
+                searchMode: s_mode
+            });
+
             var controller = $('#details-test').controller();
             controller.queryDoc('220120121012010018');
+
+            $('#button1').click(function () {
+                $("div.result-inline").remove();
+
+                state.attr("access", {
+                    manage_docs:
+                        {
+                        print: true,
+                        testify: false
+                    }
+                });
+
+                //显示操作信息
+                var inputField = $('div.buttons');
+                inputField.append('<div class="result-inline">添加打印按钮.' + '</div>');
+            });
 
         });
     </script>
