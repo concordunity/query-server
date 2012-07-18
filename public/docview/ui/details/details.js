@@ -8,7 +8,8 @@ steal(
     'docview/ui/details/tree',
     'docview/ui/details/viewer'
 ).then(
-    './views/init.ejs'
+    './views/init.ejs',
+    'docview/docview.css'
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {

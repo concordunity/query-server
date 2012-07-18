@@ -2,18 +2,36 @@
 <html lang="en">
         <head>
                 <meta charset="utf-8" />
-                <title>detailss Widget Unit Test</title>
+                <title>details Widget Unit Test</title>
         </head>
         <body>
   <div class="container-fluid">
   <div class="row-fluid">
-    <div id="detailss-test">  </div>
+    <div id="details-test">  </div>
   </div>
   </div>
  <script type='text/javascript' src='../../../steal/steal.js'></script>
  <script type='text/javascript'>
-steal('jquery/dom/route', 'docview/ui/detailss').then(function($) {
-
+steal('jquery/dom/route', 'docview/ui/details', 'docview/models', 'docview/fixtures').then(function($) {
+  var state = new $.Observe({
+         search : {
+             filters: [],
+             ids: []
+          },
+         access : {
+           manage_docs : {
+             print : false,
+             testify: false
+           }
+         }
+       });
+  var s_mode = new $.Observe({
+          mode : 'single'
+       });
+  $('#details-test').docview_ui_details({clientState: state,
+                                          searchMode : s_mode});
+  var controller = $('#details-test').controller();
+  controller.queryDoc('220120121012010018');
 
  }); 
  </script>
