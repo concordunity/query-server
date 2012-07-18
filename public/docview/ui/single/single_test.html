@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+<meta charset="utf-8">
+                <title>xxx Widget Unit Test</title>
+        </head>
+        <body>
+
+ <button id="button-1">Validate</button>
+  <button id="button-2">Get Data</button>
+
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+<form id="form-1">
+    <div id="single-test">  </div>
+    <div id="result"></div>
+</form>
+  </div>
+  </div>
+
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+     steal('jquery/dom/route', 'docview/ui/single').then(function ($) {
+
+         $('#single-test').docview_ui_single();
+
+         $('#button-1').click(function (el, ev) {
+             $('#single-test').docview_ui_single('validateInput', $('#form-1'));
+         });
+
+         $('#button-2').click(function (el, ev) {
+             $("div.result-inline").remove();
+             var ctrl = $('#single-test').controller();
+             ctrl.validateInput($('#form-1'));
+             //显示输出结果
+             var inputField = $("div#result");
+             inputField.append('<div class="result-inline">结果：' + ctrl.getId() + '</div>');
+         });
+
+
+     });
+ </script>
+        </body>
+</html>
+
