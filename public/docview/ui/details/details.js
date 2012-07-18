@@ -6,7 +6,8 @@ steal(
     'jquery/lang/observe/delegate',
     'docview/models',
     'docview/ui/details/tree',
-    'docview/ui/details/viewer'
+    'docview/ui/details/viewer',
+    'docview/ui/details/list'
 ).then(
     './views/init.ejs',
     'docview/docview.css'
@@ -30,6 +31,13 @@ steal(
 		  details_controller : this });
 	    
             this.viewerControl = this.element.find('#document-viewer').controller();
+
+            this.element.find('#document-list').docview_ui_details_list(
+		{ clientState : this.options.clientState,
+		  searchMode : this.options.searchMode,
+		  details_controller : this });
+            this.listControl = this.element.find("#document-list").controller();
+            //this.listControl.list();
 
 	    this.to_show = false;
 	    //	    this.showing = false;

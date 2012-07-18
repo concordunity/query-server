@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>List Widget Unit Test</title>
+</head>
+<body>
+
+	<div id="list-test">
+
+	</div>
+	<style type="text/css">
+	.span4 {width:150px;height:240px;}
+	.thumbnails {margin-left:20px;}
+	.thumbnail {height:220px;}
+	img {height:200px;}
+	</style>
+	
+	<script type='text/javascript' src='../../../../steal/steal.js'></script>
+	<script type='text/javascript'>
+
+	function addZero(a,b,c) 
+	{ 
+		var result = [];
+		while(a<b) 
+		{ 
+			t=a+""; 
+			while(t.length<c)t="0"+t; 
+			result.push({jpg:"pic"+t+"00.jpg",id:a});
+			a++; 
+			//document.write(t+"<br>"); 
+		} 
+		return result;
+	} 
+
+	steal(
+		'jquery/dom/route', 'docview/ui/details/list','docview/models'
+	).then(function($) {
+
+		$("#list-test").docview_ui_details_list({});
+		var controller = $("#list-test").controller();
+		var jpg_arr = addZero(0,7,8);
+		controller.list(jpg_arr);
+
+		/*
+		Docview.Models.User.findAll({},
+		function(data){
+		console.log(data.length);
+		controller.list(data);
+		},
+		{});
+		*/
+	}); 
+	</script>
+</body>
+</html>
+

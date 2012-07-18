@@ -1,0 +1,17 @@
+<div class="show_pdf"></div>
+<div class="thumbnails row">
+	<div class="row">
+	<% for(i   = 0;i<this.length;i++){ %>
+		<% if(i%6 == 0	){ %>
+			</div><div class="row">
+			<% }%>
+
+			<%== $.View("//docview/ui/details/list/views/column.ejs",{data:this[i],page:i} ) %>
+
+	<% } %>
+</div>
+<div>
+<input id="print_page" type="button" name="submit" value="打印"></input>
+<input id="setHide" type="button" value="隐藏" ></input>
+<input id="setShow" type="button" value="显示" ></input>
+</div>
