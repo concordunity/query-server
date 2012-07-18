@@ -123,8 +123,7 @@ steal(
 	    $('#pageno').html('第 '+nthPage+' 页');
 	    var docInfo = this.options.details_controller.getDoc(nthDoc);
 	    
-            //var dir = docInfo.directory;
-            var dir = "/docimages_mod";
+            var dir = docInfo.directory;
             var docId = docInfo.metadata.doc_id;
             var file = docInfo.pages[nthPage - 1];
 

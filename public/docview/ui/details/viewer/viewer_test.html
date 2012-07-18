@@ -7,9 +7,9 @@
     <div id="doc-viewer"></div>
     <button id="button">Show Page 1</div>
   
-  <script type='text/javascript' src='../../../steal/steal.js'></script>
+  <script type='text/javascript' src='../../../../steal/steal.js'></script>
   <script type='text/javascript'>
-    steal('docview/details/viewer').then(function($) {      
+    steal('docview/ui/details/viewer').then(function($) {
       // Client State
       var state = new $.Observe({
           document: {
@@ -28,7 +28,7 @@
       });
       
       
-      $('#doc-viewer').docview_details_viewer({clientState: state});
+      $('#doc-viewer').docview_ui_details_viewer({clientState: state});
       $('#button').click(function() {
         state.attr('document').attr('current', 1);
       });

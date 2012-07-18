@@ -30,6 +30,12 @@ steal(
         list : function(data_list){
             this.element.find("#list-content").html(this.view("list",data_list));
         },
+        listTest : function(data_list){
+            $("#document-list").show();
+            $("#document-viewer").hide();
+            this.element.find("#list-content").html(this.view("list",this.addJpg(data_list)));
+        },
+        /*
         ".one_pdf click" : function(el,ev){
             //alert(el.attr("src"));
             var data = {
@@ -50,10 +56,12 @@ steal(
             });
             this.element.find('div.image-viewer').iviewer('loadImage', el.attr("src"));
         },
+        */
         addJpg : function(data){
 		var result = [];
-		$.each(data,function(index,value){
-                    result.push({jpg:value,id:index});
+                var jpg_path = data.directory+"/"+data.metadata.doc_id+"/"+data.metadata.doc_id;
+		$.each(data.pages,function(index,value){
+                    result.push({jpg:value,id:index+1,jpg_path:jpg_path});
                 });
 		return result;
 	} ,
