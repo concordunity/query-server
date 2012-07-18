@@ -4,16 +4,20 @@
 		<title>Alert Box</title>
 	</head>
 	<body>
-  <div class="container-fluid">
-  <div class="row-fluid">
-    <div id="alerts">
-  </div>
-  </div>
-  
+
   <button id="button-1">Info</button>
   <button id="button-2">Error</button>
   <button id="button-3">Warning</button>
   <button id="button-4">Success</button>
+  <button id="button-5">Multi-Line</button>
+
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="alerts">  </div>
+  </div>
+  
+</div>
   
   <script type='text/javascript' src='../../steal/steal.js'></script>
   <script type='text/javascript'>
@@ -52,19 +56,22 @@
         });
       });
       $('#button-4').click(function() {
-//        state.attr('alert', {
-//            type: "success",
-//            heading: "Slam",
-//            message: "derfawefaawegp"
-//        });
+         state.attr('alert', {
+                      type: "success",
+                      heading: "Slam",
+                      message: "derfawefaawegp"
+                     });
+     });
 
-    var msgs = new Array();
-    msgs.push("this is at est 1");
-    msgs.push("this is at est 2");
+      $('#button-5').click(function() {
+          var msgs = new Array();
+          msgs.push("this is at est 1");
+          msgs.push("this is at est 2");
 
-      $('#alerts').docview_alerts('showMessages', 'success', 'test', msgs);
+         $('#alerts').docview_alerts('showMessages', 'this is a test', 'success', 'This is a multi-line message', msgs);
 
-      });      
+      });
+
     });
   </script>
 	</body>
