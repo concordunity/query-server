@@ -257,7 +257,7 @@ steal(
             //
             //暂时注释这段，改成List的功能
             //this.showPage(0, 1);
-            console.log(currDoc);
+            //console.log(currDoc);
             this.listControl.listTest(currDoc);
             //this.options.clientState.attr('document').attr('current', 1);
 
