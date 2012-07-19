@@ -39,7 +39,8 @@ class MonitoringDataController < ApplicationController
 
     excel_name = params[:tableFile]
     export_data = JSON.parse(params[:tableData])
-    new_path = File.join(Rails.root,"public","docview","export_data", excel_name)
+
+    new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
     Dir.mkdir(new_path) unless Dir.exists?(new_path)
     book = new_excel(excel_name)
     book_excel = book[0]
