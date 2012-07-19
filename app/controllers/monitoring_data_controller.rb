@@ -35,37 +35,26 @@ class MonitoringDataController < ApplicationController
   #生成excel
   def export_excel
     title = params[:tableHeader]
-    titleColumn = params[:tableTitle].split("&")
-    titleColumn.delete("")
+    titleColumn = params[:tableTitle]
 
     excel_name = params[:tableFile]
     export_data = JSON.parse(params[:tableData])
-    p export_data.length
     new_path = File.join(Rails.root,"public","docview","export_data", excel_name)
-    
-    if Dir.exists?(new_path)
-
-    else
-
-      Dir.mkdir(new_path)      
-    end
+    Dir.mkdir(new_path) unless Dir.exists?(new_path)
     book = new_excel(excel_name)
     book_excel = book[0]
     book_sheet = book[1]
     sing_sheet = []
-    p title.join("|")
     sing_sheet << title
     export_data.each_with_index do |item_arr,index|
-      tmp_row = []
-      
+      tmp_row = []      
       titleColumn.each do |column|
-        if item_arr[column].match(/\<span.*?\>(.*?)\<\/span\>/i).nil?
+        if item_arr[column].match(format_egx("span")).nil?
           tmp_row << item_arr[column]
         else
-          tmp_row << item_arr[column].match(/\<span.*?\>(.*?)\<\/span\>/i)[1]
+          tmp_row << item_arr[column].match(format_egx("span"))[1]
         end
       end unless item_arr.nil?
-      p tmp_row.join("&")
       sing_sheet << tmp_row
     end unless export_data.nil?
 
@@ -80,6 +69,10 @@ class MonitoringDataController < ApplicationController
     file_name = file_name.sub(File.join(Rails.root,"public"),'')
     return file_name
 
+  end
+
+  def format_egx(str)
+    return /\<#{str}.*?\>(.*?)\<\/#{str}\>/i
   end
 
   def get_json
