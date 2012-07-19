@@ -50,11 +50,7 @@ class MonitoringDataController < ApplicationController
     export_data.each_with_index do |item_arr,index|
       tmp_row = []      
       titleColumn.each do |column|
-        if item_arr[column].match(format_egx("span")).nil?
-          tmp_row << item_arr[column]
-        else
-          tmp_row << item_arr[column].match(format_egx("span"))[1]
-        end
+        tmp_row << filter_html_tags(item_arr[column.strip])
       end unless item_arr.nil?
       sing_sheet << tmp_row
     end unless export_data.nil?
@@ -72,8 +68,14 @@ class MonitoringDataController < ApplicationController
 
   end
 
-  def format_egx(str)
-    return /\<#{str}.*?\>(.*?)\<\/#{str}\>/i
+  def filter_html_tags(str)
+    if str.nil?
+      return ""
+    end
+    str = str.gsub(/\n/, ' ');
+    # filter out <span> tag
+    str = str.gsub(/\<span.*?\>\s*(.*?)\s*\<\/span\>/i, '\1')
+    return str.strip
   end
 
   def get_json
