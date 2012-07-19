@@ -38,11 +38,10 @@ class MonitoringDataController < ApplicationController
     titleColumn = params[:tableTitle].split("&")
     titleColumn.delete("")
 
-    excel_name = params[:file_name] || "data_info"
+    excel_name = params[:tableFile]
     export_data = JSON.parse(params[:tableData])
     p export_data.length
     new_path = File.join(Rails.root,"public","docview","export_data", excel_name)
-    new_file = File.join("docview","export_data", excel_name)
     
     if Dir.exists?(new_path)
 
@@ -78,7 +77,7 @@ class MonitoringDataController < ApplicationController
     file_name = File.join(new_path , excel_name + ".xls")
     book_excel.write(file_name)
 
-    file_name = File.join(new_file,excel_name+".xls")
+    file_name = file_name.sub(File.join(Rails.root,"public"),'')
     return file_name
 
   end
