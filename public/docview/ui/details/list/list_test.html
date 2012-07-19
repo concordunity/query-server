@@ -17,29 +17,21 @@
 	
 	<script type='text/javascript' src='../../../../steal/steal.js'></script>
 	<script type='text/javascript'>
-
-	function addZero(a,b,c) 
-	{ 
-		var result = [];
-		while(a<b) 
-		{ 
-			t=a+""; 
-			while(t.length<c)t="0"+t; 
-			result.push({jpg:"pic"+t+"00.jpg",id:a});
-			a++; 
-			//document.write(t+"<br>"); 
-		} 
-		return result;
-	} 
-
 	steal(
 		'jquery/dom/route', 'docview/ui/details/list','docview/models'
 	).then(function($) {
 
 		$("#list-test").docview_ui_details_list({});
 		var controller = $("#list-test").controller();
-		var jpg_arr = addZero(0,7,8);
-		controller.list(jpg_arr);
+                var jpg_datas = {
+                    directory:"/docimages_mod",
+                    metadata :{
+                        doc_id:"220120121012010018"
+                    },
+                    pages:["pic000000.jpg", "pic000001.jpg", "pic000002.jpg","pic000003.jpg", "pic000004.jpg", "pic000005.jpg",]
+                }
+
+		controller.listTest(jpg_datas);
 
 		/*
 		Docview.Models.User.findAll({},
