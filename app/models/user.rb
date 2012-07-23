@@ -3,10 +3,9 @@ class User < ActiveRecord::Base
   # extend Rolify::Dynamic
   has_and_belongs_to_many :roles, :join_table => :users_roles
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
+  #:token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :trackable, :validatable
- #, :lockable
+         :recoverable, :trackable, :validatable, :lockable
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :fullname, :username, :password, :password_confirmation,  :last_sign_in_at,  :last_sign_in_ip, :current_sign_in_ip, :roles,  :roles_attributes, :orgs, :doc_type

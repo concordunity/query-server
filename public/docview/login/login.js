@@ -184,7 +184,7 @@ steal(
 //            //console.log(this.options.clientState.attr('access'));
             
             // load app
-            this.loadApp();
+            this.loadApp(permissions);
         },
 	setNavIfEmpty : function(cat, subcat) {
 	    var nav_subcat = this.options.clientState.attr('nav').attr(cat);
@@ -192,7 +192,7 @@ steal(
 		this.options.clientState.attr('nav').attr(cat, subcat);
 	    }
 	},
-        loadApp: function() {
+        loadApp: function(user_info) {
             $('#login').hide();
             
             // Change background color
@@ -222,10 +222,12 @@ steal(
 	    //console.log(" from login : " , this.options.searchMode);
 	    $('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
 	    $('#settings').docview_settings({clientState: this.options.clientState});
+
+	    var login_info = " 最近一次登录时间 "+ user_info.last_time + ", IP 地址 " + user_info.last_ip;
             this.options.clientState.attr('alert', {
                 type: 'success',
                 heading: $.i18n._('msg.welcome'),
-                message: this.options.clientState.attr('user').attr('fullname')
+                message: this.options.clientState.attr('user').attr('fullname') + login_info
             });
             
             // TODO: Reload the route so the right thing shows up.

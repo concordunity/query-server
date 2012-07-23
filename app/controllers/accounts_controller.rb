@@ -47,15 +47,20 @@ class AccountsController < ApplicationController
 
         links = current_user.web_links
         no_links = WebLink.all - links
+
+        user_info = { :error => "Success",
+          :last_ip => current_user.last_sign_in_ip,
+          :last_time => current_user.last_sign_in_at
+        }
         if current_user.admin?
-          render :status => 200, :json => { :error => "Success",
-            "web_links" => WebLink.all,
-            "not_authorized" => [] }
+          user_info["not_authorized"] = []
+          user_info["web_links"] = WebLink.all
         else
-          render :status => 200, :json => { :error => "Success",
-          "web_links" => links,
-          "not_authorized" => no_links }
+          user_info["web_links"] = links
+          user_info["not_authorized"] = no_links
         end
+
+        render :status => 200, :json => user_info
       }
     end
   end
