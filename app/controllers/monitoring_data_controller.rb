@@ -6,6 +6,72 @@ class MonitoringDataController < ApplicationController
 
   include ActionView::Helpers::NumberHelper
 
+  def export_search
+    ##
+    #{"docs_total":34,
+    #"pages_total":224,
+    #"query_total":1055,
+    #"query_p":"3102.941%",
+    #"groupby":"4",
+    #"query_stats":{
+    #"2012/07":[],
+    #"2012/06":[
+    #{"org":null,"num_docs":"","num_pages":"","num_queries":632,"percentage_qq":"59.905%"},
+    #{"org":"2225","num_docs":"","num_pages":"","num_queries":42,"percentage_qq":"3.981%"}
+    #],
+    #"2012/05":[
+    #{"org":null,"num_docs":"","num_pages":"","num_queries":290,"percentage_qq":"27.488%"},
+    #{"org":"2225","num_docs":"","num_pages":"","num_queries":2,"percentage_qq":"0.190%"}
+    #],"2012/04":[
+    #{"org":null,"num_docs":3,"num_pages":5,"num_queries":73,"percentage_qq":"6.919%"},
+    #{"org":"2225","num_docs":30,"num_pages":219,"num_queries":16,"percentage_qq":"1.517%"},
+    #{"org":"1034","num_docs":1,"num_pages":0,"num_queries":"","percentage_qq":""}
+    #]}}
+    ##
+    title = [
+      "月份","关区","档案总数(指定时间段内)","总页数","查阅量","查阅量占比"
+    ]
+    result = [title]
+    tableData = JSON.parse(params[:tableData])
+    p tableData["query_stats"]
+    tableData["query_stats"].collect { |key,value|
+#{"org"=>"2225", "num_docs"=>30, "num_pages"=>219, "num_queries"=>16, "percentage_qq"=>"1.517%"},
+      value.each { |row|
+        #p row,'============'
+        tmp_result = []
+        tmp_result << key
+        tmp_result << row["org"] || ""
+        tmp_result << row["num_docs"].to_s
+        tmp_result << row["num_pages"].to_s
+        tmp_result << row["num_queries"].to_s
+        tmp_result << row["percentage_qq"].to_s
+        #p tmp_result.join(",")
+        result << tmp_result
+      }
+      
+    }
+
+    excel_name = "search_result"
+    export_data = JSON.parse(params[:tableData])
+
+    new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+    Dir.mkdir(new_path) unless Dir.exists?(new_path)
+    book = new_excel(excel_name)
+    book_excel = book[0]
+    book_sheet = book[1]
+
+    count = -1
+    result.each_with_index do |new_sheet,index|
+      book_sheet.insert_row(count+1,new_sheet)
+      count += 1
+    end
+    file_name = File.join(new_path , excel_name + ".xls")
+    book_excel.write(file_name)
+    #send_file file_name
+    file_name = file_name.sub(File.join(Rails.root,"public"),'')
+    render :text => file_name
+    
+  end
 
   def test_user
     @users=User.all

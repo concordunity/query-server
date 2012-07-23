@@ -1,5 +1,6 @@
 Dms::Application.routes.draw do
 
+  post "/search_result/excle" => "monitoring_data#export_search"
   post "/status/zip_files" => "queries_controller#zip_files_status"
 
   post "/generateExcel" => "monitoring_data#export_data"
