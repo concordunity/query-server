@@ -103,7 +103,9 @@ steal(
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             // Find corresponding nav icon and select it
 	    this.element.find('ul.main-nav li').removeClass('active');
-	    this.lastActiveA.closest('li').addClass('active');
+	    if (this.lastActiveA != undefined) {
+		this.lastActiveA.closest('li').addClass('active');
+	    }
             //$('a[href="#' + oldVal + '"]').closest('li').removeClass('active');
             //$('a[href="#' + newVal + '"]').closest('li').addClass('active');
             
