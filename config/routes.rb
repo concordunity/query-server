@@ -5,6 +5,10 @@ Dms::Application.routes.draw do
 
   post "/generateExcel" => "monitoring_data#export_data"
 
+  post "/settings/update" => "settings#sys_setting"
+  get "/settings" => "settings#index"
+
+
   #resources :document_histories
   post "/exportChart" => "monitoring_data#exportToPNG"
 

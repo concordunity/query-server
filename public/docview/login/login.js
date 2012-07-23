@@ -174,7 +174,8 @@ steal(
                         .attr('manage_accounts').attr('roles', true);
                     this.setNavIfEmpty('manage_accounts', 'roles');
                     break;                    
-                    
+                case ("sys-setting"):
+                    this.options.clientState.attr('access').attr('sys-setting', true);
 
                 default:
                     break;

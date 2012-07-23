@@ -1,14 +1,12 @@
 steal(
-	'jquery/controller',
-	'jquery/view/ejs',
+    'jquery/controller',
+    'jquery/view/ejs',
     'jquery/controller/view',
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
     'docview/models',
-    
     'docview/bootstrap/bootstrap.css'
 )
-
 // View templates
 .then(
     './views/alert.ejs'
