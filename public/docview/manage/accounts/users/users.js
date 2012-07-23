@@ -4,7 +4,8 @@ steal(
     'jquery/controller/view',
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
-    'docview/models',    
+    'docview/models', 
+    'docview/ui/dmstable',    
     'docview/bootstrap/bootstrap.css'
 )
 
@@ -22,9 +23,7 @@ steal(
     'docview/bootstrap/bootstrap-button.js',
     'docview/bootstrap/bootstrap-collapse.js',
     'docview/bootstrap/bootstrap-alert.js',
-    'docview/datatables/bootstrap-pagination.js',
-    'docview/datatables/extras/TableTools.js',
-    'docview/datatables/extras/ZeroClipboard.js'
+    'docview/datatables/bootstrap-pagination.js'
 ).then(function($) {
     /*
     * Manage user accounts and roles
@@ -37,7 +36,22 @@ steal(
     {
         init: function() {
             this.element.html(this.view('init', {}));
-            
+            var table_options = {
+		aaData: [],
+
+		col_def_path : "//docview/manage/accounts/users/views/",
+		aoColumns: [
+		    {"mDataProp":"username", mLabel : '用户名'},
+		    {"mDataProp":"fullname", mLabel : '全名'},
+		    {"mDataProp":"roles", mLabel : '角色'},
+		    {"mDataProp":"orgs", mLabel : '关区'},
+		    {"mDataProp":"doc_type", mLabel : '进出口类别'},
+		    {"mDataProp":null, mLabel : '操作'}
+		],
+		file_name: "user_info"
+	    };
+	    this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
+	    this.tableController = this.element.find('.user-list').controller();
             // By default we're hidden until the route conditions are met
             this.element.hide();
 	    this.mainTabOn = false;
@@ -80,34 +94,7 @@ steal(
 //	    console.log(data);
 	},
         listUsers: function(users) {
-	    //console.log("list users is called ..........");
-	    //console.log(users);
-
-            this.element.find('.user-list').html(this.view('users_table', users));
-	    this.element.find('table').dataTable({
-		"sDom": "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
-		"oTableTools": {
-		    "aButtons": [ 
-			{
-			    "sExtends": "copy",
-			    "sButtonText": "复制"
-			},
-			{
-			    "sExtends": "csv",
-			    "sButtonText": "保存CSV"
-			},
-			{
-			    "sExtends": "xls",
-			    "sButtonText": "保存Excel"
-			}]
-		},
-                //"sDom" : 'T<"clear">lfrtip',
-		"sPaginationType": "bootstrap",
-                "oLanguage" : {
-                    "sUrl" : "media/language/ch_ZN.txt"
-                }
-	    });
-	    //this.saveToExcel();
+	    this.tableController.setModelData(users);
         },
 	failure: function(jqXHR, textStatus, errorThrown) {
 	  var handled = true;
@@ -229,10 +216,6 @@ steal(
             $('#new-user').collapse('hide');
         },
         addUserRow: function(user, response) {
-
-
-            //console.log('[User]', user);
-            //console.log('[Response]', response);
             if (user.status === 200) {
 		this.reload();
                 // Remove a few unnecessary fields in user
@@ -265,11 +248,18 @@ steal(
         
         // Editing a user
         '.edit-user click': function(el, ev) {
+	    ev.preventDefault();
             // In place edit form
-            var userRow = el.closest('tr');
-            userRow.hide();
-            userRow.after(this.view('edit_user', 
-				    {cntl : this, user: userRow.model()})); 
+            //var userRow = el.closest('tr');
+
+	    var userInfo = this.tableController.getRowModelDataFor(el);
+
+            userRow = $(userInfo.tr);
+	    userRow.hide();
+	    console.log(userInfo.model);
+            
+	    userRow.after(this.view('edit_user', 
+				    {cntl : this, user: userInfo.model})); 
         },
         '.edit-user-form submit': function(el, ev) {
             ev.preventDefault();
@@ -285,7 +275,9 @@ steal(
 	    var roles = el.find('select[name="roles"]').val();
 
             if (password !== confirmation) {
-                this.displayFormError(el, "password-confirm", "Please confirm your new password");
+                this.displayFormError(el,
+				      "password-confirm",
+				      "Please confirm your new password");
 		return;
             }
 
@@ -293,8 +285,6 @@ steal(
             // The user model row is a hidden entry right above the edit row
             var user = el.closest('tr').prev().model();
             //user.attr('roles', el.find('select').val());
-	   // console.log(user, user.id);
-	   // console.log(roles, orgs, fullname, doc_type, password);
 	    Docview.Models.User.update(
 		user.id,
 		{ role : roles,
@@ -322,9 +312,12 @@ steal(
         },        
         // Deleting a user
         '.delete-user click': function(el, ev) {
+	    ev.preventDefault();
             el.button('loading');
             if (confirm($.i18n._('msg.confirm.delete_user'))) {
-                el.closest('.user').model().destroy();
+		var userInfo = this.tableController.getRowModelDataFor(el);
+		userInfo.tr.model(userInfo.model);
+		userInfo.model.destroy();
             }
             else {
                 el.button('reset');
