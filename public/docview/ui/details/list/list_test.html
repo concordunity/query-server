@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<title>List Widget Unit Test</title>
-</head>
-<body>
+    <head>
+        <title>List Widget Unit Test</title>
+    </head>
+    <body>
+        <div id="list-test">
 
-	<div id="list-test">
+        </div>
+    <style type="text/css">
+        .span4 {width:150px;height:240px;}
+        .thumbnails {margin-left:20px;}
+        .thumbnail {height:220px;}
+        img {height:200px;}
+    </style>
 
-	</div>
-	<style type="text/css">
-	.span4 {width:150px;height:240px;}
-	.thumbnails {margin-left:20px;}
-	.thumbnail {height:220px;}
-	img {height:200px;}
-	</style>
-	
-	<script type='text/javascript' src='../../../../steal/steal.js'></script>
-	<script type='text/javascript'>
-	steal(
-		'jquery/dom/route', 'docview/ui/details/list','docview/models'
-	).then(function($) {
+    <script type='text/javascript' src='../../../../steal/steal.js'></script>
+    <script type='text/javascript'>
+        steal(
+        'jquery/dom/route', 'docview/ui/details/list','docview/models'
+    ).then(function($) {
 
-		$("#list-test").docview_ui_details_list({});
-		var controller = $("#list-test").controller();
-                var jpg_datas = {
-                    directory:"/docimages_mod",
-                    metadata :{
-                        doc_id:"220120121012010018"
-                    },
-                    pages:["pic000000.jpg", "pic000001.jpg", "pic000002.jpg","pic000003.jpg", "pic000004.jpg", "pic000005.jpg",]
-                }
+            $("#list-test").docview_ui_details_list({});
+            var controller = $("#list-test").controller();
+            var jpg_datas = {
+                show_title: true,
+                directory:"/docimages_mod",
+                metadata :{
+                    doc_id:"220120121012010018"
+                },
+                pages:["pic000000.jpg", "pic000001.jpg", "pic000002.jpg","pic000003.jpg", "pic000004.jpg", "pic000005.jpg",]
+            }
+            controller.listTest(jpg_datas);
 
-		controller.listTest(jpg_datas);
-
-		/*
-		Docview.Models.User.findAll({},
-		function(data){
-		console.log(data.length);
-		controller.list(data);
-		},
-		{});
-		*/
-	}); 
-	</script>
+            controller.insertTitle();
+            /*
+            Docview.Models.User.findAll({},
+            function(data){
+            console.log(data.length);
+            controller.list(data);
+            },
+            {});
+             */
+        });
+    </script>
 </body>
 </html>
 

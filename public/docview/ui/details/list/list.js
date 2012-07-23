@@ -34,6 +34,10 @@ steal(
             $("#document-list").show();
             $("#document-viewer").hide();
             this.element.find("#list-content").html(this.view("list",this.addJpg(data_list)));
+            $(".select_checkbox_print").hide();
+        },
+        insertTitle : function(){
+          this.element.find(".title_list").html(this.view("title_list"));
         },
         /*
         ".one_pdf click" : function(el,ev){
