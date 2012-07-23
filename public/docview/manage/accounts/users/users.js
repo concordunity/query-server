@@ -96,6 +96,9 @@ steal(
         listUsers: function(users) {
 	    this.tableController.setModelData(users);
         },
+        "#export_data click" : function(el,ev){
+            this.tableController.saveToExcel();
+        },
 	failure: function(jqXHR, textStatus, errorThrown) {
 	  var handled = true;
 	  var t = 'error';
@@ -256,7 +259,7 @@ steal(
 
             userRow = $(userInfo.tr);
 	    userRow.hide();
-	    console.log(userInfo.model);
+	    //console.log(userInfo.model);
             
 	    userRow.after(this.view('edit_user', 
 				    {cntl : this, user: userInfo.model})); 
