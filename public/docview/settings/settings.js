@@ -5,6 +5,7 @@ steal(
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
     'docview/models',
+    'docview/ui/syssetting',
     'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs')
@@ -14,6 +15,12 @@ steal(
       init: function() {
 	  this.element.html(this.view('init'));
 	  this.element.hide();
+
+	  this.sys_controller = undefined;
+	  if (this.options.clientState.attr('access').attr('sys-setting')) {
+	      this.element.find('div.system-setting').docview_ui_syssetting();
+	      this.sys_controller = this.element.find('div.system-setting').controller();
+	  }
       },
       displayFormError: function(form, name, message) {
           var inputField = form.find('input[name="' + name + '"]');
@@ -51,7 +58,11 @@ steal(
       },
       '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
           if (newVal === "settings") {
+	      
 	      this.element.show();
+	      if (this.sys_controller) {
+		  this.sys_controller.loadData();
+	      }
 	      $.route.attr('subcategory', 'password');
 	  } else {
 	      this.element.hide();

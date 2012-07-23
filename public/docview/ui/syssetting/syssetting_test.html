@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>syssetting Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="syssetting-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/syssetting','docview/fixtures').then(function($) {
+
+$('#syssetting-test').docview_ui_syssetting();
+$('#syssetting-test').docview_ui_syssetting('loadData');
+
+ }); 
+ </script>
+        </body>
+</html>
+

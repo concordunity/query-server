@@ -188,4 +188,21 @@ steal("jquery/dom/fixture", function() {
 				}
 			);
 
+    // Intercept getSetting
+    $.fixture(
+	"GET /settings", function() {
+	    var response = {
+		"maxn":"50",
+		"checkout_period":"30"
+	    };
+	    return response;
+	}
+    );
+    $.fixture(
+	"POST /settings/update", function() {
+	    var response = {}
+	    return response;
+	}
+    );
+
 		});

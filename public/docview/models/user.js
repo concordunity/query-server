@@ -101,7 +101,29 @@ $.Model('Docview.Models.User',
 	    success : success,
 	    error : error
 	});
+    },
+
+    getSetting: function(success, error) {
+	return $.ajax({
+	    url: '/settings',
+	    type: 'GET',
+	    dataType : 'json',
+	    success : success,
+	    error : error
+	});
+    },
+
+    setSetting: function(data, success, error) {
+	return $.ajax({
+	    url: '/settings/update',
+	    type: 'POST',
+	    data: data,
+	    dataType : 'json',
+	    success : success,
+	    error : error
+	});
     }
+
 },
 	/* @Prototype */
 	{});
