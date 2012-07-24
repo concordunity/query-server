@@ -245,12 +245,12 @@ steal(
                 //		//console.log(value.name, + ", " + value.val() + " checked ==" + value.checked);
                 //	        rolePermissions.push(key);
                 });
-                console.log(rolePermissions);
-                console.log(roleDescriptions);
+                //console.log(rolePermissions);
+                //console.log(roleDescriptions);
                 var role = el.closest('tr').prev().model();
                 //var role_id = $(".edit-role-form").attr("id");
 
-                console.log(role);
+                //console.log(role);
                 role.attr('rolePermissions', rolePermissions);
                 role.attr('display_name', roleDescriptions.join(', '));
                 Docview.Models.Role.updateRole(role.id, {
@@ -316,7 +316,7 @@ steal(
                 roleRow = roleInfo.tr;
                 roleRow.model(roleInfo.model);
                 roleRow.hide();
-                console.log(roleInfo.model);
+                //console.log(roleInfo.model);
 
                 roleRow.after(this.view('edit_role',
                 {
@@ -360,6 +360,7 @@ steal(
             // Deleting a role
             '.delete-role click': function(el, ev) {                
                 $('#alerts div.alert').alert('close');
+                ev.preventDefault();
 
                 el.button('loading');
                 this.lastEl = el;
@@ -367,11 +368,12 @@ steal(
                     var roleInfo = this.tableController.getRowModelDataFor(el);
                     //roleInfo.tr.model(roleInfo.model);
                     //roleInfo.model.destroy();
-                    console.log(roleInfo.model);
+
+               
                     Docview.Models.Role.destroy(roleInfo.model.id,
                         this.proxy('roleDestroyed'),
                         this.proxy('roleDestroyFailed'));
-
+                        this.reload();
                 //el.closest('.role').model().destroy();
 
                 }

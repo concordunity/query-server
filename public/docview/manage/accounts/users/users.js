@@ -257,7 +257,8 @@ steal(
 
 	    var userInfo = this.tableController.getRowModelDataFor(el);
 
-            userRow = $(userInfo.tr);
+            userRow = userInfo.tr;
+            userRow.model(userInfo.model);
 	    userRow.hide();
 	    //console.log(userInfo.model);
             
