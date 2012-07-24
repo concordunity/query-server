@@ -1,0 +1,8 @@
+<div class="control-group">
+    <label class="control-label">用户角色</label>
+    <select name="role">
+    <% for(i   = 0;i<this.length;i++){ %>
+        <option value="<%= this[i].value%>"><%= this[i].name%></option>
+    <% } %>
+    </select>
+</div>
