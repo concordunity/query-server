@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>search_condition Widget Unit Test</title>
-</head>
-<body>
+    <head>
+        <meta charset="utf-8">
+        <title>search_condition Widget Unit Test</title>
+    </head>
+    <body>
+        <div class="well">
+            <div class="search-form">
 
-  <div class="container-fluid">
-  <div class="row-fluid">
-    <div id="search_condition-test">  </div>
-  </div>
-  </div>
- <script type='text/javascript' src='../../../steal/steal.js'></script>
- <script type='text/javascript'>
-steal('jquery/dom/route', 'docview/ui/search_condition', 'docview/models', 'docview/fixtures'
-).then(function($) {
-    var tmp_params = {
-        data :
-            {
-                org:[{name:"上海",value:32},{name:"南海",value:33}],
-                user:[{name:"张三",value:32},{name:"李四",value:33}],
-                role:[{name:"经理",value:32},{name:"高管",value:33}]
-            }
-    }
-    $("#search_condition-test").docview_ui_search_condition({ select_option : tmp_params});
-    var controller  =   $("#search_condition-test").controller();
-    //controller.submit(function(){});
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div id="search_condition-test">  </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type='text/javascript' src='../../../steal/steal.js'></script>
+        <script type='text/javascript'>
+            steal('jquery/dom/route', 'docview/ui/search_condition', 'docview/models', 'docview/fixtures'
+        ).then(function($) {
+                var tmp_params = {
+                    data :
+                        {
+                        org:[{name:"上海",value:32},{name:"南海",value:33}],
+                        user:[{name:"张三",value:32},{name:"李四",value:33}],
+                        role:[{name:"经理",value:32},{name:"高管",value:33}]
+                    }
+                }
+                $("#search_condition-test").docview_ui_search_condition({ select_option : tmp_params});
+                var controller  =   $("#search_condition-test").controller();
+                //controller.submit(function(){});
     
- }); 
- </script>
-        </body>
+            });
+        </script>
+    </body>
 </html>
 
