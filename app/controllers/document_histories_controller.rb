@@ -149,7 +149,7 @@ class DocumentHistoriesController < ApplicationController
     if !params[:from_date].blank? && !params[:to_date].blank?
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
     end
-    condition = {:doc_type => get_doc_type,:org => params[:frm_org]}
+    condition = {:doc_type => get_doc_type,:org => params[:frm_org]||""}
     
     query_stats = {}
     query_stats_by = {}
