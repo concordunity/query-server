@@ -36,7 +36,7 @@ steal(
             var select_arr = ["","org","user","role",""];
             var data = null;
             var select_value = select_arr[el_text.val()];
-            console.log("=====",select_value);
+            //console.log("=====",select_value);
             if(select_value != ""){
         $("#condition_view").html(this.view(select_value+"_select",this.options.select_option.data[select_value]));
         }
@@ -47,14 +47,14 @@ steal(
   
         /*
             if($(el).val()== 1){
-                console.log($(el).val());
+                //console.log($(el).val());
                 this.element.find('div.daterange-holder').docview_ui_daterange({
                     dateOptions : {
                         labelString: "日期"
                     }
                 });
             }else{
-                console.log($(el).val()); 
+                //console.log($(el).val());
                 $("div.daterange-holder").empty();
             }
             */
@@ -64,7 +64,7 @@ steal(
             //this.removeFormErrors(el);
             var cntrl = this.element.find('div.daterange-holder-2').controller();
             var dates = cntrl.getInputs(el);
-            console.log(dates);
+            //console.log(dates);
             if (dates === "") {
                 return;
             }
@@ -72,7 +72,7 @@ steal(
             var to_date = dates.to;
 
             var r = el.find('input[name="timerange"]:checked').val();
-            console.log(r);
+            //console.log(r);
             if (r == 0) {
                 from_date = "";
                 to_date = "";
@@ -92,16 +92,16 @@ steal(
             var org = el.find("select[name=org]").val();
             var doc_type = el.find("select[name=doc_type]").val();
             var years = el.find("select[name=years]").val();
-            console.log(org);
-            console.log(doc_type);
-            console.log(years);
+            //console.log(org);
+            //console.log(doc_type);
+            //console.log(years);
 
             select_hash = {
                 org:org,
                 doc_type:doc_type,
                 years:years
             };
-            console.log(select_hash);
+            //console.log(select_hash);
             
             $.ajax({
                 url : '/document_histories/dh_report',
