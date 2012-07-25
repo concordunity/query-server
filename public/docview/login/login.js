@@ -216,6 +216,7 @@ steal(
             
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
+            $('#document-details').hide();
             $('#document-details').docview_ui_details({clientState: this.options.clientState,
 						       searchMode: this.options.searchMode});
             $('#group-docs').docview_stats_group({clientState: this.options.clientState});
