@@ -246,7 +246,7 @@ class DocumentHistoriesController < ApplicationController
              from query_histories, users_roles
              where doc_id is not null and
                    #{condition[:org].nil? || condition[:org] == "" ? "true" : "org = "+condition[:org]} and
-                   #{condition[:doc_type].nil?  || condition[:doc_type] == "" ? "true" : "doc_type = "+condition[:doc_type]} and
+                   #{condition[:doc_type].nil?  || condition[:doc_type] == "" ? "true" : "doc_type in (#{condition[:doc_type].collect{|item| "'"+item+"'"}.join(",")})"} and
                    query_histories.user_id = users_roles.user_id
                    group by role_id}
     sql_results = ActiveRecord::Base.connection.execute(sql)
