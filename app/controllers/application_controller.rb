@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query]
+  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked ]
 
   #protect_from_forgery
 
@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
 
     if params[:user] and params[:user][:username]
       user = User.find_by_username(params[:user][:username])
-      if user and user.failed_attempts > 2 and user.locked_at.nil?
+      if user and user.failed_attempts == 3 and user.locked_at.nil?
         user.locked_at = Time.now
         user.save
       end

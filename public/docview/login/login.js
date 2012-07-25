@@ -40,6 +40,7 @@ steal(
     {
         init: function(options) {
             this.element.html(this.view('login_menu', {}));
+	    this.username = "";
         },
         '#login-form submit': function(el, ev) {
             ev.preventDefault();
@@ -48,6 +49,7 @@ steal(
             
             if (username !== "" && password !== "") {
                 // Lock the login button
+		this.username = username;
                 el.find('.btn-primary').button('loading');
                 
                 Docview.Models.User.login(
@@ -56,16 +58,39 @@ steal(
                 );
             }
         },
-        loginError: function(jqXHR, textStatus, errorThrown) {
-	    var message = $.i18n._('msg.incorrect_login');
-	    if (jqXHR.status == 500) {
-		message = '你到帐户已被临时禁用，须由管理员重置密码。';
+	loginLockedDone : function(data) {
+	    //console.log(data);
+	    if (data.locked == true) {
+		this.options.clientState.attr('alert', {
+                    type: 'error',
+                    heading: $.i18n._('msg.error'),
+                    message: '您到帐户被临时禁用，须由管理员重置密码。'
+		});
+		return;
 	    }
+	    this.showLoginErrorMessage();
+	},
+	showLoginErrorMessage : function() {
             this.options.clientState.attr('alert', {
                 type: 'error',
                 heading: $.i18n._('msg.error'),
-                message: message
-            });
+                message: $.i18n._('msg.incorrect_login')
+	    });
+	},
+        loginFinalError: function(jqXHR, textStatus, errorThrown) {
+	    this.showLoginErrorMessage();
+	},
+        loginError: function(jqXHR, textStatus, errorThrown) {
+	    var message = $.i18n._('msg.incorrect_login');
+	    if (this.username) {
+		Docview.Models.User.checkIfLocked(this.username,
+						 this.proxy("loginLockedDone"),
+						 this.proxy("loginFinalError"));
+	    // Check if a user is locked.
+		this.element.find('.btn-primary').button('reset');
+		return;
+	    }
+	    this.showLoginErrorMessage();
             this.element.find('.btn-primary').button('reset');
         },
         getAccessList: function(user) {

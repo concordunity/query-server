@@ -8,7 +8,7 @@ Dms::Application.routes.draw do
   post "/settings/update" => "settings#sys_setting"
   get "/settings" => "settings#index"
 
-
+  post "/users/isLocked" => "accounts#isUserLocked"
   #resources :document_histories
   post "/exportChart" => "monitoring_data#exportToPNG"
 
