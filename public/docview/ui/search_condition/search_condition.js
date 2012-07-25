@@ -17,15 +17,8 @@ steal(
                     labelString: "日期"
                 }
             });
-            $("#frm_org_select").html(this.view("frm_org_select",{}));
+
             $("#frm_docType_years_select").html(this.view("frm_docType_years",{}));
-            
-        //$("#org_select").html(this.view("org_select",this.options.select_option.data.org));
-        //$("#user_select").html(this.view("user_select",this.options.select_option.data.user));
-        //$("#role_select").html(this.view("role_select",this.options.select_option.data.role));
-        //<%== $.View("//docview/ui/search_condition/views/org_select.ejs",{})%>
-        //<%== $.View("//docview/ui/search_condition/views/user_select.ejs",{})%>
-        //<%== $.View("//docview/ui/search_condition/views/role_select.ejs",{})%>
         },
         /*
         show : function() {
