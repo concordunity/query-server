@@ -204,5 +204,4 @@ steal("jquery/dom/fixture", function() {
 	    return response;
 	}
     );
-
-		});
+});

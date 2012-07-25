@@ -82,6 +82,17 @@ $.Model('Docview.Models.User',
             error : error
         });
     },
+
+    checkIfLocked : function(username, success, error) {
+        return $.ajax({
+            url : '/users/isLocked',
+            type : 'POST',
+            data : { username : username },
+            dataType : 'json',
+            success : success,
+            error : error
+        });
+    },
     logout : function(success, error) {
         return $.ajax({
             url : '/users/logout',

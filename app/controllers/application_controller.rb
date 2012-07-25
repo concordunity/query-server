@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
-  before_filter :authenticate_user!, :except => [:welcome, :api_get_status, :api_query]
+  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked ]
+
   #protect_from_forgery
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
@@ -19,6 +20,22 @@ class ApplicationController < ActionController::Base
   end
   # exception.action, exception.subject                                             
   private
+
+  def check_user!
+    if authenticate_user!
+      return true;
+    end
+
+    if params[:user] and params[:user][:username]
+      user = User.find_by_username(params[:user][:username])
+      if user and user.failed_attempts == 3 and user.locked_at.nil?
+        user.locked_at = Time.now
+        user.save
+      end
+    end
+    return false
+  end
+
 
   def dupkey
     render json: { :status => :error, :message => "Duplicate index in database." }, :status => 422

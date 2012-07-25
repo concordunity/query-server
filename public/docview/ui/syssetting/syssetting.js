@@ -11,7 +11,6 @@ steal(
     $.Controller('Docview.Ui.Syssetting', {}, {
         init : function() {
             this.element.html(this.view('init'));
-
             $('.alert').alert();
             $('.alert').alert('close');
         },
@@ -39,29 +38,25 @@ steal(
             this.removeFormErrors(el);
             var form_tag = $(el).closest('.system-setting');
             ev.preventDefault();
-            var docId = $.trim(el.find('.query').val());
+
+	    var that = this;
             $.each(this.element.find("input.number"),function(index,value){
                 var el_text = $(value);
                 var docId = el_text.attr("value");
      
                 if (!/^\d+$/.test(docId)) {
-                  this.displayInputError(el,el_text.attr("name"),"只能是数字");
-                  //el_text.closest('.control-group').addClass('error');
-                  //el_text.after('<span class="help-inline"> test</span>');
-
+                    that.displayInputError(el, el_text, "只能是数字");
                   return false;
                 }
             });
 
-            if(false){
-                
-                ev.preventDefault();
-                Docview.Models.User.setSetting({},
-                    this.proxy('setDataOk'), this.proxy('failure'));
-            }
+            Docview.Models.User.setSetting(
+		{maxn : el.find('input[name="maxn"]').val(),
+		 checkout_period : el.find('input[name="checkout_period"]').val()},
+		this.proxy('setDataOk'),
+		this.proxy('failure'));
         },
-        displayInputError: function(form, name, message) {
-            var inputField = form.find('input[name="' + name + '"]');
+        displayInputError: function(form, inputField, message) {
             inputField.closest('.control-group').addClass('error');
             inputField.after('<span class="help-inline">' + message + '</span>');
         },
