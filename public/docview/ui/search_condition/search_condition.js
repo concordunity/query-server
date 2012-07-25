@@ -14,44 +14,13 @@ steal(
             this.element.html(this.view('init',this.options.select_option));
             this.element.find('div.daterange-holder-2').docview_ui_daterange({
                 dateOptions : {
-                    labelString: "日期"
+                    labelString: ""
                 }
             });
 
             $("#frm_docType_years_select").html(this.view("frm_docType_years",{}));
         },
-        /*
-        show : function() {
-        },
-        "#select_option change" : function(el,ev){
-            $("#condition_view").empty();
-            var el_text = $(el);
-            var select_arr = ["","org","user","role",""];
-            var data = null;
-            var select_value = select_arr[el_text.val()];
-            //console.log("=====",select_value);
-            if(select_value != ""){
-        $("#condition_view").html(this.view(select_value+"_select",this.options.select_option.data[select_value]));
-        }
 
-        },
-        */
-        ".daterange click" : function(el,ev){
-  
-        /*
-            if($(el).val()== 1){
-                //console.log($(el).val());
-                this.element.find('div.daterange-holder').docview_ui_daterange({
-                    dateOptions : {
-                        labelString: "日期"
-                    }
-                });
-            }else{
-                //console.log($(el).val());
-                $("div.daterange-holder").empty();
-            }
-            */
-        },
         'form.stats_stats submit' : function(el, ev) {
             ev.preventDefault();
             //this.removeFormErrors(el);
@@ -72,16 +41,6 @@ steal(
             }
             var select_hash = {};
             
-
-            /*
-            $($("#condition_view").find("select")).each(function(index,value){
-                var select_id = value.id;
-                var select_value = $("#"+select_id).val();
-                var select_text = $("#"+select_id).find("option:selected").text();
-                
-                select_hash[select_id]=select_value;
-            })
-            */
             var org = el.find("select[name=org]").val();
             var doc_type = el.find("select[name=doc_type]").val();
             var years = el.find("select[name=years]").val();
