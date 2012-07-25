@@ -149,15 +149,16 @@ class DocumentHistoriesController < ApplicationController
     if !params[:from_date].blank? && !params[:to_date].blank?
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
     end
-    condition = {:doc_type => get_doc_type,:org => params[:frm_org]||""}
-    
+
+    condition = {:doc_type => get_doc_type,:org => params[:condition_value][:org]||""}
+    p condition
     query_stats = {}
     query_stats_by = {}
 
     cat = params[:groupby]
     results[:groupby] = cat
-    org_condition = ((condition[:org].nil?) ? ["true"] : {:org => condition[:org]})
-    docType_condition = ((condition[:doc_type].nil?) ? ["true"] : {:doc_type => condition[:doc_type]})
+    org_condition = ((condition[:org].nil? || condition[:org] == "") ? ["true"] : {:org => condition[:org]})
+    docType_condition = ((condition[:doc_type].nil? || condition[:doc_type] == "") ? ["true"] : {:doc_type => condition[:doc_type]})
 
     function_params = [queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition]
 
@@ -307,9 +308,9 @@ class DocumentHistoriesController < ApplicationController
   end
 
   def get_doc_type
-    doc_type = params[:frm_docType]
+    doc_type = params[:condition_value][:doc_type]
 
-    years = params[:frm_years]
+    years = params[:condition_value][:years]
     if years.blank? && doc_type.blank?
       return ""
     end

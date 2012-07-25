@@ -82,9 +82,9 @@ steal(
 	    if (data.id && this.modelData[data.id] != undefined) {
 
 		data = this.modelData[data.id];
-		console.log("Getting the model .... ", data);
+		//console.log("Getting the model .... ", data);
 	    } else {
-		console.log("Not finding the model by id " , data);
+		//console.log("Not finding the model by id " , data);
 	    }
 	    return { tr : $(el_tr), 
 		     model : data };
