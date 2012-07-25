@@ -30,6 +30,8 @@ class AccountsController < ApplicationController
     respond_to do |format|
       if @user.update_attributes(params[:user])
         @user.role_ids = [params[:role].to_i]
+        @user.locked_at = nil
+        @user.failed_attempts = 0
         @user.save
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { head :no_content }
@@ -39,6 +41,16 @@ class AccountsController < ApplicationController
       end
     end
   end
+
+  def isUserLocked
+    user = User.find_by_username(params[:username])
+    if user and user.locked_at
+      render json: { :locked => true }
+      return
+    end
+    render json: { :locked => false }
+  end
+
 
   def get_links
     respond_to do |format|

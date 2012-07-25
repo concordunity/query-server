@@ -56,11 +56,15 @@ steal(
                 );
             }
         },
-        loginError: function(error) {
+        loginError: function(jqXHR, textStatus, errorThrown) {
+	    var message = $.i18n._('msg.incorrect_login');
+	    if (jqXHR.status == 500) {
+		message = '你到帐户已被临时禁用，须由管理员重置密码。';
+	    }
             this.options.clientState.attr('alert', {
                 type: 'error',
                 heading: $.i18n._('msg.error'),
-                message: $.i18n._('msg.incorrect_login')
+                message: message
             });
             this.element.find('.btn-primary').button('reset');
         },
