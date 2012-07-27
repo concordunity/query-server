@@ -1,0 +1,11 @@
+     <div class="control-group">
+      <label  class="control-label" for="frm_country_shipment">起运国</label>
+      <div class="controls">
+         <select id="frm_country_shipment"  name="country_shipment" style="width: 80px;">
+          <option value="">不限</option>
+            <%for(i=0;i<this.length;i++){%>
+              <option value="<%= this[i].code %>"><%= this[i].country_shipment %></option>
+              <%}%>
+      </select>
+      </div>
+    </div>
