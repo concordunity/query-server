@@ -37,11 +37,21 @@ steal(
             $(".select_checkbox_print").hide();
         },
         insertTitle : function(){
-          this.element.find(".title_list").html(this.view("title_list"));
+            this.element.find(".title_list").html(this.view("title_list"));
         },
-        /*
-        ".one_pdf click" : function(el,ev){
-            //alert(el.attr("src"));
+        addJpg : function(data){
+            var result = [];
+            var jpg_path = data.directory+"/"+data.metadata.doc_id+"/"+data.metadata.doc_id;
+            $.each(data.pages,function(index,value){
+                result.push({
+                    jpg:value,
+                    id:index+1,
+                    jpg_path:jpg_path
+                });
+            });
+            return result;
+        } ,
+        showJpg : function(el,ev){
             var data = {
                 id : el.attr("data-img"),
                 jpg : el.attr("src")
@@ -49,9 +59,8 @@ steal(
             $("#print_pdf").hide();
             $(".thumbnails").hide();
             $(".show_pdf").show();
-			
-            this.element.find('.show_pdf').html(this.view("show_pdf",data));
 
+            this.element.find('.show_pdf').html(this.view("show_pdf",data));
             this.element.find('div.image-viewer').iviewer({
                 zoom: "fit",
                 zoom_delta : 1.1,
@@ -60,43 +69,38 @@ steal(
             });
             this.element.find('div.image-viewer').iviewer('loadImage', el.attr("src"));
         },
-        */
-        addJpg : function(data){
-		var result = [];
-                var jpg_path = data.directory+"/"+data.metadata.doc_id+"/"+data.metadata.doc_id;
-		$.each(data.pages,function(index,value){
-                    result.push({jpg:value,id:index+1,jpg_path:jpg_path});
-                });
-		return result;
-	} ,
-        "#setList click" : function(el,ev){
-            
-            var controller = $("#list-test").controller();
-            var text_value = controller.addJpg($("#listContent").attr("value").split(","))
-            controller.list(text_value);
+
+        addData : function(data){
+            var text_value = this.addJpg(data);
+            this.list(text_value);
         },
-        "#print_page click" : function(el,ev){
+        printPage : function(){
             var page_arr = [];
             $.each($(".select_checkbox_print"),function(index,value){
-                //alert(value);
                 if(value.checked==true){
                     value.checked = false;
                     page_arr.push(value.value);
                 }
             });
-            alert(page_arr);
+            return page_arr;
         },
-        "#setHide click" : function(el,ev){
+        setHide : function(){
             $(".select_checkbox_print").hide();
         },
-        "#setShow click" : function(){
+        setShow : function(){
             $(".select_checkbox_print").show();
         },
+        returnMain : function(){
+            $(".thumbnails").show();
+            $(".show_pdf").hide();
+        }
+    /*
         ".return_main click" : function(el,ev){
             $(".thumbnails").show();
             $(".show_pdf").hide();
             $("#print_pdf").show();
         }
+        */
     });
 });
 

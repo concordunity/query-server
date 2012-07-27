@@ -13,7 +13,7 @@ steal("jquery/dom/fixture", function() {
              "phase":null,"serial_number":null,
              "updated_at":"2012-07-02T18:16:14+08:00","access_info":null},
 
-             "directory":"/docimages","label":"220120121012010018",
+             "directory":"/docimages_mod","label":"220120121012010018",
              "special_doc_info": "",
 
               "image_info":{

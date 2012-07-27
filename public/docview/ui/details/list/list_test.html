@@ -9,37 +9,54 @@
         </div>
 
 
-    <script type='text/javascript' src='../../../../steal/steal.js'></script>
-    <script type='text/javascript'>
-        steal(
-        'jquery/dom/route', 'docview/ui/details/list','docview/models'
+        <script type='text/javascript' src='../../../../steal/steal.js'></script>
+        <script type='text/javascript'>
+            steal(
+            'jquery/dom/route', 'docview/ui/details/list','docview/models'
         ).then(
             "docview/ui/details/list/list.css"
-    ).then(function($) {
+        ).then(function($) {
 
-            $("#list-test").docview_ui_details_list({});
-            var controller = $("#list-test").controller();
-            var jpg_datas = {
-                show_title: true,
-                directory:"/docimages_mod",
-                metadata :{
-                    doc_id:"220120121012010018"
+                $("#list-test").docview_ui_details_list({});
+                var controller = $("#list-test").controller();
+                var jpg_datas = {
+                    show_title: true,
+                    directory:"/docimages_mod",
+                    metadata :{
+                        doc_id:"220120121012010018"
+                    },
+                    pages:["pic000000.jpg", "pic000001.jpg", "pic000002.jpg","pic000003.jpg", "pic000004.jpg", "pic000005.jpg","pic000006.jpg","pic000007.jpg"]
+                }
+                controller.listTest(jpg_datas);
+            
+                controller.insertTitle();
+                $("#printPage").click(function(el, ev){
+                    var value = controller.printPage();
+                    $("#printResult").html("选择的页面是："+value);
+                });
+                $("#setHide").click(function(el, ev){
+                    controller.setHide();
+                });
+                $("#setShow").click(function(el, ev){
+                    controller.setShow();
+                });
+                $(".one_pdf").click(function(el, ev){
+                    controller.showJpg($(el),ev);
+                });
+                $("#returnMain").click(function(el, ev){
+                    controller.returnMain();
+                });
+                    
+                /*
+                Docview.Models.User.findAll({},
+                function(data){
+                console.log(data.length);
+                controller.list(data);
                 },
-                pages:["pic000000.jpg", "pic000001.jpg", "pic000002.jpg","pic000003.jpg", "pic000004.jpg", "pic000005.jpg","pic000006.jpg","pic000007.jpg"]
-            }
-            controller.listTest(jpg_datas);
-
-            controller.insertTitle();
-            /*
-            Docview.Models.User.findAll({},
-            function(data){
-            console.log(data.length);
-            controller.list(data);
-            },
-            {});
-             */
-        });
-    </script>
-</body>
+                {});
+                 */
+            });
+        </script>
+    </body>
 </html>
 
