@@ -240,13 +240,22 @@ steal(
 
 	    var isTax = undefined;
 	    var isMod = undefined;
+            var isMod_or_isTax = el.find('select[name="isMod_or_isTax"]').val();
 
+	    if (isMod_or_isTax == "isTax") {
+		isTax = "1";
+	    }
+	    if (isMod_or_isTax == "isMod") {
+		isMod = "1";
+	    }
+            /*
 	    if (el.find('input[name="isTax"]')[0].checked) {
 		isTax = "1";
 	    }
 	    if (el.find('input[name="isMod"]')[0].checked) {
 		isMod = "1";
 	    }
+            */
 
 	    this.options.clientState.attr('search', {
 		total : total,
@@ -258,6 +267,7 @@ steal(
 		edcEndDate : to_date,
 		isTax: isTax,
 		isMod : isMod,
+                isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
         },

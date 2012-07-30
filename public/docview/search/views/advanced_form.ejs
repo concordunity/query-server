@@ -29,10 +29,14 @@
    </div>
 
    <div class="control-group">
-   <div class="controls">
-<input type="checkbox" name="isMod" values="1"/>删改单 
-<input type="checkbox" name="isTax" values="1"/>退补税
-</div>
+        <label  class="control-label" for="frm_isMod_or_isTax">业务类型</label>
+       <div class="controls">            
+            <select id="frm_isMod_or_isTax"  name="isMod_or_isTax" style="width: 80px;">
+              <option value="">不限</option>
+              <option value="isMod">删改单</option>
+              <option value="isTax">退补税</option>
+            </select>
+        </div>
    </div>
 
    <div class="control-group daterange-holder">
