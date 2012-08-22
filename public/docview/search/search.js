@@ -53,6 +53,9 @@ steal(
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : { include_user : false }});
         },
+        clearFilters: function() {
+	    this.element.find(".filters :checkbox").attr('checked', false);
+	},
 	setFilters: function(el) {
             var t_filters = [];
 
@@ -119,6 +122,8 @@ steal(
 		    this.mainTabOn = false;
 		}
             }
+	    // we need to reset filters
+	    this.clearFilters();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
 	    if (this.mainTabOn) {
