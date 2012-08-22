@@ -39,9 +39,13 @@
         </div>
    </div>
 
-   <div class="control-group daterange-holder">
-</div>
+   <div class="control-group daterange-holder"></div>
+   <div class="controls">
+       <%== $.View('//docview/search/views/filters_form.ejs', {type: "advanced"}) %></div>
 </fieldset>
+
+<fieldset>
 <div class="row-fluid"> 
-    <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button>    <%== $.View('//docview/search/views/filters_form.ejs', {type: "advanced"}) %></div>
+    <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button>
+</fieldset>
 </form>
