@@ -32,11 +32,12 @@ steal(
 	    this.element.find('div.image-viewer').iviewer({
 		src : "/1px.gif",
 		zoom: "fit",
-		zoom_delta : 1.08,
+		zoom_delta : 1.05,
 		zoom_max : 100,
-		zoom_min : 40,
-		update_on_resize: false
+		zoom_min : 50,
+		update_on_resize: true
 	    });
+
 
 	    this.element.find('div.image-viewer').bind("contextmenu", function(e){  
 		return false;  
@@ -128,7 +129,13 @@ steal(
             var file = docInfo.pages[nthPage - 1];
 
 	    var imagePath = dir + "/" + docId + '/' + docId + '/' + file;	 
+
+	    //this.iviewerControl.loadImage(imagePath);
+
+	    //this.iviewerControl.fit();
+
 	    this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
+	    this.element.find('div.image-viewer').iviewer('center');//loadImage', imagePath);
 	},
         // document: {
         //    pages: [] // Array of pages

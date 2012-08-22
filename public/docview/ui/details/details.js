@@ -7,12 +7,13 @@ steal(
     'docview/models',
     'docview/ui/details/tree',
     'docview/ui/details/viewer',
-    'docview/ui/details/list'
-    ).then(
+    'docview/ui/details/list',
+    'docview/bootstrap/bootstrap.css'
+).then(
     './views/init.ejs',
-    'docview/docview.css',
-    "docview/ui/details/list/list.css"
-    ).then(function($) {
+    'docview/docview.css'
+    'docview/ui/details/list/list.css'
+).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {
             this.element.html(this.view('init'));
@@ -44,12 +45,25 @@ steal(
                 details_controller : this
             });
             this.listControl = this.element.find("#document-list").controller();
-            //this.listControl.list();
+            this.listControl.list();
+
+	    this.setViewingMode(0);
 
             this.to_show = false;
             //	    this.showing = false;
             this.hide();
         },
+	
+	// mode: 0 - in thumbnails 1 - in image viewer 
+	setViewingMode: function(mode) {
+	    if (mode == 0) {
+		$("#document-list").show();
+		$("#document-viewer").hide();
+	    } else {
+		$("#document-list").hide();
+		$("#document-viewer").show();
+	    }
+	},
         hide : function() {
             this.element.hide();
         // this.showing = false;
@@ -164,7 +178,8 @@ steal(
 	    
             var do_filter = false;
             var filter = this.options.clientState.attr('search').filters;
-            if (filter != undefined && filter.length > 0) {
+            if (filter != undefined && filter.length > 0 &&
+		this.options.searchMode.attr('mode') != 'multi') {
                 //console.log(filter);
                 do_filter = true;
             }
@@ -224,7 +239,9 @@ steal(
 
             var s_mode = this.options.searchMode.attr('mode');
 
-            if (s_mode == 'print' || s_mode == 'court' || (s_mode == 'single' &&this.options.clientState.attr('access').attr('manage_docs').print)) {
+            if (s_mode == 'print' || s_mode == 'court' ||
+		(s_mode == 'single' &&
+		 this.options.clientState.attr('access').attr('manage_docs').print)) {
                 if (doc_index == 1) {
                     this.viewerControl.switchOnPrintMenu();
                     this.viewerControl.addPrintMenu(this.documents[0].label, this.documents[0].label);
@@ -257,9 +274,9 @@ steal(
             // Start at page 1 by default
             //
             //暂时注释这段，改成List的功能
-            //this.showPage(0, 1);
+            this.showPage(0, 1);
             //console.log(currDoc);
-            this.listControl.listTest(currDoc);
+            //this.listControl.listTest(currDoc);
             //this.options.clientState.attr('document').attr('current', 1);
 
 
