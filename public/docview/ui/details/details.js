@@ -11,7 +11,7 @@ steal(
     'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs',
-    'docview/docview.css'
+    'docview/docview.css',
     'docview/ui/details/list/list.css'
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
