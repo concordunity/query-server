@@ -37,16 +37,14 @@ steal(
         /* @Prototype */
         {
             init: function() {
-                this.element.html(this.view('search_box', this.options.clientState
-                    .attr('access').attr('stats')));
-                this.element.hide();
+                this.element.html(
+		    this.view('search_box',
+			      this.options.clientState.attr('access').attr('stats')));
 
                 $("#div_query_form").html(this.view("query_form"));
                 //                $("#div_stats").html(this.view("stats"));
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
-    
-                this.element.show();
                 this.mainTabOn = false;
                 this.search_result = null;
                 // Hide box until route conditions are met
