@@ -19,4 +19,5 @@
 *~
 # Emacs file locks
 .#*
+*.swp
 
