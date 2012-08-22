@@ -24,7 +24,7 @@ steal("jquery/dom/fixture", function() {
 					"updated_at":"2012-07-02T13:14:16+08:00",
 					"access_info":null
 				},
-				"directory":"/docimages_mod",
+				"directory":"/docimages",
 				"label":"220120121012010018",
 				"special_doc_info":"",
 				"image_info":{
