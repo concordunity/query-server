@@ -11,7 +11,7 @@ steal(
     $.Controller('Docview.Ui.Syssetting', {}, {
         init : function() {
             this.element.html(this.view('init'));
-            $('.alert').alert();
+            //$('.alert').alert();
             $('.alert').alert('close');
         },
 
@@ -31,6 +31,7 @@ steal(
             //console.log(data);
             this.element.find('input[name="maxn"]').val(data.maxn);
             this.element.find('input[name="checkout_period"]').val(data.checkout_period);
+            this.element.find('input[name="max_queries_per_month"]').val(data.max_queries_per_month);
         },
         show : function() {
         },
@@ -49,10 +50,11 @@ steal(
                   return false;
                 }
             });
-
+	    
             Docview.Models.User.setSetting(
 		{maxn : el.find('input[name="maxn"]').val(),
-		 checkout_period : el.find('input[name="checkout_period"]').val()},
+		 checkout_period : el.find('input[name="checkout_period"]').val(),
+		 max_queries_per_month : el.find('input[name="max_queries_per_month"]').val()},
 		this.proxy('setDataOk'),
 		this.proxy('failure'));
         },
