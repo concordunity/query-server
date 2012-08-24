@@ -7,7 +7,7 @@ steal(
     'docview/models',
     'docview/ui/details/tree',
     'docview/ui/details/viewer',
-    'docview/ui/details/list',
+    'docview/ui/details/overview',
     'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs',
@@ -38,19 +38,17 @@ steal(
 	    
             this.viewerControl = this.element.find('#document-viewer').controller();
 
-            this.element.find('#document-list').docview_ui_details_list(
+            this.element.find('#document-list').docview_ui_details_overview(
             {
                 clientState : this.options.clientState,
                 searchMode : this.options.searchMode,
                 details_controller : this
             });
             this.listControl = this.element.find("#document-list").controller();
-            this.listControl.list();
 
 	    this.setViewingMode(0);
 
             this.to_show = false;
-            //	    this.showing = false;
             this.hide();
         },
 	
@@ -296,6 +294,9 @@ steal(
             this.showPage(0, data_img);
         },
         print_doc : function(doc_id, tag) {
+
+	    this.setViewingMode(0);
+
             var dFrame = $('#downloadFrame');
             $('#details-holder').hide();
 

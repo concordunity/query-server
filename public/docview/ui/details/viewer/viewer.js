@@ -4,9 +4,11 @@ steal(
     'jquery/controller/view',
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
-    'docview/models'
+    'docview/models',
+    'docview/bootstrap/bootstrap.css'
 ).then(
     'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js',
+    'docview/docview.css',
     'docview/bootstrap/bootstrap-dropdown.js'
 ).then(
     'libs/iviewer/jquery.mousewheel.min.js'
