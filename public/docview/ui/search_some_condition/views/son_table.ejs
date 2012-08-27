@@ -1,0 +1,18 @@
+
+<div class="span13"><input type="button" value="返回" class="return_main" /> </div>
+<table class="table table-condensed">
+<thead>
+<tr>
+        <th width="50%">报关单编号</th>
+        <th width="50%">电子数据</th>
+</tr>
+</thread>
+<tbody>
+<%for(var i =0;i<this.length;i++){%>
+<tr  <%= this[i]%>>
+    <td><%= this[i].declarations_number%></td>
+    <td><a href="#" class=''>查询</a></td>
+</tr>
+<% } %>
+</tbody>
+</table>

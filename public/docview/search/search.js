@@ -10,7 +10,9 @@ steal(
 //    'docview/bootstrap/bootstrap.css'
 //    'libs/datepicker/css/datepicker.css'
 )
-
+.then(
+    './views/advanced_form.css'
+)
 // View templates
 .then(
     './views/search_box.ejs'

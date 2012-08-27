@@ -1,41 +1,47 @@
 ﻿<form class="advanced form-horizontal">
+<div class="row-fluid">
+    <div id="search_tree" class="span2">
+      <ul class="nav nav-pills">
+        <li><a href="#single"  class="button-title" >单票查阅</a></li>
+        <li><a href="#multi"  class="button-title" >批量查阅</a></li>
+        <li><a href="#advanced"  class="button-title" >随机抽查阅</a></li>
+        <li><a href="#by_doc_source"  class="button-title" >单证暂存</a></li>
+        <li><a href="#personal_history"  class="button-title" >个人历史查阅</a></li>
+      </ul>
+    </div>
+    <div id="search-viewer" class="span10">
     <fieldset>
      <div class="control-group">
       <label  class="control-label" for="frm_total">随机抽样份数</label>
       <div class="controls">
-         <input name="total" id="frm_total" type="text"/>
+	 <input type="radio" name="frm_total" value="10" >10份</input>
+	 <input type="radio" name="frm_total" value="20" >20份</input>
+	 <input type="radio" name="frm_total" value="40" >40份</input>
+	 <input type="radio" name="frm_total" value="80" >80份</input>
+
+         <input name="total" id="frm_total" type="text" style='display:none'/>
+
       </div>
     </div>
 
- <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
- <%== $.View('//docview/ui/views/org.ejs', { label: '申报关区', name : 'org_applied'} ) %>
+ <%== $.View('//docview/ui/views/org_radio.ejs', { label: '理单关区', name : 'org'} ) %>
+ <%== $.View('//docview/ui/views/org_radio.ejs', { label: '申报关区', name : 'org_applied'} ) %>
 
     <div class="control-group">
       <label  class="control-label" for="frm_doctype">进出口种类</label>
       <div class="controls">
-      <select id="frm_docType"  name="doc_type" style="width: 80px;">
-          <option value="">不限</option>
-          <option value="JK">进口</option>
-          <option value="CK">出口</option>
-      </select> 年限
-        <select id="frm_years" name="years" style="width: 80px;">
-           <option value="">不限</option>
-           <option value="3">3年</option>
-           <option value="5">5年</option>
-           <option value="11">11年</option>
-       </select>
+      <input type="radio" name="frm_docType" value="" >不限</input>
+      <input type="radio" name="frm_docType" value="JK" >进口</input>
+      <input type="radio" name="frm_docType" value="CK" >出口</input>
       </div>
- 
    </div>
 
    <div class="control-group">
         <label  class="control-label" for="frm_isMod_or_isTax">业务类型</label>
        <div class="controls">            
-            <select id="frm_isMod_or_isTax"  name="isMod_or_isTax" style="width: 80px;">
-              <option value="">不限</option>
-              <option value="isMod">删改单</option>
-              <option value="isTax">退补税</option>
-            </select>
+	    <input type="radio" name="frm_isMod_or_isTax" value="" >不限</input>
+	    <input type="radio" name="frm_isMod_or_isTax" value="isMod" >删改单</input>
+	    <input type="radio" name="frm_isMod_or_isTax" value="isTax" >退补税</input>
         </div>
    </div>
 
@@ -48,4 +54,6 @@
 <div class="row-fluid"> 
     <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button>
 </fieldset>
+</div>
+</div>
 </form>

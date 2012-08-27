@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>search_some_condition Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="search_some_condition-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('docview/models','docview/fixtures','jquery/dom/route', 'docview/ui/search_some_condition').then(function($) {
+    $("#search_some_condition-test").docview_ui_search_some_condition();
+ }); 
+ </script>
+        </body>
+</html>
+

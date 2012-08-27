@@ -1,0 +1,35 @@
+<h1>Listing import_most_time_org_doc_infos</h1>
+
+<table>
+  <tr>
+    <th>Declarations number</th>
+    <th>Mode transport</th>
+    <th>Release time</th>
+    <th>Accept declaration time</th>
+    <th>Overall operating hours hours</th>
+    <th>Declaration customs code</th>
+    <th>Declaration customs</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @import_most_time_org_doc_infos.each do |import_most_time_org_doc_info| %>
+  <tr>
+    <td><%= import_most_time_org_doc_info.declarations_number %></td>
+    <td><%= import_most_time_org_doc_info.mode_transport %></td>
+    <td><%= import_most_time_org_doc_info.release_time %></td>
+    <td><%= import_most_time_org_doc_info.accept_declaration_time %></td>
+    <td><%= import_most_time_org_doc_info.overall_operating_hours_hours %></td>
+    <td><%= import_most_time_org_doc_info.declaration_customs_code %></td>
+    <td><%= import_most_time_org_doc_info.declaration_customs %></td>
+    <td><%= link_to 'Show', import_most_time_org_doc_info %></td>
+    <td><%= link_to 'Edit', edit_import_most_time_org_doc_info_path(import_most_time_org_doc_info) %></td>
+    <td><%= link_to 'Destroy', import_most_time_org_doc_info, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Import most time org doc info', new_import_most_time_org_doc_info_path %>

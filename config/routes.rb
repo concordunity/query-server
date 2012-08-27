@@ -1,5 +1,17 @@
 Dms::Application.routes.draw do
 
+  get "/get_son_table" => "search_condition#get_son_table"
+
+  get "/search_condition" => "search_condition#search_condition"
+
+  resources :normal_import_price_less_records
+
+  post "/upload_file" => "upload_file#import_excel"
+
+  resources :zero_find_check_infos
+
+  resources :import_most_time_org_doc_infos
+
   post "/search_result/excle" => "monitoring_data#export_search"
   post "/status/zip_files" => "queries_controller#zip_files_status"
 

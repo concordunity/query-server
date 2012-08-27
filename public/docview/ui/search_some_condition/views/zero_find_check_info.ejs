@@ -1,0 +1,24 @@
+<div class="span13"> </div>
+
+<table class="table table-condensed">
+<thead>
+<tr>
+	<th width="20%">企业名称</th>
+	<th width="20%">报关单数</th>
+	<th width="20%">查验数</th>
+	<th width="20%">查验率%</th>
+	<th width="20%">报关单明细</th>
+</tr>
+</thread>
+<tbody>
+<%for(var i =0;i<this.length;i++){%>
+<tr  <%= this[i]%>>
+    <td><%= this[i].operating_name%></td>
+    <td><%= this[i].number_import_export_declarations%></td>
+    <td><%= this[i].number_import_export_inspection%></td>
+    <td><%= this[i].import_export_inspection_rate%></td>
+    <td><a href="#" class='son_table'>查询</a></td>
+</tr>
+<% } %>
+</tbody>
+</table>

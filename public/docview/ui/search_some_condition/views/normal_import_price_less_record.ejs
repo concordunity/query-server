@@ -1,0 +1,28 @@
+<div class="span13"> </div>
+
+<table class="table table-condensed">
+<thead>
+<tr>
+        <th width="15%">报关单编号</th>
+        <th width="15%">商品编号</th>
+        <th width="14%">商品序号</th>
+        <th width="14%">商品数量</th>
+        <th width="14%">商品单价</th>
+        <th width="14%">全国均价</th>
+        <th width="14%">电子数据</th>
+</tr>
+</thread>
+<tbody>
+<%for(var i =0;i<this.length;i++){%>
+<tr  <%= this[i]%>>
+    <td><%= this[i].declarations_number%></td>
+    <td><%= this[i].product_code%></td>
+    <td><%= this[i].product_number%></td>
+    <td><%= this[i].first_legal_quantity%></td>
+    <td><%= this[i].price%></td>
+    <td><%= this[i].national_average_price%></td>
+    <td><a href="#">查询</a></td>
+</tr>
+<% } %>
+</tbody>
+</table>
