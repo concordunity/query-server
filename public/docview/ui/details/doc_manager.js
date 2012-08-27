@@ -91,6 +91,9 @@ DocManager.prototype.gotoPrevPage = function() {
     return this.getIndexedPage(this.docIndex, this.pageIndex - 1);
 };
 
+DocManager.prototype.getNumDocs = function() {
+    return this.documents.length;
+}
 
 
 

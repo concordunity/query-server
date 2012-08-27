@@ -57,6 +57,19 @@ function Document(docInfo, filters) {
     });
 }
 
+Document.prototype.getThumbnailPaths = function() {
+    var path = this.directory + "/" + this.docId + '/' + this.docId + '/thumb/t_';
+
+    var ret = []
+    for (i=0; i< this.pages.length; i++) {
+	ret.push(path + this.pages[i])
+    }
+    return ret;
+}
+
+Document.prototype.getDocId = function() {
+    return this.docId;
+}
 // index is 0-based.
 Document.prototype.getImagePathFor = function(index) {
     if (index < 0) {

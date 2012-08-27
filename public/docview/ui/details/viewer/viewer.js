@@ -31,14 +31,6 @@ steal(
             this.element.find('.document-page').html(
                 this.view('image'));
 
-	    this.element.find('div.image-viewer').iviewer({
-		src : "/1px.gif",
-		zoom: "fit",
-		zoom_delta : 1.05,
-		zoom_max : 100,
-		zoom_min : 50,
-		update_on_resize: true
-	    });
 
 
 	    this.element.find('div.image-viewer').bind("contextmenu", function(e){  
@@ -46,9 +38,24 @@ steal(
 	    });
 
 	    this.switchOffPrintMenu();
-
+	    this.pluginCreated = false;
 	    // this.element.find('.dropdown').hide();
         },
+
+	createPlugin: function(imagePath) {
+	    if (this.pluginCreated) {
+		return;
+	    }
+	    this.pluginCreated = true;
+	    this.element.find('div.image-viewer').iviewer({
+		src : imagePath,
+		zoom: "fit",
+		zoom_delta : 1.05,
+		zoom_max : 100,
+		zoom_min : 50,
+		update_on_resize: true
+	    });
+	},
 
 	setMode : function(s_mode) {
 	    //this.showing = true;
@@ -132,7 +139,11 @@ steal(
 //	},
 	// nthDoc is 0-based, and nthPage is 1-based.
 	showImage : function (imagePath) {
-	    this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
+	    if (this.pluginCreated) {
+		this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
+	    } else {
+		this.createPlugin(imagePath);
+	    }
 	},
 /*	showPage: function(nthDoc, nthPage) {
 	    $('#pageno').html('第 '+nthPage+' 页');

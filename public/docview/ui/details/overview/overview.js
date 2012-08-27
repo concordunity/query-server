@@ -2,7 +2,8 @@ steal(
     'jquery/controller',
     'jquery/view/ejs',
     'jquery/controller/view',
-    'docview/bootstrap/bootstrap.css'
+    'docview/bootstrap/bootstrap.css',
+    'docview/ui/details/document.js'
 ).then(
     './views/init.ejs'
 ).then(function($) {
@@ -37,8 +38,8 @@ steal(
                 groups: groups
             };
 	 */
-	showDoc : function(docIndex,docInfo, printString) {
-	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : docInfo.pages, print: printString } ));
+	showDoc : function(docIndex, docInfo, printString) {
+	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : docInfo.getThumbnailPaths(), print: printString } ));
 	},
 
         show : function() {

@@ -115,11 +115,11 @@ steal(
 	showPage : function(index, page) {
 	    console.log("show page ", page, " doc index ", index);
 	    var pageInfo = this.docManager.gotoPage(index, page);
+            $("#document-overview").hide();
+            $("#document-viewer").show();
 	    if (pageInfo) {
 		this.viewerControl.showImage(pageInfo.imagePath);
 	    }
-            $("#document-overview").hide();
-            $("#document-viewer").show();
 	},
 
         // This will reset the documents data.
@@ -163,16 +163,17 @@ steal(
 		this.options.clientState.attr('searchMode') != 'multi') {
                 filters = filter;
             }
+	    var docIndex = this.docManager.getNumDocs();
 
 	    var doc = new Document(data, filters);
 	    this.docManager.addDocument(doc);
 	    if (doc.hasSpecialDoc()) {
-		this.addSpecialDoc(docid);
+		this.addSpecialDoc(doc.getDocId());
 	    }
 
 	    // Add tree.
 	    // TODO(weidong)
-	    this.treeControl.addDocTree(doc, 0);
+	    this.treeControl.addDocTree(doc, docIndex);
            // this.showPage(0, 1);
             this.showOverview(0);
 
