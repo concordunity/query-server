@@ -20,7 +20,7 @@ function Document(docInfo, filters) {
 
     this.label = docInfo.label;
     var subgroup = new Array();
-    console.log("filter is", filters);
+    //console.log("filter is", filters);
     var doFiltering = (filters);
     var prevType = undefined;
     var prevGroupName = "";
