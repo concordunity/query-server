@@ -7,8 +7,8 @@
 
  %>
 <div class="well">
-<button class="btn btn-large btn-primary"> <%= showPrint %>(所有页面)</button>
-<button class="btn btn-large btn-primary"> <%= showPrint %>(选中页面)</button>
+<button class="btn btn-large btn-primary print-all" data-doc-index=<%= doc_index %>> <%= showPrint %>(所有页面)</button>
+<button class="btn btn-large btn-primary print-selected" data-doc-index=<%= doc_index %>> <%= showPrint %>(选中页面)</button>
 </div>
 <%}%>
 

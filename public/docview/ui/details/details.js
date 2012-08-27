@@ -121,7 +121,25 @@ steal(
 		this.viewerControl.showImage(pageInfo.imagePath);
 	    }
 	},
-
+	'.print-all click' :function (el, ev) {
+	    
+	    console.log(el.data('doc-index'), " to print all");
+	},
+	'.print-selected click' :function (el, ev) {
+	    console.log(el.data('doc-index'), " to print selected");
+	    var page_arr = [];
+	    $.each($(".select_checkbox_print"),function(index,value){
+                if(value.checked==true){
+                    value.checked = false;
+                    page_arr.push(value.value);
+                }
+            });
+	    if (page_arr.length < 1) {
+		alert('请至少选择一页打印');
+	    } else {
+		
+	    }
+	},
         // This will reset the documents data.
         queryDoc : function(docid) {
             this.treeControl.clearDocTree();
