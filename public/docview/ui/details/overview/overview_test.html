@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Overview Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="overview-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/details/overview').then(function($) {
+
+   $('#overview-test').docview_ui_details_overview();
+   var controller = $("#overview-test").controller();
+   var docInfo = {
+      show_title: true,
+      directory:"/docimages_mod",
+      metadata :{
+                  doc_id:"220120121012010018"
+      },
+      pages:["pic000000.jpg", "pic000001.jpg", "pic000002.jpg","pic000003.jpg", "pic000004.jpg", "pic000005.jpg","pic000006.jpg","pic000007.jpg"]
+      };
+   controller.showDoc(docInfo);
+
+ }); 
+ </script>
+        </body>
+</html>
+
