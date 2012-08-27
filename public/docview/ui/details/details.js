@@ -7,24 +7,29 @@ steal(
     'docview/models',
     'docview/ui/details/tree',
     'docview/ui/details/viewer',
-    'docview/ui/details/list',
+    'docview/ui/details/overview',
     'docview/bootstrap/bootstrap.css'
 ).then(
+    './doc_manager.js',
+    './document.js',
     './views/init.ejs',
+<<<<<<< HEAD
     'docview/docview.css',
     'docview/ui/details/list/list.css'
+=======
+    'docview/docview.css'
+>>>>>>> 09596583d09aa9bb2d17f0c051cf72d5c2b727a0
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {
             this.element.html(this.view('init'));
-            this.documents = new Array();
-            this.docIndex = 0;
+            this.docManager = new DocManager();
 
-            this.pageIndex = 1;
             this.element.find('#document-tree').docview_ui_details_tree(
             {
                 clientState : this.options.clientState,
-                details_controller : this
+                docManager: this.docManager,
+		details_controller: this
             });
 
             this.treeControl = this.element.find('#document-tree').controller();
@@ -32,38 +37,23 @@ steal(
             this.element.find('#document-viewer').docview_ui_details_viewer(
             {
                 clientState : this.options.clientState,
-                searchMode : this.options.searchMode,
-                details_controller : this
+                docManager: this.docManager
             });
 	    
             this.viewerControl = this.element.find('#document-viewer').controller();
 
-            this.element.find('#document-list').docview_ui_details_list(
+            this.element.find('#document-overview').docview_ui_details_overview(
             {
                 clientState : this.options.clientState,
-                searchMode : this.options.searchMode,
-                details_controller : this
+                docManager: this.docManager,
+		details_controller: this
             });
-            this.listControl = this.element.find("#document-list").controller();
-            this.listControl.list();
-
-	    this.setViewingMode(0);
+            this.overview = this.element.find('#document-overview').controller();
 
             this.to_show = false;
-            //	    this.showing = false;
             this.hide();
         },
 	
-	// mode: 0 - in thumbnails 1 - in image viewer 
-	setViewingMode: function(mode) {
-	    if (mode == 0) {
-		$("#document-list").show();
-		$("#document-viewer").hide();
-	    } else {
-		$("#document-list").hide();
-		$("#document-viewer").show();
-	    }
-	},
         hide : function() {
             this.element.hide();
         // this.showing = false;
@@ -98,21 +88,71 @@ steal(
             if (!this.to_show) {
                 return;
             }
-            this.viewerControl.setMode(this.options.searchMode.attr('mode'));
+            this.viewerControl.setMode(this.options.clientState.attr('searchMode'));
             $('#details-holder').show();
 	    
             this.element.show();
         },
+	getPrintString: function() {
+	    var mode = this.options.clientState.attr('searchMode');
+	    if (mode == 'print' || (mode == 'single' &&
+				    this.options.clientState.attr('access').attr('manage_docs').print)) {
+		return 'print';
+	    }
 
+	    if (mode == 'court') {
+		return 'court'
+	    }
+
+	    return '';
+	},
+	showOverview : function(docIndex) {
+	    console.log("show overview for ", docIndex);
+	    var docInfo = this.docManager.getNthDoc(docIndex);
+
+	    if (docInfo) {
+		$('#document-viewer').hide();
+		$('#document-overview').show();
+
+		this.overview.showDoc(docIndex, docInfo, this.getPrintString());
+		//this.print_doc('test', 't');
+	    }
+	},
+	showPage : function(index, page) {
+	    console.log("show page ", page, " doc index ", index);
+	    var pageInfo = this.docManager.gotoPage(index, page);
+            $("#document-overview").hide();
+            $("#document-viewer").show();
+	    if (pageInfo) {
+		this.viewerControl.showImage(pageInfo.imagePath);
+	    }
+	},
+	'.print-all click' :function (el, ev) {
+	    
+	    console.log(el.data('doc-index'), " to print all");
+	},
+	'.print-selected click' :function (el, ev) {
+	    console.log(el.data('doc-index'), " to print selected");
+	    var page_arr = [];
+	    $.each($(".select_checkbox_print"),function(index,value){
+                if(value.checked==true){
+                    value.checked = false;
+                    page_arr.push(value.value);
+                }
+            });
+	    if (page_arr.length < 1) {
+		alert('请至少选择一页打印');
+	    } else {
+		
+	    }
+	},
         // This will reset the documents data.
         queryDoc : function(docid) {
-            this.element.find('#document-tree').docview_ui_details_tree('clearDocTree');
-            this.documents = new Array();
-            this.docIndex = 0;
-            this.pageIndex = 1;
+            this.treeControl.clearDocTree();
+	    this.docManager.clear();
+
             this.addDoc(docid);
             this.to_show = true;
-            this.viewerControl.switchOffPrintMenu();
         },
 
         addDoc : function(docid) {
@@ -127,47 +167,11 @@ steal(
         getDoc : function(nth) {
             return this.documents[nth];
         },
-
-        // Only for internal use. DO NOT call from outside of this class.
-        showPageInternal : function(docIndex, nth) {
-            this.docIndex = docIndex;
-            this.pageIndex = nth;
-            this.viewerControl.showPage(this.docIndex, this.pageIndex);
-        },
-        showPage : function(docIndex, nth) {
-            // First do some input validation
-            if (docIndex < this.documents.length) {
-
-                var numPages = this.documents[docIndex].pages.length;
-                if (nth > 0 && nth <= numPages) {
-                    this.showPageInternal(docIndex, nth);
-                    return;
-                }
-
-                // Now handle out of range for nth page.
-                if (nth == numPages + 1) {
-                    // Is there a next document??
-                    if (this.docIndex != (this.documents.length - 1)) {
-                        this.showPageInternal(docIndex + 1, 1);
-                    }
-                } else if (nth == 0) {
-                    if (docIndex > 0) {
-                        docIndex --;
-                        var numPages = this.documents[docIndex].pages.length;
-                        this.showPageInternal(docIndex, numPages);
-                    }
-                }
-            }
-        },
-        showNextPage : function() {
-            this.showPage(this.docIndex, this.pageIndex + 1);
-        },
-
-        showPreviousPage : function() {
-            this.showPage(this.docIndex, this.pageIndex - 1);
-        },
         addDocumentData : function(data) {
             this.show();
+
+	    
+
             // Load all data
             /*document: {
               pages: [] // Array of pages
@@ -176,68 +180,30 @@ steal(
               groups: [subgroup, subgroup, ...] // groups of images
 	      }*/
 	    
-            var do_filter = false;
+	    var filters = "";
+
             var filter = this.options.clientState.attr('search').filters;
             if (filter != undefined && filter.length > 0 &&
-		this.options.searchMode.attr('mode') != 'multi') {
-                //console.log(filter);
-                do_filter = true;
+		this.options.clientState.attr('searchMode') != 'multi') {
+                filters = filter;
             }
-            var metadata = data.doc_info;
+	    var docIndex = this.docManager.getNumDocs();
 
-            var groups = new Array();
-            var subgroup = new Array();
-            var pages = new Array();
-            var images = data.image_info.T_blog;
-            var prevType;
-            var prevGroupName;
+	    var doc = new Document(data, filters);
+	    this.docManager.addDocument(doc);
+	    if (doc.hasSpecialDoc()) {
+		this.addSpecialDoc(doc.getDocId());
+	    }
 
-            for (var i = 0; i < images.length; i++) {
-                var pt = images[i].TCode;
-		
-                if (do_filter && pt!=0 && $.inArray(pt, filter) < 0) {
-                    //console.log("passing page ... ", pt);
-                    continue;
-                }
-                if (pt !== prevType && prevType !== undefined) {
-                    // Push previous subgroup and type into groups
-                    groups.push({
-                        type: prevType,
-                        name: prevGroupName,
-                        pages: subgroup
-                    });
-                    subgroup = new Array();
-                }
-                subgroup.push(images[i].FN);
-                pages.push(images[i].FN);
+	    // Add tree.
+	    // TODO(weidong)
+	    this.treeControl.addDocTree(doc, docIndex);
+           // this.showPage(0, 1);
+            this.showOverview(0);
 
-                if (images[i].BT) {
-                    subgroup.push(images[i].BT);
-                    pages.push(images[i].BT);
-                }
-                prevType = pt;
-                prevGroupName = images[i].T;
-            }
-            // Push our remaining subgroup into groups
-            groups.push({
-                type: prevType,
-                name: prevGroupName,
-                pages: subgroup
-            });
+	    /*
 
-            var label = data.label;
-
-            var currDoc = {
-                label: label,
-                pages: pages,
-                directory: data.directory,
-                metadata: metadata,
-                groups: groups
-            };
-
-            var doc_index = this.documents.length;
-
-            var s_mode = this.options.searchMode.attr('mode');
+            var s_mode = this.options.clientState.attr('searchMode');
 
             if (s_mode == 'print' || s_mode == 'court' ||
 		(s_mode == 'single' &&
@@ -250,7 +216,8 @@ steal(
                     this.viewerControl.addPrintMenu('mod_' + this.documents[0].label, label);
                 }
             }
-            this.documents.push(currDoc);
+	    */
+/*
             this.element.find('#document-tree').docview_ui_details_tree('addDocTree', currDoc, doc_index);
 	    
             var docid = metadata.doc_id;
@@ -288,20 +255,33 @@ steal(
                 //this.addSpecialDoc('222520121250176875');
                 this.addSpecialDoc(docid);
             }
-        },
-        ".one_pdf click" : function(el,ev){
-            $("#document-list").hide();
-            $("#document-viewer").show();
-            var data_img = $(el).attr("data-img");
-            this.showPage(0, data_img);
+*/
         },
         print_doc : function(doc_id, tag) {
+
+//	    this.setViewingMode(0);
+
             var dFrame = $('#downloadFrame');
             $('#details-holder').hide();
 
             dFrame.show();
+	    var content = 'this is a test';
 
-            dFrame.attr('src', this.viewerControl.getPrintUrl(doc_id, tag));	    
+	    dFrame.contents().find("div").html(this.view("printx"));
+/*
+var doc = dFrame.document;
+    if(dFrame.contentDocument)
+        doc = dFrame.contentDocument; // For NS6
+    else if(dFrame.contentWindow)
+        doc = dFrame.contentWindow.document; // For IE5.5 and IE6
+
+	    console.log("ffffffffffffffff", doc);
+    // Put the content in the iframe
+    doc.open();
+    doc.writeln(content);
+    doc.close();
+*/
+//            dFrame.attr('src', this.viewerControl.getPrintUrl(doc_id, tag));	    
         },
         // Need to work with IE7, where href attr is the whole URL.
         getHrefNoHash: function(el) {
@@ -313,13 +293,13 @@ steal(
 
             return shref.substring(pos + 1);
         },
+
         'li.single-print .bprint click' : function(el, ev) {
             //console.log("bprint is clicked ....................", el, ev);
             this.print_doc($.route.attr('id'), '');
 
         },
 	
-
         '.dropdown-menu li a click' : function(el, ev) {
             ev.preventDefault();
             var href = this.getHrefNoHash(el);

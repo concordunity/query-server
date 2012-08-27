@@ -1,4 +1,5 @@
-﻿<% var pageCount = 1; %>
+﻿<li><font size=-1><a class="doc-overview" href="#<%= doc_index %>"><%= doc_label %></a></font></li>
+<% var pageCount = 1; %>
 <% for (var i = 0; i < groups.length; i++) { %>
     <li class="nav-header type-<%= groups[i].type %>" data-toggle="collapse" data-target="#tree-group-<%= doc_index %>-<%= i %>">
         <%= groups[i].name %> (<%= groups[i].pages.length %>)

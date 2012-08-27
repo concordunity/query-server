@@ -34,19 +34,16 @@
                 },
                 access: {
                     manage_docs: {
-                        print: false,
-                        testify: false
+                        print: true,
+                        testify: true
                     }
-                }
+                },
+	        searchMode: 'print'
             });
 
-            var s_mode = new $.Observe({
-                mode: 'single'
-            });
 
-            $('#details-test').docview_ui_details({ clientState: state,
-                searchMode: s_mode
-            });
+
+            $('#details-test').docview_ui_details({ clientState: state });
 
             var controller = $('#details-test').controller();
             controller.queryDoc('220120121012010018');

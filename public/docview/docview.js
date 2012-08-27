@@ -69,15 +69,13 @@
             document: {
                 pages: [],
                 directory: ""
-            }
+            },
+	    searchMode: "single"
         });
-        
-	    var s_mode = new $.Observe({
-		mode : 'single'
-	    });
+            
             $('#alerts').docview_alerts({clientState: state});
-            $('#login').docview_login({clientState: state,
-				       searchMode : s_mode});
+            $('#login').docview_login({clientState: state});
+
         
     var i18n_dict = {
        'search_by_id' : '按单证查询',

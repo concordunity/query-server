@@ -154,7 +154,7 @@ steal(
         },
         '.single submit': function(el, ev) {
             ev.preventDefault();
-	    this.options.searchMode.attr('mode', 'single');
+	    this.options.clientState.attr('searchMode', 'single');
 
 	    var ctrl = $('form.single div.single_holder').controller();
 	    
@@ -179,7 +179,7 @@ steal(
 	},
         '.multi submit': function(el, ev) {
             ev.preventDefault();
-	    this.options.searchMode.attr('mode', 'multi');
+	    this.options.clientState.attr('searchMode', 'multi');
 	    $('#search-results').docview_search_results('clearResults');
 
 	    var self = this;
@@ -202,7 +202,7 @@ steal(
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
 	    this.setFilters(el);
-            this.options.searchMode.attr('mode', 'by_doc_source');
+            this.options.clientState.attr('searchMode', 'by_doc_source');
 
 	    var cntrl = this.element.find('div.daterange-holder-src').controller();
 	    var dates = cntrl.getInputs(el);
@@ -224,7 +224,7 @@ steal(
         '.advanced submit': function(el, ev) {
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
-            this.options.searchMode.attr('mode', 'advanced');
+            this.options.clientState.attr('searchMode', 'advanced');
             this.removeFormErrors(el);
 
             this.setFilters(el);

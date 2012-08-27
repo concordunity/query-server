@@ -128,14 +128,14 @@ steal(
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal === "multi" && oldVal != "advanced") {
                 this.element.show();
-		if ('multi' != this.options.searchMode.attr('mode')) {
+		if ('multi' != this.options.clientState.attr('searchMode')) {
 		    this.clearResults();
 		}
             } else if ( newVal === "advanced" && oldVal != "multi") {
 
 		this.element.show();
 
-		if ('advanced' != this.options.searchMode.attr('mode')) {
+		if ('advanced' != this.options.clientState.attr('searchMode')) {
 		    this.clearResults();
 		}
 	    } else {

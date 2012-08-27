@@ -145,6 +145,13 @@ class DocumentsController < ApplicationController
     end
 
     limitN=200
+
+    u=Setting.find_by_name('maxn')
+    if u
+      limitN = u.value.to_i;
+    end
+
+
     if !params[:total].blank?
       limitN = params[:total].to_i
     end

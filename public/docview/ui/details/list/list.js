@@ -5,18 +5,18 @@ steal(
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
     'docview/models'
-    ).then(
+).then(
     'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js'
-    ).then(
+).then(
     'libs/iviewer/jquery.mousewheel.min.js'
-    ).then (
+).then (
     './views/viewer.ejs',
     './views/image.ejs',
     'libs/iviewer/jquery.iviewer.css',
     'libs/iviewer/jquery.iviewer.js'
-    ).then(
+).then(
     'docview/bootstrap/bootstrap.css'
-    ).then(
+).then(
     './views/init.ejs',
     './views/list.ejs',
     './views/column.ejs',

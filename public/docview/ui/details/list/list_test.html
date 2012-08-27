@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+  <meta charset="utf-8" />
         <title>List Widget Unit Test</title>
     </head>
     <body>
         <div id="list-test">
-
         </div>
-
 
         <script type='text/javascript' src='../../../../steal/steal.js'></script>
         <script type='text/javascript'>
@@ -16,10 +15,9 @@
         ).then(
             "docview/ui/details/list/list.css"
         ).then(function($) {
-
                 $("#list-test").docview_ui_details_list({});
                 var controller = $("#list-test").controller();
-                var jpg_datas = {
+                var jpg_data = {
                     show_title: true,
                     directory:"/docimages_mod",
                     metadata :{
@@ -30,6 +28,7 @@
                 controller.listTest(jpg_datas);
             
                 controller.insertTitle();
+
                 $("#printPage").click(function(el, ev){
                     var value = controller.printPage();
                     $("#printResult").html("选择的页面是："+value);

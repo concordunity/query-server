@@ -15,37 +15,37 @@
     
   <script type='text/javascript' src='../../../../steal/steal.js'></script>
   <script type='text/javascript'>
-
+steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/ui/details/document.js', 'docview/ui/details/tree').then(function ($) {
+ $('#document-tree').docview_ui_details_tree();
+ var ctrl =  $('#document-tree').controller();
 var doc_index = 1;
 
 function addDoc(txtValue) {
-    var doc_id = "12121212121212" + doc_index;
-    var ctrl = $('div#document-tree').controller();
+     var response = {"doc_info":
+            {"checkedout":true,
+             "created_at":"2012-03-21T13:19:34+08:00",
+             "doc_id":"22012012101201001" + doc_index,
+             "doc_source":null,"doc_type":null,"edc_date":"2012-03-21",
+             "folder_id":3,"id":13,"inquired":false,"label":null,
+             "modified":null,"org":"2218","org_applied":null,"pages":5,
+             "phase":null,"serial_number":null,
+             "updated_at":"2012-07-02T18:16:14+08:00","access_info":null},
 
-    var groups = new Array();
-    var subgroup = new Array();
-    var pages = new Array();
-    var label = doc_id;
-    pages.push("pic00001.jpg");
-    subgroup.push("pic00001.jpg");
-    pages.push("pic00002.jpg");
-    subgroup.push("pic00002.jpg");
-    groups.push({ type: 1, name: txtValue, pages: subgroup });
-    var directory = "/docview/ui/formatpdf/jpg/";
-    var metadata = doc_id;
-    var currDoc = {
-        label: label,
-        pages: pages,
-        directory: directory,
-        metadata: metadata,
-        groups: groups
-    };
+             "directory":"/docimages","label":"220120121012010018",
+             "special_doc_info": "",
 
-    ctrl.addDocTree(currDoc, doc_index++);
+              "image_info":{
+                "T_blog":[{"FN":"pic000000.jpg","TCode":"0","T":"\u5355\u636e\u9996\u9875","V":"220120121012010018","BT":""},{"FN":"pic000001.jpg","TCode":"6","T":"\u51fa\u53e3\u62a5\u5173\u5355","V":"","BT":""},{"FN":"pic000002.jpg","TCode":"6","T":"\u51fa\u53e3\u62a5\u5173\u5355","V":"","BT":""},{"FN":"pic000003.jpg","TCode":"6","T":"\u51fa\u53e3\u62a5\u5173\u5355","V":"","BT":""},{"FN":"pic000004.jpg","TCode":"6","T":"\u51fa\u53e3\u62a5\u5173\u5355","V":"","BT":""},{"FN":"pic000005.jpg","TCode":"2","T":"\u53d1\u7968","V":"","BT":""}]}
+			};
+
+
+    var doc = new Document(response), "");
+console.log(doc);
+    ctrl.addDocTree(doc, doc_index++);
 
 }
 
-steal('jquery/dom/fixture', 'jquery/dom/route', 'docview/fixtures', 'docview/ui/details/tree').then(function ($) {
+
     // Client State
     var state = new $.Observe({
         category: "",

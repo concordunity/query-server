@@ -36,27 +36,42 @@ steal(
             hideAll: function() {
                 this.element.hide();
             },
+        getHrefNoHash: function(el) {
+            var shref = el.attr('href');
+            var pos = shref.indexOf('#'); 
+            if (pos < 0) {
+                return shref;
+            }
+
+            return shref.substring(pos + 1);
+        },
             'a.edit-tree click' : function(el, ev) {
                 ev.preventDefault();
                 this.element.find('.nav').html(this.view('edit_pages', this.options.clientState.attr('document').groups));
             },
             'li a click': function(el, ev) {
                 ev.preventDefault();
-                var href = el.attr('href');
-                var pos = href.indexOf('#')
-	    
+                var href = this.getHrefNoHash(el);
 
-                if (pos !=-1) {
-                    this.options.details_controller.showPage(el.data('doc-index'), +href.substring(1+pos));
+
+		var c = el.attr('class');
+		console.log("We are about to open href ", href);
+
+		if (c == 'doc-overview') {
+		    console.log("We are about to open href OVERVIEW ", href);
+		    this.options.details_controller.showOverview(href);
+		    return;
+		}
+
+                this.options.details_controller.showPage(el.data('doc-index'), +href);
+		
 
                 // Set page to href value without the leading '#'
                 //		this.options.clientState.attr('document').attr('current', +href.substring(1+pos));
-                }
                 //       this.options.clientState.attr('document').attr('current', +'5');
 
                 //
-                $("#document-list").hide();
-                $("#document-viewer").show();
+
             },
             '{clientState} document.current change': function(el, ev, attr, how, newVal, oldVal) {
                 if (how === "set" || how === "add") {
@@ -77,6 +92,7 @@ steal(
                 this.element.find('ul.nav div').remove();
                 this.element.find('ul.nav li').remove();
             },
+
             addDocTree : function(docInfo, doc_index) {
 
                 var pageCount = 1;
@@ -85,11 +101,13 @@ steal(
                 if (doc_index != 0) {
                     navEl.append("<li class=\"divider\"></li>");
                 }
-                navEl.append("<li><font size=-1>" +  docInfo.label + "</font></li>");
+                //navEl.append("<li><font size=-1><a class=\"\"href=\"#" + doc_index\" +  docInfo.getLabel()
+		//	     + "</font></li>");
                 navEl.append(this.view('pages', {
-                    doc_index : doc_index,
-                    groups: docInfo.groups
-                    }));
+                    doc_label : docInfo.getLabel(),
+		    doc_index : doc_index,
+                    groups: docInfo.getPageGroups()
+                }));
             },
 	
             // Un-used
