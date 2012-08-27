@@ -231,25 +231,19 @@ steal(
         	$('#navigation-header').docview_nav({clientState: this.options.clientState});
             $('#subnavigation-header').docview_subnav({clientState: this.options.clientState});
             
-            $('#search-box').docview_search({clientState: this.options.clientState,
-					     searchMode : this.options.searchMode});
-            $('#search-results').docview_search_results({
-		clientState: this.options.clientState,
-		searchMode: this.options.searchMode
-	    });
+            $('#search-box').docview_search({clientState: this.options.clientState});
+            $('#search-results').docview_search_results({clientState: this.options.clientState});
             
             $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
             $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
-	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState,
-						   searchMode: this.options.searchMode});
+	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
             
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
-            $('#document-details').docview_ui_details({clientState: this.options.clientState,
-						       searchMode: this.options.searchMode});
+            $('#document-details').docview_ui_details({clientState: this.options.clientState});
+
             $('#group-docs').docview_stats_group({clientState: this.options.clientState});
 
-	    //console.log(" from login : " , this.options.searchMode);
 	    $('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
 	    $('#settings').docview_settings({clientState: this.options.clientState});
 

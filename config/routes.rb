@@ -128,6 +128,8 @@ Dms::Application.routes.draw do
   match "/qh/d/:doc_id" => "query_histories#bydoc"
   match "/qh_all" => "query_histories#show_all"
 
+  get "/qh/quota" => "query_histories#over_quota"
+
 #forexmple route
   post "/qh/query_search" => "query_histories#search"
   post "/dh/query_search" => "document_histories#search"

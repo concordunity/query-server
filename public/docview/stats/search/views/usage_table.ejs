@@ -1,7 +1,6 @@
 <table class="table table-condensed">
 	<thead>
 		<tr>
-			<th>序号</th>
 			<th>报关单号</th>
 			<th>报关单类别</th>
 			<th>申报关区</th>
@@ -13,10 +12,15 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% for (var i = 0; i < data.length; i++) { 
-			var record = data[i]; %>
+		<% for (var i = 0; i < data.docs.length; i++) { 
+			var record = data.docs[i];
+			var colorspec =  "";
+                        if (data.timedout[record.doc_id] != undefined) {
+                            colorspec = "bgcolor=#ff0000";
+                        }
+ %>
 			<tr>
-				<td><%== (i + 1) %></td>
+		
 				<td><%== record.doc_id %></td>
 				<td><%== record.doc_type %></td>
 				<td><%== record.org %></td>
@@ -24,7 +28,7 @@
 				<td><%== record.inquired ? '是':'否' %></td>
 				<td><%== record.checkedout ? '是':'否' %></td>
 				<td><%== record.edc_date %></td>
-				<td><%== record.updated_at %></td>
+				<td <%==colorspec %>><%== record.updated_at %></td>
 			</tr>
 		<% } %>
 	</tbody>

@@ -80,12 +80,21 @@ steal(
 
         '.next click': function(el, ev) {
             ev.preventDefault();
-	    this.options.details_controller.showNextPage();
+	    var pageInfo = this.options.docManager.gotoNextPage();
+	    if (pageInfo) {
+		this.showImage(pageInfo.imagePath);
+	    }
+//
+//	    this.options.details_controller.showNextPage();
         },
 
         '.previous click': function(el, ev) {
             ev.preventDefault();
-	    this.options.details_controller.showPreviousPage();
+	    var pageInfo = this.options.docManager.gotoPrevPage();
+	    if (pageInfo) {
+		this.showImage(pageInfo.imagePath);
+	    }
+	    //this.options.details_controller.showPreviousPage();
         },  
 	getPrintUrl: function(doc_id, tag) {
 	    var url = "/docview/printdoc.html?" + doc_id;
@@ -122,7 +131,10 @@ steal(
 //	    ev.preventDefault();
 //	},
 	// nthDoc is 0-based, and nthPage is 1-based.
-	showPage: function(nthDoc, nthPage) {
+	showImage : function (imagePath) {
+	    this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
+	},
+/*	showPage: function(nthDoc, nthPage) {
 	    $('#pageno').html('第 '+nthPage+' 页');
 	    var docInfo = this.options.details_controller.getDoc(nthDoc);
 	    
@@ -138,7 +150,7 @@ steal(
 
 	    this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
 	    this.element.find('div.image-viewer').iviewer('center');//loadImage', imagePath);
-	},
+	},*/
         // document: {
         //    pages: [] // Array of pages
         //    directory: "" // Location of image
@@ -147,7 +159,8 @@ steal(
         // }
         '{clientState} document.current change': function(el, ev, attr, how, newVal, oldVal) {
             if (how === "set" || how === "add") {
-		this.showPage(0, 1);
+		console("this is document current change  ..." );
+		    //this.showPage(0, 1);
 	    }
         }
         // Have details.js control tree and viewer
