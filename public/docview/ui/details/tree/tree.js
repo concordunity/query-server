@@ -36,28 +36,38 @@ steal(
             hideAll: function() {
                 this.element.hide();
             },
+        getHrefNoHash: function(el) {
+            var shref = el.attr('href');
+            var pos = shref.indexOf('#'); 
+            if (pos < 0) {
+                return shref;
+            }
+
+            return shref.substring(pos + 1);
+        },
             'a.edit-tree click' : function(el, ev) {
                 ev.preventDefault();
                 this.element.find('.nav').html(this.view('edit_pages', this.options.clientState.attr('document').groups));
             },
             'li a click': function(el, ev) {
                 ev.preventDefault();
-                var href = el.attr('href');
-                var pos = href.indexOf('#')
+                var href = this.getHrefNoHash(el);
 
-                if (pos !=-1) {
-		    var c = el.attr('class');
-		    if (c == 'doc-overview') {
-			this.options.details_controller.showOverview(+href.substring(1+pos));
-			return;
-		    }
 
-                    this.options.details_controller.showPage(el.data('doc-index'), +href.substring(1+pos));
+		var c = el.attr('class');
+		console.log("We are about to open href ", href);
 
+		if (c == 'doc-overview') {
+		    console.log("We are about to open href OVERVIEW ", href);
+		    this.options.details_controller.showOverview(href);
+		    return;
+		}
+
+                this.options.details_controller.showPage(el.data('doc-index'), +href);
+		
 
                 // Set page to href value without the leading '#'
                 //		this.options.clientState.attr('document').attr('current', +href.substring(1+pos));
-                }
                 //       this.options.clientState.attr('document').attr('current', +'5');
 
                 //

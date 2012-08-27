@@ -102,6 +102,7 @@ steal(
 	    return '';
 	},
 	showOverview : function(docIndex) {
+	    console.log("show overview for ", docIndex);
 	    var docInfo = this.docManager.getNthDoc(docIndex);
 
 	    if (docInfo) {
