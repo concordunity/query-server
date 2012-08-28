@@ -54,6 +54,8 @@ steal(
 	    this.element.find('div.multi_holder').docview_ui_multi();
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : { include_user : false }});
+	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
+            this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
         clearFilters: function() {
 	    this.element.find(".filters :checkbox").attr('checked', false);
@@ -112,6 +114,12 @@ steal(
 	    }
 	    if (to_show != 'personal_history') {
 		this.element.find('.personal_history').hide();
+	    }
+	    if (to_show != 'upload_file') {
+		this.element.find('.upload_file').hide();
+	    }
+	    if (to_show != 'search_condition') {
+		this.element.find('.search_condition').hide();
 	    }
 	},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {

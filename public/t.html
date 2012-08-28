@@ -1,0 +1,13 @@
+<html>
+<head> <meta charset="utf-8" />
+ <script type='text/javascript' src='/steal/steal.js'></script>
+<script type='text/javascript' src='libs/pdfobject.js'></script>
+<script type='text/javascript'>
+ window.loadPDF = function (url) {
+     var myPDF = new PDFObject({ url: url, pdfOpenParams : {toolbar :0, statusbar: 0} }).embed('pdf-holder');
+     setTimeout(function() { myPDF.printWithDialog();}, 5000);
+};
+</script>
+</head>
+
+<body><div id="pdf-holder"></div></body></html>

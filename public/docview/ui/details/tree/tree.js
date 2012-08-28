@@ -55,10 +55,10 @@ steal(
 
 
 		var c = el.attr('class');
-		console.log("We are about to open href ", href);
+		//console.log("We are about to open href ", href);
 
 		if (c == 'doc-overview') {
-		    console.log("We are about to open href OVERVIEW ", href);
+		    //console.log("We are about to open href OVERVIEW ", href);
 		    this.options.details_controller.showOverview(href);
 		    return;
 		}

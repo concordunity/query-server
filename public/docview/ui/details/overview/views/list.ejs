@@ -1,5 +1,4 @@
-<p>This is a test</p>
-
+<p>&nbsp;</p>
 <% if (print) {
    var showPrint = '打印';
    if (print == 'court') {
@@ -22,7 +21,7 @@
 <a href="#<%= (i+1) %>" class="thumbnail" data-doc-index=<%= doc_index %>>
 <img src="<%= images[i] %>" />
 </a>
-			第<%= (i+1) %>页<input type="checkbox" class="select_checkbox_print" value="<%= (i+1) %>"></input>
+			第<%= (i+1) %>页<input type="checkbox" class="select_checkbox_print" value="<%= i %>"></input>
 		</div>
 </li>
   <% } %>

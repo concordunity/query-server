@@ -13,8 +13,12 @@ steal(
     './doc_manager.js',
     './document.js',
     './views/init.ejs',
+<<<<<<< HEAD
     'docview/docview.css',
     'docview/ui/details/list/list.css'
+=======
+    'docview/docview.css'
+>>>>>>> aa067ded9c08554045dc025596f97b3a82ec6f6e
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {
@@ -103,19 +107,17 @@ steal(
 	    return '';
 	},
 	showOverview : function(docIndex) {
-	    console.log("show overview for ", docIndex);
 	    var docInfo = this.docManager.getNthDoc(docIndex);
-
+	    
 	    if (docInfo) {
 		$('#document-viewer').hide();
 		$('#document-overview').show();
-
+		console.log("SHOW?ING OVERVIEW ", docIndex);
 		this.overview.showDoc(docIndex, docInfo, this.getPrintString());
-		//this.print_doc('test', 't');
 	    }
 	},
 	showPage : function(index, page) {
-	    console.log("show page ", page, " doc index ", index);
+	    //console.log("show page ", page, " doc index ", index);
 	    var pageInfo = this.docManager.gotoPage(index, page);
             $("#document-overview").hide();
             $("#document-viewer").show();
@@ -124,11 +126,12 @@ steal(
 	    }
 	},
 	'.print-all click' :function (el, ev) {
-	    
-	    console.log(el.data('doc-index'), " to print all");
+	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    if (doc) {
+		this.print_doc(doc, '');
+	    }
 	},
 	'.print-selected click' :function (el, ev) {
-	    console.log(el.data('doc-index'), " to print selected");
 	    var page_arr = [];
 	    $.each($(".select_checkbox_print"),function(index,value){
                 if(value.checked==true){
@@ -138,8 +141,12 @@ steal(
             });
 	    if (page_arr.length < 1) {
 		alert('请至少选择一页打印');
-	    } else {
+		return;
+	    }
 		
+	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    if (doc) {
+		this.print_doc(doc, page_arr);
 	    }
 	},
         // This will reset the documents data.
@@ -197,87 +204,16 @@ steal(
            // this.showPage(0, 1);
             this.showOverview(0);
 
-	    /*
 
-            var s_mode = this.options.clientState.attr('searchMode');
-
-            if (s_mode == 'print' || s_mode == 'court' ||
-		(s_mode == 'single' &&
-		 this.options.clientState.attr('access').attr('manage_docs').print)) {
-                if (doc_index == 1) {
-                    this.viewerControl.switchOnPrintMenu();
-                    this.viewerControl.addPrintMenu(this.documents[0].label, this.documents[0].label);
-                }
-                if (doc_index > 0) {
-                    this.viewerControl.addPrintMenu('mod_' + this.documents[0].label, label);
-                }
-            }
-	    */
-/*
-            this.element.find('#document-tree').docview_ui_details_tree('addDocTree', currDoc, doc_index);
-	    
-            var docid = metadata.doc_id;
-            if (this.documents.length == 1) {
-                if (docid != undefined && docid != -1) {
-                    var message = '以下为该单证电子档案扫描图像信息，原件共' + images.length + '页';
-                    this.options.clientState.attr('alert', {
-                        type: 'info',
-                        heading: '报关单' + docid,
-                        message : message
-                    });
-                }
-            } else {
-                var msgs = new Array();
-                msgs.push('原件共' + this.documents[0].pages.length + '页');
-                msgs.push( this.documents[1].label + ' 共'+ this.documents[1].pages.length + '页');
-
-                $('#alerts').docview_alerts('showMessages', "success", '报关单 ' + docid,
-                    '以下为该单证电子档案扫描图像信息', msgs);
-            }
-            // Start at page 1 by default
-            //
-            //暂时注释这段，改成List的功能
-            this.showPage(0, 1);
-            //console.log(currDoc);
-            //this.listControl.listTest(currDoc);
-            //this.options.clientState.attr('document').attr('current', 1);
-
-
-            // Check for special doc
-            var special = data.special_doc_info;
-            if (special == undefined || !special) {
-            // Do nothing
-            } else {
-                //this.addSpecialDoc('222520121250176875');
-                this.addSpecialDoc(docid);
-            }
-*/
         },
-        print_doc : function(doc_id, tag) {
-
-//	    this.setViewingMode(0);
-
+        print_doc : function(doc, pageSelection) {
             var dFrame = $('#downloadFrame');
             $('#details-holder').hide();
 
             dFrame.show();
-	    var content = 'this is a test';
-
-	    dFrame.contents().find("div").html(this.view("printx"));
-/*
-var doc = dFrame.document;
-    if(dFrame.contentDocument)
-        doc = dFrame.contentDocument; // For NS6
-    else if(dFrame.contentWindow)
-        doc = dFrame.contentWindow.document; // For IE5.5 and IE6
-
-	    console.log("ffffffffffffffff", doc);
-    // Put the content in the iframe
-    doc.open();
-    doc.writeln(content);
-    doc.close();
-*/
-//            dFrame.attr('src', this.viewerControl.getPrintUrl(doc_id, tag));	    
+	    var url = doc.getPrintUrl(pageSelection);
+	    //console.log("Print URL is ", url);
+	    dFrame[0].contentWindow.loadPDF(url);
         },
         // Need to work with IE7, where href attr is the whole URL.
         getHrefNoHash: function(el) {
@@ -293,7 +229,6 @@ var doc = dFrame.document;
         'li.single-print .bprint click' : function(el, ev) {
             //console.log("bprint is clicked ....................", el, ev);
             this.print_doc($.route.attr('id'), '');
-
         },
 	
         '.dropdown-menu li a click' : function(el, ev) {

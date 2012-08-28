@@ -8,7 +8,8 @@ steal(
     './views/import_most_time_org_doc_info.ejs',
     './views/normal_import_price_less_record.ejs',
     './views/zero_find_check_info.ejs',
-    './views/son_table.ejs'
+    './views/son_table.ejs',
+    './views/search_result.ejs'
 ).then(
     'docview/ui/details',
     'docview/ui/dmstable'
@@ -18,28 +19,46 @@ steal(
     $.Controller('Docview.Ui.search_some_condition', {}, {
         init : function() {
            this.element.html(this.view('init'));
+           this.element.hide();
+        },
+        '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
+            if (newVal !== "search") {
+                this.element.hide();
+                this.mainTabOn = false;
+            } else if ($.route.attr('subcategory') == 'search_condition') {
+                this.mainTabOn = true;
+                this.element.show();
+            }
+        },
+        '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal) {
+            if (this.mainTabOn || $.route.attr('category') == 'search') {
+                if (how === "add" || how === "set") {
+                    if (newVal === "search_condition") {
+                        this.element.show();
+                    } else {
+                        this.element.hide();
+                    }
+                }
+            }
         },
 	".find-zero-rate click" : function(el,ev){
-		$("#search_result").show();
-                $("#second_result").show();
-		console.log("find-zero-rate");
+		$("#search_results").show();
+                $("#second_results").show();
 		Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"zero_find_check_info"},
 		    this.proxy("find_zero_rate"),
 		{});
 	},
 	".normal-import-record click" : function(el,ev){
-		$("#search_result").show();
-                $("#second_result").hide();
-		console.log("normal-import-record");
+		$("#search_results").show();
+                $("#second_results").hide();
 		Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"normal_import_price_less_record"},
 		    this.proxy("normal_import_record"),
 		{});
 	},
 
 	".import-most-time click" : function(el,ev){
-		$("#search_result").show();
-                $("#second_result").hide();
-		console.log("import-most-time");
+		$("#search_results").show();
+                $("#second_results").hide();
 		Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"import_most_time_org_doc_info"},
 		    this.proxy("import_most_time"),
 		{});
@@ -61,17 +80,17 @@ steal(
                         ],
                 file_name: ""
                 };
-	    this.element.find('#search_result').docview_ui_dmstable({
+	    this.element.find('#search_results').docview_ui_dmstable({
                     table_options : table_options
                 });	    
-	    console.log(data);
-	    var controller = $('#search_result').controller();
+	    //console.log(data);
+	    var controller = $('#search_results').controller();
 	    controller.setModelData(data);	   
 */
-                $("#search_result").html(this.view('zero_find_check_info',data));
+                $("#search_results").html(this.view('zero_find_check_info',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
-                this.element.find('div#search_result table').dataTable({
+                this.element.find('div#search_results table').dataTable({
                     "sDom": dmstable_params,
                     "oTableTools": {
                         "aButtons": [
@@ -112,17 +131,17 @@ steal(
                         ],
                 file_name: ""
                 };
-            this.element.find('#search_result').docview_ui_dmstable({
+            this.element.find('#search_results').docview_ui_dmstable({
                     table_options : table_options
                 });
-            console.log(data);
-            var controller = this.element.find('#search_result').controller();
+            //console.log(data);
+            var controller = this.element.find('#search_results').controller();
           controller.setModelData(data);
 */
-                $("#search_result").html(this.view('normal_import_price_less_record',data));
+                $("#search_results").html(this.view('normal_import_price_less_record',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
-                this.element.find('div#search_result table').dataTable({
+                this.element.find('div#search_results table').dataTable({
                     "sDom": dmstable_params,
                     "oTableTools": {
                         "aButtons": [
@@ -161,17 +180,17 @@ steal(
                         ],
                 file_name: ""
                 };
-            this.element.find('#search_result').docview_ui_dmstable({
+            this.element.find('#search_results').docview_ui_dmstable({
                     table_options : table_options
                 });
-            console.log(data);
-            var controller = this.element.find('#search_result').controller();
+            //console.log(data);
+            var controller = this.element.find('#search_results').controller();
           controller.setModelData(data);
 */
-                $("#search_result").html(this.view('import_most_time_org_doc_info',data));
+                $("#search_results").html(this.view('import_most_time_org_doc_info',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
-                this.element.find('div#search_result table').dataTable({
+                this.element.find('div#search_results table').dataTable({
                     "sDom": dmstable_params,
                     "oTableTools": {
                         "aButtons": [
@@ -198,7 +217,7 @@ steal(
         'td a click': function(el, ev) {
             ev.preventDefault();
 	    var son_table = $(el).attr("class");
-	    console.log(son_table);
+	    //console.log(son_table);
 	    var document = el.closest('tr').model();
 	    if(son_table == "son_table"){
 		
@@ -207,18 +226,19 @@ steal(
                 {});
         	      
 	    }else{
+	      //console.log(document.declarations_number);
               $.route.attrs({category: 'document', id: document.declarations_number}, true);
-              $('#document-details').docview_ui_details('queryDoc', document.doc_id);
+              $('#document-details').docview_ui_details('queryDoc', document.declarations_number);
               $('#search-box').hide();
 	    }
         },
 	setSonTable : function(data){
-		$("#search_result").hide();
-                $("#second_result").show();	    
-                $("#second_result").html(this.view('son_table',data));
+		$("#search_results").hide();
+                $("#second_results").show();	    
+                $("#second_results").html(this.view('son_table',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
-                this.element.find('div#second_result table').dataTable({
+                this.element.find('div#second_results table').dataTable({
                     "sDom": dmstable_params,
                     "oTableTools": {
                         "aButtons": [
@@ -243,8 +263,8 @@ steal(
                 });	    
 	},
 	".return_main click" : function(el,ev){
-                $("#search_result").show();
-                $("#second_result").hide();	    
+                $("#search_results").show();
+                $("#second_results").hide();	    
 	},
         show : function() {
 	   

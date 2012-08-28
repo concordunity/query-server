@@ -8,6 +8,17 @@ $.Model('Docview.Models.File',
 //	return this._super(data.results);
 //    },
 
+    uploadFile : function(params, success, error) {
+        return $.ajax({
+            url : '/upload_file',
+            type : 'post',
+            data : params,
+            success : success,
+            error : error,
+
+            dataType : 'json file.models'
+	});
+    },
     findAll : function(params, success, error) {
         //console.log(params);
 	$.route.attr("id", -1);

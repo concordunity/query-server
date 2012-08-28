@@ -1,0 +1,10 @@
+<div id="pdf-holder"></div> 
+
+ <script type='text/javascript'>
+        steal('libs/pdfobject.js').then(function ($) {
+ var myPDF = new PDFObject({ url: "/Blank_Page.pdf", pdfOpenParams : {toolbar :0, statusbar: 0} }).embed('pdf-holder');
+ 	     myPDF.printWithDialog();
+        //console.log(myPDF);
+	
+  });
+</script>

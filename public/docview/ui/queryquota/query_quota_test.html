@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>query_quota Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="query_quota-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/queryquota').then(function($) {
+
+$('#query_quota-test').docview_ui_queryquota();
+$('#query_quota-test').docview_ui_queryquota('loadData');
+
+ }); 
+ </script>
+        </body>
+</html>
+
