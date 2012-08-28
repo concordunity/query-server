@@ -19,6 +19,9 @@ steal(
     'docview/stats/group',
     'docview/stats/search',
     './login.css'
+).then(
+    'docview/ui/upload',
+    'docview/ui/search_some_condition'
 )
 
 // View templates
@@ -51,7 +54,6 @@ steal(
                 // Lock the login button
 		this.username = username;
                 el.find('.btn-primary').button('loading');
-                
                 Docview.Models.User.login(
                     { commit: 'Sign in', user : { username : username, password : password } },
                     this.proxy('getAccessList'), this.proxy('loginError')
@@ -133,6 +135,16 @@ steal(
                     this.options.clientState.attr('access')
                         .attr('search').attr('advanced', true);
 		    this.setNavIfEmpty('search', 'advanced');
+                    break;
+                case ("search_condition"):
+                    this.options.clientState.attr('access')
+                        .attr('search').attr('search_condition', true);
+		    this.setNavIfEmpty('search', 'search_condition');
+                    break;
+                case ("import_excel"):
+                    this.options.clientState.attr('access')
+                        .attr('search').attr('upload_file', true);
+		    this.setNavIfEmpty('search', 'upload_file');
                     break;
                 case ("by_doc_source"):
 		    this.options.clientState.attr('access')
@@ -233,7 +245,10 @@ steal(
             
             $('#search-box').docview_search({clientState: this.options.clientState});
             $('#search-results').docview_search_results({clientState: this.options.clientState});
-            
+            //$('#search-condition').docview_ui_search_some_condition({clientState: this.options.clientState});
+            //$('#upload-file').docview_ui_upload({clientState: this.options.clientState});
+
+ 
             $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
             $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
 	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState});

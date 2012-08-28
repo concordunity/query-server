@@ -32,7 +32,7 @@ steal(
         show_stats : function(data){
             var dmstable_params = "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
             this.element.find('div.search_result_list').html(this.view('search_result_list', data));
-            console.log(data);
+            //console.log(data);
 
             this.element.find('div.search_result_list table').dataTable({
                 "sDom": dmstable_params,
@@ -73,7 +73,7 @@ steal(
             var receiving_unit = el.find('select[name="receiving_unit"]').val();
             var customs_area = el.find('select[name="customs_area"]').val();
             var types_goods = el.find('select[name="types_goods"]').val();
-            console.log("country_origin=",country_origin);
+            //console.log("country_origin=",country_origin);
             select_hash = {
                 "country_shipment":country_shipment,
                 "country_origin":country_origin,
@@ -82,7 +82,7 @@ steal(
                 "customs_area":customs_area,
                 "types_goods":types_goods
             };
-            console.log(select_hash);
+            //console.log(select_hash);
             $.ajax({
                 url : '/search_form',
                 type : 'post',
