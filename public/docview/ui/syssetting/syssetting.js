@@ -37,6 +37,7 @@ steal(
         },
         'form.system-setting submit' : function(el,ev) {
             this.removeFormErrors(el);
+	    $('.alert').alert('close');
             var form_tag = $(el).closest('.system-setting');
             ev.preventDefault();
 
@@ -59,17 +60,17 @@ steal(
 	    var max_queries_i = parseInt(max_queries);
 
 	    if (maxn_i < 10 || maxn_i > 200) {
-		this.displayInputError(el, el_text, "最大抽样数目必须在 10 和 200之间。");
+		this.displayInputError(el, el.find('input[name="maxn"]'), "最大抽样数目必须在 10 和 200之间。");
 		return false;
 	    }
 
 	    if (period_i < 5 || period_i > 60) {
-		this.displayInputError(el, el_text, "单证借阅期限必须在 5 和 60 之间");
+		this.displayInputError(el, el.find('input[name="checkout_period"]'), "单证借阅期限必须在 5 和 60 之间");
 		return false;
 	    }
 
 	    if (max_queries_i < 50 || max_queries_i > 2000) {
-		this.displayInputError(el, el_text, "每月查阅总数警戒线必须在 50 和 2000 之间。");
+		this.displayInputError(el, el.find('input[name="max_queries_per_month"]'), "每月查阅总数警戒线必须在 50 和 2000 之间。");
 		return false;
 	    }
 
