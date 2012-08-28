@@ -42,7 +42,7 @@ steal(
 */
         show : function() {
         },
-	".upload_file click" : function(el,ev){
+	".upload_file change" : function(el,ev){
 	    this.checkFileSize(el);
 	},
 	checkFileSize : function(fileObj){
@@ -64,7 +64,7 @@ steal(
   	    return false;
 	},
 	"form[name='upfile_form'] submit" : function(el,ev){
-		ev.preventDefault();
+		//ev.preventDefault();
 		var upload_file = $("#upload_file").val();
 		var upload_file_1 = $("#upload_file_1").val();
 		var upload_file_2 = $("#upload_file_2").val();
