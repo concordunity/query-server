@@ -46,7 +46,7 @@ steal(
                 //                $("#div_stats").html(this.view("stats"));
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
-		this.element.find('div.stats_query').docview_ui_queryquota();
+		this.element.find('div.stats_query_quota').docview_ui_queryquota();
                 this.mainTabOn = false;
                 this.search_result = null;
                 // Hide box until route conditions are met
