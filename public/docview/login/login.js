@@ -54,7 +54,6 @@ steal(
                 // Lock the login button
 		this.username = username;
                 el.find('.btn-primary').button('loading');
-                console.log("login ing"); 
                 Docview.Models.User.login(
                     { commit: 'Sign in', user : { username : username, password : password } },
                     this.proxy('getAccessList'), this.proxy('loginError')
