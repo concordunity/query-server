@@ -118,7 +118,7 @@ steal(
                     } else if (newVal == 'stats_usage') {
                         this.reloadUsage();
                     } else if (newVal == 'stats_query') {
-			this.element.find('div.stats_query').docview_ui_queryquota('loadData');
+			this.element.find('div.stats_query_quota').docview_ui_queryquota('loadData');
 
                         this.element.find('.dg_select_holder').docview_docgroup_dgselect('reloadDocGroup');
                     }
