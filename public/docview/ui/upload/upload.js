@@ -69,13 +69,21 @@ steal(
 		var upload_file_1 = $("#upload_file_1").val();
 		var upload_file_2 = $("#upload_file_2").val();
 		if(upload_file == "" && upload_file_1 == "" && upload_file_2 == ""){
-			alert(上传失败);
+			this.showMessage("上传失败");
 			return false;
 		}else{
-			alert(上传成功);
+			this.showMessage("上传成功");
 			return true;
 		}
-	}
+	},
+	showMessage : function(message) {
+                this.options.clientState.attr('alert', {
+                           type: "200",
+                           heading: "提示：",
+                           message : message
+                });
+        }
+
 });
 });
 
