@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+require 'rubygems'
+require "spreadsheet"
+require 'active_record'
+require 'activerecord-import'
+
 class UploadFileController < ApplicationController
 
   def import_excel
@@ -17,8 +22,9 @@ class UploadFileController < ApplicationController
         result = {}
         resutl_format_data = return_format_data(upload_file_name)
         if resutl_format_data[:status] == true
+	  tmp_arr = []
           resutl_format_data[:data].each do |row|
-		ZeroFindCheckInfo.create do |zfci|
+		ZeroFindCheckInfo.new do |zfci|
 			
                         zfci.business_units_number = row[0]
                         zfci.operating_name = row[1]
@@ -30,9 +36,11 @@ class UploadFileController < ApplicationController
                         zfci.examination_handling_results = row[7]
                         zfci.declaration_customs = row[8]
                         zfci.date_value = row[9]
-			zfci.save
+			#zfci.save
+			tmp_arr << zfci
 		end
 	  end
+	  ZeroFindCheckInfo.import tmp_arr
           result[:message] = "import success for import_most_time_org_doc_info"
         else
           result[:message] = "import failure for import_most_time_org_doc_info"
@@ -45,8 +53,9 @@ class UploadFileController < ApplicationController
         result = {}
         resutl_format_data = return_format_data(upload_file_name)
         if resutl_format_data[:status] == true
+	  tmp_arr = []
           resutl_format_data[:data].each do |row|
-		NormalImportPriceLessRecord.create do |niplr|
+		NormalImportPriceLessRecord.new do |niplr|
 			
                         niplr.date_value = row[0]
                         niplr.declarations_number = row[1]
@@ -58,9 +67,11 @@ class UploadFileController < ApplicationController
                         niplr.actual_price_cap = row[7]
                         niplr.actual_price_floor = row[8]
                         niplr.national_average_price = row[9]
-			niplr.save
+			#niplr.save
+			tmp_arr << niplr
 		end
 	  end
+	  NormalImportPriceLessRecord.import tmp_arr
           result[:message] = "import success for import_most_time_org_doc_info"
         else
           result[:message] = "import failure for import_most_time_org_doc_info"
@@ -73,8 +84,9 @@ class UploadFileController < ApplicationController
 	result = {}
 	resutl_format_data = return_format_data(upload_file_name)
 	if resutl_format_data[:status] == true
+	  tmp_arr = []
 	  resutl_format_data[:data].each do |row|
-		ImportMostTimeOrgDocInfo.create do |imtodi|		
+		ImportMostTimeOrgDocInfo.new do |imtodi|		
                         imtodi.declarations_number = row[0]
                         imtodi.mode_transport = row[1]
                         imtodi.release_time = row[2]
@@ -82,9 +94,11 @@ class UploadFileController < ApplicationController
                         imtodi.overall_operating_hours_hours = row[4]
                         imtodi.declaration_customs_code = row[5]
                         imtodi.declaration_customs = row[6]
-			imtodi.save
+			#imtodi.save
+			tmp_arr << imtodi
 		end
 	  end
+	  ImportMostTimeOrgDocInfo.import tmp_arr
 	  result[:message] = "import success for import_most_time_org_doc_info"
 	else
 	  result[:message] = "import failure for import_most_time_org_doc_info"

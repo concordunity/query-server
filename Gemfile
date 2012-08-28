@@ -13,6 +13,7 @@ gem 'cancan'
 gem 'rolify'
 gem 'rb-readline'
 gem 'spreadsheet'
+gem "activerecord-import", "~> 0.2.10"
 
 # Gems used only for assets and not required
 # in production environments by default.
