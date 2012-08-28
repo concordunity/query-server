@@ -1,0 +1,41 @@
+<h1>Listing zero_find_check_infos</h1>
+
+<table>
+  <tr>
+    <th>Business units number</th>
+    <th>Operating name</th>
+    <th>Number import export declarations</th>
+    <th>Number import export inspection</th>
+    <th>Import export inspection rate</th>
+    <th>Declarations number</th>
+    <th>Import export</th>
+    <th>Examination handling results</th>
+    <th>Declaration customs</th>
+    <th>Date value</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @zero_find_check_infos.each do |zero_find_check_info| %>
+  <tr>
+    <td><%= zero_find_check_info.business_units_number %></td>
+    <td><%= zero_find_check_info.operating_name %></td>
+    <td><%= zero_find_check_info.number_import_export_declarations %></td>
+    <td><%= zero_find_check_info.number_import_export_inspection %></td>
+    <td><%= zero_find_check_info.import_export_inspection_rate %></td>
+    <td><%= zero_find_check_info.declarations_number %></td>
+    <td><%= zero_find_check_info.import_export %></td>
+    <td><%= zero_find_check_info.examination_handling_results %></td>
+    <td><%= zero_find_check_info.declaration_customs %></td>
+    <td><%= zero_find_check_info.date_value %></td>
+    <td><%= link_to 'Show', zero_find_check_info %></td>
+    <td><%= link_to 'Edit', edit_zero_find_check_info_path(zero_find_check_info) %></td>
+    <td><%= link_to 'Destroy', zero_find_check_info, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Zero find check info', new_zero_find_check_info_path %>

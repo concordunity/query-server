@@ -1,0 +1,41 @@
+<h1>Listing normal_import_price_less_records</h1>
+
+<table>
+  <tr>
+    <th>Date value</th>
+    <th>Declarations number</th>
+    <th>Product code</th>
+    <th>Product number</th>
+    <th>Dollar value</th>
+    <th>First legal quantity</th>
+    <th>Price</th>
+    <th>Actual price cap</th>
+    <th>Actual price floor</th>
+    <th>National average price</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @normal_import_price_less_records.each do |normal_import_price_less_record| %>
+  <tr>
+    <td><%= normal_import_price_less_record.date_value %></td>
+    <td><%= normal_import_price_less_record.declarations_number %></td>
+    <td><%= normal_import_price_less_record.product_code %></td>
+    <td><%= normal_import_price_less_record.product_number %></td>
+    <td><%= normal_import_price_less_record.dollar_value %></td>
+    <td><%= normal_import_price_less_record.first_legal_quantity %></td>
+    <td><%= normal_import_price_less_record.price %></td>
+    <td><%= normal_import_price_less_record.actual_price_cap %></td>
+    <td><%= normal_import_price_less_record.actual_price_floor %></td>
+    <td><%= normal_import_price_less_record.national_average_price %></td>
+    <td><%= link_to 'Show', normal_import_price_less_record %></td>
+    <td><%= link_to 'Edit', edit_normal_import_price_less_record_path(normal_import_price_less_record) %></td>
+    <td><%= link_to 'Destroy', normal_import_price_less_record, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Normal import price less record', new_normal_import_price_less_record_path %>
