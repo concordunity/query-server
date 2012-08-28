@@ -20,10 +20,10 @@ steal(
 
 	    var tableElement = this.element.find('thead tr')[0];
 	    
-	    console.log("table tr", tableElement);
+	    //console.log("table tr", tableElement);
 	    // init table header
 	    $.each(this.options.table_options.th_list, function(index, v) {
-		console.log("adding header ", v);
+		//console.log("adding header ", v);
 		$(tableElement).append("<th>" + v + " </th>");
 	    });
 
