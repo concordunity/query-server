@@ -32,7 +32,9 @@
                     single : false,
                     multi : false,
                     advanced : false,
-		    by_doc_source : false
+		    by_doc_source : false,
+		    upload_file : false,
+		    search_condition : false
                 },
                 stats: {
                     stats_stats : false,
@@ -69,15 +71,13 @@
             document: {
                 pages: [],
                 directory: ""
-            }
+            },
+	    searchMode: "single"
         });
-        
-	    var s_mode = new $.Observe({
-		mode : 'single'
-	    });
+            
             $('#alerts').docview_alerts({clientState: state});
-            $('#login').docview_login({clientState: state,
-				       searchMode : s_mode});
+            $('#login').docview_login({clientState: state});
+
         
     var i18n_dict = {
        'search_by_id' : '按单证查询',
@@ -88,6 +88,8 @@
        'menu_logout' : '退出',
        'menu_profile' : '设置',
        'subnav.single_document' : '单票查阅',
+       'subnav.upload_file' : '文件上传',
+       'subnav.search_condition' : '按特定条件查询',
        'subnav.multi_document' : '批量查阅',
        'subnav.advanced_search' : '随机抽样查阅',
        'subnav.manage_users' : '用户管理',

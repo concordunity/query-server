@@ -10,7 +10,9 @@ steal(
 //    'docview/bootstrap/bootstrap.css'
 //    'libs/datepicker/css/datepicker.css'
 )
-
+.then(
+    './views/advanced_form.css'
+)
 // View templates
 .then(
     './views/search_box.ejs'
@@ -52,7 +54,12 @@ steal(
 	    this.element.find('div.multi_holder').docview_ui_multi();
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : { include_user : false }});
+	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
+            this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
+        clearFilters: function() {
+	    this.element.find(".filters :checkbox").attr('checked', false);
+	},
 	setFilters: function(el) {
             var t_filters = [];
 
@@ -108,6 +115,12 @@ steal(
 	    if (to_show != 'personal_history') {
 		this.element.find('.personal_history').hide();
 	    }
+	    if (to_show != 'upload_file') {
+		this.element.find('.upload_file').hide();
+	    }
+	    if (to_show != 'search_condition') {
+		this.element.find('.search_condition').hide();
+	    }
 	},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal === "search") {	
@@ -119,6 +132,8 @@ steal(
 		    this.mainTabOn = false;
 		}
             }
+	    // we need to reset filters
+	    this.clearFilters();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
 	    if (this.mainTabOn) {
@@ -147,7 +162,7 @@ steal(
         },
         '.single submit': function(el, ev) {
             ev.preventDefault();
-	    this.options.searchMode.attr('mode', 'single');
+	    this.options.clientState.attr('searchMode', 'single');
 
 	    var ctrl = $('form.single div.single_holder').controller();
 	    
@@ -172,7 +187,7 @@ steal(
 	},
         '.multi submit': function(el, ev) {
             ev.preventDefault();
-	    this.options.searchMode.attr('mode', 'multi');
+	    this.options.clientState.attr('searchMode', 'multi');
 	    $('#search-results').docview_search_results('clearResults');
 
 	    var self = this;
@@ -195,7 +210,7 @@ steal(
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
 	    this.setFilters(el);
-            this.options.searchMode.attr('mode', 'by_doc_source');
+            this.options.clientState.attr('searchMode', 'by_doc_source');
 
 	    var cntrl = this.element.find('div.daterange-holder-src').controller();
 	    var dates = cntrl.getInputs(el);
@@ -217,7 +232,7 @@ steal(
         '.advanced submit': function(el, ev) {
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
-            this.options.searchMode.attr('mode', 'advanced');
+            this.options.clientState.attr('searchMode', 'advanced');
             this.removeFormErrors(el);
 
             this.setFilters(el);
@@ -240,13 +255,22 @@ steal(
 
 	    var isTax = undefined;
 	    var isMod = undefined;
+            var isMod_or_isTax = el.find('select[name="isMod_or_isTax"]').val();
 
+	    if (isMod_or_isTax == "isTax") {
+		isTax = "1";
+	    }
+	    if (isMod_or_isTax == "isMod") {
+		isMod = "1";
+	    }
+            /*
 	    if (el.find('input[name="isTax"]')[0].checked) {
 		isTax = "1";
 	    }
 	    if (el.find('input[name="isMod"]')[0].checked) {
 		isMod = "1";
 	    }
+            */
 
 	    this.options.clientState.attr('search', {
 		total : total,
@@ -258,6 +282,7 @@ steal(
 		edcEndDate : to_date,
 		isTax: isTax,
 		isMod : isMod,
+                isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
         },

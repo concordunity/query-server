@@ -12,7 +12,6 @@ gem 'devise'
 gem 'cancan'
 gem 'rolify'
 gem 'rb-readline'
-
 gem 'spreadsheet'
 
 # Gems used only for assets and not required

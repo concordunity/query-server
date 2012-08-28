@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Image Viewer</title>
-	</head>
-	<body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Image Viewer</title>
+  </head>
+  <body>
     <div id="doc-viewer"></div>
     <button id="button">Show Page 1</div>
   
@@ -12,6 +13,11 @@
     steal('docview/ui/details/viewer').then(function($) {
       // Client State
       var state = new $.Observe({
+          access : { manage_docs: {
+                        print: true,
+                        testify: true
+                    }
+    },
           document: {
             current: 0,
             pages: ["pic000000.jpg", "pic000001.jpg", "pic000002.jpg", "pic000003.jpg", "pic000004.jpg", "pic000005.jpg"],

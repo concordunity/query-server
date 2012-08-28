@@ -305,8 +305,6 @@ steal(
         
             // Editing a role
             '.edit-role click': function(el, ev) {
-                
-
                 ev.preventDefault();
                 // In place edit form
                 //var roleRow = el.closest('tr');
@@ -328,7 +326,6 @@ steal(
                     //console.log("about to set " + value + " to checked.");
                     $('input[name='+value +']').attr('checked', 'checked');
                 });
-
             },
 
             '.cancel-edit click': function(el, ev) {

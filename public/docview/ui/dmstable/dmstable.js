@@ -15,7 +15,7 @@ steal(
         // th_list
         init : function() {
             this.lastData = "";
-            this.element.html(this.view('init'));
+            this.element.html(this.view('init',{file_name:this.options.table_options.file_name}));
 	    this.modelData = {}
             var tableElement = this.element.find('thead tr')[0];
 

@@ -14,19 +14,6 @@ if (this.access_info == "denied") {
 </td>
     <td><%= this.doc_type %></td>
     <td><%= this.serial_number %></td>
-    <td>
-        <% if (this.inquired) { %>
-            是
-        <% } else { %>
-            否
-        <% } %>
-    </td>
-    <td>
-        <% if (this.checkedout) { %>
-            是
-        <% } else { %>
-            否
-        <% } %>
-    </td>
+
     <td><%= this.pages %></td>
 </tr>

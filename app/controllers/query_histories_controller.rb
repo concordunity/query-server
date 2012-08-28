@@ -108,6 +108,22 @@ class QueryHistoriesController < ApplicationController
     render json: @query_histories
   end
 
+  def over_quota
+    user_info = []
+    u = Setting.find_by_name('max_queries_per_month')
+    if u
+      monthly_quota = u.value.to_i
+      QueryHistory.where(:created_at => 2.month.ago .. Time.now).group(:user_id).count.each { |k,v|
+        if v > monthly_quota
+          user = User.find_by_id(k)
+          if user
+            user_info.push({ :username => user.username, :orgs => user.orgs, :queries => v })
+          end
+        end
+      } 
+    end
+    render :json => user_info, :status => 200
+  end
 
   # GET /query_histories/1
   # GET /query_histories/1.json

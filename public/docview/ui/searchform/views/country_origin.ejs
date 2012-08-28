@@ -1,0 +1,12 @@
+
+     <div class="control-group">
+      <label  class="control-label" for="frm_country_origin">原产地</label>
+      <div class="controls">
+         <select id="frm_country_origin"  name="country_origin" style="width: 80px;">
+          <option value="">不限</option>
+            <%for(i=0;i<this.length;i++){%>
+              <option value="<%= this[i].code %>"><%= this[i].country_origin %></option>
+              <%}%>
+      </select>
+      </div>
+    </div>

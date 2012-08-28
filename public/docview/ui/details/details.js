@@ -7,23 +7,29 @@ steal(
     'docview/models',
     'docview/ui/details/tree',
     'docview/ui/details/viewer',
-    'docview/ui/details/list'
-    ).then(
+    'docview/ui/details/overview',
+    'docview/bootstrap/bootstrap.css'
+).then(
+    './doc_manager.js',
+    './document.js',
     './views/init.ejs',
+<<<<<<< HEAD
     'docview/docview.css',
-    "docview/ui/details/list/list.css"
-    ).then(function($) {
+    'docview/ui/details/list/list.css'
+=======
+    'docview/docview.css'
+>>>>>>> aa067ded9c08554045dc025596f97b3a82ec6f6e
+).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {
             this.element.html(this.view('init'));
-            this.documents = new Array();
-            this.docIndex = 0;
+            this.docManager = new DocManager();
 
-            this.pageIndex = 1;
             this.element.find('#document-tree').docview_ui_details_tree(
             {
                 clientState : this.options.clientState,
-                details_controller : this
+                docManager: this.docManager,
+		details_controller: this
             });
 
             this.treeControl = this.element.find('#document-tree').controller();
@@ -31,25 +37,23 @@ steal(
             this.element.find('#document-viewer').docview_ui_details_viewer(
             {
                 clientState : this.options.clientState,
-                searchMode : this.options.searchMode,
-                details_controller : this
+                docManager: this.docManager
             });
 	    
             this.viewerControl = this.element.find('#document-viewer').controller();
 
-            this.element.find('#document-list').docview_ui_details_list(
+            this.element.find('#document-overview').docview_ui_details_overview(
             {
                 clientState : this.options.clientState,
-                searchMode : this.options.searchMode,
-                details_controller : this
+                docManager: this.docManager,
+		details_controller: this
             });
-            this.listControl = this.element.find("#document-list").controller();
-            //this.listControl.list();
+            this.overview = this.element.find('#document-overview').controller();
 
             this.to_show = false;
-            //	    this.showing = false;
             this.hide();
         },
+	
         hide : function() {
             this.element.hide();
         // this.showing = false;
@@ -84,21 +88,74 @@ steal(
             if (!this.to_show) {
                 return;
             }
-            this.viewerControl.setMode(this.options.searchMode.attr('mode'));
+            this.viewerControl.setMode(this.options.clientState.attr('searchMode'));
             $('#details-holder').show();
 	    
             this.element.show();
         },
+	getPrintString: function() {
+	    var mode = this.options.clientState.attr('searchMode');
+	    if (mode == 'print' || (mode == 'single' &&
+				    this.options.clientState.attr('access').attr('manage_docs').print)) {
+		return 'print';
+	    }
 
+	    if (mode == 'court') {
+		return 'court'
+	    }
+
+	    return '';
+	},
+	showOverview : function(docIndex) {
+	    var docInfo = this.docManager.getNthDoc(docIndex);
+	    
+	    if (docInfo) {
+		$('#document-viewer').hide();
+		$('#document-overview').show();
+		//console.log("SHOW?ING OVERVIEW ", docIndex);
+		this.overview.showDoc(docIndex, docInfo, this.getPrintString());
+	    }
+	},
+	showPage : function(index, page) {
+	    //console.log("show page ", page, " doc index ", index);
+	    var pageInfo = this.docManager.gotoPage(index, page);
+            $("#document-overview").hide();
+            $("#document-viewer").show();
+	    if (pageInfo) {
+		this.viewerControl.showImage(pageInfo.imagePath);
+	    }
+	},
+	'.print-all click' :function (el, ev) {
+	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    if (doc) {
+		this.print_doc(doc, '');
+	    }
+	},
+	'.print-selected click' :function (el, ev) {
+	    var page_arr = [];
+	    $.each($(".select_checkbox_print"),function(index,value){
+                if(value.checked==true){
+                    value.checked = false;
+                    page_arr.push(value.value);
+                }
+            });
+	    if (page_arr.length < 1) {
+		alert('请至少选择一页打印');
+		return;
+	    }
+		
+	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    if (doc) {
+		this.print_doc(doc, page_arr);
+	    }
+	},
         // This will reset the documents data.
         queryDoc : function(docid) {
-            this.element.find('#document-tree').docview_ui_details_tree('clearDocTree');
-            this.documents = new Array();
-            this.docIndex = 0;
-            this.pageIndex = 1;
+            this.treeControl.clearDocTree();
+	    this.docManager.clear();
+
             this.addDoc(docid);
             this.to_show = true;
-            this.viewerControl.switchOffPrintMenu();
         },
 
         addDoc : function(docid) {
@@ -113,47 +170,11 @@ steal(
         getDoc : function(nth) {
             return this.documents[nth];
         },
-
-        // Only for internal use. DO NOT call from outside of this class.
-        showPageInternal : function(docIndex, nth) {
-            this.docIndex = docIndex;
-            this.pageIndex = nth;
-            this.viewerControl.showPage(this.docIndex, this.pageIndex);
-        },
-        showPage : function(docIndex, nth) {
-            // First do some input validation
-            if (docIndex < this.documents.length) {
-
-                var numPages = this.documents[docIndex].pages.length;
-                if (nth > 0 && nth <= numPages) {
-                    this.showPageInternal(docIndex, nth);
-                    return;
-                }
-
-                // Now handle out of range for nth page.
-                if (nth == numPages + 1) {
-                    // Is there a next document??
-                    if (this.docIndex != (this.documents.length - 1)) {
-                        this.showPageInternal(docIndex + 1, 1);
-                    }
-                } else if (nth == 0) {
-                    if (docIndex > 0) {
-                        docIndex --;
-                        var numPages = this.documents[docIndex].pages.length;
-                        this.showPageInternal(docIndex, numPages);
-                    }
-                }
-            }
-        },
-        showNextPage : function() {
-            this.showPage(this.docIndex, this.pageIndex + 1);
-        },
-
-        showPreviousPage : function() {
-            this.showPage(this.docIndex, this.pageIndex - 1);
-        },
         addDocumentData : function(data) {
             this.show();
+
+	    
+
             // Load all data
             /*document: {
               pages: [] // Array of pages
@@ -162,129 +183,37 @@ steal(
               groups: [subgroup, subgroup, ...] // groups of images
 	      }*/
 	    
-            var do_filter = false;
+	    var filters = "";
+
             var filter = this.options.clientState.attr('search').filters;
-            if (filter != undefined && filter.length > 0) {
-                //console.log(filter);
-                do_filter = true;
+            if (filter != undefined && filter.length > 0 &&
+		this.options.clientState.attr('searchMode') != 'multi') {
+                filters = filter;
             }
-            var metadata = data.doc_info;
+	    var docIndex = this.docManager.getNumDocs();
 
-            var groups = new Array();
-            var subgroup = new Array();
-            var pages = new Array();
-            var images = data.image_info.T_blog;
-            var prevType;
-            var prevGroupName;
+	    var doc = new Document(data, filters);
+	    this.docManager.addDocument(doc);
+	    if (doc.hasSpecialDoc()) {
+		this.addSpecialDoc(doc.getDocId());
+	    }
 
-            for (var i = 0; i < images.length; i++) {
-                var pt = images[i].TCode;
-		
-                if (do_filter && pt!=0 && $.inArray(pt, filter) < 0) {
-                    //console.log("passing page ... ", pt);
-                    continue;
-                }
-                if (pt !== prevType && prevType !== undefined) {
-                    // Push previous subgroup and type into groups
-                    groups.push({
-                        type: prevType,
-                        name: prevGroupName,
-                        pages: subgroup
-                    });
-                    subgroup = new Array();
-                }
-                subgroup.push(images[i].FN);
-                pages.push(images[i].FN);
-
-                if (images[i].BT) {
-                    subgroup.push(images[i].BT);
-                    pages.push(images[i].BT);
-                }
-                prevType = pt;
-                prevGroupName = images[i].T;
-            }
-            // Push our remaining subgroup into groups
-            groups.push({
-                type: prevType,
-                name: prevGroupName,
-                pages: subgroup
-            });
-
-            var label = data.label;
-
-            var currDoc = {
-                label: label,
-                pages: pages,
-                directory: data.directory,
-                metadata: metadata,
-                groups: groups
-            };
-
-            var doc_index = this.documents.length;
-
-            var s_mode = this.options.searchMode.attr('mode');
-
-            if (s_mode == 'print' || s_mode == 'court' || (s_mode == 'single' &&this.options.clientState.attr('access').attr('manage_docs').print)) {
-                if (doc_index == 1) {
-                    this.viewerControl.switchOnPrintMenu();
-                    this.viewerControl.addPrintMenu(this.documents[0].label, this.documents[0].label);
-                }
-                if (doc_index > 0) {
-                    this.viewerControl.addPrintMenu('mod_' + this.documents[0].label, label);
-                }
-            }
-            this.documents.push(currDoc);
-            this.element.find('#document-tree').docview_ui_details_tree('addDocTree', currDoc, doc_index);
-	    
-            var docid = metadata.doc_id;
-            if (this.documents.length == 1) {
-                if (docid != undefined && docid != -1) {
-                    var message = '以下为该单证电子档案扫描图像信息，原件共' + images.length + '页';
-                    this.options.clientState.attr('alert', {
-                        type: 'info',
-                        heading: '报关单' + docid,
-                        message : message
-                    });
-                }
-            } else {
-                var msgs = new Array();
-                msgs.push('原件共' + this.documents[0].pages.length + '页');
-                msgs.push( this.documents[1].label + ' 共'+ this.documents[1].pages.length + '页');
-
-                $('#alerts').docview_alerts('showMessages', "success", '报关单 ' + docid,
-                    '以下为该单证电子档案扫描图像信息', msgs);
-            }
-            // Start at page 1 by default
-            //
-            //暂时注释这段，改成List的功能
-            //this.showPage(0, 1);
-            //console.log(currDoc);
-            this.listControl.listTest(currDoc);
-            //this.options.clientState.attr('document').attr('current', 1);
+	    // Add tree.
+	    // TODO(weidong)
+	    this.treeControl.addDocTree(doc, docIndex);
+           // this.showPage(0, 1);
+            this.showOverview(0);
 
 
-            // Check for special doc
-            var special = data.special_doc_info;
-            if (special == undefined || !special) {
-            // Do nothing
-            } else {
-                //this.addSpecialDoc('222520121250176875');
-                this.addSpecialDoc(docid);
-            }
         },
-        ".one_pdf click" : function(el,ev){
-            $("#document-list").hide();
-            $("#document-viewer").show();
-            var data_img = $(el).attr("data-img");
-            this.showPage(0, data_img);
-        },
-        print_doc : function(doc_id, tag) {
+        print_doc : function(doc, pageSelection) {
             var dFrame = $('#downloadFrame');
             $('#details-holder').hide();
 
             dFrame.show();
-
-            dFrame.attr('src', this.viewerControl.getPrintUrl(doc_id, tag));	    
+	    var url = doc.getPrintUrl(pageSelection);
+	    //console.log("Print URL is ", url);
+	    dFrame[0].contentWindow.loadPDF(url);
         },
         // Need to work with IE7, where href attr is the whole URL.
         getHrefNoHash: function(el) {
@@ -296,13 +225,12 @@ steal(
 
             return shref.substring(pos + 1);
         },
+
         'li.single-print .bprint click' : function(el, ev) {
             //console.log("bprint is clicked ....................", el, ev);
             this.print_doc($.route.attr('id'), '');
-
         },
 	
-
         '.dropdown-menu li a click' : function(el, ev) {
             ev.preventDefault();
             var href = this.getHrefNoHash(el);

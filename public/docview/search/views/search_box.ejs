@@ -3,7 +3,12 @@
    <% if (this.single) { %>
 <%== $.View('//docview/search/views/single_doc_form.ejs') %>
 <% } %>
-
+   <%if(this.upload_file){%>
+	<div class="upload_file"></div>
+   <%}%>
+   <%if(this.search_condition){%>
+	<div class="search_condition"></div>
+   <%}%>
    <% if (this.multi) { %>
    <%== $.View('//docview/search/views/multiple_doc_form.ejs') %>
 <% } %>

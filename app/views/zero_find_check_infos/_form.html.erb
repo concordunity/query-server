@@ -1,0 +1,57 @@
+<%= form_for(@zero_find_check_info) do |f| %>
+  <% if @zero_find_check_info.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@zero_find_check_info.errors.count, "error") %> prohibited this zero_find_check_info from being saved:</h2>
+
+      <ul>
+      <% @zero_find_check_info.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :business_units_number %><br />
+    <%= f.text_field :business_units_number %>
+  </div>
+  <div class="field">
+    <%= f.label :operating_name %><br />
+    <%= f.text_field :operating_name %>
+  </div>
+  <div class="field">
+    <%= f.label :number_import_export_declarations %><br />
+    <%= f.number_field :number_import_export_declarations %>
+  </div>
+  <div class="field">
+    <%= f.label :number_import_export_inspection %><br />
+    <%= f.number_field :number_import_export_inspection %>
+  </div>
+  <div class="field">
+    <%= f.label :import_export_inspection_rate %><br />
+    <%= f.text_field :import_export_inspection_rate %>
+  </div>
+  <div class="field">
+    <%= f.label :declarations_number %><br />
+    <%= f.text_field :declarations_number %>
+  </div>
+  <div class="field">
+    <%= f.label :import_export %><br />
+    <%= f.text_field :import_export %>
+  </div>
+  <div class="field">
+    <%= f.label :examination_handling_results %><br />
+    <%= f.text_field :examination_handling_results %>
+  </div>
+  <div class="field">
+    <%= f.label :declaration_customs %><br />
+    <%= f.text_field :declaration_customs %>
+  </div>
+  <div class="field">
+    <%= f.label :date_value %><br />
+    <%= f.datetime_select :date_value %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,12 @@
+
+     <div class="control-group">
+      <label  class="control-label" for="frm_business_units">经营单位</label>
+      <div class="controls">
+         <select id="frm_business_units"  name="business_units" style="width: 80px;">
+          <option value="">不限</option>
+            <%for(i=0;i<this.length;i++){%>
+              <option value="<%= this[i].code %>"><%= this[i].business_units %></option>
+              <%}%>
+      </select>
+      </div>
+    </div>

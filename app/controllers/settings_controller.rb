@@ -14,13 +14,15 @@ class SettingsController < ApplicationController
   end
 
   def sys_setting
-    ["maxn", "checkout_period"].each {|n|
+    ["maxn", "checkout_period", "max_queries_per_month"].each {|n|
       if !params[n].blank?
-        s = Setting.find_by_name[n]
-        if s
-          s.value = params[n]
-          s.save
+        s = Setting.find_by_name(n)
+        if s.nil?
+          s = Setting.new
+          s.name = n
         end
+        s.value = params[n]
+        s.save
       end
     }
 
