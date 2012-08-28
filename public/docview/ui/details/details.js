@@ -13,12 +13,7 @@ steal(
     './doc_manager.js',
     './document.js',
     './views/init.ejs',
-<<<<<<< HEAD
-    'docview/docview.css',
-    'docview/ui/details/list/list.css'
-=======
     'docview/docview.css'
->>>>>>> aa067ded9c08554045dc025596f97b3a82ec6f6e
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {
