@@ -112,7 +112,7 @@ steal(
 	    if (docInfo) {
 		$('#document-viewer').hide();
 		$('#document-overview').show();
-		console.log("SHOW?ING OVERVIEW ", docIndex);
+		//console.log("SHOW?ING OVERVIEW ", docIndex);
 		this.overview.showDoc(docIndex, docInfo, this.getPrintString());
 	    }
 	},
