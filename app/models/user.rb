@@ -70,9 +70,14 @@ class User < ActiveRecord::Base
   private
 
     def check_org?(doc_id)
-      if orgs.blank? or orgs == '2201'
+      if orgs == '2200'
         return true
       end
+
+      if orgs.blank?
+        return false
+      end
+
       doc_org = doc_id[0,4]
       return !self.orgs.index(doc_org).nil?
     end

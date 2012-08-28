@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'set'
 
 class DocumentHistoriesController < ApplicationController
@@ -47,8 +48,24 @@ class DocumentHistoriesController < ApplicationController
   end
 
   def dh_special
-    inquired_docs = Document.where('inquired=true OR checkedout =  true')
-    render :json => inquired_docs, :status => 200
+    timeout = 0
+    u=Setting.find_by_name('checkout_period')
+    if u
+      timeout = Time.now - u.value.to_i.day
+    end
+    
+    inquired_docs = Document.where('inquired=true OR checkedout=true')
+    expired = {}
+    if timeout
+      inquired_docs.each { |d|
+        if d.checkedout 
+          if d.updated_at < timeout
+            expired[d.doc_id] = d.updated_at
+          end
+        end
+      }
+    end
+    render :json => { :docs => inquired_docs, :timedout => expired }, :status => 200
   end
 
   def show_all

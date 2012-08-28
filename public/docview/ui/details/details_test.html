@@ -17,13 +17,14 @@
                 <div id="details-test">  </div>
             </div>
         </div>
-    <style type="text/css">
+    <!--style type="text/css">
         .row .span4 {width:150px;height:240px;}
         .thumbnails {margin-left:20px;}
         .row {margin-left:20px;}
         .thumbnail {height:220px;width:150px;}
         img.one_pdf {height:200px;}
-    </style>
+    </style-->
+
     <script type='text/javascript' src='../../../steal/steal.js'></script>
     <script type='text/javascript'>
         steal('jquery/dom/route', 'docview/ui/details', 'docview/models', 'docview/fixtures').then(function ($) {
@@ -34,19 +35,16 @@
                 },
                 access: {
                     manage_docs: {
-                        print: false,
-                        testify: false
+                        print: true,
+                        testify: true
                     }
-                }
+                },
+	        searchMode: 'print'
             });
 
-            var s_mode = new $.Observe({
-                mode: 'single'
-            });
 
-            $('#details-test').docview_ui_details({ clientState: state,
-                searchMode: s_mode
-            });
+
+            $('#details-test').docview_ui_details({ clientState: state });
 
             var controller = $('#details-test').controller();
             controller.queryDoc('220120121012010018');

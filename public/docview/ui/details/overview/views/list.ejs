@@ -1,0 +1,29 @@
+<p>&nbsp;</p>
+<% if (print) {
+   var showPrint = '打印';
+   if (print == 'court') {
+      showPrint = '出证';
+   }
+
+ %>
+<div class="well">
+<button class="btn btn-large btn-primary print-all" data-doc-index=<%= doc_index %>> <%= showPrint %>(所有页面)</button>
+<button class="btn btn-large btn-primary print-selected" data-doc-index=<%= doc_index %>> <%= showPrint %>(选中页面)</button>
+</div>
+<%}%>
+
+<!--button type="button" class="btn select-all">Select All</button-->
+<ul class="thumbnails">
+
+  <% for (i = 0; i< images.length; i++) { %>      
+<li class="span2">
+
+<a href="#<%= (i+1) %>" class="thumbnail" data-doc-index=<%= doc_index %>>
+<img src="<%= images[i] %>" />
+</a>
+			第<%= (i+1) %>页<input type="checkbox" class="select_checkbox_print" value="<%= i %>"></input>
+		</div>
+</li>
+  <% } %>
+
+</div>

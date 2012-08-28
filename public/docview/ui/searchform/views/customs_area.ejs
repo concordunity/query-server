@@ -1,0 +1,12 @@
+
+     <div class="control-group">
+      <label  class="control-label" for="frm_customs_area">关区</label>
+      <div class="controls">
+         <select id="frm_customs_area"  name="customs_area" style="width: 80px;">
+          <option value="">不限</option>
+            <%for(i=0;i<this.length;i++){%>
+              <option value="<%= this[i].code %>"><%= this[i].customs_area %></option>
+              <%}%>
+      </select>
+      </div>
+    </div>

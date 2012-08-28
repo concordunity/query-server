@@ -145,6 +145,13 @@ class DocumentsController < ApplicationController
     end
 
     limitN=200
+
+    u=Setting.find_by_name('maxn')
+    if u
+      limitN = u.value.to_i;
+    end
+
+
     if !params[:total].blank?
       limitN = params[:total].to_i
     end
@@ -433,10 +440,14 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def print
+  def print_old
     dir = params[:tmp_folder]
     doc_id = params[:doc_id]
     @document = Document.find_by_doc_id(doc_id)
+    if @document.nil?
+      raise ActiveRecord::RecordNotFound
+    end
+
     add_history(@document, 'print')
     if dir
       filepath = "#{Rails.root}/files/#{dir}/wm_#{doc_id}.pdf" 
@@ -450,6 +461,38 @@ class DocumentsController < ApplicationController
       send_file(filepath, :filename => "wm_#{doc_id}.pdf", :type => "application/pdf")
     end
   end
+
+  def print
+    doc_id = params[:doc_id]
+    @document = Document.find_by_doc_id(doc_id)
+
+    if @document.nil?
+      raise ActiveRecord::RecordNotFound
+    end
+
+    #    add_history(@document, 'testify')
+    dir='docimages'
+    if !params[:mod].blank?
+      dir='docimages_mod'
+    end
+
+    pages = ""
+    if !params[:pages].blank?
+      page_selections = params[:pages].split(',')
+      pages=page_selections.join(' ')
+    end
+    script_name = "#{ENV['HOME']}/bin/new_print_doc.sh #{doc_id} #{dir} \"#{pages}\""
+
+    pdf_file = %x[ #{script_name} ]
+
+    if pdf_file == 'NONE'
+      raise ActiveRecord::RecordNotFound
+    end
+
+
+    send_file(pdf_file, :filename => File.basename(pdf_file), :type => "application/pdf")
+  end
+
 
   def testify
     doc_id = params[:doc_id]

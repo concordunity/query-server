@@ -1,0 +1,17 @@
+﻿<form class="advanced form-horizontal">
+    <fieldset>
+        
+        <%== $.View('//docview/ui/searchform/views/country_shipment.ejs',country_shipment) %>
+        <%== $.View('//docview/ui/searchform/views/country_origin.ejs',country_origin) %>
+        <%== $.View('//docview/ui/searchform/views/business_units.ejs',business_units) %>
+        <%== $.View('//docview/ui/searchform/views/receiving_unit.ejs',receiving_unit) %>
+        <%== $.View('//docview/ui/searchform/views/types_goods.ejs',types_goods) %>
+        <%== $.View('//docview/ui/searchform/views/customs_area.ejs',customs_area) %>
+
+
+       <div class="control-group daterange-holder"></div>
+    </fieldset>
+<div class="row-fluid">
+    <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button></div>
+</form>
+<div class="search_result_list"></div>

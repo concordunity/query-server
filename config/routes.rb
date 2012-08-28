@@ -1,5 +1,17 @@
 Dms::Application.routes.draw do
 
+  get "/get_son_table" => "search_condition#get_son_table"
+
+  get "/search_condition" => "search_condition#search_condition"
+
+  resources :normal_import_price_less_records
+
+  post "/upload_file" => "upload_file#import_excel"
+
+  resources :zero_find_check_infos
+
+  resources :import_most_time_org_doc_infos
+
   post "/search_result/excle" => "monitoring_data#export_search"
   post "/status/zip_files" => "queries_controller#zip_files_status"
 
@@ -15,7 +27,7 @@ Dms::Application.routes.draw do
   #  devise_for :users #, :controllers => { :sessions => "test/sessions",
   #  :registration => "test/registrations" },
 
-  post "/print/printpdf" => "documents#print_doc"
+  match "/print/printpdf" => "documents#print_doc"
   post "/monitoring/query" => "monitoring_data#get_json"
   post "/monitoring/query_util" => "monitoring_data#get_util"
 
@@ -127,6 +139,8 @@ Dms::Application.routes.draw do
   post "/qh/u" => "query_histories#byuser"
   match "/qh/d/:doc_id" => "query_histories#bydoc"
   match "/qh_all" => "query_histories#show_all"
+
+  get "/qh/quota" => "query_histories#over_quota"
 
 #forexmple route
   post "/qh/query_search" => "query_histories#search"

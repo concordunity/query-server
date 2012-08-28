@@ -1,0 +1,57 @@
+<%= form_for(@normal_import_price_less_record) do |f| %>
+  <% if @normal_import_price_less_record.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@normal_import_price_less_record.errors.count, "error") %> prohibited this normal_import_price_less_record from being saved:</h2>
+
+      <ul>
+      <% @normal_import_price_less_record.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :date_value %><br />
+    <%= f.datetime_select :date_value %>
+  </div>
+  <div class="field">
+    <%= f.label :declarations_number %><br />
+    <%= f.text_field :declarations_number %>
+  </div>
+  <div class="field">
+    <%= f.label :product_code %><br />
+    <%= f.text_field :product_code %>
+  </div>
+  <div class="field">
+    <%= f.label :product_number %><br />
+    <%= f.number_field :product_number %>
+  </div>
+  <div class="field">
+    <%= f.label :dollar_value %><br />
+    <%= f.number_field :dollar_value %>
+  </div>
+  <div class="field">
+    <%= f.label :first_legal_quantity %><br />
+    <%= f.number_field :first_legal_quantity %>
+  </div>
+  <div class="field">
+    <%= f.label :price %><br />
+    <%= f.text_field :price %>
+  </div>
+  <div class="field">
+    <%= f.label :actual_price_cap %><br />
+    <%= f.text_field :actual_price_cap %>
+  </div>
+  <div class="field">
+    <%= f.label :actual_price_floor %><br />
+    <%= f.text_field :actual_price_floor %>
+  </div>
+  <div class="field">
+    <%= f.label :national_average_price %><br />
+    <%= f.text_field :national_average_price %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
