@@ -42,7 +42,7 @@ steal(
 */
         show : function() {
         },
-	".upload_file click" : function(el,ev){
+	".upload_file change" : function(el,ev){
 	    this.checkFileSize(el);
 	},
 	checkFileSize : function(fileObj){
