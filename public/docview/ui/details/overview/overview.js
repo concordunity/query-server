@@ -25,7 +25,7 @@ steal(
 	    ev.preventDefault();
 	    var href = this.getHrefNoHash(el);
 	    if (this.options.details_controller) {
-		console.log("we will show page " + href);
+		//console.log("we will show page " + href);
 		this.options.details_controller.showPage(el.data('doc-index'), +href);
 	    }
 	},
@@ -39,6 +39,7 @@ steal(
             };
 	 */
 	showDoc : function(docIndex, docInfo, printString) {
+	    console.log("show doc", docIndex, docInfo, docInfo.getThumbnailPaths(), printString);
 	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : docInfo.getThumbnailPaths(), print: printString } ));
 	},
 

@@ -109,7 +109,7 @@ class QueryHistoriesController < ApplicationController
   end
 
   def over_quota
-    user_info = {}
+    user_info = []
     u = Setting.find_by_name('max_queries_per_month')
     if u
       monthly_quota = u.value.to_i
@@ -117,7 +117,7 @@ class QueryHistoriesController < ApplicationController
         if v > monthly_quota
           user = User.find_by_id(k)
           if user
-            user_info[user.username] = { :total => v, :orgs => user.orgs }
+            user_info.push({ :username => user.username, :orgs => user.orgs, :queries => v })
           end
         end
       } 

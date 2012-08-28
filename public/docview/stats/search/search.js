@@ -7,6 +7,7 @@ steal(
     'docview/models',
     'docview/ui/sou',
     'docview/ui/single',
+    'docview/ui/queryquota',
     'docview/docgroup/dgselect',
     'docview/ui/history',
     'docview/ui/daterange',
@@ -45,6 +46,7 @@ steal(
                 //                $("#div_stats").html(this.view("stats"));
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
+		this.element.find('div.stats_query').docview_ui_queryquota();
                 this.mainTabOn = false;
                 this.search_result = null;
                 // Hide box until route conditions are met
@@ -116,6 +118,8 @@ steal(
                     } else if (newVal == 'stats_usage') {
                         this.reloadUsage();
                     } else if (newVal == 'stats_query') {
+			this.element.find('div.stats_query').docview_ui_queryquota('loadData');
+
                         this.element.find('.dg_select_holder').docview_docgroup_dgselect('reloadDocGroup');
                     }
                     if (newVal == 'create_group') {

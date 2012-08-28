@@ -15,7 +15,7 @@ Dms::Application.routes.draw do
   #  devise_for :users #, :controllers => { :sessions => "test/sessions",
   #  :registration => "test/registrations" },
 
-  post "/print/printpdf" => "documents#print_doc"
+  match "/print/printpdf" => "documents#print_doc"
   post "/monitoring/query" => "monitoring_data#get_json"
   post "/monitoring/query_util" => "monitoring_data#get_util"
 

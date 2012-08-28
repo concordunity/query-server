@@ -170,7 +170,7 @@ steal(
         // }
         '{clientState} document.current change': function(el, ev, attr, how, newVal, oldVal) {
             if (how === "set" || how === "add") {
-		console("this is document current change  ..." );
+		//console("this is document current change  ..." );
 		    //this.showPage(0, 1);
 	    }
         }
