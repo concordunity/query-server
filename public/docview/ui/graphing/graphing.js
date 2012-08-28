@@ -117,7 +117,7 @@ steal(
 
 
 	'{$.route} change' : function(el, ev, attr, how, newVal, oldVal) {
-	    console.log("change ", el, ev, attr, how, newVal, oldVal);
+	    //console.log("change ", el, ev, attr, how, newVal, oldVal);
 	},
 	loadData: function() {	
 	    var now_seconds = new Date().getTime() / 1000;
