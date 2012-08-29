@@ -71,6 +71,7 @@ steal(
         '.main-nav a click': function(el, ev) {
             ev.preventDefault();
 	    this.lastActiveA = el;
+	    $("#alerts").html("");
             // Change address bar to reflect link contents
             // This overwrites all other route attributes
             var newCategory = this.getHrefNoHash(el);

@@ -47,7 +47,7 @@ steal(
 	    this.filters = [];
             //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 	    this.element.find('div.daterange-holder').docview_ui_daterange(
-		{dateOptions : { labelString: "理单日期"}});
+		{dateOptions : { labelString: "日期"}});
 	    this.element.find('div.daterange-holder-src').docview_ui_daterange(
 		{dateOptions : { labelString: "理单日期"}});
 	    this.element.find('div.single_holder').docview_ui_single();
@@ -245,8 +245,9 @@ steal(
 
 	    var from_date = dates.from;
 	    var to_date = dates.to;
-	    
-	    var total = el.find('input[name="total"]').val();
+	    var total = $("input[name='frm_total']:checked").val();
+            //$("input[name='org']:checked").val();
+	    //var total = el.find('input[name="total"]').val();
 	    
 	    if (total > 50) {
 		this.displayInputError(el, "total", "每次抽样总数不能超过 50");
@@ -255,7 +256,7 @@ steal(
 
 	    var isTax = undefined;
 	    var isMod = undefined;
-            var isMod_or_isTax = el.find('select[name="isMod_or_isTax"]').val();
+            var isMod_or_isTax = el.find("input[name='frm_isMod_or_isTax']:checked").val();
 
 	    if (isMod_or_isTax == "isTax") {
 		isTax = "1";
@@ -274,9 +275,9 @@ steal(
 
 	    this.options.clientState.attr('search', {
 		total : total,
-		org : el.find('select[name="org"]').val(),
+		org : el.find("input[name='org']:checked").val(),
 		org_applied : el.find('select[name="org_applied"]').val(),
-		docType : el.find('select[name="doc_type"]').val(),
+		docType : el.find("input[name='frm_docType']:checked").val(),
 		years : el.find('select[name="years"]').val(),
 		edcStartDate: from_date,
 		edcEndDate : to_date,
