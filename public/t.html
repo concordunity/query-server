@@ -3,11 +3,33 @@
  <script type='text/javascript' src='/steal/steal.js'></script>
 <script type='text/javascript' src='libs/pdfobject.js'></script>
 <script type='text/javascript'>
- window.loadPDF = function (url) {
-     var myPDF = new PDFObject({ url: url, pdfOpenParams : {toolbar :0, statusbar: 0} }).embed('pdf-holder');
-     setTimeout(function() { myPDF.printWithDialog();}, 5000);
+
+var myPDF = undefined;
+var trialCount = 0;
+
+function checkAndShowPrint() {
+  if (typeof myPDF.printWithDialog === 'undefined') {
+    if (trialCount < 50) {
+      trialCount ++;
+      setTimeout(checkAndShowPrint, 800);
+    }
+  } else {
+    myPDF.printWithDialog();
+  }
+} 
+
+window.loadPDF = function (url) {
+     trialCount = 0;
+    myPDF = new PDFObject({ url: url,
+                   pdfOpenParams : {toolbar :0, statusbar: 0} }).embed('pdf-holder');
+/*     setTimeout(function() {
+    alert(typof myPDF.printWithDialog); 
+    alert(typeof myPDF.printXXX); 
+    myPDF.printWithDialog();
+} , 5000);*/
+    setTimeout(checkAndShowPrint , 2000);
 };
+
 </script>
 </head>
-
 <body><div id="pdf-holder"></div></body></html>
