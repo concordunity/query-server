@@ -34,6 +34,8 @@ steal(
                         "sUrl" : "/docview/media/language/ch_ZN.txt"
                     }
                 });
+	    } else {
+	    	this.element.html('');
 	    }
 	},
 	displayError: function(jqXHR, textStatus, errorThrown) {
