@@ -21,6 +21,7 @@ steal(
     './login.css'
 ).then(
     'docview/ui/upload',
+    'docview/ui/index',
     'docview/ui/search_some_condition'
 )
 
@@ -268,6 +269,7 @@ steal(
                 heading: $.i18n._('msg.welcome'),
                 message: this.options.clientState.attr('user').attr('fullname') + login_info
             });
+	    $("#alerts").docview_ui_index();
             
             // TODO: Reload the route so the right thing shows up.
         }
