@@ -5,6 +5,8 @@ steal(
 ).then(
     'docview/bootstrap/bootstrap.css'
 ).then(
+    './views/upload.css'
+).then(
     './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.Upload', {}, {
