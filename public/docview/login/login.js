@@ -269,7 +269,7 @@ steal(
                 heading: $.i18n._('msg.welcome'),
                 message: this.options.clientState.attr('user').attr('fullname') + login_info
             });
-	    $("#alerts").docview_ui_index();
+	    $("#alerts").docview_ui_index({clientState: this.options.clientState});
             
             // TODO: Reload the route so the right thing shows up.
         }
