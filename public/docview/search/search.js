@@ -393,16 +393,18 @@ steal(
 
             return shref.substring(pos + 1);
         },
-        'a click': function(el, ev) {
+        'a.button-title click': function(el, ev) {
             ev.preventDefault();
             // Simple way: clear all active and set the new one
             this.element.find('li').removeClass('active');
             el.closest('li').addClass('active');
-
+	    
             // Update subcategory
             var subcategory = this.getHrefNoHash(el);
             $.route.attr('subcategory', subcategory);
 
+	    $("ul.nav-pills a").closest('li').removeClass('active');
+	    $("ul.nav-pills a[href='#"+subcategory+"']").closest('li').addClass('active');
             // Save subcategory state
             this.options.clientState.attr('nav').attr($.route.attr('category'), subcategory);
 

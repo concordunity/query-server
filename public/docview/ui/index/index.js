@@ -9,7 +9,7 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.index', {}, {
         init : function() {
-           this.element.html(this.view('init'));
+           //this.element.html(this.view('init'));
 
             // If any subnav item is allowed, then we have to show the nav item
             var search = false;
@@ -37,13 +37,14 @@ steal(
                 manage_accounts = true;
             }
 
-            this.element.html(this.view('menu_bar', {
+            this.element.html(this.view('init', {
                 user: this.options.clientState.attr('user'),
                 search: search,
                 stats: stats,
                 manage_docs: manage_docs,
                 manage_accounts: manage_accounts
             }));
+
         },
         getHrefNoHash: function(el) {
             var shref = el.attr('href');
@@ -64,6 +65,8 @@ steal(
             if (newCategory !== $.route.attr('category')) {
                 $.route.attrs({category: newCategory}, true);
             }
+            $("ul.main-nav a").closest('li').removeClass('active');
+            $("ul.main-nav a[href='#"+newCategory+"']").closest('li').addClass('active');
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             // Find corresponding nav icon and select it
