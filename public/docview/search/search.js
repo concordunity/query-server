@@ -47,13 +47,13 @@ steal(
 	    this.filters = [];
             //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 	    this.element.find('div.daterange-holder').docview_ui_daterange(
-		{dateOptions : { labelString: "日期"}});
+		{dateOptions : {labelString: "日期"}});
 	    this.element.find('div.daterange-holder-src').docview_ui_daterange(
-		{dateOptions : { labelString: "理单日期"}});
+		{dateOptions : {labelString: "理单日期"}});
 	    this.element.find('div.single_holder').docview_ui_single();
 	    this.element.find('div.multi_holder').docview_ui_multi();
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
-								   th_options : { include_user : false }});
+								   th_options : {include_user : false}});
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
             this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
@@ -157,7 +157,16 @@ steal(
 		    if (newVal != 'single') {
 			$('#document-details').hide();
 		    } 
-		} 
+		}
+                this.element.find('li').removeClass('active');
+                this.element.find('a[href="#advanced"]').closest('li').addClass('active');
+                
+                this.element.find('li.nav-pills').removeClass('active');
+                this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
+
+                //this.options.clientState.attr('nav').attr(newVal, subcategory);
+                //this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
+                //this.element.find('li').removeClass('active');
 	    }
         },
         '.single submit': function(el, ev) {
@@ -305,7 +314,7 @@ steal(
 	    
 	    hdiv.docview_ui_history('clearResults');
 	    hdiv.docview_ui_history('querySelf',
-				 { timerange : el.find('input[name="timerange"]:checked').val() });
+				 {timerange : el.find('input[name="timerange"]:checked').val()});
 	},
         // Filters
         '.select-all click': function(el) {
@@ -337,6 +346,70 @@ steal(
         removeFormErrors: function(form) {
             form.find('.error .help-inline').remove();
             form.find('.error').removeClass('error');
+        },
+        /*
+        '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
+            switch (newVal) {
+                case "search":
+                case "manage_docs":
+                case "manage_accounts":
+                case "stats":
+                    this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
+
+                    this.element.find('li').removeClass('active');
+
+                    // If the user entered the page by manually entering the url with
+                    // the subcategory, then it should be defined.
+                    var subcategory = $.route.attr('subcategory');
+                    if (subcategory !== undefined) {
+                       // Restore subcategory state from $.route
+                       this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
+                       this.options.clientState.attr('nav').attr(newVal, subcategory);
+                    } else {
+                        // Restore subcategory state from clientState
+
+			subcategory = this.options.clientState.attr('nav').attr(newVal);
+
+                       this.element.find('a[href="#' + subcategory + '"]')
+                           .closest('li').addClass('active');
+                       $.route.attr('subcategory', subcategory);
+                    }
+
+                    this.element.show();
+                    break;
+	    case "document":
+		break;
+            default:
+                    this.element.hide();
+            }
+        },
+        */
+        getHrefNoHash: function(el) {
+            var shref = el.attr('href');
+            var pos = shref.indexOf('#');
+            if (pos < 0) {
+               return shref;
+            }
+
+            return shref.substring(pos + 1);
+        },
+        'a click': function(el, ev) {
+            ev.preventDefault();
+            // Simple way: clear all active and set the new one
+            this.element.find('li').removeClass('active');
+            el.closest('li').addClass('active');
+
+            // Update subcategory
+            var subcategory = this.getHrefNoHash(el);
+            $.route.attr('subcategory', subcategory);
+
+            // Save subcategory state
+            this.options.clientState.attr('nav').attr($.route.attr('category'), subcategory);
+
+	    // Check for search sub tabs
+	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
+		$('#document-details').hide();
+	    }
         }
     });
 });
