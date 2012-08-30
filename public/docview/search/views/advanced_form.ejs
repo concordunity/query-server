@@ -2,10 +2,26 @@
 <div class="row-fluid">
     <div id="search_tree" class="span2">
       <ul class="nav nav-pills">
+
+
+   <% if (this.single) { %>
         <li><a href="#single"  class="button-title" >单票查阅</a></li>
+   <%}%>
+   <% if (this.multi) { %>
         <li><a href="#multi"  class="button-title" >批量查阅</a></li>
+   <%}%>
+   <% if (this.advanced) { %>
         <li><a href="#advanced"  class="button-title" >随机抽查阅</a></li>
+   <% } %>
+   <%if(this.upload_file){%>
+        <li><a href="#upload_file"  class="button-title" >文件上传</a></li>
+   <% } %>
+   <%if(this.search_condition){%>
+        <li><a href="#search_condition"  class="button-title" >按特定条件查询</a></li>
+   <%}%>
+   <% if (this.by_doc_source) { %>
         <li><a href="#by_doc_source"  class="button-title" >单证暂存</a></li>
+   <%}%>
         <li><a href="#personal_history"  class="button-title" >个人历史查阅</a></li>
       </ul>
     </div>
