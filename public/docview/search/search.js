@@ -57,6 +57,19 @@ steal(
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
             this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
+	"button.button-option click" : function(el,ev){
+	    var button_name = $(el).attr("name");
+	    var button_value = $(el).attr("value");
+	    this.element.find("button[name='"+button_name+"']").removeClass("button-option-onblure");    
+	    $(el).addClass("button-option-onblure");    
+	    if(button_name == "frm_total" && button_value == ""){
+		this.element.find("input[name='"+button_name+"']").attr("value","");
+		this.element.find("input[name='"+button_name+"']").attr("style","display:''");	
+	    }else{
+		this.element.find("input[name='"+button_name+"']").attr("style","display:none");
+	    }
+	    this.element.find("input[name='"+button_name+"']").attr("value",button_value);
+	},
         clearFilters: function() {
 	    this.element.find(".filters :checkbox").attr('checked', false);
 	},
@@ -254,10 +267,7 @@ steal(
 
 	    var from_date = dates.from;
 	    var to_date = dates.to;
-	    var total = $("input[name='frm_total']:checked").val();
-	    if(total == ""){
-		total = $("#frm_total").val();	
-	    }
+	    var total = $("input[name='frm_total']").val();
             //$("input[name='org']:checked").val();
 	    //var total = el.find('input[name="total"]').val();
 	    
@@ -268,7 +278,7 @@ steal(
 
 	    var isTax = undefined;
 	    var isMod = undefined;
-            var isMod_or_isTax = el.find("input[name='frm_isMod_or_isTax']:checked").val();
+            var isMod_or_isTax = el.find("input[name='frm_isMod_or_isTax']").val();
 
 	    if (isMod_or_isTax == "isTax") {
 		isTax = "1";
@@ -287,9 +297,9 @@ steal(
 
 	    this.options.clientState.attr('search', {
 		total : total,
-		org : el.find("input[name='org']:checked").val(),
+		org : el.find("input[name='org']").val(),
 		org_applied : el.find('select[name="org_applied"]').val(),
-		docType : el.find("input[name='frm_docType']:checked").val(),
+		docType : el.find("input[name='frm_docType']").val(),
 		years : el.find('select[name="years"]').val(),
 		edcStartDate: from_date,
 		edcEndDate : to_date,

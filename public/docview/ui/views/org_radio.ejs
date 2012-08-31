@@ -1,11 +1,12 @@
 <div class="control-group">
 <label  class="control-label"><%= label %></label>
 <div class="controls">
-	  <label class="radiobox"><input type="radio" name="<%= name %>" value=""  checked='checked'>不限</input></label>
-	  <label class="radiobox"><input type="radio" name="<%= name %>" value="2225" >外港(2225)</input></label>
-	  <label class="radiobox"><input type="radio" name="<%= name %>" value="2233" >浦东机场(2233)</input></label>
-	  <label class="radiobox"><input type="radio" name="<%= name %>" value="2201" >浦江(2201)</input></label>
-	  <label class="radiobox"><input type="radio" name="<%= name %>" value="2248" >洋山(2248)</input></label>
-	  <label class="radiobox"><input type="radio" name="<%= name %>" value="2202" >吴淞(2202)</input></label>
+	  <button type="button" name="<%= name %>" value="" class="btn button-option button-option-onblure">不限</button>
+	  <button type="button" name="<%= name %>" value="2225" class="btn button-option ">外港</button>
+	  <button type="button" name="<%= name %>" value="2233" class="btn button-option ">浦机</button>
+	  <button type="button" name="<%= name %>" value="2201" class="btn button-option ">浦江</button>
+	  <button type="button" name="<%= name %>" value="2248" class="btn button-option ">洋山</button>
+	  <button type="button" name="<%= name %>" value="2202" class="btn button-option ">吴淞</button>
+          <input type='hidden' name='<%= name %>' value="" />
      </div>
-    </div>
+</div>
