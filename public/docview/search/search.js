@@ -255,6 +255,9 @@ steal(
 	    var from_date = dates.from;
 	    var to_date = dates.to;
 	    var total = $("input[name='frm_total']:checked").val();
+	    if(total == ""){
+		total = $("#frm_total").val();	
+	    }
             //$("input[name='org']:checked").val();
 	    //var total = el.find('input[name="total"]').val();
 	    
