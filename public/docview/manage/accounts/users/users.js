@@ -5,7 +5,8 @@ steal(
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
     'docview/models', 
-    'docview/ui/dmstable',    
+    'docview/ui/dmstable',  
+    'docview/ui/orgui',
     'docview/bootstrap/bootstrap.css'
 )
 
@@ -36,6 +37,7 @@ steal(
     {
         init: function() {
             this.element.html(this.view('init', {}));
+
             var table_options = {
 		aaData: [],
 
@@ -151,6 +153,8 @@ steal(
         '#new-user-btn click': function() {
             // Load up the creation form
             $('#new-user').html(this.view('new_user', {cntl : this}));
+	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui();
+
         },
         '#new-user-form submit': function(el, ev) {
             ev.preventDefault();
@@ -159,7 +163,10 @@ steal(
 	    var doc_type = el.find('select[name="doc_type"]').val();
             var roles = el.find('select[name="roles"]').val();
             var email = el.find('input[name="email"]').val();
-            var organizations = el.find('input[name="organizations"]').val();
+
+            var orgController = el.find('div.org-selection-holder').controller();
+
+
             var password = el.find('input[name="password"]').val();
             var confirmation = el.find('input[name="password-confirm"]').val();
 
@@ -201,7 +208,7 @@ steal(
                     user: {
                         username: username,
                         fullname: fullname,
-                        orgs: organizations,
+                        orgs: orgController.getOrgs(),
                         password: password,
                         email: email,
 			doc_type : doc_type
@@ -262,8 +269,13 @@ steal(
 	    userRow.hide();
 	    //console.log(userInfo.model);
             
-	    userRow.after(this.view('edit_user', 
-				    {cntl : this, user: userInfo.model})); 
+	    var editHtml = this.view('edit_user', 
+				     {cntl : this, user: userInfo.model});
+	    userRow.after(editHtml);
+	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
+	    var ctrl =userRow.next().find('div.edit-org-selection-holder').controller();
+	    ctrl.setOrgs(userInfo.model.orgs);
+
         },
         '.edit-user-form submit': function(el, ev) {
             ev.preventDefault();
@@ -274,7 +286,8 @@ steal(
 	    var password = el.find('input[name="password"]').val();
 	    var confirmation = el.find('input[name="password-confirm"]').val();
 	    var fullname = el.find('input[name="fullname"]').val();
-	    var orgs = el.find('input[name="organizations"]').val();
+            var orgController = el.find('div.edit-org-selection-holder').controller();
+
 	    var doc_type = el.find('select[name="doc_type"]').val();
 	    var roles = el.find('select[name="roles"]').val();
 
@@ -293,7 +306,7 @@ steal(
 		user.id,
 		{ role : roles,
                   user : {
-		      orgs : orgs,
+		      orgs : orgController.getOrgs(),
 		      fullname : fullname,
 		      doc_type : doc_type,
 		      password : password }

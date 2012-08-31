@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>orgui Widget Unit Test</title>
+</head>
+<body>
+
+  <button id="button-1">ShowSelection</button>
+  <button id="button-2">全部关区</button>
+  <button id="button-3">机场 和 洋山</button>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="orgui-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/orgui').then(function($) {
+
+  $('#orgui-test').docview_ui_orgui();
+     var ctrl = $('#orgui-test').controller();
+  $('#button-1').click(function(el,ev) {
+
+     alert (ctrl.getOrgs());
+  });
+
+  $('#button-2').click(function(el,ev) {
+         ctrl.setOrgs('2200');
+});
+  $('#button-3').click(function(el,ev) {
+      ctrl.setOrgs('2233,2248');
+});
+ }); 
+ </script>
+        </body>
+</html>
+
