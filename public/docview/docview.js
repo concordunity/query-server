@@ -132,6 +132,7 @@
         'btn.delete' : '删除', 
         'btn.save' : '保存', 
         'btn.edit' : '编辑',
+        'btn.upload_file' : '上传文件',
 	'btn.search' : '查询',
         'btn.filter' : '单证种类',
 	'btn.print' : '打印',

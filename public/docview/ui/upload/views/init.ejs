@@ -3,20 +3,26 @@
 	<table class="upload-table table-size">
      	  <tr>
 	    <td>
-              <label class="upload-table-label">请上传月查获率为0的重点查验企业</label></td><td><input class='upload_file' type="file" name="upload_file" id="upload_file" />
-     	    </td>
+		<div class="search-option">请上传月查获率为0的重点查验企业</div>
+                <div class="search-content">说明：重点查验企业是指查验率大于一定值的企业</div>
+	    </td>
+	    <td><input class='upload_file' type="file" name="upload_file" id="upload_file" /></td>
 	  </tr>
 	  <tr>
 	    <td>
-   	      <label class="upload-table-label">请上传一般贸易进口价格偏低报关单记录文档</label></td><td><input  class='upload_file' type="file" name="upload_file_1" id="upload_file_1" />
-     	    </td>
+                <div class="search-option">请上传一般贸易进口价格偏低报关单记录文档</div>
+                <div class="search-content">说明：价格偏低记录是指价格低于统计价格高低参数实际下限的报关单记录</div>
+	    </td>
+            <td><input  class='upload_file' type="file" name="upload_file_1" id="upload_file_1" /></td>
 	  </tr>
 	  <tr>
 	    <td>
-   	      <label  class="upload-table-label">请上传进口通关时间超长报关单文档</label></td><td><input  class='upload_file' type="file" name="upload_file_2" id="upload_file_2" />
-     	    </td>
+                <div class="search-option">请上传进口通关时间超长报关单文档</div>
+                <div class="search-content">说明：通关时间超长报关单是指剔除递单、缴税时间后，通关作业时间大于15天的报关单</div>
+	    </td>
+	    <td><input  class='upload_file' type="file" name="upload_file_2" id="upload_file_2" /></td>
 	  </tr>
 	</table>
-        <input type="submit" value="上传文件" class='submit-button' />
+        <button type="submit" class="btn btn-primary submit-button"><i class="icon-upload icon-white"></i><%= $.i18n._('btn.upload_file')  %></button>
   <iframe name="check_file_frame" style="display:none;"></iframe>
 </form>
