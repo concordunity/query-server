@@ -14,7 +14,8 @@ steal(
     'docview/ui/details',
     'docview/ui/dmstable'
 ).then(
-    'docview/bootstrap/bootstrap.css'    
+    'docview/bootstrap/bootstrap.css',
+    'docview/ui/search_some_condition/views/search_some_condition.css' 
 ).then(function($) {
     $.Controller('Docview.Ui.search_some_condition', {}, {
         init : function() {
