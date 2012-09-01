@@ -24,7 +24,8 @@ steal(
     'docview/bootstrap/bootstrap-button.js',
     'docview/bootstrap/bootstrap-collapse.js',
     'docview/bootstrap/bootstrap-alert.js',
-    'docview/datatables/bootstrap-pagination.js'
+    'docview/datatables/bootstrap-pagination.js',
+    'docview/docview.css'
 ).then(function($) {
     /*
     * Manage user accounts and roles
@@ -48,8 +49,8 @@ steal(
 		    {"mDataProp":"roles", mLabel : '角色'},
 		    {"mDataProp":"orgs", mLabel : '关区'},
 		    {"mDataProp":"doc_type", mLabel : '进出口类别'},
-		    {"mDataProp":null, mLabel : '操作'}
-		],
+		    {"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+  		],
 		file_name: "user_info"
 	    };
 	    this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});

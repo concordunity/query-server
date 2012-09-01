@@ -149,3 +149,7 @@ ul.image-tree-nav, ul.image-tree-nav li {
     margin-left: 0px;
     padding-left: 0px;
 }
+
+td.nolinebreak {
+    white-space:nowrap;
+}

@@ -13,6 +13,7 @@ steal(
             this.element.html(this.view('init'));
             //$('.alert').alert();
             $('.alert').alert('close');
+	    this.element.hide();
         },
 
         loadData : function() {
