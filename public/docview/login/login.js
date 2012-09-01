@@ -16,6 +16,7 @@ steal(
     'docview/manage/accounts/roles',
     'docview/manage/docs',
     'docview/ui/details',
+    'docview/ui/syssetting',
     'docview/stats/group',
     'docview/stats/search',
     './login.css'
@@ -217,7 +218,8 @@ steal(
                     this.setNavIfEmpty('manage_accounts', 'roles');
                     break;                    
                 case ("sys-setting"):
-                    this.options.clientState.attr('access').attr('sys-setting', true);
+                    this.options.clientState.attr('access')
+			.attr('manage_accounts').attr('sys_setting', true);
 
                 default:
                     break;
@@ -253,7 +255,7 @@ steal(
             $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
             $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
 	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
-            
+            $('#sys-setting').docview_ui_syssetting({clientState: this.options.clientState});
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
             $('#document-details').docview_ui_details({clientState: this.options.clientState});

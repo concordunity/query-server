@@ -10,6 +10,7 @@ steal(
 
 // View templates
 .then(
+    'docview/ui/syssetting',
     './views/manage_docs.ejs',
     './views/manage_accounts.ejs',
     './views/stats.ejs'
@@ -88,6 +89,15 @@ steal(
             
             // Save subcategory state
             this.options.clientState.attr('nav').attr($.route.attr('category'), subcategory);
+
+
+	    if (subcategory === 'sys-setting') {
+		$('#sys-setting').show();
+		$('#sys-setting').docview_ui_syssetting('loadData');
+
+	    } else {
+		$('#sys-setting').hide();
+	    }
 
 	    // Check for search sub tabs
 	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
