@@ -4,6 +4,7 @@ namespace :init do
   desc "update_web_link"
   task :update_web_link => :environment do
       if true
+	WebLink.create(:name => "aSysSetting",:description => "系统参数设置",:controller => "Setting",:action => "sys-setting")
 	WebLink.create(:name => "aUploadFile",:description => "上传文件",:controller => "upload_file",:action => "import_excel")
 	WebLink.create(:name => "aSearchCondition",:description => "按特定条件查询",:controller => "search_condition",:action => "search_condition")
       else

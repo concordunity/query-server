@@ -104,8 +104,8 @@ Document.prototype.getNumImages = function () {
 }
 
 // Given page index selection 0, 1, 2, .....
-Document.prototype.getPrintUrl = function (pageSelection) {
-    var url = "/docs/print?doc_id=" + this.docId;
+Document.prototype.getPrintUrl = function (base, pageSelection) {
+    var url = base + "?doc_id=" + this.docId;
     if (this.isSpecialDoc) {
 	url = url + "&mod=1";
     }

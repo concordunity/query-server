@@ -1,4 +1,0 @@
-class AddBulkidsToQueryHistories < ActiveRecord::Migration
-  def change
-  end
-end
