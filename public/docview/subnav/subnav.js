@@ -45,8 +45,11 @@ steal(
                     
                     // If the user entered the page by manually entering the url with
                     // the subcategory, then it should be defined.
-                    var subcategory = $.route.attr('subcategory');
-                    if (subcategory !== undefined) {
+                var subcategory = $.route.attr('subcategory');
+                if (subcategory === 'sys-setting') {
+		    $('#sys-setting').show();
+		}
+		if (subcategory !== undefined) {
                        // Restore subcategory state from $.route
                        this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
                        this.options.clientState.attr('nav').attr(newVal, subcategory);
@@ -54,7 +57,10 @@ steal(
                         // Restore subcategory state from clientState
 
 			subcategory = this.options.clientState.attr('nav').attr(newVal);
-	
+                if (subcategory === 'sys-setting') {
+		    $('#sys-setting').show();
+		}	
+
                        this.element.find('a[href="#' + subcategory + '"]')
                            .closest('li').addClass('active');
                        $.route.attr('subcategory', subcategory);
