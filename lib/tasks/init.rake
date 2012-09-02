@@ -14,7 +14,7 @@ namespace :init do
 	WebLink.where(:name => "aUploadFile").first.destroy
       end
       if WebLink.where(:name => "aSearchCondition").length == 0
-	WebLink.create(:name => "aSearchCondition",:description => "高峰险报关单查询",:controller => "search_condition",:action => "search_condition")
+	WebLink.create(:name => "aSearchCondition",:description => "高风险报关单查询",:controller => "search_condition",:action => "search_condition")
       else
 	WebLink.where(:name => "aSearchCondition").first.destroy
       end

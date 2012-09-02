@@ -89,7 +89,7 @@
        'menu_profile' : '设置',
        'subnav.single_document' : '单票查阅',
        'subnav.upload_file' : '文件上传',
-       'subnav.search_condition' : '高峰险报关单查询',
+       'subnav.search_condition' : '高风险报关单查询',
        'subnav.multi_document' : '批量查阅',
        'subnav.advanced_search' : '随机抽样查阅',
        'subnav.manage_users' : '用户管理',
