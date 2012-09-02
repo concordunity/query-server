@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
   end
 
   def can_view?(doc)
-    return check_org?(doc) && check_doc_type?(d.doc_id)
+    return check_org?(doc) && check_doc_type?(doc.doc_id)
   end
 
   private
