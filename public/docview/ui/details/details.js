@@ -206,7 +206,14 @@ steal(
             $('#details-holder').hide();
 
             dFrame.show();
-	    var url = doc.getPrintUrl(pageSelection);
+	    var p = this.getPrintString();
+
+	    var base = "/docs/print";
+	    if (p === 'court') {
+		base = "/docs/testify";
+	    }
+
+	    var url = doc.getPrintUrl(base, pageSelection);
 	    //console.log("Print URL is ", url);
 	    dFrame[0].contentWindow.loadPDF(url);
         },

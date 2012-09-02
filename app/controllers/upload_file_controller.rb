@@ -15,7 +15,8 @@ class UploadFileController < ApplicationController
 	result[:message] << zfci[:message]
 	result[:message] << niplr[:message]
 	result[:message] << imtodi[:message]
-	render json: {:status => 200,:message => result}
+	render :nothing => true 
+	#render json: {:status => 200,:message => result}
   end
 
   def zero_find_check_info(upload_file_name)
@@ -177,7 +178,7 @@ class UploadFileController < ApplicationController
       filename = file.original_filename
       filepath = "#{Rails.root.to_s}/public/docview/export_data/#{filename}"
         if Dir.entries("#{Rails.root.to_s}/public/docview/export_data/").include?(filename)
-          system("rm #{Rails.root.to_s}/public/docview/export_data/#{filename}")
+          #system("rm -f #{Rails.root.to_s}/public/docview/export_data/#{filename}")
         end
       File.open(filepath, "wb") do |f|
         f.write(file.read)

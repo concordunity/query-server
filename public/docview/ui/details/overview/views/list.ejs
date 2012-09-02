@@ -14,16 +14,22 @@
 
 <!--button type="button" class="btn select-all">Select All</button-->
 <ul class="thumbnails">
-
-  <% for (i = 0; i< images.length; i++) { %>      
+<div class="row">
+  <% var itemCount = 0;
+for (i = 0; i< images.length; i++) {
+if (i > 0 && i % 6 == 0) {
+%>
+</div><div class="row"><%
+} %>      
 <li class="span2">
 
 <a href="#<%= (i+1) %>" class="thumbnail" data-doc-index=<%= doc_index %>>
 <img src="<%= images[i] %>" />
 </a>
 			第<%= (i+1) %>页<input type="checkbox" class="select_checkbox_print" value="<%= i %>"></input>
-		</div>
+	
 </li>
   <% } %>
 
 </div>
+</ul>

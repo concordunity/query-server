@@ -63,13 +63,13 @@ class User < ActiveRecord::Base
     return "#{username}(#{fullname})" 
   end
 
-  def can_view?(doc_id)
-    return check_org?(doc_id) && check_doc_type?(doc_id)
+  def can_view?(doc)
+    return check_org?(doc) && check_doc_type?(doc.doc_id)
   end
 
   private
 
-    def check_org?(doc_id)
+    def check_org?(doc)
       if orgs == '2200'
         return true
       end
@@ -78,8 +78,8 @@ class User < ActiveRecord::Base
         return false
       end
 
-      doc_org = doc_id[0,4]
-      return !self.orgs.index(doc_org).nil?
+      #doc_org = doc_id[0,4]
+      return !self.orgs.index(doc.org).nil?
     end
 
     def check_doc_type?(doc_id)

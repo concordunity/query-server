@@ -20,15 +20,17 @@ class SpecialDocumentsController < ApplicationController
 
   def query
     doc_id = params[:doc_id]
-    # check user's privileges
-    if !current_user.can_view?(doc_id)
-      render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
-      return
-    end
 
     @document = Document.find_by_doc_id(doc_id)
 
     if @document
+      # check user's privileges
+      if !current_user.can_view?(@document)
+        render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
+        return
+      end
+
+
       # Now check for user's org
       if @document.inquired &&  !(can? :inquired, Document)
         render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 

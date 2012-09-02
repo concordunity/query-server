@@ -85,9 +85,14 @@ steal(
                     this.mainTabOn = true;
                     //this.element.find('.by_user').show();
                     this.element.show();
+
                 } else {
                     this.mainTabOn = false;
                     this.element.hide();
+
+		    if ($.route.attr('subcategory') === 'dh_report') {
+                        this.element.find('.stats_query').show();
+		    }
                 }
             },
             '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
