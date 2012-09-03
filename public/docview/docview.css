@@ -153,3 +153,6 @@ ul.image-tree-nav, ul.image-tree-nav li {
 td.nolinebreak {
     white-space:nowrap;
 }
+ul.nav li.high-risk-declarations-query a:link {
+    color: red;
+}
