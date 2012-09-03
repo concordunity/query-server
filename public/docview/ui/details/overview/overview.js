@@ -10,8 +10,9 @@ steal(
     $.Controller('Docview.Ui.Details.Overview', {}, {
         init : function() {
             this.element.html(this.view('init'));
-	    //this.element.hide();
+	    this.element.hide();
         },
+
 	getHrefNoHash: function(el) {
             var shref = el.attr('href');
             var pos = shref.indexOf('#'); 
@@ -38,9 +39,24 @@ steal(
                 groups: groups
             };
 	 */
+	reloadImage : function(ev) {
+	    
+	    setTimeout(function () {
+		var timestamp = new Date().getTime();
+		var el = $(ev.target);
+		var imgSrc = el.attr('src');
+		var pos = imgSrc.indexOf('?');
+		if (pos != -1) {
+		    imgSrc = imgSrc.substring(0, pos);
+		}
+		el.attr('src', imgSrc + '?' +timestamp);
+	    }, 1000);
+	},
 	showDoc : function(docIndex, docInfo, printString) {
 	    //console.log("show doc", docIndex, docInfo, docInfo.getThumbnailPaths(), printString);
 	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : docInfo.getThumbnailPaths(), print: printString } ));
+
+	    this.element.find('a.thumbnail img').error(this.proxy('reloadImage'));
 	},
 
         show : function() {
