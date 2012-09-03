@@ -188,6 +188,16 @@ steal(
             var controller = this.element.find('#search_results').controller();
           controller.setModelData(data);
 */
+          $.each(data,function(index,d){
+		var hours = d.overall_operating_hours_hours;
+		var hours_value = Math.round(hours);
+		var days_num = Math.floor(hours_value/24);
+		var hours_num = hours_value - (days_num * 24);
+		var message = days_num+"天" +hours_num + "小时";
+		d.overall_operating_hours_hours = message;
+		d.accept_declaration_time = d.accept_declaration_time.replace("T"," ");
+		d.release_time = d.release_time.replace("T"," ");
+          });
                 $("#search_results").html(this.view('import_most_time_org_doc_info',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
