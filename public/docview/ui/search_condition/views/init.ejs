@@ -1,19 +1,8 @@
 
-<form class="stats_stats form-horizontal">
-<legend>请选择以下条件进行统计</legend>
+<form class="well stats_stats form-horizontal">
+<h1 class="legend-h1">请选择以下条件进行统计</h1>
 <div class="row-fluid">
-<div class="span6">
-    <fieldset id="condition_view">
 
-
-     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
-
-        <div id="frm_docType_years_select"></div>
-
-    </fieldset>
-
-        <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>
-</div>
 
 <div class="span6">
     <fieldset>
@@ -36,14 +25,17 @@
                     
           </div>
         </div>
-
-<div class="daterange-holder-2"> </div>
-
-
+    <div class="daterange-holder-2"> </div>
     </fieldset>
+  <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>
 </div>
 
-
+<div class="span6">
+    <fieldset id="condition_view">
+     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
+        <div id="frm_docType_years_select"></div>
+    </fieldset>  
+</div>
 </div>
 </form>
 
