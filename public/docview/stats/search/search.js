@@ -42,6 +42,8 @@ steal(
                 this.element.html(
 		    this.view('search_box',
 			      this.options.clientState.attr('access').attr('stats')));
+                // Hide box until route conditions are met
+                this.element.hide();
 
                 $("#div_query_form").html(this.view("query_form"));
                 //                $("#div_stats").html(this.view("stats"));
@@ -50,8 +52,7 @@ steal(
 		this.element.find('div.stats_query_quota').docview_ui_queryquota();
                 this.mainTabOn = false;
                 this.search_result = null;
-                // Hide box until route conditions are met
-                this.element.hide();
+
                 // Hide search types until route conditions are met
                 this.element.find('.stats_query').hide();
                 this.element.find('.stats_stats').hide();
