@@ -16,7 +16,7 @@
     <td><%= this[i].operating_name%></td>
     <td><%= this[i].number_import_export_declarations%></td>
     <td><%= this[i].number_import_export_inspection%></td>
-    <td><%= (this[i].import_export_inspection_rate * 100)%></td>
+    <td><%= Math.round(this[i].import_export_inspection_rate * 10000)/100%></td>
     <td><a href="#" class='son_table'>查询</a></td>
 </tr>
 <% } %>
