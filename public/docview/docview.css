@@ -156,3 +156,6 @@ td.nolinebreak {
 ul.nav li.high-risk-declarations-query a:link {
     color: red;
 }
+.stats_query .form-horizontal .controls:first-child {
+  *padding-left: 21px;
+}

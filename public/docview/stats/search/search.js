@@ -11,6 +11,7 @@ steal(
     'docview/docgroup/dgselect',
     'docview/ui/history',
     'docview/ui/daterange',
+    'docview/docview.css',
     'docview/bootstrap/bootstrap.css'
     )
 
