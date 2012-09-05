@@ -5,24 +5,24 @@
 
 
    <% if (this.single) { %>
-        <li><a href="#single"  class="button-title  " >单票查阅</a></li>
+        <li><a href="#single"  class="button-title  " ><%= $.i18n._('subnav.single_document') %></a></li>
    <%}%>
    <% if (this.multi) { %>
-        <li><a href="#multi"  class="button-title  " >批量查阅</a></li>
+        <li><a href="#multi"  class="button-title  " ><%= $.i18n._('subnav.multi_document') %></a></li>
    <%}%>
    <% if (this.advanced) { %>
-        <li><a href="#advanced"  class="button-title  " >随机抽查阅</a></li>
+        <li><a href="#advanced"  class="button-title  " ><%= $.i18n._('subnav.advanced_search') %></a></li>
    <% } %>
    <%if(this.upload_file){%>
-        <li><a href="#upload_file"  class="button-title  " >文件上传</a></li>
+        <li><a href="#upload_file"  class="button-title  " ><%= $.i18n._('subnav.upload_file') %></a></li>
    <% } %>
    <%if(this.search_condition){%>
-        <li><a href="#search_condition"  class="button-title  " >高风险报关单查询</a></li>
+        <li><a href="#search_condition"  class="button-title  " ><%= $.i18n._('subnav.search_condition') %></a></li>
    <%}%>
    <% if (this.by_doc_source) { %>
-        <li><a href="#by_doc_source"  class="button-title  " >单证暂存</a></li>
+        <li><a href="#by_doc_source"  class="button-title  " ><%= $.i18n._('subnav.by_doc_source') %></a></li>
    <%}%>
-        <li><a href="#personal_history"  class="button-title  " >个人历史查阅</a></li>
+        <li><a href="#personal_history"  class="button-title  " ><%= $.i18n._('subnav.personal_history') %></a></li>
       </ul>
     </div>
     <div id="search-viewer" class="span10">

@@ -45,6 +45,9 @@ steal(
             // Hide search types until route conditions are met
 	    this.mainTabOn = false;
 	    this.filters = [];
+
+	    this.maxn = 5;
+	    this.getSysSettingMaxn();	    
             //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 	    this.element.find('div.daterange-holder').docview_ui_daterange(
 		{dateOptions : {labelString: "日期"}});
@@ -57,6 +60,9 @@ steal(
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
             this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
+	getSysSettingMaxn : function(data){
+
+	},
 	"button.button-option click" : function(el,ev){
 	    var button_name = $(el).attr("name");
 	    var button_value = $(el).attr("value");
