@@ -46,8 +46,6 @@ steal(
 	    this.mainTabOn = false;
 	    this.filters = [];
 
-	    this.maxn = 5;
-	    this.getSysSettingMaxn();	    
             //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 	    this.element.find('div.daterange-holder').docview_ui_daterange(
 		{dateOptions : {labelString: "日期"}});
@@ -60,18 +58,16 @@ steal(
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
             this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
-	getSysSettingMaxn : function(data){
 
-	},
 	"button.button-option click" : function(el,ev){
 	    var button_name = $(el).attr("name");
 	    var button_value = $(el).attr("value");
 	    this.element.find("button[name='"+button_name+"']").removeClass("button-option-onblure");    
 	    $(el).addClass("button-option-onblure");    
-	    if(button_name == "frm_total" && button_value == ""){
+	    if (button_name == "frm_total" && button_value == ""){
 		this.element.find("input[name='"+button_name+"']").attr("value","");
 		this.element.find("input[name='"+button_name+"']").attr("style","display:''");	
-	    }else{
+	    } else{
 		this.element.find("input[name='"+button_name+"']").attr("style","display:none");
 	    }
 	    this.element.find("input[name='"+button_name+"']").attr("value",button_value);
@@ -276,9 +272,22 @@ steal(
 	    var total = $("input[name='frm_total']").val();
             //$("input[name='org']:checked").val();
 	    //var total = el.find('input[name="total"]').val();
-	    
-	    if (total > 50) {
-		this.displayInputError(el, "total", "每次抽样总数不能超过 50");
+
+	    var maxn = 50;
+	    $.ajax({
+		url: '/settings',
+		type: 'GET',
+		async: false,
+		dataType : 'json',
+		success : function (data) {
+		    maxn = data.maxn;
+		},
+		error : function() {
+		}
+	    });
+
+	    if (total > maxn) {
+		this.displayInputError(el, "frm_total", "每次抽样总数不能超过 " + maxn);
 		return;
 	    }
 
