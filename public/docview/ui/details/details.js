@@ -182,7 +182,7 @@ steal(
 
             var filter = this.options.clientState.attr('search').filters;
             if (filter != undefined && filter.length > 0 &&
-		this.options.clientState.attr('searchMode') != 'multi') {
+		this.options.clientState.attr('searchMode') != 'advanced') {
                 filters = filter;
             }
 	    var docIndex = this.docManager.getNumDocs();
