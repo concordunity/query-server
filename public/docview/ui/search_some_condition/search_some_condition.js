@@ -139,6 +139,21 @@ steal(
             var controller = this.element.find('#search_results').controller();
           controller.setModelData(data);
 */
+          $.each(data,function(index,d){
+		var d_price = parseInt(d.price);
+		var d_national_average_price = parseInt(d.national_average_price);
+		if(d_price == 0){
+		    d.price = Math.round(d.price*1000)/1000;
+		}else{
+		    d.price = Math.round(d.price*100)/100;
+		}
+		if(d_national_average_price == 0){
+		    d.national_average_price = Math.round(d.national_average_price*1000)/1000;
+		}else{
+		    d.national_average_price = Math.round(d.national_average_price*100)/100;
+		}
+
+	  });
                 $("#search_results").html(this.view('normal_import_price_less_record',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
@@ -188,6 +203,20 @@ steal(
             var controller = this.element.find('#search_results').controller();
           controller.setModelData(data);
 */
+          $.each(data,function(index,d){
+		var hours = d.overall_operating_hours_hours;
+		var hours_value = Math.round(hours);
+		var days_num = Math.floor(hours_value/24);
+		var hours_num = hours_value - (days_num * 24);
+		var message = days_num+"天" +hours_num + "小时";
+		d.overall_operating_hours_hours = message;
+
+		tmp_adt = d.accept_declaration_time.replace("T"," ")
+		tmp_rt = d.release_time.replace("T"," ")
+
+		d.accept_declaration_time = tmp_adt.split("+")[0];
+		d.release_time = tmp_rt.split("+")[0];
+          });
                 $("#search_results").html(this.view('import_most_time_org_doc_info',data));
                 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 

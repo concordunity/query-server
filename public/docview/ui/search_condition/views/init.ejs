@@ -1,24 +1,14 @@
 
-<form class="stats_stats form-horizontal">
-<legend>请选择以下条件进行统计</legend>
+<form class="well stats_stats form-horizontal">
+<h1 class="legend-h1">请选择以下条件进行统计</h1>
 <div class="row-fluid">
-<div class="span6">
-    <fieldset id="condition_view">
 
-
-     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
-
-        <div id="frm_docType_years_select"></div>
-
-    </fieldset>
-
-        <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>
-</div>
 
 <div class="span6">
     <fieldset>
         <div class="control-group">
-          <label class="control-label">请选择分类方式</label>
+          <label class="control-label">请选择分类方式 </label>
+	  <div class="controls">
           <select name="groupby" id="select_option">
              <option value="0">不分类</option>
              <option value="1">申报关区</option>
@@ -26,6 +16,7 @@
              <option value="3">用户角色</option>
              <option value="4">近6个月内按月份统计</option>
           </select>
+         <div>
         </div>
 
         <div class="control-group">
@@ -36,14 +27,17 @@
                     
           </div>
         </div>
-
-<div class="daterange-holder-2"> </div>
-
-
+    <div class="daterange-holder-2"> </div>
     </fieldset>
+  <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>
 </div>
 
-
+<div class="span6">
+    <fieldset id="condition_view">
+     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
+        <div id="frm_docType_years_select"></div>
+    </fieldset>  
+</div>
 </div>
 </form>
 

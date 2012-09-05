@@ -5,8 +5,7 @@ body {
 
 /* Overwrite Bootstrap's navigation bar colors. Ideally we'd just recompile bootstrap.css */
 
-/* .navbar-inner {
-    background-color: #00435d !important; */
+
 /*    background-image: -moz-linear-gradient(center top , #4589a0, #00435d) !important;*/
 
     /*//mozilla*/
@@ -20,6 +19,11 @@ body {
     zoom:1;
 }
 */
+.navbar .nav .active > a:hover,
+.navbar .nav > .active > a:focus {
+    background-color: #0088cc;
+}
+
 
 .navbar-inner .brand {
     padding: 0 !important;
@@ -152,4 +156,22 @@ ul.image-tree-nav, ul.image-tree-nav li {
 
 td.nolinebreak {
     white-space:nowrap;
+}
+ul.nav li.high-risk-declarations-query a:link {
+    color: red;
+}
+.stats_query .form-horizontal .controls:first-child {
+  *padding-left: 21px;
+}
+h1.legend-h1 {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 27px;
+  *font-size: 19.5px;
+  font-size: 19.5px;
+  line-height: 36px;
+  color: #333333;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
 }

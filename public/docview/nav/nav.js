@@ -114,7 +114,6 @@ steal(
 		$('#sys-setting').hide();
 	    } else {
 		var subcategory = $.route.attr('subcategory');
-		console.log(" IN NAV .... ", subcategory);
 
 		if (subcategory === 'sys-setting') {
 		    $('#sys-setting').show();

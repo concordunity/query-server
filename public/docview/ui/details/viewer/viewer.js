@@ -9,8 +9,7 @@ steal(
 ).then(
     'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js',
     'docview/docview.css',
-    'docview/bootstrap/bootstrap-dropdown.js'
-).then(
+    'docview/bootstrap/bootstrap.min.js',
     'libs/iviewer/jquery.mousewheel.min.js'
 ).then (
     './views/viewer.ejs',

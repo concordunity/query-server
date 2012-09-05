@@ -3,11 +3,11 @@ steal(
     'jquery/view/ejs',
     'jquery/controller/view',
     'docview/models'
-    ).then(
-    'docview/bootstrap/bootstrap-alert.js',
+).then(
+    'docview/bootstrap/bootstrap.min.js',
     './views/init.ejs',
     'docview/bootstrap/bootstrap.css'
-    ).then(function($) {
+).then(function($) {
     $.Controller('Docview.Ui.Syssetting', {}, {
         init : function() {
             this.element.html(this.view('init'));

@@ -24,6 +24,7 @@ class UploadFileController < ApplicationController
         resutl_format_data = return_format_data(upload_file_name)
         if resutl_format_data[:status] == true
 	  tmp_arr = []
+	  doc_ids = Document.all.collect(&:doc_id)
           resutl_format_data[:data].each do |row|
 		ZeroFindCheckInfo.new do |zfci|
 			
@@ -37,14 +38,19 @@ class UploadFileController < ApplicationController
                         zfci.examination_handling_results = row[7]
                         zfci.declaration_customs = row[8]
                         zfci.date_value = row[9]
+			zfci.org_applied=row[5][0,4]
+			zfci.exists_in_system = false
+			if doc_ids.include?(zfci.declarations_number.to_s)
+			    zfci.exists_in_system = true
+			end
 			#zfci.save
 			tmp_arr << zfci
 		end
 	  end
 	  ZeroFindCheckInfo.import tmp_arr
-          result[:message] = "import success for import_most_time_org_doc_info"
+          result[:message] = "import success for zero_find_check_info"
         else
-          result[:message] = "import failure for import_most_time_org_doc_info"
+          result[:message] = "import failure for zero_find_check_info"
         end
 
         return result	
@@ -55,6 +61,7 @@ class UploadFileController < ApplicationController
         resutl_format_data = return_format_data(upload_file_name)
         if resutl_format_data[:status] == true
 	  tmp_arr = []
+	  doc_ids = Document.all.collect(&:doc_id)
           resutl_format_data[:data].each do |row|
 		NormalImportPriceLessRecord.new do |niplr|
 			
@@ -68,14 +75,21 @@ class UploadFileController < ApplicationController
                         niplr.actual_price_cap = row[7]
                         niplr.actual_price_floor = row[8]
                         niplr.national_average_price = row[9]
+
+                        niplr.org_applied=row[1][0,4]
+                        niplr.exists_in_system = false
+                        if doc_ids.include?(niplr.declarations_number.to_s)
+                            niplr.exists_in_system = true
+                        end
+
 			#niplr.save
 			tmp_arr << niplr
 		end
 	  end
 	  NormalImportPriceLessRecord.import tmp_arr
-          result[:message] = "import success for import_most_time_org_doc_info"
+          result[:message] = "import success for normal_import_price_less_record"
         else
-          result[:message] = "import failure for import_most_time_org_doc_info"
+          result[:message] = "import failure for normal_import_price_less_record"
         end
 
         return result
@@ -86,19 +100,29 @@ class UploadFileController < ApplicationController
 	resutl_format_data = return_format_data(upload_file_name)
 	if resutl_format_data[:status] == true
 	  tmp_arr = []
+	  test_arr = []
+	  doc_ids = Document.all.collect(&:doc_id)
 	  resutl_format_data[:data].each do |row|
 		ImportMostTimeOrgDocInfo.new do |imtodi|		
                         imtodi.declarations_number = row[0]
                         imtodi.mode_transport = row[1]
-                        imtodi.release_time = row[2]
-                        imtodi.accept_declaration_time = row[3]
+			test_arr << row[2]
+                        imtodi.release_time = (row[2]).strftime("%Y-%m-%d %H:%M:%S")
+                        imtodi.accept_declaration_time = (row[3]).strftime("%Y-%m-%d %H:%M:%S")
                         imtodi.overall_operating_hours_hours = row[4]
                         imtodi.declaration_customs_code = row[5]
                         imtodi.declaration_customs = row[6]
+                        imtodi.org_applied=row[0][0,4]
+                        imtodi.exists_in_system = false
+                        if doc_ids.include?(imtodi.declarations_number.to_s)
+                            imtodi.exists_in_system = true
+                        end
+
 			#imtodi.save
 			tmp_arr << imtodi
 		end
 	  end
+	  logger.info(test_arr)
 	  ImportMostTimeOrgDocInfo.import tmp_arr
 	  result[:message] = "import success for import_most_time_org_doc_info"
 	else
@@ -167,6 +191,8 @@ class UploadFileController < ApplicationController
     sheet = self.open_excel File.join(file_url)
     sheet.each_with_index { |row,index|
       if index != 0 && !row[0].nil?
+        row.set_format 2,Spreadsheet::Format.new(:number_format => "YYYY-MM-DD HH:MM:SS") if row[2].class == Date
+        row.set_format 3,Spreadsheet::Format.new(:number_format => "YYYY-MM-DD HH:MM:SS") if row[3].class == Date
         result << row 
       end
     } unless sheet.blank?

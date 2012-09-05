@@ -20,7 +20,7 @@ steal(
 )
 // External JS
 .then(
-    'docview/bootstrap/bootstrap-collapse.js'
+    'docview/bootstrap/bootstrap.min.js'
 //    'libs/datepicker/js/locales/bootstrap-datepicker.zh-CN.js'
 )
 .then(function($) {

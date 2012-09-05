@@ -6,18 +6,18 @@ steal(
     'jquery/lang/observe/delegate',
     'docview/models',
     'docview/bootstrap/bootstrap.css'
-    )
+)
 
 // View templates
 .then(
     './views/init.ejs',
     './views/pages.ejs'
-    )
+)
 
 // External JS
 .then(
-    'docview/bootstrap/bootstrap-collapse.js'
-    )
+    'docview/bootstrap/bootstrap.min.js'
+)
 
 .then(function($) {
 

@@ -5,6 +5,7 @@ steal(
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
     'docview/bootstrap/bootstrap.css',
+    'docview/docview.css',
     './subnav.css'
 )
 
