@@ -35,21 +35,28 @@ steal(
         show : function() {
         },
         'form.system-setting submit' : function(el,ev) {
+            ev.preventDefault();
             this.removeFormErrors(el);
+
 	    $('.alert').alert('close');
             var form_tag = $(el).closest('.system-setting');
-            ev.preventDefault();
+
 
 	    var that = this;
+	    var hasError = false;
             $.each(this.element.find("input.number"),function(index,value){
                 var el_text = $(value);
                 var docId = el_text.attr("value");
      
                 if (!/^\d+$/.test(docId)) {
                     that.displayInputError(el, el_text, "只能是数字");
-                  return false;
+		    hasError = true;
+                    return false;
                 }
             });
+	    if (hasError) {
+		return false;
+	    }
 	    var maxn = el.find('input[name="maxn"]').val();
 	    var period = el.find('input[name="checkout_period"]').val();
 	    var max_queries = el.find('input[name="max_queries_per_month"]').val();
