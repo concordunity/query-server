@@ -5,7 +5,7 @@ steal(
     'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs',
-  'docview/bootstrap/bootstrap-collapse.js'
+  'docview/bootstrap/bootstrap.min.js'
 ).then(function($) {
     $.Controller('Docview.Ui.Orgui', {}, {
         init : function() {

@@ -2,7 +2,7 @@ steal(
     'jquery',
     'jquery/dom/route',
     'docview/ui/graphing'
-.then('docview/bootstrap/bootstrap-dropdown.js').then(
+.then('docview/bootstrap/bootstrap.min.js').then(
     function() {
 	Highcharts.setOptions({
 	    global : {

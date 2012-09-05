@@ -21,9 +21,7 @@ steal(
 )
 // External JS
 .then(
-    'docview/bootstrap/bootstrap-button.js',
-    'docview/bootstrap/bootstrap-collapse.js',
-    'docview/bootstrap/bootstrap-alert.js',
+    'docview/bootstrap/bootstrap.min.js',
     'docview/datatables/bootstrap-pagination.js',
     'docview/docview.css'
 ).then(function($) {
