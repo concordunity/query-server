@@ -7,6 +7,12 @@
 <% if (this.advanced) { %>
     <li><a href="#advanced"><%= $.i18n._('subnav.advanced_search') %></a></li>
 <% } %>
+<% if (this.upload_file) { %>
+    <li><a href="#upload_file"><%= $.i18n._('subnav.upload_file') %></a></li>
+<% } %>
+<% if (this.search_condition) { %>
+    <li class="high-risk-declarations-query"><a href="#search_condition"><%= $.i18n._('subnav.search_condition') %></a></li>
+<% } %>
 <% if (this.by_doc_source) { %>
     <li><a href="#by_doc_source">单证暂存</a></li>
 <% } %>

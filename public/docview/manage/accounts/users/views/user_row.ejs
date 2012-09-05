@@ -2,15 +2,34 @@
     <td><%= this.username %></td>
     <td><%= this.fullname %></td>
     <td>
-        <% for(var j = 0; j < this.roles.length; j++) { %>
+        <% for (var j = 0; j < this.roles.length; j++) { %>
             <span class="label"><%= this.roles[j].display_name %></span>
         <% } %>
     </td>
     <td>
-        <% var orgs = this.orgs.split(","); %>
-        <% for(var j = 0; j < orgs.length; j++) { %>
-            <% if (orgs[j] !== "") { %>
-                <span class="label label-info"><%= orgs[j] %></span>
+        <% var orgs = this.orgs.split(",");
+
+	var labelMap = {
+	              '1000': '尚未选择关区',
+                '2200': '所有关区',
+                '2201': '浦江海关',
+                '2202': '吴淞海关',
+                '2225':'外港海关',
+                '2233': '浦东机场海关',
+			'2248': '洋山海关'
+			    };
+         for(var j = 0; j < orgs.length; j++) { %>
+            <% if (orgs[j] !== "") {
+
+                 var o = orgs[j];
+                 if (labelMap[o]) {
+                    o = labelMap[o];
+		    console.log("we get ......", o);
+                 } else {
+				    console.log("we get NOT FOUND ......", o);
+		 }
+ %>
+                <span class="label label-info">AAA <%= o %></span>
             <% } %>
         <% } %>
     </td>

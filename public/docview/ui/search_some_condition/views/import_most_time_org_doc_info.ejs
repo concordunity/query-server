@@ -1,0 +1,24 @@
+<div class="span13"> </div>
+
+<table class="table table-condensed">
+<thead>
+<tr>
+        <th width="20%">报关单编号</th>
+        <th width="20%">接受申报时间</th>
+        <th width="20%">放行时间</th>
+        <th width="20%">整体通关时间</th>
+        <th width="20%">电子数据</th>
+</tr>
+</thread>
+<tbody>
+<%for(var i =0;i<this.length;i++){%>
+<tr  <%= this[i]%>>
+    <td><%= this[i].declarations_number%></td>
+    <td><%= this[i].accept_declaration_time%></td>
+    <td><%= this[i].release_time%></td>
+    <td><%= this[i].overall_operating_hours_hours%></td>
+    <td><a href="#">查询</a></td>
+</tr>
+<% } %>
+</tbody>
+</table>

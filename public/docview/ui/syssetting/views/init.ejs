@@ -2,16 +2,21 @@
 <div class="info-box">
 </div>
 <form class="system-setting">
-<legend>系统参数</legend>
+<h1 class='legend-h1'>系统参数设置</h1>
  <fieldset class="control-group">
-    <label>单证查阅最大抽样数目</label>
+    <label>单证查阅最大抽样数目 (10至200之间)</label>
     <input name="maxn" type="text" class="number" />
  </fieldset> 
 
-
  <fieldset class="control-group">
-    <label>单证借阅期限</label>
+    <label>单证借阅期限（天） (5至60之间)</label>
     <input name="checkout_period" type="text"  class="number"/>
  </fieldset> 
-<button type="submit" class="btn btn-primary" data-loading-text="Saving..." autocomplete="off">保存</button>
+
+ <fieldset class="control-group">
+    <label>每月查阅总数警戒线 (50至2000之间)</label>
+    <input name="max_queries_per_month" type="text"  class="number"/>
+ </fieldset> 
+
+<button type="submit" class="btn btn-large btn-primary" data-loading-text="Saving..." autocomplete="off">保存</button>
 </form>

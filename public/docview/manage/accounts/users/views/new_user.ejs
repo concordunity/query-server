@@ -1,5 +1,7 @@
+<p>&nbsp;</p>
 <div class="well">
 <form class="form" id="new-user-form">
+<legend>创建新用户</legend>
     <div class="row-fluid">
         <div class="span6">
             <fieldset class="control-group">
@@ -29,14 +31,14 @@
                     <option value="2">进口</option>
             </select>
             </fieldset>
-
+        <div class="pull-left">
+            <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
+            <button type="button" class="btn cancel-create" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
+        </div>
 
         </div>
         <div class="span6">
-            <fieldset class="control-group">
-            <label><%= $.i18n._('label.user.organization') %></label>
-            <input name="organizations" type="text" />
-            </fieldset>	
+
 
             <fieldset class="control-group">
                 <label><%= $.i18n._('label.user.password') %></label>
@@ -46,12 +48,14 @@
                 <label><%= $.i18n._('label.user.pass_confirm') %></label>
                 <input name="password-confirm" type="password" value="123456" />
             </fieldset>
+
+            <fieldset class="control-group">
+            <label><%= $.i18n._('label.user.organization') %></label>
+<div class="org-selection-holder"></div>
+            </fieldset>	
         </div>
 
-        <div class="pull-right">
-            <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
-            <button type="button" class="btn cancel-create" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
-        </div>
+
     </div>
 </form>
 </div>

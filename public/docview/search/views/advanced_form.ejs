@@ -1,43 +1,77 @@
 ﻿<form class="advanced form-horizontal">
+<div class="row-fluid">
+    <div id="search_tree" class="span2">
+      <ul class="nav nav-pills">
+
+
+   <% if (this.single) { %>
+        <li><a href="#single"  class="button-title  " >单票查阅</a></li>
+   <%}%>
+   <% if (this.multi) { %>
+        <li><a href="#multi"  class="button-title  " >批量查阅</a></li>
+   <%}%>
+   <% if (this.advanced) { %>
+        <li><a href="#advanced"  class="button-title  " >随机抽查阅</a></li>
+   <% } %>
+   <%if(this.upload_file){%>
+        <li><a href="#upload_file"  class="button-title  " >文件上传</a></li>
+   <% } %>
+   <%if(this.search_condition){%>
+        <li><a href="#search_condition"  class="button-title  " >高风险报关单查询</a></li>
+   <%}%>
+   <% if (this.by_doc_source) { %>
+        <li><a href="#by_doc_source"  class="button-title  " >单证暂存</a></li>
+   <%}%>
+        <li><a href="#personal_history"  class="button-title  " >个人历史查阅</a></li>
+      </ul>
+    </div>
+    <div id="search-viewer" class="span10">
     <fieldset>
      <div class="control-group">
       <label  class="control-label" for="frm_total">随机抽样份数</label>
       <div class="controls">
-         <input name="total" id="frm_total" type="text"/>
+	 <button type="button" name="frm_total" value="5" class="btn  button-option button-option-onblure" >5份</button>
+	 <button type="button" name="frm_total" value="10" class="btn  button-option " >10份</button>
+	 <button type="button" name="frm_total" value="20" class="btn  button-option " >20份</button>
+	 <button type="button" name="frm_total" value="50" class="btn  button-option " >50份</button>
+	 <button type="button" name="frm_total" value="" class="btn  button-option " >其他</button>
+         <input type='text' name='frm_total' value="5" style="display:none"  />
+
       </div>
     </div>
 
- <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
- <%== $.View('//docview/ui/views/org.ejs', { label: '申报关区', name : 'org_applied'} ) %>
-
+ <%== $.View('//docview/ui/views/org_radio.ejs', { label: '关区', name : 'org'} ) %>
+ 
     <div class="control-group">
       <label  class="control-label" for="frm_doctype">进出口种类</label>
       <div class="controls">
-      <select id="frm_docType"  name="doc_type" style="width: 80px;">
-          <option value="">不限</option>
-          <option value="JK">进口</option>
-          <option value="CK">出口</option>
-      </select> 年限
-        <select id="frm_years" name="years" style="width: 80px;">
-           <option value="">不限</option>
-           <option value="3">3年</option>
-           <option value="5">5年</option>
-           <option value="11">11年</option>
-       </select>
+          <button type="button" name="frm_docType" value="" class="btn  button-option button-option-onblure">不限</button>
+          <button type="button" name="frm_docType" value="JK" class="btn  button-option ">进口</button>
+          <button type="button" name="frm_docType" value="CK" class="btn  button-option ">出口</button>
+          <input type='hidden' name='frm_docType' value=""/>
       </div>
- 
    </div>
 
    <div class="control-group">
-   <div class="controls">
-<input type="checkbox" name="isMod" values="1"/>删改单 
-<input type="checkbox" name="isTax" values="1"/>退补税
-</div>
+        <label  class="control-label" for="frm_isMod_or_isTax">业务类型</label>
+       <div class="controls">            
+	    <button type="button" name="frm_isMod_or_isTax" value=""  class="btn  button-option button-option-onblure">不限</button>
+	    <button type="button" name="frm_isMod_or_isTax" value="isMod"  class="btn  button-option ">删改单</button>
+	    <button type="button" name="frm_isMod_or_isTax" value="isTax"  class="btn  button-option ">退补税</button>
+            <input type='hidden' name='frm_isMod_or_isTax' value="" />
+        </div>
    </div>
 
-   <div class="control-group daterange-holder">
-</div>
+   <div class="control-group daterange-holder"></div>
+   
+   <div class="control-group">
+       <div class="controls">            
+           <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button>
+           <%== $.View('//docview/search/views/filters_form.ejs', {type: "advanced"}) %>
+       </div>
+   </div>
 </fieldset>
-<div class="row-fluid"> 
-    <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i><%= $.i18n._('btn.search')  %></button>    <%== $.View('//docview/search/views/filters_form.ejs', {type: "advanced"}) %></div>
+  </div>
+
+</div>
 </form>

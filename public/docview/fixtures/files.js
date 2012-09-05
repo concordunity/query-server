@@ -57,10 +57,9 @@ steal("jquery/dom/fixture", function() {
                     "id": i,
                     "inquired": true,
                     "pages": Math.floor(Math.random()*25),
-                    "serial_number": Math.floor(Math.random()*50),
+                    "serial_number": Math.floor(Math.random()*50)
                 });
             }
             return { results: results };
-    });
-    
+	});
 });

@@ -1,7 +1,8 @@
-<button type="button" class="btn" data-toggle="collapse" data-target="#filters-<%= this.type %>">
-    <%= $.i18n._('btn.filter') %>
+<button type="button" class="btn btn-large" data-toggle="collapse" data-target="#filters-<%= this.type %>">
+    <%= $.i18n._('btn.filter') %> &gt;&gt;
 </button>
 <div id="filters-<%= this.type %>" class="collapse">
+<div style="border: 3px coral solid;"> 
 <fieldset class="control-group filters">
 
         <!--button type="button" class="btn select-all">Select All</button-->
@@ -397,4 +398,5 @@
 </table>
 
 </fieldset>
+</div>
 </div>

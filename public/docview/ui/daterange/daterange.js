@@ -1,13 +1,13 @@
 steal(
     'jquery/controller',
     'jquery/view/ejs',
-    'jquery/controller/view',
+    'jquery/controller/view'
+//    'libs/development-bundle/ui/jquery.ui.datepicker.js'
+).then(
     'libs/development-bundle/ui/jquery.ui.core.js',
     'libs/development-bundle/themes/base/jquery.ui.theme.css',
     'libs/development-bundle/themes/base/jquery.ui.base.css',
-    'libs/development-bundle/themes/base/jquery.ui.datepicker.css'
-//    'libs/development-bundle/ui/jquery.ui.datepicker.js'
-).then(
+    'libs/development-bundle/themes/base/jquery.ui.datepicker.css',
     'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js'
 ).then(
     'libs/development-bundle/ui/jquery.ui.datepicker.js'

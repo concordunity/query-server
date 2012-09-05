@@ -13,6 +13,17 @@ $.Model('Docview.Models.Monitoring',
 	    error: error,
 	    cache: false
 	});
+    },
+    getSearchData : function(params, data, success, error) {
+        $.ajax({
+            url: params.urlValue,
+            type: params.typeValue,
+            data: data,
+            dataType: 'json monitoring.models',
+            success: success,
+            error: error,
+            cache: false
+        });
     }
 },
 /* @Prototype */

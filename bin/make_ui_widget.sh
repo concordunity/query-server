@@ -14,7 +14,8 @@ cat > $BASEDIR/$w/$w.js <<EOF
 steal(
     'jquery/controller',
     'jquery/view/ejs',
-    'jquery/controller/view'
+    'jquery/controller/view',
+    'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs'
 ).then(function($) {
@@ -49,6 +50,7 @@ cat > $BASEDIR/$w/${w}_test.html <<EOF
  <script type='text/javascript'>
 steal('jquery/dom/route', 'docview/ui/$w').then(function(\$) {
 
+   \$('#${w}-test').docview_ui_$w();
 
  }); 
  </script>

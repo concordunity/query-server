@@ -15,12 +15,12 @@ steal(
       init: function() {
 	  this.element.html(this.view('init'));
 	  this.element.hide();
-
+/*
 	  this.sys_controller = undefined;
 	  if (this.options.clientState.attr('access').attr('sys-setting')) {
 	      this.element.find('div.system-setting').docview_ui_syssetting();
 	      this.sys_controller = this.element.find('div.system-setting').controller();
-	  }
+	  }*/
       },
       displayFormError: function(form, name, message) {
           var inputField = form.find('input[name="' + name + '"]');

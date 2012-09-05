@@ -1,0 +1,45 @@
+<%= form_for(@import_most_time_org_doc_info) do |f| %>
+  <% if @import_most_time_org_doc_info.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@import_most_time_org_doc_info.errors.count, "error") %> prohibited this import_most_time_org_doc_info from being saved:</h2>
+
+      <ul>
+      <% @import_most_time_org_doc_info.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :declarations_number %><br />
+    <%= f.text_field :declarations_number %>
+  </div>
+  <div class="field">
+    <%= f.label :mode_transport %><br />
+    <%= f.text_field :mode_transport %>
+  </div>
+  <div class="field">
+    <%= f.label :release_time %><br />
+    <%= f.datetime_select :release_time %>
+  </div>
+  <div class="field">
+    <%= f.label :accept_declaration_time %><br />
+    <%= f.datetime_select :accept_declaration_time %>
+  </div>
+  <div class="field">
+    <%= f.label :overall_operating_hours_hours %><br />
+    <%= f.text_field :overall_operating_hours_hours %>
+  </div>
+  <div class="field">
+    <%= f.label :declaration_customs_code %><br />
+    <%= f.text_field :declaration_customs_code %>
+  </div>
+  <div class="field">
+    <%= f.label :declaration_customs %><br />
+    <%= f.text_field :declaration_customs %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

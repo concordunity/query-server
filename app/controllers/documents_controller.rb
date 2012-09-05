@@ -29,7 +29,7 @@ class DocumentsController < ApplicationController
     not_found_ids = doc_ids.reject{|x| ids.include? x}
 
     @documents.each { |d|
-      if !current_user.can_view?(d.doc_id)
+      if !current_user.can_view?(d)
         d.access_info = "denied"
       else
         d.access_info = "";
@@ -145,6 +145,13 @@ class DocumentsController < ApplicationController
     end
 
     limitN=200
+
+    u=Setting.find_by_name('maxn')
+    if u
+      limitN = u.value.to_i;
+    end
+
+
     if !params[:total].blank?
       limitN = params[:total].to_i
     end
@@ -207,15 +214,15 @@ class DocumentsController < ApplicationController
   def query
     doc_id = params[:doc_id]
     special_doc_info = ""
-    # check user's privileges
-    if !current_user.can_view?(doc_id)
-      render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
-      return
-    end
 
     @document = Document.find_by_doc_id(doc_id)
-
     if @document
+
+      # check user's privileges
+      if !current_user.can_view?(@document)
+        render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
+        return
+      end
       # Now check for user's org
       if @document.inquired &&  !(can? :inquired, Document)
         render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
@@ -433,10 +440,14 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def print
+  def print_old
     dir = params[:tmp_folder]
     doc_id = params[:doc_id]
     @document = Document.find_by_doc_id(doc_id)
+    if @document.nil?
+      raise ActiveRecord::RecordNotFound
+    end
+
     add_history(@document, 'print')
     if dir
       filepath = "#{Rails.root}/files/#{dir}/wm_#{doc_id}.pdf" 
@@ -451,6 +462,38 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def print
+    doc_id = params[:doc_id]
+    @document = Document.find_by_doc_id(doc_id)
+
+    if @document.nil?
+      raise ActiveRecord::RecordNotFound
+    end
+
+    #    add_history(@document, 'testify')
+    dir='docimages'
+    if !params[:mod].blank?
+      dir='docimages_mod'
+    end
+
+    pages = ""
+    if !params[:pages].blank?
+      page_selections = params[:pages].split(',')
+      pages=page_selections.join(' ')
+    end
+    script_name = "#{ENV['HOME']}/bin/new_print_doc_wm.sh #{doc_id} #{dir} \"#{pages}\""
+
+    pdf_file = %x[ #{script_name} ]
+
+    if pdf_file == 'NONE'
+      raise ActiveRecord::RecordNotFound
+    end
+
+    logger.info("pdf_file is " + pdf_file)
+    send_file(pdf_file, :filename => File.basename(pdf_file), :type => "application/pdf")
+  end
+
+
   def testify
     doc_id = params[:doc_id]
     @document = Document.find_by_doc_id(doc_id)
@@ -460,24 +503,24 @@ class DocumentsController < ApplicationController
     end
 
     add_history(@document, 'testify')
-
-    if (params[:mod].blank?)
-      script_name = "#{ENV['HOME']}/bin/print_doc.sh #{doc_id}"
-    else
-      script_name = "#{ENV['HOME']}/bin/print_doc_mod.sh #{doc_id}"
+    dir='docimages'
+    if !params[:mod].blank?
+      dir='docimages_mod'
     end
-    logger.info 'running ' + script_name 
-    pdf_file = %x[ #{script_name}]
+    pages = ""
+    if !params[:pages].blank?
+      page_selections = params[:pages].split(',')
+      pages=page_selections.join(' ')
+    end
+    script_name = "#{ENV['HOME']}/bin/new_print_doc.sh #{doc_id} #{dir} \"#{pages}\""
+
+    pdf_file = %x[ #{script_name} ]
 
     if pdf_file == 'NONE'
       raise ActiveRecord::RecordNotFound
     end
-    if (params[:mod].blank?)
-      filepath = "#{Rails.root}/files/#{doc_id}/#{doc_id}/#{pdf_file}"    
-    else
-      filepath = "#{Rails.root}/public/docimages_mod/#{doc_id}/#{doc_id}/#{pdf_file}"    
-    end
-    send_file(filepath, :filename => "#{pdf_file}", :type => "application/pdf")
+
+    send_file(pdf_file, :filename => File.basename(pdf_file), :type => "application/pdf")
   end
 
   def list_doc_sources
@@ -543,11 +586,11 @@ class DocumentsController < ApplicationController
 
     if (check_for_inquired)
       @documents = @documents.keep_if {
-        |d| current_user.can_view?(d.doc_id) && (!d.inquired || (can? :inquire, Document))
+        |d| current_user.can_view?(d) && (!d.inquired || (can? :inquire, Document))
       }
     else
       @documents = @documents.keep_if {
-        |d| current_user.can_view?(d.doc_id)
+        |d| current_user.can_view?(d)
       }
     end
   end

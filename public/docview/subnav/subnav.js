@@ -5,11 +5,13 @@ steal(
     'jquery/dom/route',
     'jquery/lang/observe/delegate',
     'docview/bootstrap/bootstrap.css',
+    'docview/docview.css',
     './subnav.css'
 )
 
 // View templates
 .then(
+    'docview/ui/syssetting',
     './views/manage_docs.ejs',
     './views/manage_accounts.ejs',
     './views/stats.ejs'
@@ -44,8 +46,11 @@ steal(
                     
                     // If the user entered the page by manually entering the url with
                     // the subcategory, then it should be defined.
-                    var subcategory = $.route.attr('subcategory');
-                    if (subcategory !== undefined) {
+                var subcategory = $.route.attr('subcategory');
+                if (subcategory === 'sys-setting') {
+		    $('#sys-setting').show();
+		}
+		if (subcategory !== undefined) {
                        // Restore subcategory state from $.route
                        this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
                        this.options.clientState.attr('nav').attr(newVal, subcategory);
@@ -53,7 +58,10 @@ steal(
                         // Restore subcategory state from clientState
 
 			subcategory = this.options.clientState.attr('nav').attr(newVal);
-	
+                if (subcategory === 'sys-setting') {
+		    $('#sys-setting').show();
+		}	
+
                        this.element.find('a[href="#' + subcategory + '"]')
                            .closest('li').addClass('active');
                        $.route.attr('subcategory', subcategory);
@@ -89,8 +97,17 @@ steal(
             // Save subcategory state
             this.options.clientState.attr('nav').attr($.route.attr('category'), subcategory);
 
+
+	    if (subcategory === 'sys-setting') {
+		$('#sys-setting').show();
+		$('#sys-setting').docview_ui_syssetting('loadData');
+
+	    } else {
+		$('#sys-setting').hide();
+	    }
+
 	    // Check for search sub tabs
-	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history') {
+	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
 		$('#document-details').hide();
 	    }
         }

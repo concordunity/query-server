@@ -90,7 +90,7 @@ steal(
 	    });
 	},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
-	    var mode = this.options.searchMode.attr('mode');
+	    var mode = this.options.clientState.attr('searchMode');
 
 	    //console.log("docs cat change", newVal, oldVal, mode);
             if (newVal === "manage_docs") {
@@ -331,7 +331,7 @@ steal(
 	'.court_doc submit' : function(el, ev) {
 	    ev.preventDefault();
 	    $.route.attr('id', -1);
-	    this.options.searchMode.attr('mode', 'court');
+	    this.options.clientState.attr('searchMode', 'court');
 	    var ctrl = $('#manage-docs-container div form.court_doc div.single_holder').controller();
 
 	    if (ctrl.validateInput(el)) {
@@ -344,7 +344,7 @@ steal(
 	'.print_doc submit' : function(el, ev) {
 	    ev.preventDefault();
 	    $.route.attr('id', -1);
-	    this.options.searchMode.attr('mode', 'print');
+	    this.options.clientState.attr('searchMode', 'print');
 	    var ctrl = $('#manage-docs-container div form.print_doc div.single_holder').controller();
 	    if (ctrl.validateInput(el)) {
 		var docId = ctrl.getId();

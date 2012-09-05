@@ -1,6 +1,23 @@
- <% var orgs = this.orgs.split(","); %>
-        <% for(var j = 0; j < orgs.length; j++) { %>
-            <% if (orgs[j] !== "") { %>
-                <span class="label label-info"><%= orgs[j] %></span>
+ <% var orgs = this.orgs.split(",");
+
+ var labelMap = {
+                      '1000': '尚未选择关区',
+		              '2200': '所有关区',
+                '2201': '浦江海关',
+                '2202': '吴淞海关',
+                '2225':'外港海关',
+                '2233': '浦东机场海关',
+		                '2248': '洋山海关'
+};
+
+ for(var j = 0; j < orgs.length; j++) { 
+            if (orgs[j] !== "") { 
+                 var ov = orgs[j];
+                 if (labelMap[ov] != undefined) {
+                    ov = labelMap[ov];
+		 }
+
+%>
+                <span class="label label-info"><%= ov %></span>
             <% } %>
 	    <% } %>

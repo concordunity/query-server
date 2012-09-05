@@ -10,7 +10,9 @@ steal(
 //    'docview/bootstrap/bootstrap.css'
 //    'libs/datepicker/css/datepicker.css'
 )
-
+.then(
+    './views/advanced_form.css'
+)
 // View templates
 .then(
     './views/search_box.ejs'
@@ -45,14 +47,32 @@ steal(
 	    this.filters = [];
             //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 	    this.element.find('div.daterange-holder').docview_ui_daterange(
-		{dateOptions : { labelString: "理单日期"}});
+		{dateOptions : {labelString: "日期"}});
 	    this.element.find('div.daterange-holder-src').docview_ui_daterange(
-		{dateOptions : { labelString: "理单日期"}});
+		{dateOptions : {labelString: "理单日期"}});
 	    this.element.find('div.single_holder').docview_ui_single();
 	    this.element.find('div.multi_holder').docview_ui_multi();
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
-								   th_options : { include_user : false }});
+								   th_options : {include_user : false}});
+	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
+            this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
+	"button.button-option click" : function(el,ev){
+	    var button_name = $(el).attr("name");
+	    var button_value = $(el).attr("value");
+	    this.element.find("button[name='"+button_name+"']").removeClass("button-option-onblure");    
+	    $(el).addClass("button-option-onblure");    
+	    if(button_name == "frm_total" && button_value == ""){
+		this.element.find("input[name='"+button_name+"']").attr("value","");
+		this.element.find("input[name='"+button_name+"']").attr("style","display:''");	
+	    }else{
+		this.element.find("input[name='"+button_name+"']").attr("style","display:none");
+	    }
+	    this.element.find("input[name='"+button_name+"']").attr("value",button_value);
+	},
+        clearFilters: function() {
+	    this.element.find(".filters :checkbox").attr('checked', false);
+	},
 	setFilters: function(el) {
             var t_filters = [];
 
@@ -108,6 +128,12 @@ steal(
 	    if (to_show != 'personal_history') {
 		this.element.find('.personal_history').hide();
 	    }
+	    if (to_show != 'upload_file') {
+		this.element.find('.upload_file').hide();
+	    }
+	    if (to_show != 'search_condition') {
+		this.element.find('.search_condition').hide();
+	    }
 	},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal === "search") {	
@@ -119,6 +145,8 @@ steal(
 		    this.mainTabOn = false;
 		}
             }
+	    // we need to reset filters
+	    this.clearFilters();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
 	    if (this.mainTabOn) {
@@ -142,12 +170,21 @@ steal(
 		    if (newVal != 'single') {
 			$('#document-details').hide();
 		    } 
-		} 
+		}
+                this.element.find('li').removeClass('active');
+                this.element.find('a[href="#advanced"]').closest('li').addClass('active');
+                
+                this.element.find('li.nav-pills').removeClass('active');
+                this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
+
+                //this.options.clientState.attr('nav').attr(newVal, subcategory);
+                //this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
+                //this.element.find('li').removeClass('active');
 	    }
         },
         '.single submit': function(el, ev) {
             ev.preventDefault();
-	    this.options.searchMode.attr('mode', 'single');
+	    this.options.clientState.attr('searchMode', 'single');
 
 	    var ctrl = $('form.single div.single_holder').controller();
 	    
@@ -172,7 +209,7 @@ steal(
 	},
         '.multi submit': function(el, ev) {
             ev.preventDefault();
-	    this.options.searchMode.attr('mode', 'multi');
+	    this.options.clientState.attr('searchMode', 'multi');
 	    $('#search-results').docview_search_results('clearResults');
 
 	    var self = this;
@@ -195,7 +232,7 @@ steal(
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
 	    this.setFilters(el);
-            this.options.searchMode.attr('mode', 'by_doc_source');
+            this.options.clientState.attr('searchMode', 'by_doc_source');
 
 	    var cntrl = this.element.find('div.daterange-holder-src').controller();
 	    var dates = cntrl.getInputs(el);
@@ -217,7 +254,7 @@ steal(
         '.advanced submit': function(el, ev) {
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
-            this.options.searchMode.attr('mode', 'advanced');
+            this.options.clientState.attr('searchMode', 'advanced');
             this.removeFormErrors(el);
 
             this.setFilters(el);
@@ -230,8 +267,9 @@ steal(
 
 	    var from_date = dates.from;
 	    var to_date = dates.to;
-	    
-	    var total = el.find('input[name="total"]').val();
+	    var total = $("input[name='frm_total']").val();
+            //$("input[name='org']:checked").val();
+	    //var total = el.find('input[name="total"]').val();
 	    
 	    if (total > 50) {
 		this.displayInputError(el, "total", "每次抽样总数不能超过 50");
@@ -240,24 +278,34 @@ steal(
 
 	    var isTax = undefined;
 	    var isMod = undefined;
+            var isMod_or_isTax = el.find("input[name='frm_isMod_or_isTax']").val();
 
+	    if (isMod_or_isTax == "isTax") {
+		isTax = "1";
+	    }
+	    if (isMod_or_isTax == "isMod") {
+		isMod = "1";
+	    }
+            /*
 	    if (el.find('input[name="isTax"]')[0].checked) {
 		isTax = "1";
 	    }
 	    if (el.find('input[name="isMod"]')[0].checked) {
 		isMod = "1";
 	    }
+            */
 
 	    this.options.clientState.attr('search', {
 		total : total,
-		org : el.find('select[name="org"]').val(),
+		org : el.find("input[name='org']").val(),
 		org_applied : el.find('select[name="org_applied"]').val(),
-		docType : el.find('select[name="doc_type"]').val(),
+		docType : el.find("input[name='frm_docType']").val(),
 		years : el.find('select[name="years"]').val(),
 		edcStartDate: from_date,
 		edcEndDate : to_date,
 		isTax: isTax,
 		isMod : isMod,
+                isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
         },
@@ -279,7 +327,7 @@ steal(
 	    
 	    hdiv.docview_ui_history('clearResults');
 	    hdiv.docview_ui_history('querySelf',
-				 { timerange : el.find('input[name="timerange"]:checked').val() });
+				 {timerange : el.find('input[name="timerange"]:checked').val()});
 	},
         // Filters
         '.select-all click': function(el) {
@@ -311,6 +359,72 @@ steal(
         removeFormErrors: function(form) {
             form.find('.error .help-inline').remove();
             form.find('.error').removeClass('error');
+        },
+        /*
+        '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
+            switch (newVal) {
+                case "search":
+                case "manage_docs":
+                case "manage_accounts":
+                case "stats":
+                    this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
+
+                    this.element.find('li').removeClass('active');
+
+                    // If the user entered the page by manually entering the url with
+                    // the subcategory, then it should be defined.
+                    var subcategory = $.route.attr('subcategory');
+                    if (subcategory !== undefined) {
+                       // Restore subcategory state from $.route
+                       this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
+                       this.options.clientState.attr('nav').attr(newVal, subcategory);
+                    } else {
+                        // Restore subcategory state from clientState
+
+			subcategory = this.options.clientState.attr('nav').attr(newVal);
+
+                       this.element.find('a[href="#' + subcategory + '"]')
+                           .closest('li').addClass('active');
+                       $.route.attr('subcategory', subcategory);
+                    }
+
+                    this.element.show();
+                    break;
+	    case "document":
+		break;
+            default:
+                    this.element.hide();
+            }
+        },
+        */
+        getHrefNoHash: function(el) {
+            var shref = el.attr('href');
+            var pos = shref.indexOf('#');
+            if (pos < 0) {
+               return shref;
+            }
+
+            return shref.substring(pos + 1);
+        },
+        'a.button-title click': function(el, ev) {
+            ev.preventDefault();
+            // Simple way: clear all active and set the new one
+            this.element.find('li').removeClass('active');
+            el.closest('li').addClass('active');
+	    
+            // Update subcategory
+            var subcategory = this.getHrefNoHash(el);
+            $.route.attr('subcategory', subcategory);
+
+	    $("ul.nav-pills a").closest('li').removeClass('active');
+	    $("ul.nav-pills a[href='#"+subcategory+"']").closest('li').addClass('active');
+            // Save subcategory state
+            this.options.clientState.attr('nav').attr($.route.attr('category'), subcategory);
+
+	    // Check for search sub tabs
+	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
+		$('#document-details').hide();
+	    }
         }
     });
 });

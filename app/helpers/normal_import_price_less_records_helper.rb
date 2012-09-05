@@ -1,0 +1,2 @@
+module NormalImportPriceLessRecordsHelper
+end

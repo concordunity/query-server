@@ -71,6 +71,7 @@ steal(
         '.main-nav a click': function(el, ev) {
             ev.preventDefault();
 	    this.lastActiveA = el;
+	    $("#alerts").html("");
             // Change address bar to reflect link contents
             // This overwrites all other route attributes
             var newCategory = this.getHrefNoHash(el);
@@ -108,7 +109,19 @@ steal(
 	    }
             //$('a[href="#' + oldVal + '"]').closest('li').removeClass('active');
             //$('a[href="#' + newVal + '"]').closest('li').addClass('active');
-            
+
+            if (newVal != 'manage_accounts') {
+		$('#sys-setting').hide();
+	    } else {
+		var subcategory = $.route.attr('subcategory');
+
+		if (subcategory === 'sys-setting') {
+		    $('#sys-setting').show();
+		    $('#sys-setting').docview_ui_syssetting('loadData');
+		} else {
+		    $('#sys-setting').hide();
+		}
+	    }
             if (newVal === "search") {
                 /*
                 // Save the search so when we come back it's shown immediately.

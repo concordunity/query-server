@@ -7,9 +7,11 @@ steal(
     'docview/models',
     'docview/ui/sou',
     'docview/ui/single',
+    'docview/ui/queryquota',
     'docview/docgroup/dgselect',
     'docview/ui/history',
     'docview/ui/daterange',
+    'docview/docview.css',
     'docview/bootstrap/bootstrap.css'
     )
 
@@ -37,20 +39,20 @@ steal(
         /* @Prototype */
         {
             init: function() {
-                this.element.html(this.view('search_box', this.options.clientState
-                    .attr('access').attr('stats')));
+                this.element.html(
+		    this.view('search_box',
+			      this.options.clientState.attr('access').attr('stats')));
+                // Hide box until route conditions are met
                 this.element.hide();
 
                 $("#div_query_form").html(this.view("query_form"));
                 //                $("#div_stats").html(this.view("stats"));
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
-    
-                this.element.show();
+		this.element.find('div.stats_query_quota').docview_ui_queryquota();
                 this.mainTabOn = false;
                 this.search_result = null;
-                // Hide box until route conditions are met
-                this.element.hide();
+
                 // Hide search types until route conditions are met
                 this.element.find('.stats_query').hide();
                 this.element.find('.stats_stats').hide();
@@ -85,9 +87,14 @@ steal(
                     this.mainTabOn = true;
                     //this.element.find('.by_user').show();
                     this.element.show();
+
                 } else {
                     this.mainTabOn = false;
                     this.element.hide();
+
+		    if ($.route.attr('subcategory') === 'dh_report') {
+                        this.element.find('.stats_query').show();
+		    }
                 }
             },
             '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
@@ -118,6 +125,8 @@ steal(
                     } else if (newVal == 'stats_usage') {
                         this.reloadUsage();
                     } else if (newVal == 'stats_query') {
+			this.element.find('div.stats_query_quota').docview_ui_queryquota('loadData');
+
                         this.element.find('.dg_select_holder').docview_docgroup_dgselect('reloadDocGroup');
                     }
                     if (newVal == 'create_group') {

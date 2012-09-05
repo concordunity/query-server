@@ -19,4 +19,8 @@
 *~
 # Emacs file locks
 .#*
-
+*.swp
+/config/database.yml
+/Gemfile
+/Gemfile.lock
+*.xls
