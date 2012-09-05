@@ -11,8 +11,6 @@ steal(
     $.Controller('Docview.Ui.Syssetting', {}, {
         init : function() {
             this.element.html(this.view('init'));
-            //$('.alert').alert();
-            $('.alert').alert('close');
 	    this.element.hide();
         },
 
