@@ -2,19 +2,19 @@
 class SearchConditionController < ApplicationController
 
   def search_condition
-    record_num = 20
+    #record_num = 20
     if params[:search_condition] == "normal_import_price_less_record"
-      #result = NormalImportPriceLessRecord.all
-      result = NormalImportPriceLessRecord.find_by_sql("select * from (select * from normal_import_price_less_records where exists_in_system=true order by rand() limit #{record_num}) as fiplr")
+      result = NormalImportPriceLessRecord.where(:exists_in_system => true)
+      #result = NormalImportPriceLessRecord.find_by_sql("select * from (select * from normal_import_price_less_records where exists_in_system=true order by rand() limit #{record_num}) as fiplr")
     elsif params[:search_condition] == "zero_find_check_info"
-	#result = ZeroFindCheckInfo.order("operating_name").group("operating_name")
-     result = ZeroFindCheckInfo.find_by_sql("select * from (select * from (SELECT `zero_find_check_infos`.* FROM `zero_find_check_infos` where exists_in_system=true GROUP BY operating_name ORDER BY operating_name) as a where exists_in_system=true order by rand() limit #{record_num}) as s order by s.operating_name")
+	result = ZeroFindCheckInfo.where(:exists_in_system => true).order("operating_name").group("operating_name")
+     #result = ZeroFindCheckInfo.find_by_sql("select * from (select * from (SELECT `zero_find_check_infos`.* FROM `zero_find_check_infos` where exists_in_system=true GROUP BY operating_name ORDER BY operating_name) as a where exists_in_system=true order by rand() limit #{record_num}) as s order by s.operating_name")
     elsif params[:search_condition] == "import_most_time_org_doc_info"
-    	#result = ImportMostTimeOrgDocInfo.all
-      result = ImportMostTimeOrgDocInfo.find_by_sql("select * from (select * from import_most_time_org_doc_infos where exists_in_system=true order by rand() limit #{record_num}) as imtodi")
-    else
+    	result = ImportMostTimeOrgDocInfo.where(:exists_in_system => true)
+      #result = ImportMostTimeOrgDocInfo.find_by_sql("select * from (select * from import_most_time_org_doc_infos where exists_in_system=true order by rand() limit #{record_num}) as imtodi")
 
     end
+
     @result = result
     #@result = get_record(result,20)
     respond_to do |format|
