@@ -9,16 +9,15 @@
         <div class="control-group">
           <label class="control-label">请选择分类方式 </label>
 	  <div class="controls">
-          <select name="groupby" id="select_option">
+          <select name="groupby" >
              <option value="0">不分类</option>
-             <option value="1">申报关区</option>
+             <option value="1">理单关区</option>
              <option value="2">用户</option>
              <option value="3">用户角色</option>
              <option value="4">近6个月内按月份统计</option>
           </select>
-         <div>
         </div>
-
+         <div>
         <div class="control-group">
           <label class="control-label" for="frm_edcStartDate">日期</label>
           <div class="controls">
@@ -28,15 +27,10 @@
           </div>
         </div>
     <div class="daterange-holder-2"> </div>
-    </fieldset>
-  <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>
-</div>
-
-<div class="span6">
-    <fieldset id="condition_view">
      <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
         <div id="frm_docType_years_select"></div>
     </fieldset>  
+  <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>
 </div>
 </div>
 </form>

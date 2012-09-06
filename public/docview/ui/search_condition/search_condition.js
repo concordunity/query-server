@@ -17,10 +17,43 @@ steal(
                     labelString: ""
                 }
             });
-
+            this.setOrgVisible(false);
+            this.setDateRangeVisible(false);
             $("#frm_docType_years_select").html(this.view("frm_docType_years",{}));
         },
+        setOrgVisible : function(toShow) {
+	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
+            if (toShow) {
+              el.show();
+            } else {
+              el.hide();
+            }
+        },
+        setDateRangeVisible : function(toShow) {
+	    var el = $(".docview_ui_search_condition .daterange-holder-2");
+            if (toShow) {
+              el.show();
+            } else {
+              el.hide();
+            }
+        },
+	".docview_ui_search_condition select[name='groupby'] change" : function(el,ev){
+	    var el_value = $(el).attr("value");
+	    if (el_value == 0 || el_value == 1) {
+	        this.setOrgVisible(false);
+	    } else {
+	        this.setOrgVisible(true);
+	    }
+	},
+	"input[name='timerange'] click" : function(el,ev){
+		var timerange_value = $(el).attr("value");
+		if(timerange_value == 0){
+		    this.setDateRangeVisible(false); 
+		}else{
+		    this.setDateRangeVisible(true); 
+		}
 
+	},
         'form.stats_stats submit' : function(el, ev) {
             ev.preventDefault();
             //this.removeFormErrors(el);

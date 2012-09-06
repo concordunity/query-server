@@ -92,6 +92,8 @@
        'subnav.search_condition' : '高风险报关单查询',
        'subnav.multi_document' : '批量查阅',
        'subnav.advanced_search' : '随机抽样查阅',
+       'subnav.by_doc_source' : '单证暂存',
+       'subnav.personal_history' : '个人查阅历史',
        'subnav.manage_users' : '用户管理',
        'subnav.manage_roles' : '权限管理',
 	'subnav.add_remove_inquiry' : '添加/解除涉案标记',
