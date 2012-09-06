@@ -280,15 +280,19 @@ steal(
 		async: false,
 		dataType : 'json',
 		success : function (data) {
-		    maxn = data.maxn;
+		    maxn = parseInt(data.maxn);
 		},
 		error : function() {
 		}
 	    });
 
-	    if (total > maxn) {
-		this.displayInputError(el, "frm_total", "每次抽样总数不能超过 " + maxn);
-		return;
+	    if (parseInt(total) > maxn) {
+		active_button = $("button.button-option-onblure[name='frm_total']");
+		total = maxn;
+		if(active_button.attr("value") == ""){
+		    this.displayInputError(el, "frm_total", "每次抽样总数不能超过 " + maxn);
+		    return;
+		}
 	    }
 
 	    var isTax = undefined;
