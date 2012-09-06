@@ -45,11 +45,14 @@ steal(
 	".find-zero-rate click" : function(el,ev){
 		$("#search_results").show();
                 $("#second_results").show();
+	    this.options.clientState.attr('searchMode', 'high-risk');
+
 		Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"zero_find_check_info"},
 		    this.proxy("find_zero_rate"),
 		{});
 	},
 	".normal-import-record click" : function(el,ev){
+	    this.options.clientState.attr('searchMode', 'high-risk');
 		$("#search_results").show();
                 $("#second_results").hide();
 		Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"normal_import_price_less_record"},
@@ -58,6 +61,7 @@ steal(
 	},
 
 	".import-most-time click" : function(el,ev){
+	    this.options.clientState.attr('searchMode', 'high-risk');
 		$("#search_results").show();
                 $("#second_results").hide();
 		Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"import_most_time_org_doc_info"},
@@ -250,7 +254,7 @@ steal(
 	    //console.log(son_table);
 	    var document = el.closest('tr').model();
 	    if(son_table == "son_table"){
-		
+		this.options.clientState.attr('searchMode', 'high-risk');
                 Docview.Models.Monitoring.getSearchData({"urlValue":"/get_son_table","typeValue":"get"},{"operating_name":document.operating_name},
                     this.proxy("setSonTable"),
                 {});
