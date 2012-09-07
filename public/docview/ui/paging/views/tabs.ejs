@@ -1,0 +1,24 @@
+<ul class="nav nav-tabs">
+
+<% 
+
+ var i = 0;
+ for (i=0; i<total; i += numPerPage) {
+    var upper = i+numPerPage;
+    if (upper > total) {
+       upper = total;
+    } 
+    upper = ''+ upper;
+    var lower = '' + (i+1);
+    
+    var toDisplay = lower + '-' + upper;
+%>
+<li>
+<a class="docview-paging" href="#" data-start-index="<%== lower %>" data-end-index=<%= upper %> ><%= toDisplay %> </a>
+</li>
+
+<%
+ }
+%>
+
+</ul>
