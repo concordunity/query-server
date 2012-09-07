@@ -3,8 +3,10 @@ steal(
     'jquery/view/ejs',
     'jquery/controller/view'
 ).then(
+    'libs/jquery.i18n.min.js',
     './views/init.ejs'
 ).then(
+    'docview/label_zh_CN.js',
     './views/import_most_time_org_doc_info.ejs',
     './views/normal_import_price_less_record.ejs',
     './views/zero_find_check_info.ejs',
@@ -19,8 +21,10 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.search_some_condition', {}, {
         init : function() {
-           this.element.html(this.view('init'));
-           this.element.hide();
+	    new LabelChinese().initLabelSettings();
+
+            this.element.html(this.view('init'));
+            this.element.hide();
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal !== "search") {
@@ -301,7 +305,7 @@ steal(
                 $("#second_results").hide();	    
 	},
         show : function() {
-	   
+	    this.element.show();
         }
 });
 });
