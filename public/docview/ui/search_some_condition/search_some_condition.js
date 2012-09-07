@@ -48,6 +48,7 @@ steal(
         },
 	".find-zero-rate click" : function(el,ev){
 		$("#search_results").show();
+                $("#second_results").html("");
                 $("#second_results").show();
 	    this.options.clientState.attr('searchMode', 'high-risk');
 
