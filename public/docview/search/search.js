@@ -56,7 +56,7 @@ steal(
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : {include_user : false}});
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
-            this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
+            //this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
         },
 
 	"button.button-option click" : function(el,ev){
@@ -134,7 +134,12 @@ steal(
 		this.element.find('.upload_file').hide();
 	    }
 	    if (to_show != 'search_condition') {
-		this.element.find('.search_condition').hide();
+		$('#search-some-conditions').hide();
+		$('#search-box').show();
+		//this.element.find('.search_condition').hide();
+	    } else {
+		$('#search-box').hide();
+		$('#search-some-conditions').show();
 	    }
 	},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
@@ -151,6 +156,9 @@ steal(
 	    this.clearFilters();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
+	    if (newVal == undefined) {
+		return;
+	    }
 	    if (this.mainTabOn) {
 		//$('#search-results').docview_search_results('clearResults');		
 		//$('#alerts div.alert').alert('close');

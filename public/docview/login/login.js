@@ -248,10 +248,15 @@ steal(
             
             $('#search-box').docview_search({clientState: this.options.clientState});
             $('#search-results').docview_search_results({clientState: this.options.clientState});
-            //$('#search-condition').docview_ui_search_some_condition({clientState: this.options.clientState});
+
             //$('#upload-file').docview_ui_upload({clientState: this.options.clientState});
 
- 
+            if (this.options.clientState.attr('access')
+                .attr('search').attr('search_condition') === true) {
+
+		$('#search-some-conditions').docview_ui_search_some_condition({clientState: this.options.clientState}); 
+	    }
+
             $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
             $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
 	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
