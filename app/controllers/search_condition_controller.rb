@@ -14,8 +14,10 @@ class SearchConditionController < ApplicationController
       #result = ImportMostTimeOrgDocInfo.find_by_sql("select * from (select * from import_most_time_org_doc_infos where exists_in_system=true order by rand() limit #{record_num}) as imtodi")
 
     end
-
-    @result = result
+    count = params[:count] unless params[:count].nil?
+    start_index = params[:start_index] unless params[:start_index].nil?
+    @result = get_pages_info(result.all,count,start_index)
+    @result = @result[:data]
     #@result = get_record(result,20)
     respond_to do |format|
       format.html # index.html.erb
@@ -29,6 +31,14 @@ class SearchConditionController < ApplicationController
         format.html # index.html.erb
         format.json { render json: @operatings }
       end
+  end
+
+  def get_pages_info(data,count_num=nil,start_index_num=nil)
+    total = data.length
+    count = (count_num || 1000)
+    start_index = (start_index_num || 1) - 1
+    datas = data.slice(start_index,count)
+    return {:total => total, :count => count, :start_index => start_index, :data => datas}
   end
 
   def get_record(result,num)
