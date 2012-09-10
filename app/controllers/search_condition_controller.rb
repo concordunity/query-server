@@ -27,7 +27,8 @@ class SearchConditionController < ApplicationController
   end
 
   def get_son_table 
-    @operatings = ZeroFindCheckInfo.where({:operating_name =>params[:operating_name],:org_applied => params[:org_applied], :exists_in_system => true }).order("operating_name")
+    son_condition =  params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["org_applied = ?", params[:org_applied]]
+    @operatings = ZeroFindCheckInfo.where({:operating_name =>params[:operating_name], :exists_in_system => true }).order("operating_name").where(son_condition)
       respond_to do |format|
         format.html # index.html.erb
         format.json { render json: @operatings }

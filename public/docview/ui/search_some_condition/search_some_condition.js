@@ -302,7 +302,7 @@ steal(
 				var document = el.closest('tr').model();
 				if(son_table == "son_table"){
 					this.options.clientState.attr('searchMode', 'high-risk');
-					Docview.Models.Monitoring.getSearchData({"urlValue":"/get_son_table","typeValue":"get"},{"operating_name":document.operating_name,"org_applied": document.org_applied},
+					Docview.Models.Monitoring.getSearchData({"urlValue":"/get_son_table","typeValue":"get"},{"operating_name":document.operating_name,"org_applied": $("select[name='zero_org_applied']").val()},
 					this.proxy("setSonTable"),
 					{});
 
