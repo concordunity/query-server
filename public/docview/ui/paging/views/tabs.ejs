@@ -13,7 +13,7 @@
     
     var toDisplay = lower + '-' + upper;
 %>
-<li>
+<li class="<%= lower == start && upper == end ? "active" : ""%>">
 <a class="docview-paging" href="#" data-start-index="<%== lower %>" data-end-index=<%= upper %> ><%= toDisplay %> </a>
 </li>
 

@@ -21,20 +21,25 @@ steal(
 	// We assume that the data is 
 	showPages : function(data) {
 	    var total = data.total;
-
+		var start = $(".paging-header-start-end input[name='paging-header-start']").attr("value");
+		var end = $(".paging-header-start-end input[name='paging-header-end']").attr("value");
 	    if (total <= this.numPerPage) {
-		console.log("we do nto have enough pages");
-		return;
+		//console.log("we do nto have enough pages");
+		//return;
+                this.element.find('div.paging-header').html("");
+                this.element.hide();
+	    } else {
+                this.element.find('div.paging-header').html(this.view('tabs', { numPerPage: this.numPerPage, total: data.total, start: start, end: end}));
+                this.element.show();
 	    }
 	    
-	    console.log("we do have enough pages");
+	    //console.log("we do have enough pages");
 	    //this.element.find('div.paging-header').html(this.view('tabs', { numPerPage: this.numPerPage, data: data}));
-	    this.element.find('div.paging-header').html(this.view('tabs', { numPerPage: this.numPerPage, total: data.total}));
-	    this.element.show();
+	    //this.element.find('div.paging-header').html(this.view('tabs', { numPerPage: this.numPerPage, total: data.total}));
+	    //this.element.show();
 	},
-
-        show : function() {
-        }
+    show : function() {
+    }
 });
 });
 
