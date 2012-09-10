@@ -153,6 +153,7 @@ ul.image-tree-nav, ul.image-tree-nav li {
     margin-left: 0px;
     padding-left: 0px;
 	font-size: 13px;
+	cursor: pointer;
 }
 
 td.nolinebreak {

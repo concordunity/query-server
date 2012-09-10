@@ -30,7 +30,7 @@ steal(
 
             this.dataTable = this.element.find('table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
-                //"sPaginationType": "bootstrap",
+                "sPaginationType": "bootstrap",
                 "aaData": this.options.table_options.aaData,
                 "aoColumns": this.options.table_options.aoColumns,
                 "oLanguage" : {
