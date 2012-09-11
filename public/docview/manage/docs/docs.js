@@ -127,9 +127,11 @@ steal(
 	},
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
 	    // console.log("docs sub change", this.mainTabOn, newVal, oldVal);
+/*
             if (newVal == undefined) {
                return;
             }
+*/
 	    if (this.mainTabOn) {
 		this.element.find('#docs_history').docview_ui_history('clearResults');
 		this.element.show();
