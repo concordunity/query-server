@@ -36,7 +36,6 @@ steal(
             if (accountActions.attr('users') || accountActions.attr('roles')) {
                 manage_accounts = true;
             }
-
             this.element.html(this.view('init', {
                 user: this.options.clientState.attr('user'),
                 search: search,

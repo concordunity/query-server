@@ -93,7 +93,7 @@ steal(
                     this.element.hide();
 
 		    if ($.route.attr('subcategory') === 'dh_report') {
-                        this.element.find('.stats_query').show();
+                        //this.element.find('.stats_query').show();
 		    }
                 }
             },
@@ -107,7 +107,7 @@ steal(
 
                 if (!this.mainTabOn) {
                     if (newVal == 'dh_report') {
-                        this.element.find('.stats_query').show();
+                        //this.element.find('.stats_query').show();
                     }
                     return;
                 }

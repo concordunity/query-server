@@ -8,6 +8,7 @@ steal(
 )
 // View templates
 .then(
+    'docview/ui/index',
     'libs/jquery.i18n.min.js',
     './views/menu_bar.ejs'
 )
@@ -68,6 +69,10 @@ steal(
 
             return shref.substring(pos + 1);
         },
+	"a.brand[href='#'] img click" : function(el,ev) {
+	    //ev.preventDefault();
+	    $("#alerts").docview_ui_index({clientState: this.options.clientState});
+	},
         '.main-nav a click': function(el, ev) {
             ev.preventDefault();
 	    this.lastActiveA = el;

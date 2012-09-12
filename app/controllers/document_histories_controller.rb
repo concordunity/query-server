@@ -225,8 +225,8 @@ class DocumentHistoriesController < ApplicationController
         query_stats_by[k] = { :num_docs => num_docs,
           :num_pages => num_pages,
           :num_queries => num_queries,
-          :percentage_q => number_to_percentage(num_queries * 100 / (1.0 * v)),
-          :percentage_qq => number_to_percentage(num_queries * 100 / (1.0 * query_total)),
+          :percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100 / (1.0 * v)),
+          :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100 / (1.0 * query_total)),
         }
       }
       return query_stats_by
@@ -245,8 +245,8 @@ class DocumentHistoriesController < ApplicationController
         if umap.has_key?(k)
           query_stats_by[umap[k]] = {
             :num_queries => v,
-            :percentage_q => number_to_percentage( v * 100 / (1.0 * docs_total)),
-            :percentage_qq => number_to_percentage( v * 100 / (1.0 * query_total)),
+            :percentage_q => docs_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * docs_total)),
+            :percentage_qq => query_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * query_total)),
           }
         end
       }
@@ -273,8 +273,8 @@ class DocumentHistoriesController < ApplicationController
           if rmap.has_key?(k)
             query_stats_by[rmap[k]] = {
               :num_queries => v,
-              :percentage_q => number_to_percentage( v * 100 / (1.0 * docs_total)),
-              :percentage_qq => number_to_percentage( v * 100 / (1.0 * query_total)),
+              :percentage_q => docs_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * docs_total)),
+              :percentage_qq => query_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * query_total)),
             }
           end
         }
@@ -319,7 +319,7 @@ class DocumentHistoriesController < ApplicationController
               :num_docs => doc_stats_t.has_key?(k) ? doc_stats_t[k] : '',
               :num_pages => page_stats_t.has_key?(k) ? page_stats_t[k] : '',
               :num_queries => query_stats_t.has_key?(k) ? query_stats_t[k] : '',
-              :percentage_qq => query_stats_t.has_key?(k) ?  (number_to_percentage(query_stats_t[k] * 100 / (1.0 * query_total))) : ''
+              :percentage_qq => query_stats_t.has_key?(k) ?  (query_total == 0 ? 0 : number_to_percentage(query_stats_t[k] * 100 / (1.0 * query_total))) : ''
             }
           }
         }
