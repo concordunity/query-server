@@ -83,7 +83,24 @@ steal(
             this.element.find('.single-print').hide();
 	    this.element.find('.dropdown').remove();
 	},
-
+　　    "{document} keyup":function(el,e) {
+	     ev.preventDefault();
+　　 　     var currKey=0,e=e||event;
+　　 　     currKey=e.keyCode||e.which||e.charCode;
+　 　 　    var keyName = String.fromCharCode(currKey);
+            if (currKey == 39) {
+	        var pageInfo = this.options.docManager.gotoNextPage();
+                if (pageInfo) {
+                    this.showImage(pageInfo.imagePath);
+                }	
+            } else if (currKey == 37) {
+            var pageInfo = this.options.docManager.gotoPrevPage();
+                if (pageInfo) {
+                    this.showImage(pageInfo.imagePath);
+                }
+	    }
+	    
+　　    },
         '.next click': function(el, ev) {
             ev.preventDefault();
 	    var pageInfo = this.options.docManager.gotoNextPage();
