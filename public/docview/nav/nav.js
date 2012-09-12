@@ -71,11 +71,12 @@ steal(
         },
 	"a.brand[href='#'] img click" : function(el,ev) {
 	    //ev.preventDefault();
-	    $("#alerts").docview_ui_index({clientState: this.options.clientState});
+	    $("#alerts").docview_ui_index("createHtml");
 	},
         '.main-nav a click': function(el, ev) {
             ev.preventDefault();
 	    this.lastActiveA = el;
+	    $("#alerts").docview_ui_index("hideHtml");	
 	    $("#alerts").html("");
             // Change address bar to reflect link contents
             // This overwrites all other route attributes

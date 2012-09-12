@@ -10,7 +10,12 @@ steal(
     $.Controller('Docview.Ui.index', {}, {
         init : function() {
            //this.element.html(this.view('init'));
-
+	    this.createHtml();
+	},
+	hideHtml : function(){
+	    $("#alerts").html("");
+	},
+	createHtml : function(){
             // If any subnav item is allowed, then we have to show the nav item
             var search = false;
 	    this.lastActiveA = undefined;
