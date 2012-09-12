@@ -83,8 +83,9 @@ steal(
             this.element.find('.single-print').hide();
 	    this.element.find('.dropdown').remove();
 	},
+/*
 　　    "{document} keyup":function(el,e) {
-	     ev.preventDefault();
+	     e.preventDefault();
 　　 　     var currKey=0,e=e||event;
 　　 　     currKey=e.keyCode||e.which||e.charCode;
 　 　 　    var keyName = String.fromCharCode(currKey);
@@ -101,6 +102,7 @@ steal(
 	    }
 	    
 　　    },
+*/
         '.next click': function(el, ev) {
             ev.preventDefault();
 	    var pageInfo = this.options.docManager.gotoNextPage();
