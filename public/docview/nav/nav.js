@@ -69,7 +69,15 @@ steal(
 
             return shref.substring(pos + 1);
         },
-	"a.brand[href='#'] img click" : function(el,ev) {
+/*
+	'a.brand[href="#"] img click' : function(el,ev) {
+	    alert('====ie 9 ====');
+	    //ev.preventDefault();
+	    $("#alerts").docview_ui_index("createHtml");
+	},
+*/
+	'#navigation-header .brand click' : function(el,ev) {
+	    //alert('====ie 7 ====');
 	    //ev.preventDefault();
 	    $("#alerts").docview_ui_index("createHtml");
 	},
