@@ -27,6 +27,16 @@ steal(
 	getIds : function() {
             return this.ids;
         },
+	regResult : function(info) {
+	    var reg = /^[\s|\t]+|[\s|\t]+$/gi;
+	    var status = true;
+	    if (info.match(reg)) {
+		status = false;
+	    } else {
+		status = true;
+	    }
+	    return status;
+	},
 	validateInput: function(el) {
 	    this.removeFormErrors(el);
 	    var query = el.find('.query').val();
@@ -36,6 +46,12 @@ steal(
                 this.displayTextareaError(
 		    el, 'query', 
 		    '输入内容不能为空');
+		return false;
+	    }
+	    if (this.regResult(query)== false) {
+                this.displayTextareaError(
+		    el, 'query', 
+		    '输入内容不能以空格(或回车)开始(或结尾)');
 		return false;
 	    }
             var tokens = query.split(/\s+/);

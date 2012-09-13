@@ -65,12 +65,37 @@ steal(
   	    }
   	    return false;
 	},
+	getUploadInfo : function(filename,result){
+	    
+	    if (filename == "") {
+		result.message.status = false;
+		result.message.push("上传了空文件，无效");
+	    } else {
+	        var reg = /\.xls$/gi;
+	        if (filename.match(reg)) {
+		} else {
+		    result.status = false;
+		    result.message.push("文件格式不匹配，请重新上传");	
+		}
+	    }
+	    return result;
+	},
 	"form[name='upfile_form'] submit" : function(el,ev){
 		//ev.preventDefault();
 		var upload_file = $("#upload_file").val();
 		var upload_file_1 = $("#upload_file_1").val();
 		var upload_file_2 = $("#upload_file_2").val();
-		if(upload_file == "" && upload_file_1 == "" && upload_file_2 == ""){
+		console.log(upload_file);
+		if (upload_file == "" && upload_file_1 == "" && upload_file_2 == "") {
+			this.showMessage("上传失败:请选择要上传的文件");
+			return false;
+		}
+		var result = {status:true, message: []};
+
+		result = this.getUploadInfo(upload_file,result);
+		result = this.getUploadInfo(upload_file_1,result);
+		result = this.getUploadInfo(upload_file_2,result);
+		if (result.status == false) {
 			this.showMessage("上传失败");
 			return false;
 		}else{
