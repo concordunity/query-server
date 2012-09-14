@@ -191,6 +191,7 @@ class DocumentsController < ApplicationController
       #uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
       #else
       #  uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
+      
       h = Net::HTTP.start('127.0.0.1', 8090, { :read_timeout => 240 })
       res = h.get("/#{doc_id}")
 
@@ -230,20 +231,22 @@ class DocumentsController < ApplicationController
       end
 
 
-      #uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
-      #else
-      #  uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
-      h = Net::HTTP.start('127.0.0.1', 8090, { :read_timeout => 240 })
-      res = h.get("/#{doc_id}")
 
+      script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{doc_id}"
 
-      if res.body.match(/The requested document is not found/)
-        render json: { :status => :error, :message => 'Python Error' }, :status => 400 
-        return #raise ActiveRecord::RecordNotFound
+      response = %x[ #{script_name} ]
+
+      if response(/System busy/)
+        render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
+        return
+      end
+
+      if response(/The requested document is not found/)
+        render json: { :status => :error, :message => 'The document does not exist' }, :status => 400 
+        return
       end
 
       response = JSON.parse(res.body)
-
 
       s_doc = ModifiedDocument.find_by_doc_id(doc_id)
       if !s_doc.nil?
