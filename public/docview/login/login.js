@@ -264,7 +264,6 @@ steal(
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
             $('#document-details').docview_ui_details({clientState: this.options.clientState});
-            $('#document-details-single').docview_ui_details({clientState: this.options.clientState});
 
             $('#group-docs').docview_stats_group({clientState: this.options.clientState});
 

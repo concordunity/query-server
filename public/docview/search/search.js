@@ -179,7 +179,6 @@ steal(
 		    $.route.attr('id', -1);
 		    if (newVal != 'single') {
 			$('#document-details').hide();
-			$('#document-details-single').hide();
 		    } 
 		}
                 this.element.find('li').removeClass('active');
@@ -216,7 +215,7 @@ steal(
 	    $.route.attrs({category: 'document', id: docId}, true);
 	    
 	    this.element.hide();
-	    $('#document-details-single').docview_ui_details('queryDoc', docId);
+	    $('#document-details').docview_ui_details('queryDoc', docId);
 	},
         '.multi submit': function(el, ev) {
             ev.preventDefault();
@@ -452,7 +451,6 @@ steal(
 	    // Check for search sub tabs
 	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
 		$('#document-details').hide();
-		$('#document-details-single').hide();
 	    }
         }
     });
