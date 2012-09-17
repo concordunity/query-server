@@ -12,10 +12,10 @@ Dms::Application.routes.draw do
 
   resources :import_most_time_org_doc_infos
 
-  post "/search_result/excle" => "monitoring_data#export_search"
+  post "/search_result/excle" => "operate_data#export_search"
   post "/status/zip_files" => "queries_controller#zip_files_status"
 
-  post "/generateExcel" => "monitoring_data#export_data"
+  post "/generateExcel" => "operate_data#export_data"
 
   post "/settings/update" => "settings#sys_setting"
   get "/settings" => "settings#index"
