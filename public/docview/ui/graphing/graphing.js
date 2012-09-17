@@ -26,8 +26,8 @@ steal(
 		this.timer = null;
 		clearTimeout(this.timer);
 	    }
-//	    this.host = host + ".sh.intra.customs.gov.cn";
-            this.host = host;
+	    this.host = host + ".sh.intra.customs.gov.cn";
+            //this.host = host;
 
 
 	    if (!this.chart) {
