@@ -6,6 +6,7 @@ steal(
     'docview/bootstrap/bootstrap.css',
     'docview/datatables/jquery.dataTables.js'
     ).then(
+    'libs/json2.js',
     'docview/datatables/bootstrap-pagination.js'
     ).then(
     './views/init.ejs'
