@@ -234,19 +234,19 @@ class DocumentsController < ApplicationController
 
       script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{doc_id}"
 
-      response = %x[ #{script_name} ]
+      res = %x[ #{script_name} ]
 
-      if response(/System busy/)
+      if res.match(/System busy/)
         render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
         return
       end
 
-      if response(/The requested document is not found/)
+      if res.match(/The requested document is not found/)
         render json: { :status => :error, :message => 'The document does not exist' }, :status => 400 
         return
       end
 
-      response = JSON.parse(res.body)
+      response = JSON.parse(res)
 
       s_doc = ModifiedDocument.find_by_doc_id(doc_id)
       if !s_doc.nil?
@@ -478,13 +478,12 @@ class DocumentsController < ApplicationController
     if !params[:mod].blank?
       dir='docimages_mod'
     end
-
     pages = ""
     if !params[:pages].blank?
       page_selections = params[:pages].split(',')
       pages=page_selections.join(' ')
     end
-    script_name = "#{ENV['HOME']}/bin/new_print_doc_wm.sh #{doc_id} #{dir} \"#{pages}\""
+    script_name = "#{ENV['HOME']}/bin/print_doc_with_watermark.sh #{doc_id} #{dir} \"#{pages}\""
 
     pdf_file = %x[ #{script_name} ]
 
