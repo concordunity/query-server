@@ -58,6 +58,7 @@ steal(
                         mLabel : '操作'
                     }
                     ],
+		    col_width: [0,220,50],	
                     file_name: "role_info"
                 };
                 this.element.find('.role-list').docview_ui_dmstable({

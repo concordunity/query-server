@@ -21,12 +21,18 @@ steal(
             var tableElement = this.element.find('thead tr')[0];
 
             var aoColumns = this.options.table_options.aoColumns;
+	    var col_width = this.options.table_options.col_width;
 
             var index = 0;
             var that = this;
             $.each(aoColumns, function(index, v) {
                 v.fnRender = that.createNthRenderer(index);
-                $(tableElement).append("<th>" + v.mLabel + " </th>");
+
+	    	if (col_width){
+                	$(tableElement).append("<th style='width: " + (col_width[index]|0) + "px;'>" + v.mLabel + " </th>");
+		} else {
+                	$(tableElement).append("<th>" + v.mLabel + " </th>");
+		}
             });
 
             this.dataTable = this.element.find('table').dataTable({
