@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>queryform Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="queryform-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/queryform').then(function($) {
+
+   var formParams = {
+     formClass : "test-form",
+     legend: "This is a test of form plugin",
+     formFields : ["docid", "daterange", "org", "org_applied", "docType" ],
+      buttonLabel : "查阅"
+   };
+   $('#queryform-test').docview_ui_queryform({formParams : formParams});
+
+ }); 
+ </script>
+        </body>
+</html>
+

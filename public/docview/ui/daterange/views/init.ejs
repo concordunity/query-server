@@ -1,8 +1,10 @@
+<div class="control-group">
+
 <% if (labelString) { %>
-  <label class="control-label" for="frm_edcStartDate"><%= labelString %></label>
+  <label class="control-label"><%= labelString %></label>
 <% } %>
 
-<div class="controls control-group">
+<div class="controls">
 <% var d = new Date(); var month = 1 + d.getMonth();var day = d.getDate();
  var today = d.getFullYear() + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
  d.setMonth(d.getMonth() - 1); month = 1+ d.getMonth(); day = d.getDate();
@@ -12,4 +14,5 @@
 <input name="from_date" class="input-date" value="<%= lastMonth %>" language="zh-CN" type="text"
  style="width: 100px;" /> 到 <input name="to_date" class="input-date" type="text"  value="<%= today %>"
   language="zh-CN" data-date-format="yyyy-mm-dd" style="width: 100px;" />
+</div>
 </div>
