@@ -46,19 +46,20 @@ class ModifiedDocumentsController < ApplicationController
       folder = Folder.find(@special_doc.folder_id)
       folder_id = folder.folder_id
 
+      script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{folder_id} #{doc_id}"
+      res = %x[ #{script_name} ]
 
-      #uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
-      #else
-      #  uri = URI.parse("http://127.0.0.1:8090/" + params[:doc_id])
-      h = Net::HTTP.start('127.0.0.1', 8090, { :read_timeout => 240 })
-      #res = h.get("/#{folder_id}/#{doc_id}")
-      res = h.get("/#{folder_id}/222520121250176875");
-      if res.body.match(/The requested document is not found/)
-        render json: { :status => :error, :message => 'Python Error' }, :status => 400 
-        return #raise ActiveRecord::RecordNotFound
+      if res.match(/System busy/)
+        render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
+        return
       end
 
-      response = JSON.parse(res.body)
+      if res.match(/The requested document is not found/)
+        render json: { :status => :error, :message => 'The document does not exist' }, :status => 400 
+        return
+      end
+
+      response = JSON.parse(res)
 
       # Create query_history record.
       #response = { :name => 'test', 'info' => 'good' }
