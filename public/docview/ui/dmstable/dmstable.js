@@ -2,22 +2,24 @@ steal(
     'jquery/controller',
     'jquery/view/ejs',
     'jquery/controller/view'
-    ).then(
+).then(
     'docview/bootstrap/bootstrap.css',
     'docview/datatables/jquery.dataTables.js'
-    ).then(
+).then(
     'libs/json2.js',
     'docview/datatables/bootstrap-pagination.js'
-    ).then(
+).then(
     './views/init.ejs'
-    ).then(function($) {
+).then(function($) {
     $.Controller('Docview.Ui.Dmstable', {}, {
         // row_ejs file path
         // th_list
         init : function() {
             this.lastData = "";
-            this.element.html(this.view('init',{file_name:this.options.table_options.file_name}));
-	    this.modelData = {}
+            this.element.html(this.view('init',{
+		file_name:this.options.table_options.file_name
+	    }));
+	    this.modelData = {};
             var tableElement = this.element.find('thead tr')[0];
 
             var aoColumns = this.options.table_options.aoColumns;
@@ -27,11 +29,11 @@ steal(
             var that = this;
             $.each(aoColumns, function(index, v) {
                 v.fnRender = that.createNthRenderer(index);
-
+		
 	    	if (col_width){
-                	$(tableElement).append("<th style='width: " + (col_width[index]|0) + "px;'>" + v.mLabel + " </th>");
+                    $(tableElement).append("<th style='width: " + (col_width[index]|0) + "px;'>" + v.mLabel + " </th>");
 		} else {
-                	$(tableElement).append("<th>" + v.mLabel + " </th>");
+                    $(tableElement).append("<th>" + v.mLabel + " </th>");
 		}
             });
 
