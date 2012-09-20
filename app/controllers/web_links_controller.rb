@@ -61,7 +61,8 @@ class WebLinksController < ApplicationController
     respond_to do |format|
       if @web_link.update_attributes(params[:web_link])
         format.html { redirect_to @web_link, notice: 'Web link was successfully updated.' }
-        format.json { head :no_content }
+        #format.json { head :no_content }
+        format.json { render json: @web_link, status: :created, location: @web_link }
       else
         format.html { render action: "edit" }
         format.json { render json: @web_link.errors, status: :unprocessable_entity }
