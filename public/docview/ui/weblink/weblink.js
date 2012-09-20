@@ -227,7 +227,7 @@ steal(
                     this.lastEl.button('reset');
                 }
         },
-	'.edit-web-link-form submit': function(el, ev) {
+	'#edit-web-link-form submit': function(el, ev) {
                 ev.preventDefault();
                 $('#alerts div.alert').alert('close');
                 // Clear any previous error messages in the form
@@ -250,16 +250,9 @@ steal(
 		web_link.attr("menu2",jsonObject.menu2);
 		web_link.attr("controller",jsonObject.controller);
 		web_link.attr("action",jsonObject.action);
-
-                Docview.Models.WebLink.update(web_link.id,{web_links: jsonObject },
-                this.proxy('updateRowData'),
-                    this.proxy('failure')
-                    );
-
+                Docview.Models.WebLink.update(web_link.id,{web_link: jsonObject }, this.proxy('updateRowData'), this.proxy('failure'));
                 el.find('.btn-primary').button('loading');
                 el.find('.cancel-edit').button('loading');
-            // Save
-            //user.save(this.proxy('updateUserRow'));
         },
         '.edit-web-link click': function(el, ev) {
                 ev.preventDefault();
@@ -295,6 +288,10 @@ steal(
                 });
                 this.reload();
         },
+	removeFormErrors: function(form) {
+                form.find('.error > .help-inline').remove();
+                form.find('.error').removeClass('error');
+	},
         show : function() {
         }
 });
