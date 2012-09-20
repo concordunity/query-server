@@ -175,6 +175,12 @@ steal(
                         .attr('stats').attr('create_group', true);
 		    this.setNavIfEmpty('stats', 'create_group');
                     break;
+
+		case ("stats_export"):
+                    this.options.clientState.attr('access')
+                        .attr('stats').attr('stats_export', true);
+		    this.setNavIfEmpty('stats', 'stats_export');
+                    break;
 		    
                 case ("advanced"):
                     this.options.clientState.attr('access')

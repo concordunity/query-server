@@ -1,0 +1,16 @@
+<tr class="edit-web-link-<%= web_link.id %>"  style="border: 2px solid #cccc00">
+<td colspan="7">
+<div class="well">
+<form class="form" id="edit-web-link-form">
+
+    <%== $.View("//docview/ui/weblink/views/web_link_form.ejs")%>
+
+    <div class="pull-right">
+            <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.save') %></button>
+            <button type="button" class="btn cancel-edit" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
+    </div>
+
+</form>
+</div>
+</td>
+</tr>

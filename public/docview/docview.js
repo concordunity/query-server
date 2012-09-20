@@ -1,14 +1,14 @@
 ﻿steal(
     './docview.css', 			// application CSS file
     './models/models.js',		// steals all your models
-	//'./fixtures/fixtures.js',	// sets up fixtures for your models
+//    './fixtures/fixtures.js',	// sets up fixtures for your models
     'jquery',
-    'docview/nav',
-    'docview/subnav',
+//    'docview/nav',
+//    'docview/subnav',
     'docview/alerts',
-    'docview/search',
-    'docview/manage/accounts/users',
-    'docview/ui/details',
+//    'docview/search',
+//    'docview/manage/accounts/users',
+//    'docview/ui/details',
     'docview/login'
 ).then(
     'libs/jquery.i18n.min.js'
@@ -43,6 +43,7 @@
 		    stats_query : false,
                     create_group : false,
                     stats_usage : false,
+		    stats_export : false,
 		    advanced : false
                 },
                 manage_docs: {

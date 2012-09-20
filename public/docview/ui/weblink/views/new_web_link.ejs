@@ -1,0 +1,12 @@
+<div class="well">
+
+<form class="form" id="new-web-link-form">
+    <%== $.View("//docview/ui/weblink/views/web_link_form.ejs")%>
+
+    <div class="pull-right">
+         <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
+	 <button type="button" class="btn cancel-create" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
+    </div>
+
+</form>
+</div>
