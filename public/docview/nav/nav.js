@@ -30,7 +30,8 @@ steal(
             var search = false;
 	    this.lastActiveA = undefined;
             var searchActions = this.options.clientState.attr('access').attr('search');
-            if (searchActions.attr('single') || searchActions.attr('multi') || searchActions.attr('advanced') || searchActions.attr('by_doc_source')) {
+            if (searchActions.attr('single') || searchActions.attr('multi') || searchActions.attr('advanced') 
+		|| searchActions.attr('by_doc_source')) {
                 search = true;
             }
             
