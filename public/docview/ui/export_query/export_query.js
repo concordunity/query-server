@@ -12,7 +12,7 @@ steal(
     $.Controller('Docview.Ui.Export_query', {}, {
         init : function() {
             this.element.html(this.view('init'));
-
+	    this.element.hide();
 	    var formParams = {
 		formClass: "stats_export",
 		legend: "出口删改单借出清单",

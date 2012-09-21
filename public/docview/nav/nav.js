@@ -136,6 +136,18 @@ steal(
 		    $('#sys-setting').hide();
 		}
 	    }
+
+	    if (newVal != 'stats') {
+		$('#stats-export').hide();
+	    } else {
+		var subcategory = $.route.attr('subcategory');
+		if (subcategory === 'stats_export') {
+		    $('#stats-export').show();
+		} else {
+		    $('#stats-export').hide();
+		}
+	    }
+
             if (newVal === "search") {
                 /*
                 // Save the search so when we come back it's shown immediately.
