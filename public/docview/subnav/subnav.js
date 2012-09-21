@@ -106,6 +106,12 @@ steal(
 		$('#sys-setting').hide();
 	    }
 
+	    if (subcategory === 'stats_export') {
+		$('#stats-export').show();
+	    } else {
+		$('#stats-export').hide();
+	    }
+
 	    // Check for search sub tabs
 	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
 		$('#document-details').hide();

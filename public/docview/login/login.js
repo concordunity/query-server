@@ -17,6 +17,7 @@ steal(
     'docview/manage/docs',
     'docview/ui/details',
     'docview/ui/syssetting',
+    'docview/ui/export_query',
     'docview/stats/group',
     'docview/stats/search',
     './login.css'
@@ -256,6 +257,11 @@ steal(
             $('#search-results').docview_search_results({clientState: this.options.clientState});
 
             //$('#upload-file').docview_ui_upload({clientState: this.options.clientState});
+
+            if (this.options.clientState.attr('access')
+		.attr('stats').attr('stats_export')) {
+		$('#stats-export').docview_ui_export_query({clientState: this.options.clientState});
+	    }
 
             if (this.options.clientState.attr('access')
                 .attr('search').attr('search_condition') === true) {

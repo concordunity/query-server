@@ -56,6 +56,17 @@ $.Model('Docview.Models.File',
         });
     },
 
+    findPendingDocuments : function(queryParams, success, error) {
+	$.ajax({
+	    url: '/documents/pending_modified',
+	    type: 'post',
+	    data: queryParams,
+	    success : success,
+	    error: error,
+	    dataType: 'json'
+	});
+    },
+
     findSpecialOne : function(id, success, error) {
 	$.ajax({
             url: '/special_docs/' + id,

@@ -1,6 +1,9 @@
 steal("jquery/dom/fixture", function() {
 	// Static fixture for document details
-    $.fixture(
+
+    
+
+/*    $.fixture(
         "GET /docs/{id}", function() {
         
          var response = {"doc_info":
@@ -22,8 +25,27 @@ steal("jquery/dom/fixture", function() {
      
             return response;
     });
-    
+  */  
     $.fixture(
+	"POST /documents/pending_modified", function() {
+            var results = [];
+            for (var i = 0; i < 100; i++) {
+                results.push({
+                    "checkedout": false,
+                    "created_at": "2012-03-21T05:19:34Z",
+                    "doc_id": i,
+                    "doc_type": null,
+                    "edc_date": "2012-03-21",
+                    "folder_id": 3,
+                    "id": i,
+                    "inquired": true,
+                    "pages": Math.floor(Math.random()*25),
+                    "serial_number": Math.floor(Math.random()*50)
+                });
+            }
+            return { results: results };
+	});
+   /* $.fixture(
         "POST /documents/multi_query", function() {
             /*var response = { results: [
                 {
@@ -45,7 +67,7 @@ steal("jquery/dom/fixture", function() {
                 }
             ]};*/
             
-            var results = [];
+     /*       var results = [];
             for (var i = 0; i < 100; i++) {
                 results.push({
                     "checkedout": false,
@@ -61,5 +83,5 @@ steal("jquery/dom/fixture", function() {
                 });
             }
             return { results: results };
-	});
+	}); */
 });
