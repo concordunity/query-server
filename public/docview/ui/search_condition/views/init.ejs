@@ -6,9 +6,10 @@
 
 <div class="span6">
     <fieldset>
-        <div class="control-group">
+         <div>
+	 <div class="control-group">
           <label class="control-label">请选择分类方式 </label>
-	  <div class="controls">
+	  <div class="controls control-group">
           <select name="groupby" >
              <option value="0">不分类</option>
              <option value="1">理单关区</option>
@@ -16,16 +17,15 @@
              <option value="3">用户角色</option>
              <option value="4">近6个月内按月份统计</option>
           </select>
-        </div>
-         <div>
-        <div class="control-group">
+	  </div>
+	  <div class="control-group">
           <label class="control-label" for="frm_edcStartDate">日期</label>
           <div class="controls">
              <input type="radio" name="timerange" class="daterange" value="0" checked/>不限时间<br>
              <input type="radio" name="timerange" class="daterange" value="1"/>以下时间段<br>
                     
           </div>
-        </div>
+	  </div>
     <div class="daterange-holder-2"> </div>
      <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
         <div id="frm_docType_years_select"></div>
