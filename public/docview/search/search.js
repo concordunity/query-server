@@ -192,6 +192,9 @@ steal(
                 //this.element.find('li').removeClass('active');
 	    }
         },
+	verifyDocId : function(num) {
+	    return /^\d+$/.test(num);
+	},
         '.single submit': function(el, ev) {
             ev.preventDefault();
 	    this.options.clientState.attr('searchMode', 'single');
@@ -262,10 +265,10 @@ steal(
 	    });
 	},
         '.advanced submit': function(el, ev) {
+            this.removeFormErrors(el);
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');
             this.options.clientState.attr('searchMode', 'advanced');
-            this.removeFormErrors(el);
 
             this.setFilters(el);
 	    
@@ -280,6 +283,11 @@ steal(
 	    var total = $("input[name='frm_total']").val();
             //$("input[name='org']:checked").val();
 	    //var total = el.find('input[name="total"]').val();
+
+	    if (this.verifyDocId(total) == false) {
+		this.displayInputError(el, "frm_total", "随机的份数必须为数字");
+                return true;
+            }
 
 	    var maxn = 50;
 	    $.ajax({
