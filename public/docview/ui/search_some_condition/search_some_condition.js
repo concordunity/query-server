@@ -246,6 +246,7 @@ steal(
 
 			this.element.find('div#search_results table').dataTable({
 				"sDom": dmstable_params,
+				"aaSorting" : [[2,"desc"]],
 				"oTableTools": {
 					"aButtons": [
 					{

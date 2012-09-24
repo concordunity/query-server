@@ -11,7 +11,7 @@ class SearchConditionController < ApplicationController
 	result = ZeroFindCheckInfo.where(:exists_in_system => true).order("operating_name").group("operating_name").where(conditons)
      #result = ZeroFindCheckInfo.find_by_sql("select * from (select * from (SELECT `zero_find_check_infos`.* FROM `zero_find_check_infos` where exists_in_system=true GROUP BY operating_name ORDER BY operating_name) as a where exists_in_system=true order by rand() limit #{record_num}) as s order by s.operating_name")
     elsif params[:search_condition] == "import_most_time_org_doc_info"
-    	result = ImportMostTimeOrgDocInfo.where(:exists_in_system => true).where(conditons)
+    	result = ImportMostTimeOrgDocInfo.where(:exists_in_system => true).where(conditons).order("release_time desc")
       #result = ImportMostTimeOrgDocInfo.find_by_sql("select * from (select * from import_most_time_org_doc_infos where exists_in_system=true order by rand() limit #{record_num}) as imtodi")
 
     end
