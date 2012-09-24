@@ -564,6 +564,15 @@ class DocumentsController < ApplicationController
     render json: { :results => @documents }, :status => 200
   end
 
+  def stats_export
+    if params[:org_applied].blank?
+      @documents = Document.where(:phase => 1).order("edc_date desc")
+    else
+      @documents = Document.where({:org_applied => params[:org_applied], :phase => 1}).order("edc_date desc")
+    end
+    render json: { :results => @documents }, :status => 200
+  end
+
   private
   # If the boolean flag is true, then also checks to make sure the user is able
   # to inquire.

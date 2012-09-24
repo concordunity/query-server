@@ -28,6 +28,7 @@ Dms::Application.routes.draw do
   #  :registration => "test/registrations" },
 
   match "/print/printpdf" => "documents#print_doc"
+  post "/documents/pending_modified" => "documents#stats_export"
   post "/monitoring/query" => "monitoring_data#get_json"
   post "/monitoring/query_util" => "monitoring_data#get_util"
 

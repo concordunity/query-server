@@ -1,17 +1,8 @@
-<%
-if (this.help_text == undefined) {
-%>
-  <p class="help-block">请在下面输入报关单号(18位数字)</p>
-    <fieldset class="control-group">
-<%
-} 
-%>
+<div class="control-group">
+<label class="control-label"> 报关单号 </label> 
 <div class="controls">
   <input type="text" placeholder="例如: 103948572725123482"
          class="query" name="query">
 </div>
-<% if (this.help_text == undefined) {
-%>
-</fieldset>
-<%
-} %>
+</div>
+

@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked ]
+  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked, :get_util ]
 
   #protect_from_forgery
 
