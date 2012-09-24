@@ -25,7 +25,7 @@ steal(
 		    var label = that.options.formParams.orgLabel || "理单关区";
 		    form.append($.View("//docview/ui/views/org.ejs", {name: "org", label : label }));
 		} else if (name == 'org_applied') {
-		    var label = that.options.formParams.orgLabel || "申报关区";
+		    var label = that.options.formParams.orgAppliedLabel || "申报关区";
 		    form.append($.View("//docview/ui/views/org.ejs", {name: "org_applied", label : label }));
 		} else if (name == 'daterange') {
 		    form.append(that.view(name));

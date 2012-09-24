@@ -11,6 +11,26 @@ class MonitoringDataController < ApplicationController
     render json: results
   end
 
+
+  def get_disk_util_all
+    used = MonitoringData.where(:varname => "df.1kblocks.used").order("ts desc").group(:host, :labels)
+    total = MonitoringData.where(:varname => "df.1kblocks.total").order("ts desc").group(:host, :labels)
+
+    used_info.delete_if { |k, v|
+      k.labels.index("fstype=tmpfs")
+    }
+    total_info.delete_if { |k, v|
+      k.labels.index("fstype=tmpfs")
+    }
+
+    total.each { |k,v|
+      if used.has_key?(k) 
+        
+        
+      end
+    }
+  end
+
   def get_util
     if params[:type] == 'mem'
       get_mem_util
