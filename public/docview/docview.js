@@ -55,6 +55,8 @@
                 },
                 manage_accounts: {
                     users: false,
+                    system_upload: false,
+                    syssetting: false,
                     roles: false
                 }
             },

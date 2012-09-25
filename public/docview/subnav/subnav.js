@@ -50,6 +50,9 @@ steal(
                 if (subcategory === 'sys-setting') {
 		    $('#sys-setting').show();
 		}
+		if (subcategory === 'system-upload') {
+		    $('#system-upload').show();
+		}
 		if (subcategory !== undefined) {
                        // Restore subcategory state from $.route
                        this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
@@ -104,6 +107,12 @@ steal(
 
 	    } else {
 		$('#sys-setting').hide();
+	    }
+
+	    if (subcategory === 'system_upload') {
+		$('#system-upload').show();
+	    } else {
+		$('#system-upload').hide();
 	    }
 
 	    if (subcategory === 'stats_export') {
