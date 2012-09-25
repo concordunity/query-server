@@ -4,4 +4,4 @@ label.radiobox {float:left;margin-right: 8px;padding-right: 8px;background-color
 button.button-option-onblure {background: #0088CC;color: #FFFFFF;}
 button.button-option-onblure:hover {background: #0088CC;color: #FFFFFF;}
 button.button-option {width: 95px;}
-table.search-condition-table tr td {height: 100px;}
+table.search-condition-table tr td {height: 80px;vertical-align: top;}

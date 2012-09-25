@@ -2,6 +2,6 @@
 .search-option {font-size: 20px;padding-top: 12px;}
 .search-content {font-size: 13px;line-height: 27px;}
 form[name='upfile_form'] > button.submit-button {float: right;font-size: 18px;}
-form[name='upfile_form'] > table tr td {height: 100px;}
+form[name='upfile_form'] > table tr td {height: 80px;vertical-align: top;}
 
 
