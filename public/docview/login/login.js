@@ -137,6 +137,11 @@ steal(
             this.element.find('.btn-primary').button('reset');
         },
         storeAccessList: function(permissions) {
+	    // Store user info first
+	    this.options.clientState.attr('user', {
+                username: permissions.email,
+                fullname: permissions.fullname
+	    });
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {
                 switch (permissions.web_links[i].action) {
