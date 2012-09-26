@@ -113,6 +113,13 @@ class ModifiedDocumentsController < ApplicationController
 
     respond_to do |format|
       if @special_document.save
+        # Now, find the regular document
+        d = Document.find_by_doc_id(params[:doc_id])
+        if d and d.phase == 1
+          d.phase = 3
+          d.save
+        end
+
         format.html { redirect_to @special_document, notice: 'Special document was successfully created.' }
         format.json { render json: @special_document, status: :created, location: @special_document }
       else
