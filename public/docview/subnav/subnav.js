@@ -54,24 +54,25 @@ steal(
 		    $('#system-upload').show();
 		}
 		if (subcategory !== undefined) {
-                       // Restore subcategory state from $.route
-                       this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
-                       this.options.clientState.attr('nav').attr(newVal, subcategory);
-                    } else {
-                        // Restore subcategory state from clientState
-
-			subcategory = this.options.clientState.attr('nav').attr(newVal);
-                if (subcategory === 'sys-setting') {
-		    $('#sys-setting').show();
-		}	
-
-                       this.element.find('a[href="#' + subcategory + '"]')
-                           .closest('li').addClass('active');
-                       $.route.attr('subcategory', subcategory);
+                    // Restore subcategory state from $.route
+                    this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
+                    this.options.clientState.attr('nav').attr(newVal, subcategory);
+                } else {
+                    // Restore subcategory state from clientState
+		    subcategory = this.options.clientState.attr('nav').attr(newVal);
+                    if (subcategory === 'sys-setting') {
+			$('#sys-setting').show();
+		    }	
+                    if (subcategory === 'stats_export') {
+			$('#stats-export').show();
+		    }	
+                    this.element.find('a[href="#' + subcategory + '"]')
+                        .closest('li').addClass('active');
+                    $.route.attr('subcategory', subcategory);
                     }
-                    
-                    this.element.show();
-                    break;
+                
+                this.element.show();
+                break;
 	    case "document":
 		break;
             default:
