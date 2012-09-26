@@ -45,6 +45,11 @@ steal(
     /* @Prototype */
     {
         init: function(options) {
+	    this.checkIfUserLoggedIn();
+	    this.uiCreated = false;
+	},
+	createFreshUI : function() {
+	    this.uiCreated = true;
             this.element.html(this.view('login_menu', {}));
 	    this.username = "";
         },
@@ -63,6 +68,9 @@ steal(
                 );
             }
         },
+	checkIfUserLoggedIn : function () {
+	    this.getAccessList(null);
+	},
 	loginLockedDone : function(data) {
 	    //console.log(data);
 	    if (data.locked == true) {
@@ -99,24 +107,32 @@ steal(
             this.element.find('.btn-primary').button('reset');
         },
         getAccessList: function(user) {
-
-	    this.element.find('.btn-primary').button('reset');
-            // Store user info first
-            this.options.clientState.attr('user', {
-                username: user.email,
-                fullname: user.fullname
-            });
+	    if (user != null) {
+		this.element.find('.btn-primary').button('reset');
+		// Store user info first
+		this.options.clientState.attr('user', {
+                    username: user.email,
+                    fullname: user.fullname
+		});
+	    }
         
             Docview.Models.User.getAccessList(
                 this.proxy('storeAccessList'), this.proxy('accessListError')
             );
         },
         accessListError: function(error) {
-            this.options.clientState.attr('alert', {
-                type: 'error',
-                heading: '错误提示: ',
-                message: '未能获得您的登录权限信息，请尝试重新登录。'
-            });
+            if (this.uiCreated == false) {
+		this.createFreshUI();
+	    } else {
+		this.options.clientState.attr('alert', {
+                    type: 'error',
+                    heading: '错误提示: ',
+                    message: '未能获得您的登录权限信息，请尝试重新登录。'
+		});
+	    }
+
+	    
+
             this.element.find('.btn-primary').button('reset');
         },
         storeAccessList: function(permissions) {

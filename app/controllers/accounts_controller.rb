@@ -62,7 +62,9 @@ class AccountsController < ApplicationController
 
         user_info = { :error => "Success",
           :last_ip => current_user.last_sign_in_ip,
-          :last_time => current_user.last_sign_in_at
+          :last_time => current_user.last_sign_in_at,
+          :fullname => current_user.fullname,
+          :email => current_user.email
         }
         if current_user.admin?
           user_info["not_authorized"] = []
