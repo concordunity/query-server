@@ -268,7 +268,7 @@ class UploadFileController < ApplicationController
 	row = format_row(row)
         role = Role.find_by_name(row[2])
         row[2] = (role.nil? ? [32] : [role.id])
-	row[3] = (row[3] == "" || row[3].nil?) ? '2200' : row[3]
+	row[3] = (row[3] == "" || row[3].nil?) ? '2200' : row[3].gsub(/[\,|\，]/,",")
 	if row[4] == "不限"
 		row[4] = 0
 	elsif row[4] == "进口"
