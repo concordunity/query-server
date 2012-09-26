@@ -255,7 +255,7 @@ class UploadFileController < ApplicationController
   def format_row(row)
 	result = []
 	row.each_with_index do |column|
-		result << column.to_s.gsub(/^[\s|\t]+|[\s|\t]+$/,'')
+		result << (column.class == Float ? column.to_i : column ).to_s.gsub(/^[\s|\t]+|[\s|\t]+$/,'')
 	end
 	return result
   end
