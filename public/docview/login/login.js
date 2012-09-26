@@ -20,6 +20,7 @@ steal(
     'docview/ui/export_query',
     'docview/stats/group',
     'docview/stats/search',
+    'docview/ui/upload_user',
     './login.css'
 ).then(
     'docview/ui/upload',
@@ -240,6 +241,11 @@ steal(
                         .attr('manage_accounts').attr('roles', true);
                     this.setNavIfEmpty('manage_accounts', 'roles');
                     break;                    
+                case ("system_upload"):
+                    this.options.clientState.attr('access')
+                        .attr('manage_accounts').attr('system_upload', true);
+                    this.setNavIfEmpty('manage_accounts', 'system_upload');
+                    break;                    
                 case ("sys-setting"):
                     this.options.clientState.attr('access')
 			.attr('manage_accounts').attr('sys_setting', true);
@@ -297,7 +303,7 @@ steal(
 
 	    $('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
 	    $('#settings').docview_settings({clientState: this.options.clientState});
-
+	    $('#system-upload').docview_ui_upload_user({clientState: this.options.clientState});
 	    var login_info = " 最近一次登录时间 "+ user_info.last_time + ", IP 地址 " + user_info.last_ip;
             this.options.clientState.attr('alert', {
                 type: 'success',

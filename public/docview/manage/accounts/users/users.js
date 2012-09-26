@@ -226,6 +226,11 @@ steal(
         },
         addUserRow: function(user, response) {
             if (user.status === 200) {
+		    this.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '成功添加新用户 ' + user.user.username 
+		    });
 		this.reload();
                 // Remove a few unnecessary fields in user
                 //delete user.status;
@@ -324,12 +329,18 @@ steal(
             editRow.remove();
         },
         updateUserRow: function(user) {
+		this.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '成功更新用户 ' + user.user.username 
+                });
 	    this.reload();
         },        
         // Deleting a user
         '.delete-user click': function(el, ev) {
 	    ev.preventDefault();
             el.button('loading');
+	    $('#alerts div.alert').alert('close');
             if (confirm($.i18n._('msg.confirm.delete_user'))) {
 		var userInfo = this.tableController.getRowModelDataFor(el);
 		userInfo.tr.model(userInfo.model);

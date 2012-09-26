@@ -1,5 +1,7 @@
 Dms::Application.routes.draw do
 
+  post '/upload_user' => "upload_file#system_upload"
+
   get "/get_son_table" => "search_condition#get_son_table"
 
   get "/search_condition" => "search_condition#search_condition"

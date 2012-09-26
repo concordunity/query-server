@@ -4,6 +4,9 @@
 <% if (this.roles) { %>
 <li><a href="#roles"><%= $.i18n._('subnav.manage_roles') %></a></li>
 <% } %>
+<% if (this.system_upload) { %>
+<li><a href="#system_upload">用户信息及权限上传</a></li>
+<% } %>
 <% if (this.sys_setting) { %>
 <li><a href="#sys-setting">系统参数</a></li>
 <% } %>

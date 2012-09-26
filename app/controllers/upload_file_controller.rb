@@ -6,10 +6,11 @@ require 'activerecord-import'
 
 class UploadFileController < ApplicationController
 
-  def import_users
-    upload_file_name = params[:upload_file_name]
+  def system_upload 
+    upload_file_name = params[:upload_user]
     upload_result = upload(upload_file_name)
     success_count = 0
+    result_info = Hash.new
     if upload_result[:status] == true
       file_url = File.join(Rails.root,"public","docview","export_data",upload_file_name.original_filename)
       begin
@@ -25,20 +26,27 @@ class UploadFileController < ApplicationController
 		@user.password = 123456
 		@user.save
 	  else
-		@user = User.new(:username => row[0], :fullname => row[1], :role_ids => row[2], :orgs => row[3], :doc_type=>row[4], :password => 123456)
-
+		logger.info(row)
+		@user = User.new
+		@user.username = row[0] 
+		@user.fullname = row[1] 
+		@user.role_ids = row[2]
+		@user.orgs = row[3] 
+		@user.doc_type = row[4] 
+		@user.password = 123456
 		if @user.email.blank?
 		  if !@user.username.index('@customs.gov.cn').nil?
-		    @user.email = username
+		    @user.email = @user.username
 		  else
-		    @user.email = username + '+no-reply@customs.gov.cn'
+		    @user.email = @user.username + '+no-reply@customs.gov.cn'
 		  end
 		end
 		@user.save	
 	  end
 	  success_count += 1
 	end
-      rescue
+      rescue => e
+	logger.info e
         result_info[:message]="return_format_data for error"
       end
     else
@@ -56,7 +64,6 @@ class UploadFileController < ApplicationController
     result[:message] << zfci[:message]
     result[:message] << niplr[:message]
     result[:message] << imtodi[:message]
-    logger.info result
     render :nothing => true 
     #render json: {:status => 200,:message => result}
   end
@@ -143,8 +150,6 @@ class UploadFileController < ApplicationController
         TemporaryNormal.destroy_all
         result[:message] = "import success for normal_import_price_less_record"
       rescue => e
-        logger.info "====="
-        p "-----"
         logger.info e
         result[:message] = "error for normal"
       end
@@ -182,7 +187,6 @@ class UploadFileController < ApplicationController
           tmp_arr << imtodi
         end
       end
-	logger.info(test_arr)
 	TemporaryImport.import tmp_arr
 	ImportMostTimeOrgDocInfo.destroy_all
 	ImportMostTimeOrgDocInfo.import tmp_arr
@@ -247,22 +251,33 @@ class UploadFileController < ApplicationController
       return nil
     end
   end
+  
+  def format_row(row)
+	result = []
+	row.each_with_index do |column|
+		result << column.gsub(/^[\s|\t]+|[\s|\t]+$/,'')
+	end
+	return result
+  end
 
   def format_data_for_users(file_url)
     result = []
     sheet = self.open_excel File.join(file_url)
     sheet.each_with_index { |row,index|
-      role = Role.find_by_name(row[2])
-      row[2] = role.nil? ? [""] : role.collect(&:id)
-      row[3] = (row[3] == "" || row[3].nil?) ? '2200' : row[3].split(",")
-      if row[4] == "不限"
-	row[4] = 0
-      elsif row[4] == "进口"
-	row[4] = 2
-      elsif row[4] == "出口"
-	row[4] = 1
-      end
-      result << row 
+      if index != 0 && !row[0].nil?
+	row = format_row(row)
+        role = Role.find_by_name(row[2])
+        row[2] = (role.nil? ? [32] : [role.id])
+	row[3] = (row[3] == "" || row[3].nil?) ? '2200' : row[3]
+	if row[4] == "不限"
+		row[4] = 0
+	elsif row[4] == "进口"
+		row[4] = 2
+	elsif row[4] == "出口"
+		row[4] = 1
+        end
+      result << row
+      end 
     } unless sheet.blank?
 
     return result    

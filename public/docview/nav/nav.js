@@ -49,7 +49,7 @@ steal(
             
             var manage_accounts = false;
             var accountActions = this.options.clientState.attr('access').attr('manage_accounts');
-            if (accountActions.attr('users') || accountActions.attr('roles')) {
+            if (accountActions.attr('users') || accountActions.attr('roles') || accountActions.attr('system_upload')) {
                 manage_accounts = true;
             }
             
@@ -126,8 +126,10 @@ steal(
 
             if (newVal != 'manage_accounts') {
 		$('#sys-setting').hide();
+		$("#system-upload").hide();
 	    } else {
 		var subcategory = $.route.attr('subcategory');
+		//console.log("cat and sub",newVal,subcategory);
 
 		if (subcategory === 'sys-setting') {
 		    $('#sys-setting').show();
@@ -135,7 +137,13 @@ steal(
 		} else {
 		    $('#sys-setting').hide();
 		}
+		if (subcategory === 'system_upload') {
+			$("#system-upload").show();
+		} else {
+			$("#system-upload").hide();
+		}
 	    }
+
 
 	    if (newVal != 'stats') {
 		$('#stats-export').hide();
