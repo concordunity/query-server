@@ -9,7 +9,7 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.Single', {}, {
 	init: function() {
-            this.element.html(this.view('init', { help_text : this.options.no_help }));
+            this.element.html(this.view('init', this.options.label));
 	    this.id = '';
 	},
 	show: function() {

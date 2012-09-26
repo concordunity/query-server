@@ -68,7 +68,8 @@ steal(
                     clientState: this.options.clientState
                 });
                 this.element.find('.single_sou_holder').docview_ui_single({
-                    no_help : true
+                    no_help : true,
+		    label: {labelString: "报关单号"}
                 });
                 this.element.find('div.daterange-holder').docview_ui_daterange({
                     dateOptions : {

@@ -38,7 +38,7 @@ steal(
 		} else if (name == 'docid') {
 		    form.append(that.view(name));
 		    var label = that.options.formParams.docidLabel || '报关单号';
-		    form.find("div.docid-holder").docview_ui_single({label : label });
+		    form.find("div.docid-holder").docview_ui_single({label : {labelString: label} });
 	
 		    this.docidController = form.find("div.docid-holder").controller();
 		} 

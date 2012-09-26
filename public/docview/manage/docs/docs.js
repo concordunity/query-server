@@ -45,8 +45,8 @@ steal(
 	    $('#downloadFrame').hide();
 
 	    $('#manage-docs-container div form div.multi_holder').docview_ui_multi();
-	    $('#manage-docs-container div form div.single_holder').docview_ui_single();
-	    $('#manage-docs-container div form div.single_sou_holder').docview_ui_single({no_help : true});
+	    $('#manage-docs-container div form div.single_holder').docview_ui_single({label: {labelString: "报关单号"}});
+	    $('#manage-docs-container div form div.single_sou_holder').docview_ui_single({no_help : true,label: {labelString: "报关单号"}});
 
 	    this.element.find('.dg_select_holder').docview_docgroup_dgselect({clientState: this.options.clientState});
 	    this.element.find('#docs_history').docview_ui_history({clientState: this.options.clientState,

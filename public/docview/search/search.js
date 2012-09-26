@@ -51,7 +51,7 @@ steal(
 		{dateOptions : {labelString: "日期"}});
 	    this.element.find('div.daterange-holder-src').docview_ui_daterange(
 		{dateOptions : {labelString: "理单日期"}});
-	    this.element.find('div.single_holder').docview_ui_single();
+	    this.element.find('div.single_holder').docview_ui_single({label: {labelString: "报关单号"}});
 	    this.element.find('div.multi_holder').docview_ui_multi();
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : {include_user : false}});
