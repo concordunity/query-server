@@ -1,0 +1,42 @@
+﻿#wrap
+{
+    margin: 0 auto;
+    padding: 20px;
+    width: 1000px;
+}
+h1
+{
+    font-family: 华文细黑;
+}
+hr
+{
+    border: 1px solid #CCCCCC;
+}
+#menu
+{
+    width: 400px;
+    padding: 10px;
+    border: 1px solid #DEDFE1;
+}
+.part ul
+{
+    list-style-type: none;
+}
+.pic
+{
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #DEDFE1;
+    text-align: center;
+}
+#backTop
+{
+    width: 55px;
+    height: 55px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    float: right;
+    background-image: url('../Image/backTop_0.gif');
+    cursor: pointer;
+}
