@@ -148,12 +148,18 @@ steal(
 
 	    if (newVal != 'stats') {
 		$('#stats-export').hide();
+		$('#group-docs').hide();
 	    } else {
 		var subcategory = $.route.attr('subcategory');
 		if (subcategory === 'stats_export') {
 		    $('#stats-export').show();
 		} else {
 		    $('#stats-export').hide();
+		}
+		if (subcategory === 'create_group') {
+		    $('#group-docs').show();
+		} else {
+		    $('#group-docs').hide();
 		}
 	    }
 
