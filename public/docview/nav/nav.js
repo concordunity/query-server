@@ -95,6 +95,7 @@ steal(
         },
         '.user-info a click': function(el, ev) {
             ev.preventDefault();
+	     $("#alerts").docview_ui_index("hideHtml");
             // Change address bar to reflect link contents
             // This overwrites all other route attributes
             var newCategory = this.getHrefNoHash(el);
