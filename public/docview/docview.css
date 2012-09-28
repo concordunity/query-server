@@ -177,3 +177,8 @@ h1.legend-h1 {
   border: 0;
   border-bottom: 1px solid #e5e5e5;
 }
+form[name="upload_user_form"] > button.submit-button {float: left;font-size: 18px;margin-top: 20px;}
+form[name="upload_user_form"] {margin-bottom: 50px;}
+div.doc-group-list {
+padding-top: 20px;
+}

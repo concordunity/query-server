@@ -51,7 +51,7 @@ steal(
 		    $('#sys-setting').show();
 		}
 		if (subcategory === 'system-upload') {
-		    $('#system-upload').show();
+		    //$('#system-upload').show();
 		}
 		if (subcategory !== undefined) {
                     // Restore subcategory state from $.route
@@ -65,6 +65,9 @@ steal(
 		    }	
                     if (subcategory === 'stats_export') {
 			$('#stats-export').show();
+		    }	
+                    if (subcategory === 'system_upload') {
+			$('#system-upload').show();
 		    }	
                     this.element.find('a[href="#' + subcategory + '"]')
                         .closest('li').addClass('active');
