@@ -64,3 +64,6 @@ ul > li {margin-bottom: 7px;}
     position: fixed;
     z-index: 1020;
 }
+#navigation-header > .navbar-fixed-top > .navbar-inner {height: 20px;}
+#navigation-header > .navbar-fixed-top > .navbar-inner > .container-fluid > a {padding: 0px;}
+#wrap .part {padding: 30px;}
