@@ -83,7 +83,7 @@
             $('#alerts').docview_alerts({clientState: state});
             $('#login').docview_login({clientState: state});
 
-        
+            $('#footer-banner').html($.View("//docview/ui/views/version.ejs"));
 
         // The method below doesn't work because we don't have user info from the access list.
         // Try to get the access list
