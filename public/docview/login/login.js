@@ -142,6 +142,8 @@ steal(
                 username: permissions.email,
                 fullname: permissions.fullname
 	    });
+
+	    $('#user-info-display').html("当前登录用户 : " + permissions.fullname);
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {
                 switch (permissions.web_links[i].action) {
@@ -315,7 +317,7 @@ steal(
                 heading: $.i18n._('msg.welcome'),
                 message: this.options.clientState.attr('user').attr('fullname') + login_info
             });
-	    $("#alerts").docview_ui_index({clientState: this.options.clientState});
+	    $("#alerts").docview_ui_index({clientState: this.options.clientState, userInfo :  user_info });
             
             // TODO: Reload the route so the right thing shows up.
         }
