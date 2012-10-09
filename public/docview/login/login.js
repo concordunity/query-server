@@ -266,6 +266,8 @@ steal(
             
             // load app
             this.loadApp(permissions);
+           $.route.attr('category',"init");
+           $.route.attr('subcategory',"init");
         },
 	setNavIfEmpty : function(cat, subcat) {
 	    var nav_subcat = this.options.clientState.attr('nav').attr(cat);
@@ -312,6 +314,7 @@ steal(
 	    $('#settings').docview_settings({clientState: this.options.clientState});
 	    $('#system-upload').docview_ui_upload_user({clientState: this.options.clientState});
 	    var login_info = " 最近一次登录时间 "+ user_info.last_time + ", IP 地址 " + user_info.last_ip;
+            this.options.clientState.attr('login', {message: this.options.clientState.attr('user').attr('fullname') + login_info});
             this.options.clientState.attr('alert', {
                 type: 'success',
                 heading: $.i18n._('msg.welcome'),

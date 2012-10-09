@@ -28,6 +28,9 @@
                 username: "",
                 fullname: ""
             },
+	    login: {
+		message: ""
+	    },
             // Initial access list
             access: {
                 search: {

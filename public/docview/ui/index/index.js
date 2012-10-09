@@ -41,12 +41,15 @@ steal(
             if (accountActions.attr('users') || accountActions.attr('roles')) {
                 manage_accounts = true;
             }
+            var message = this.options.clientState.attr('login').attr('message');
+	    console.log(message);
             this.element.html(this.view('init', {
                 user: this.options.clientState.attr('user'),
                 search: search,
                 stats: stats,
                 manage_docs: manage_docs,
-                manage_accounts: manage_accounts
+                manage_accounts: manage_accounts,
+		message: message
             }));
 
         },
