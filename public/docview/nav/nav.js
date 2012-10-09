@@ -27,38 +27,33 @@ steal(
     {
         init: function() {
             // If any subnav item is allowed, then we have to show the nav item
-            var search = false;
 	    this.lastActiveA = undefined;
-            var searchActions = this.options.clientState.attr('access').attr('search');
-            if (searchActions.attr('single') || searchActions.attr('multi') || searchActions.attr('advanced') 
-		|| searchActions.attr('by_doc_source')) {
-                search = true;
-            }
-            
-            var stats = false;
-            var statsActions = this.options.clientState.attr('access').attr('stats');
-            if (statsActions.attr('stats_stats') || statsActions.attr('stats_usage') || statsActions.attr('stats_query') || statsActions.attr('create_group')) {
-                stats = true;
-            }
-            
-            var manage_docs = false;
-            var docActions = this.options.clientState.attr('access').attr('manage_docs');
-            if (docActions.attr('print') || docActions.attr('testify') || docActions.attr('inquire') || docActions.attr('check') || docActions.attr('dh_report')) {
-                manage_docs = true;
-            }
-            
-            var manage_accounts = false;
-            var accountActions = this.options.clientState.attr('access').attr('manage_accounts');
-            if (accountActions.attr('users') || accountActions.attr('roles') || accountActions.attr('system_upload')) {
-                manage_accounts = true;
-            }
-            
+
+	    var init_options = {
+		search : ["single","multi","advanced","by_doc_source"],
+		stats : ["stats_stats","stats_usage","stats_query","create_group"],
+		manage_docs : ["print","testify","inquire","check","dh_report"],
+		manage_accounts : ["users","roles","system_upload"]
+	    };
+            var that = this;
+	    var init_option_result = {};
+	    $.each(init_options,function(key,value){ 
+	        var init_nav = false;
+		var initActions = that.options.clientState.attr('access').attr(key);
+		$.each(value,function(index,subnav){
+			if (initActions.attr(subnav)) {
+			    init_nav = true;
+			}
+		});
+		init_option_result[key] = init_nav;
+	    })
+	    
             this.element.html(this.view('menu_bar', {
                 user: this.options.clientState.attr('user'),
-                search: search,
-                stats: stats,
-                manage_docs: manage_docs,
-                manage_accounts: manage_accounts
+                search: init_option_result.search,
+                stats: init_option_result.stats,
+                manage_docs: init_option_result.manage_docs,
+                manage_accounts: init_option_result.manage_accounts
             }));
         },
         getHrefNoHash: function(el) {
