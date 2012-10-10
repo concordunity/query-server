@@ -42,7 +42,7 @@ steal(
                 manage_accounts = true;
             }
             var message = this.options.clientState.attr('login').attr('message');
-	    console.log(message);
+	    //console.log(message);
             this.element.html(this.view('init', {
                 user: this.options.clientState.attr('user'),
                 search: search,
