@@ -117,7 +117,7 @@ steal(
             $("#document-overview").hide();
             $("#document-viewer").show();
 	    if (pageInfo) {
-		this.viewerControl.showImage(pageInfo.imagePath);
+		this.viewerControl.showPage(pageInfo);
 	    }
 	},
 	'.print-all click' :function (el, ev) {
@@ -126,7 +126,7 @@ steal(
 		this.print_doc(doc, '');
 	    }
 	},
-	'.print-selected click' :function (el, ev) {
+	'.print-selected click' : function (el, ev) {
 	    var page_arr = [];
 	    $.each($(".select_checkbox_print"),function(index,value){
                 if(value.checked==true){

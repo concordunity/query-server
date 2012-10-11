@@ -10,6 +10,7 @@ steal(
     'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js',
     'docview/docview.css',
     'docview/bootstrap/bootstrap.min.js',
+    'docview/ui/comments',
     'libs/iviewer/jquery.mousewheel.min.js'
 ).then (
     './views/viewer.ejs',
@@ -25,6 +26,7 @@ steal(
     {
         init: function() {
             this.element.html(this.view('viewer', {doc_rights : this.options.clientState.attr('access').attr('manage_docs')}));
+	    this.currentPageInfo = undefined;
 
 	    this.courtMode = false;
             this.element.find('.document-page').html(
@@ -103,21 +105,25 @@ steal(
 	    
 　　    },
 */
-        '.next click': function(el, ev) {
+        'li.next click': function(el, ev) {
             ev.preventDefault();
 	    var pageInfo = this.options.docManager.gotoNextPage();
 	    if (pageInfo) {
-		this.showImage(pageInfo.imagePath);
+		this.showPage(pageInfo);
 	    }
 //
 //	    this.options.details_controller.showNextPage();
         },
 
-        '.previous click': function(el, ev) {
+	'li.comments click' : function(el, ev) {
+	    ev.preventDefault();
+	    $('#comments').docview_ui_comments({ pageInfo: this.currentPageInfo});
+	},
+        'li.previous click': function(el, ev) {
             ev.preventDefault();
 	    var pageInfo = this.options.docManager.gotoPrevPage();
 	    if (pageInfo) {
-		this.showImage(pageInfo.imagePath);
+		this.showPage(pageInfo);
 	    }
 	    //this.options.details_controller.showPreviousPage();
         },  
@@ -156,36 +162,18 @@ steal(
 //	    ev.preventDefault();
 //	},
 	// nthDoc is 0-based, and nthPage is 1-based.
-	showImage : function (imagePath) {
+	showPage : function (pageInfo) {//imagePath, nthPage) {
+	    this.currentPageInfo = pageInfo;
+	    $('#comments').html('');
 	    if (this.pluginCreated) {
-		this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
+		this.element.find('div.image-viewer').iviewer('loadImage', pageInfo.imagePath);
 	    } else {
-		this.createPlugin(imagePath);
+		this.createPlugin(pageInfo.imagePath);
 	    }
-	},
-/*	showPage: function(nthDoc, nthPage) {
-	    $('#pageno').html('第 '+nthPage+' 页');
-	    var docInfo = this.options.details_controller.getDoc(nthDoc);
+	    $('#pageno').html('第 '+ pageInfo.nthPage +' 页');
 	    
-            var dir = docInfo.directory;
-            var docId = docInfo.metadata.doc_id;
-            var file = docInfo.pages[nthPage - 1];
+	},
 
-	    var imagePath = dir + "/" + docId + '/' + docId + '/' + file;	 
-
-	    //this.iviewerControl.loadImage(imagePath);
-
-	    //this.iviewerControl.fit();
-
-	    this.element.find('div.image-viewer').iviewer('loadImage', imagePath);
-	    this.element.find('div.image-viewer').iviewer('center');//loadImage', imagePath);
-	},*/
-        // document: {
-        //    pages: [] // Array of pages
-        //    directory: "" // Location of image
-        //    metadata: {} // metadata
-        //    groups: [subgroup, subgroup, ...] // groups of images
-        // }
         '{clientState} document.current change': function(el, ev, attr, how, newVal, oldVal) {
             if (how === "set" || how === "add") {
 		//console("this is document current change  ..." );

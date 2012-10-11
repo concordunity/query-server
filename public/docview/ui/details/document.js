@@ -16,6 +16,7 @@ function Document(docInfo, filters) {
 	this.specialDoc = true;
     }
     this.pages = new Array();
+    this.pageTypes = new Array();
     var images = docInfo.image_info.T_blog;
     
     this.totalPages = images.length;
@@ -46,10 +47,12 @@ function Document(docInfo, filters) {
             subgroup = new Array();
         }
         subgroup.push(images[i].FN);
+	this.pageTypes.push(pt);
         this.pages.push(images[i].FN);
 	this.originalIndices.push(i);
         if (images[i].BT) {
             subgroup.push(images[i].BT);
+	    this.pageTypes.push(pt);
             this.pages.push(images[i].BT);
 	    this.originalIndices.push(i);
         }
@@ -77,7 +80,14 @@ Document.prototype.getThumbnailPaths = function() {
 Document.prototype.getDocId = function() {
     return this.docId;
 }
-// index is 0-based.
+
+Document.prototype.getPageTypeFor = function(index) {
+    if (index < 0) {
+	return -1;
+    }
+    return this.pageTypes[index -1];
+}
+// index is 1-based.
 Document.prototype.getImagePathFor = function(index) {
     if (index < 0) {
 	return "";

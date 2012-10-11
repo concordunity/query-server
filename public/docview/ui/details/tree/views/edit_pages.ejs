@@ -4,7 +4,7 @@
 
     <% for (var j = 0; j < this[i].pages.length; j++) { %>
         <li class="page-<%= pageCount %>">
-          <a id="pp<%= pageCount %>" href="#<%= pageCount %>"><%= pageCount %> <%= currentName %></a> <i class="icon-blue icon-pencil"></i>
+          <a class="doc-page" id="pp<%= pageCount %>" href="#<%= pageCount %>"><%= pageCount %> <%= currentName %></a> <i class="icon-blue icon-pencil"></i>
         </li>
         <% pageCount++; %>
     <% } %>
