@@ -180,7 +180,7 @@ h1.legend-h1 {
 
 .footer-banner {
     color : #ffffff;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 form[name="upload_user_form"] > button.submit-button {float: left;font-size: 18px;margin-top: 20px;}
@@ -188,3 +188,4 @@ form[name="upload_user_form"] {margin-bottom: 50px;}
 div.doc-group-list {
 padding-top: 20px;
 }
+.alert-index {border-radius: 4px 4px 4px 4px;padding: 8px 35px 8px 14px;}
