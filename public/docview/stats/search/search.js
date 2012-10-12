@@ -45,7 +45,7 @@ steal(
                 // Hide box until route conditions are met
                 this.element.hide();
 
-                $("#div_query_form").html(this.view("query_form"));
+                $("#div_query_form").html(this.view("query_form",{title : "用户查阅历史查询"}));
                 //                $("#div_stats").html(this.view("stats"));
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
