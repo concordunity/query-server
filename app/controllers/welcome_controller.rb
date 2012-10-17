@@ -12,6 +12,9 @@ class WelcomeController < ApplicationController
     #end
   end
 
+  def login_admin
+    redirect_to '/docview/admin.html'
+  end
   def img
     redirect_to '/root/blank.jpg' 
   end

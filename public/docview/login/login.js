@@ -115,6 +115,10 @@ steal(
                     username: user.email,
                     fullname: user.fullname
 		});
+
+		if (window.location.pathname == "/docview/admin.html"){
+			window.location.href = "/admin";
+		}
 	    }
         
             Docview.Models.User.getAccessList(
@@ -142,7 +146,6 @@ steal(
                 username: permissions.email,
                 fullname: permissions.fullname
 	    });
-
 	    $('#user-info-display').html("当前登录用户 : " + permissions.fullname);
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {

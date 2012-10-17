@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked, :get_util ]
-
+  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked, :get_util, :login_admin]
   #protect_from_forgery
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
@@ -20,6 +19,13 @@ class ApplicationController < ActionController::Base
   end
   # exception.action, exception.subject                                             
   private
+  def load_layout
+    if user_signed_in? && current_user.username == "admin"
+	redirect_to "/admin/update_system"
+    else
+	redirect_to "/"
+    end
+  end
 
   def check_user!
     if authenticate_user!

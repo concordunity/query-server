@@ -169,13 +169,10 @@ class DocumentHistoriesController < ApplicationController
     docs_records = Document.where(where_clause).where(docType_condition)
     docs_total = docs_records.count
     pages_total = docs_records.sum("pages")
-    query_total = QueryHistory.where("doc_id IS NOT NULL").where(:doc_id => docs_records.collect(&:doc_id)).count
+    #query_total = QueryHistory.where("doc_id IS NOT NULL").where(:doc_id => docs_records.collect(&:doc_id)).count
+    query_total = QueryHistory.where("doc_id IS NOT NULL").count
 
-    results = { :docs_total => docs_total,
-      :pages_total => pages_total,
-      :query_total => query_total,
-      :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
-
+    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
 
       cat = params[:groupby]
       results[:groupby] = cat
@@ -200,22 +197,19 @@ class DocumentHistoriesController < ApplicationController
       query_stats_by = {}
 
 
-      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).group("org")
+      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org")
       docs_stats = document_org.count
-      docs_stats_T = Document.group("org").count
+      docs_stats_T = Document.order("org").group("org").count
       pages_stats = document_org.sum("pages")
 
-      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).group("org").count
+      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org").count
 
       docs_stats_T.each { |k,v|
         num_queries = 0
         num_docs = 0
         num_pages = 0
-
-
-        if query_stats.has_key?(k)
-          num_queries = query_stats[k]
-        end
+        
+	num_queries = query_stats[k] if query_stats.has_key?(k)
 
         if docs_stats.has_key?(k)
           num_docs = docs_stats[k]
@@ -225,8 +219,8 @@ class DocumentHistoriesController < ApplicationController
         query_stats_by[k] = { :num_docs => num_docs,
           :num_pages => num_pages,
           :num_queries => num_queries,
-          :percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100 / (1.0 * v)),
-          :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100 / (1.0 * query_total)),
+          :percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v),
+          :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total),
         }
       }
       return query_stats_by
@@ -237,16 +231,19 @@ class DocumentHistoriesController < ApplicationController
       query_stats_by = {}
 
 
-      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).group("user_id").count
+      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("user_id").group("user_id").count
       umap = {}
-      unames = User.select([:id, :username]).each { |u| umap[u.id] = u.username }
+      unames = User.all.each { |u| umap[u.id] = u.username }
+
+      doc_total_tmp = docs_total == 0 ? 0 : (100.0 / docs_total)
+      query_total_tmp = query_total == 0 ? 0 : (100.0 / query_total)
 
       query_stats.each { |k,v|
         if umap.has_key?(k)
           query_stats_by[umap[k]] = {
             :num_queries => v,
-            :percentage_q => docs_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * docs_total)),
-            :percentage_qq => query_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * query_total)),
+            :percentage_q =>  number_to_percentage( v * doc_total_tmp), 
+            :percentage_qq => number_to_percentage( v * query_total_tmp),
           }
         end
       }
@@ -257,7 +254,7 @@ class DocumentHistoriesController < ApplicationController
       queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
       query_stats_by = {}
       rmap = {}
-      Role.select([:id, :name]).each { |r|
+      Role.all.each { |r|
         rmap[r.id] = r.name
       }
 
@@ -267,14 +264,21 @@ class DocumentHistoriesController < ApplicationController
         #{condition[:org].nil? || condition[:org] == "" ? "true" : "org = "+condition[:org]} and
         #{condition[:doc_type].nil?  || condition[:doc_type] == "" ? "true" : "doc_type in (#{condition[:doc_type].collect{|item| "'"+item+"'"}.join(",")})"} and
         query_histories.user_id = users_roles.user_id
-        group by role_id}
+        group by role_id
+	order by role_id 
+	}
         sql_results = ActiveRecord::Base.connection.execute(sql)
+
+
+	docs_total_tmp = docs_total == 0 ? 0 : (100.0 / docs_total)
+	query_total_tmp = query_total == 0 ? 0 : (100.0 / query_total)
+
         sql_results.each { |k,v|
           if rmap.has_key?(k)
             query_stats_by[rmap[k]] = {
               :num_queries => v,
-              :percentage_q => docs_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * docs_total)),
-              :percentage_qq => query_total == 0 ? 0 : number_to_percentage( v * 100 / (1.0 * query_total)),
+              :percentage_q => number_to_percentage( v * docs_total_tmp),
+              :percentage_qq => number_to_percentage( v * query_total_tmp)
             }
           end
         }
@@ -298,9 +302,9 @@ class DocumentHistoriesController < ApplicationController
           key = months[i].strftime("%Y/%m")
           where_clause = { :created_at => months[i+1] .. months[i] }
 
-          query_stats_t = QueryHistory.where("doc_id IS NOT NULL").where(where_clause).where(org_condition).where(docType_condition).group(:org).count
-          doc_stats_t = Document.where(where_clause).where(org_condition).where(docType_condition).group(:org).count
-          page_stats_t = Document.where(where_clause).where(org_condition).where(docType_condition).group(:org).sum("pages")
+          query_stats_t = QueryHistory.where("doc_id IS NOT NULL").where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org).count
+          doc_stats_t = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org).count
+          page_stats_t = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org).sum("pages")
 
           #qq_t = query_stats_t.collect { |k,v|
           #  { :org => k,
@@ -319,7 +323,7 @@ class DocumentHistoriesController < ApplicationController
               :num_docs => doc_stats_t.has_key?(k) ? doc_stats_t[k] : '',
               :num_pages => page_stats_t.has_key?(k) ? page_stats_t[k] : '',
               :num_queries => query_stats_t.has_key?(k) ? query_stats_t[k] : '',
-              :percentage_qq => query_stats_t.has_key?(k) ?  (query_total == 0 ? 0 : number_to_percentage(query_stats_t[k] * 100 / (1.0 * query_total))) : ''
+              :percentage_qq => query_stats_t.has_key?(k) ?  (query_total == 0 ? 0 : number_to_percentage(query_stats_t[k] * 100.0 / query_total)) : ''
             }
           }
         }

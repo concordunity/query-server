@@ -1,4 +1,11 @@
 Dms::Application.routes.draw do
+  post "/admin/change_password" => "admin#change_password"
+
+  get "/admin/update_password" => "admin#update_password"
+  
+  get "admin/update_system" => "admin#update_system"
+
+  resources :admin
 
   post '/upload_user' => "upload_file#system_upload"
 
@@ -122,6 +129,7 @@ Dms::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
+  get "/a" => "welcome#login_admin"
   root :to => 'welcome#welcome'
 
   match "/api/query" => "queries#api_query", :via => :post

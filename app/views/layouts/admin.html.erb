@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>存量报关单证电子档案管理系统</title>
+    <link href="/docview/bootstrap/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/docview/docview.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class='container'>
+    <div id="navigation-header">
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <a class="brand" href="#"><img src="/docview/img/nav-logo.png" /></a>
+	    <div class='bar'>
+	    <%=render :partial=>"layouts/nav", :locals => {:user_info => @user_info }%>
+	    </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="wrap" class='container well'>
+    <%= yield %>
+    </div>
+    <a href="#" id="backTop"></a>
+</div>
+<div class="footer footer-fixed">
+<%=render :partial => "layouts/version" %>
+</div>
+    <script type='text/javascript' src='../steal/steal.js'></script>
+    <script type='text/javascript'>
+    steal('docview/nav').then( '/libs/jquery.i18n.min.js').then(function($) {
+
+		    });
+    </script>
+</body>
+
+</body>
+</html>

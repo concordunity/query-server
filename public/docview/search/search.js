@@ -115,6 +115,14 @@ steal(
 	    if (sub_cat == 'by_doc_source') {
 		this.reloadESH();
 	    }	    
+/*
+	    var to_show_class = ['single','multi','advanced','by_doc_source','personal_history','upload_file'];
+	    $.each(to_show_class,function(index,value){
+		if (to_show != value) {
+		    this.element.find("."+value)).hide();
+		}
+	    });
+*/
             if (to_show != 'single') {
 		this.element.find('.single').hide();
 	    }

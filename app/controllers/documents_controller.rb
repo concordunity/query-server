@@ -537,7 +537,7 @@ class DocumentsController < ApplicationController
       return
     end
 
-    ids = Source.select(:id).where('code like "ESH%"').collect { |s| s.id}
+    ids = Source.where('code like "ESH%"').collect(&:id)
 
     # check the source first.
     source = params[:source]
