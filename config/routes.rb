@@ -1,4 +1,13 @@
 Dms::Application.routes.draw do
+
+  post "/admin/system" => "admin#upload_package_system"
+
+  get "/admin/log_index" => "admin#log_index"
+
+  get "/admin/clear_log" => "admin#clear_log"
+
+  get "/admin/download_log" => "admin#download_log"
+
   post "/admin/change_password" => "admin#change_password"
 
   get "/admin/update_password" => "admin#update_password"
