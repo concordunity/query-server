@@ -189,3 +189,14 @@ div.doc-group-list {
 padding-top: 20px;
 }
 .alert-index {border-radius: 4px 4px 4px 4px;padding: 8px 35px 8px 14px;}
+.thumbnail > img.error {
+//	background-image: url("./img/nav-logo.png");
+	margin-top:-14px;
+	margin-left:120px;
+	padding-top:5px;
+	height:12px;
+	background-repeat : no-repeat;
+	background-color : red;
+	position: relative;
+    	overflow: hidden;
+}
