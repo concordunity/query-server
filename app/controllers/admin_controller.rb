@@ -1,7 +1,7 @@
 #encoding=utf-8
 class AdminController < ApplicationController
 
-  def system
+  def upload_package_system
     result = upload(params[:upload_file])
     flash[:notice] = result[:message].join(",") 
     redirect_to "/admin/update_system" 
@@ -51,6 +51,7 @@ class AdminController < ApplicationController
     result = {}
     result[:message]  = [] 
     filepath = "" 
+    tmp_path = File.join("/","tmp",Time.now.to_i.to_s) 
     begin
     unless request.get?
       if upload_file.nil?
@@ -60,7 +61,9 @@ class AdminController < ApplicationController
         result[:status] = false 
         result[:message]  << "上传的文件格式不正确，请重新上传"
       else
-	filepath = File.join(Rails.root.to_s,"public","docview","export_data",Time.now.to_i.to_s,upload_file.original_filename)
+	#filepath = File.join(Rails.root.to_s,"public","docview","export_data",Time.now.to_i.to_s,upload_file.original_filename)
+	system("mkdir #{tmp_path}")
+	filepath = File.join(tmp_path,upload_file.original_filename)
         upload_file_to_server(filepath,upload_file)
         result[:status] = true 
         result[:message] << '上传成功'
@@ -73,7 +76,9 @@ class AdminController < ApplicationController
     end
     begin
 	if result[:status] == true
-	    cmd = "cd #{Rails.root.to_s} && tar xvf #{filepath} && sh ./bin/#{File.basename(file.original_filename,".tar")}.sh"	
+	    cmd = "tar xvf #{filepath} -C #{tmp_path} && cd #{tmp_path} && chmod 775 patch_#{upload_file.original_filename}  && chmod 775 sh_#{File.basename(upload_file.original_filename,".tar")}.sh  && tar xvf patch_#{upload_file.original_filename} -C #{Rails.root.to_s}  && cp sh_#{File.basename(upload_file.original_filename,".tar")}.sh ~/bin/ && sh ~/bin/sh_#{File.basename(upload_file.original_filename,".tar")}.sh"	
+	    #cmd = "cd #{Rails.root.to_s} && tar xvf #{filepath} && sh ./bin/#{File.basename(upload_file.original_filename,".tar")}.sh"	
+	    logger.info cmd
 	    system(cmd)
         result[:message] << '更新成功'
 	end
