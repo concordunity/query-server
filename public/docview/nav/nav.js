@@ -30,7 +30,7 @@ steal(
 	    this.lastActiveA = undefined;
 
 	    var init_options = {
-		search : ["single","multi","advanced","by_doc_source"],
+		search : ["single","multi","advanced","by_doc_source","search_condition","upload_file"],
 		stats : ["stats_stats","stats_usage","stats_query","create_group"],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
 		manage_accounts : ["users","roles","system_upload"]
