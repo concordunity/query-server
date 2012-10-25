@@ -537,18 +537,18 @@ class DocumentsController < ApplicationController
       return
     end
 
-    ids = Source.where('code like "ESH%"').collect(&:id)
+    ids = Source.where('code like "ESH%"').order("code").collect(&:id)
 
     # check the source first.
     source = params[:source]
     if source == '0'
-      @documents = Document.where(:doc_source => ids)
+      @documents = Document.where(:doc_source => ids).order("doc_source")
     else
-      @documents = Document.where(:doc_source => source)
+      @documents = Document.where(:doc_source => source).order("doc_source")
     end
 
     if !doc_type.blank?
-      @documents = @documents.where(:doc_type => doc_type)
+      @documents = @documents.where(:doc_type => doc_type).order("doc_type")
     end 
 
     if !params[:from_date].blank? && !params[:to_date].blank?
@@ -557,7 +557,7 @@ class DocumentsController < ApplicationController
 
       if start_date != end_date
         # @documents = @documents.where(:edc_date => start_date.to_date..end_date.to_date)
-        @documents = @documents.where(:edc_date => start_date.to_date..end_date.to_date)
+        @documents = @documents.where(:edc_date => start_date.to_date..end_date.to_date).order("edc_date")
       end
     end
 

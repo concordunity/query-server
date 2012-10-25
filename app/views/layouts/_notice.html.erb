@@ -1,0 +1,17 @@
+  <% if flash[:notice] %>
+    <div class="notice alert" id="notice">
+      <%= raw  flash[:notice] %>
+      <% flash[:notice] = nil %>
+    </div>
+  <% end %>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+  <% unless flash[:notice].blank?%>
+        alert("<%= raw  flash[:notice] %>");
+        setTimeout(function(){
+          jQuery("#notice").hide('slow');
+        },10000)
+    <% flash[:notice] = nil %>
+  <% end %>
+  });
+</script>

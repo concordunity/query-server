@@ -1,4 +1,12 @@
 zh-CN:
+  nav:
+    log_index: "系统日志"
+    system_config: "系统配置"
+    system_update: "系统升级"
+  subnav:
+    upload: "上传文件"
+  view:
+    upload: "上传" 
   date:
     abbr_day_names:
     - 日

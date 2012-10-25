@@ -32,6 +32,10 @@ class ApplicationController < ActionController::Base
       return true;
     end
 
+    unless user_signed_in?
+      redirect_to "/"
+    end
+
     if params[:user] and params[:user][:username]
       user = User.find_by_username(params[:user][:username])
       if user and user.failed_attempts == 3 and user.locked_at.nil?
