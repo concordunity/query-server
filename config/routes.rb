@@ -1,5 +1,5 @@
 Dms::Application.routes.draw do
-
+  post "/comments/pagetype" => "comments#create_page_type"
   post "/admin/system" => "admin#upload_package_system"
 
   get "/admin/log_index" => "admin#log_index"

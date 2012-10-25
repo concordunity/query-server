@@ -25,7 +25,7 @@ class QueriesController < ApplicationController
        return finish_request(ret)
     end
 
-    if !u.can_view?(doc_id)
+    if !u.can_view?(d)
       ret.status = 3
       ret.message = '用户无权查阅此单证: ' + doc_id
       return finish_request(ret)
@@ -87,7 +87,7 @@ class QueriesController < ApplicationController
   def finish_request(ret)
     random_string = SecureRandom.hex(10)
     Rails.cache.write(random_string, ret)
-    redirect_to "/docview/details/single_doc.html#" + random_string 
+    redirect_to "/docview/ui/details/single_doc.html#" + random_string 
   end
 
   

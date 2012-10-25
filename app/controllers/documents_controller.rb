@@ -4,7 +4,7 @@ require 'net/http'
 require 'uri'
 
 class DocumentsController < ApplicationController
-  skip_before_filter :api_query
+  skip_before_filter :api_query, :query_doc_internal
   load_and_authorize_resource
   skip_authorize_resource :only => :api_query
 
@@ -184,7 +184,10 @@ class DocumentsController < ApplicationController
 
   def api_query
     doc_id = params[:doc_id]
+    query_doc_internal(true)
+  end
 
+  def junk
     @document = Document.find_by_doc_id(doc_id)
 
     if @document
@@ -214,20 +217,27 @@ class DocumentsController < ApplicationController
 
   def query
     doc_id = params[:doc_id]
+    query_doc_internal(false)
+  end
+
+  def query_doc_internal(ignore_auth)
+    doc_id = params[:doc_id]
     special_doc_info = ""
 
     @document = Document.find_by_doc_id(doc_id)
     if @document
 
       # check user's privileges
-      if !current_user.can_view?(@document)
-        render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
-        return
-      end
-      # Now check for user's org
-      if @document.inquired &&  !(can? :inquired, Document)
-        render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
-        return
+      if !ignore_auth
+        if !current_user.can_view?(@document)
+          render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
+          return
+        end
+        # Now check for user's org
+        if @document.inquired &&  !(can? :inquired, Document)
+          render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
+          return
+        end
       end
 
 
@@ -253,18 +263,23 @@ class DocumentsController < ApplicationController
         special_doc_info = s_doc
       end
 
-      # Create query_history record.
-      #response = { :name => 'test', 'info' => 'good' }
-      qh = QueryHistory.create(:user_id=> current_user.id,
-                               :doc_id => @document.doc_id,
-                               :org => @document.org,
-                               :doc_type => @document.doc_type,
-                               :ip => current_user.current_sign_in_ip,
-                               :email => current_user.display_name,
-                               :print => false)
+      if !ignore_auth
+        # Create query_history record.
+        #response = { :name => 'test', 'info' => 'good' }
+        qh = QueryHistory.create(:user_id=> current_user.id,
+                                 :doc_id => @document.doc_id,
+                                 :org => @document.org,
+                                 :doc_type => @document.doc_type,
+                                 :ip => current_user.current_sign_in_ip,
+                                 :email => current_user.display_name,
+                                 :print => false)
+      end
     else
       raise ActiveRecord::RecordNotFound
     end
+
+    # Needs to find out all comments.
+    comments = DocComment.where({:doc_id => doc_id, :code => 1})
 
     #  TODO(weidong): error processing.
     respond_to do |format|
@@ -272,6 +287,7 @@ class DocumentsController < ApplicationController
       format.json { render json: { :doc_info => @document,
           :directory => "/docimages",
           :label => doc_id,
+          :comments => comments,
           :special_doc_info => special_doc_info,
           :image_info => response } }
     end
