@@ -1,0 +1,32 @@
+﻿<html>
+<head>
+<script type="text/javascript">
+<!--
+function openDMS() {
+  // TODO: Need to do login first
+  //       Send POST to login URL
+  window.open("https://localhost:8443/StockDoc/stock_docs/show_doc.html");
+}
+// -->
+</script>
+</head>
+
+<body>
+<H1>API 调用样例</H1>
+<p>我们使用 HTTP POST 方式调用“存量单据电子档案查询API”，传递三个参数，人员工号(username)、报关单号(docid)、人员来源系统的名称(source)（HL2008等等，目前只有HL2008系统的）</p>
+
+
+<form method="post" action="https://localhost:8443/api/query">
+<table>
+<tr>
+<td alight="right">人员工号</td> <td><input type="text" name="username"/> </td></tr>
+<tr>
+<td alight="right">报关单号</td> <td><input type="text" name="docid"/>  </td></tr>
+<tr>
+<td alight="right">来源系统</td> <td><input type="text" name="source" value="HL2008"/>  </td></tr>
+<tr><td alight="right"></td> <td><button>Submit</button>
+</table>
+</form>
+
+</body>
+</html>
