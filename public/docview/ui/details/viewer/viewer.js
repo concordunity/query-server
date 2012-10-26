@@ -25,21 +25,21 @@ steal(
     /* @Prototype */
     {
         init: function() {
-            this.element.html(this.view('viewer', {doc_rights : this.options.clientState.attr('access').attr('manage_docs')}));
+            this.element.html(this.view('viewer',
+					{doc_rights : this.options.clientState.attr('access').attr('manage_docs')}));
 	    this.currentPageInfo = undefined;
 
 	    this.courtMode = false;
             this.element.find('.document-page').html(
                 this.view('image'));
 
-
-
 	    this.element.find('div.image-viewer').bind("contextmenu", function(e){  
 		return false;  
 	    });
 
-	    this.switchOffPrintMenu();
 	    this.pluginCreated = false;
+	    this.commentsController = undefined;
+
 	    // this.element.find('.dropdown').hide();
         },
 
@@ -56,34 +56,6 @@ steal(
 		zoom_min : 50,
 		update_on_resize: true
 	    });
-	},
-
-	setMode : function(s_mode) {
-	    //this.showing = true;
-	    //var xxx = 		this.element.find('li.dropdown a');
-
-	    if (s_mode == 'print' ||(s_mode=='single' &&
-				     this.options.clientState.attr('access').attr('manage_docs').print)) {
-		this.courtMode = false;
-                this.element.find('.single-print').show();
-		this.element.find('.single-print .bprint').html("打 印");
-		//		this.element.find('li.dropdown a.dropdown-toggle').text("打 印");
-		$('#hackxxx a').text("打 印");
-		return;
-	    }
-	    
-	    if (s_mode == 'court') {
-
-		this.courtMode = true;
-                this.element.find('.single-print').show();
-		this.element.find('.single-print .bprint').html("出 证");
-		$('#hackxxx a').text("出 证");
-	//	this.element.find('li.dropdown a.dropdown-toggle').text("出 证");
-		return;
-	    }
-	    
-            this.element.find('.single-print').hide();
-	    this.element.find('.dropdown').remove();
 	},
 /*
 　　    "{document} keyup":function(el,e) {
@@ -115,9 +87,20 @@ steal(
 //	    this.options.details_controller.showNextPage();
         },
 
+	updateComment : function(data) {
+	    //	    console.log("update comments ....");
+	    this.displayCommentsControl({code: data.subcode,
+					 label : data.info});
+	},
 	'li.comments click' : function(el, ev) {
 	    ev.preventDefault();
-	    $('#comments').docview_ui_comments({ pageInfo: this.currentPageInfo});
+	    if (this.commentsController) {
+		this.commentsController.setCommentsUI(this.currentPageInfo);
+	    } else {
+		$('#comments').docview_ui_comments({pageInfo: this.currentPageInfo,
+						    controller : this});
+		this.commentsController = $('#comments').controller();
+	    }
 	},
         'li.previous click': function(el, ev) {
             ev.preventDefault();
@@ -138,40 +121,45 @@ steal(
 	    }
 	    return url;
 	},
-	switchOnPrintMenu : function() {
-	    this.element.find('li.single-print').after(
-		this.view('print_dropdown_menu'));
-	    this.element.find('.dropdown-toggle').dropdown();
 
-	    if (this.courtMode) {
-		$('#hackxxx a').text("出 证");
+	displayCommentsControl : function(proposedPageType) {
+	    if (this.currentPageInfo.nthPage == 1) {
+		this.element.find('li.comments').hide();
+	    } else if (proposedPageType != null) {
+		
+		this.element.find('li.comments').hide();
+
+		$('#comments').html(this.view('comment', {proposedPageType : proposedPageType}));
+	    } else {
+		this.element.find('li.comments').show();
 	    }
-	    this.element.find('.single-print').hide();
-	    this.element.find('.dropdown').show();
 	},
-	switchOffPrintMenu : function() {
-	    this.element.find('.single-print').show();
-	    this.element.find('.dropdown').remove();
-	},	
-	addPrintMenu : function(href, label) {
-	    this.element.find('ul.dropdown-menu').append('<li><a href="#'+ href + '">' + label +"</a></li>");
-	},
-//	'.dropdown-menu li a click' : function(el, ev) {
 
-//	    console.log("we clicked ", el);
-//	    ev.preventDefault();
-//	},
-	// nthDoc is 0-based, and nthPage is 1-based.
-	showPage : function (pageInfo) {//imagePath, nthPage) {
-	    this.currentPageInfo = pageInfo;
+	'.delete-comment submit' : function(el, ev) {
+	    ev.preventDefault();
+	    var pageInfo = this.currentPageInfo;
+	    Docview.Models.File.deleteComment(pageInfo.doc.getDocId(),
+					      pageInfo.nthPage, this.proxy('handleCommentDeleted'));
+	},
+
+	handleCommentDeleted: function(data) {
 	    $('#comments').html('');
+	    this.displayCommentsControl(null);
+	},
+	// nthDoc is 0-based, and nthPage is 1-based.
+	showPage : function (pageInfo) {
+	    this.currentPageInfo = pageInfo;
+
+	    $('#comments').html('');
+
+	    this.displayCommentsControl(pageInfo.proposedPageType);
+
 	    if (this.pluginCreated) {
 		this.element.find('div.image-viewer').iviewer('loadImage', pageInfo.imagePath);
 	    } else {
 		this.createPlugin(pageInfo.imagePath);
 	    }
-	    $('#pageno').html('第 '+ pageInfo.nthPage +' 页');
-	    
+	    $('#pageno').html('第 '+ pageInfo.nthPage +' 页');	    
 	},
 
         '{clientState} document.current change': function(el, ev, attr, how, newVal, oldVal) {

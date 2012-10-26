@@ -3,6 +3,9 @@ Dms::Application.routes.draw do
   get "/admin/show_docs" => "admin#show_docs"
 
   post "/comments/pagetype" => "comments#create_page_type"
+  post "/comments/delete_pagetype" => "comments#delete_page_type"
+  get "/comments/get" => "comments#get"
+
 
   post "/admin/system" => "admin#upload_package_system"
 

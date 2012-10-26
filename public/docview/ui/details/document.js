@@ -6,7 +6,8 @@
 function Document(docInfo, filters) {
     var metadata = docInfo.doc_info;
     this.groups = new Array();
-    
+    this.comments = docInfo.comments;
+
     this.directory = docInfo.directory;
     this.docId = metadata.doc_id;
     
@@ -17,8 +18,11 @@ function Document(docInfo, filters) {
     }
     this.pages = new Array();
     this.pageTypes = new Array();
-    var images = docInfo.image_info.T_blog;
+
     
+    var images = docInfo.image_info.T_blog;
+    this.originalTBlog = images;
+
     this.totalPages = images.length;
 
     this.label = docInfo.label;
@@ -65,6 +69,21 @@ function Document(docInfo, filters) {
         name: prevGroupName,
         pages: subgroup
     });
+}
+
+Document.prototype.getProposedPageType = function (nth) {
+    for (var i=0; i<this.comments.length;i++) {
+	var c = this.comments[i];
+	if (c.page == nth) {
+	    return { code: c.subcode,
+		     label : c.info };
+	}
+    }
+    return null;
+}
+
+Document.prototype.getComments = function() {
+    this.comments;
 }
 
 Document.prototype.getThumbnailPaths = function() {

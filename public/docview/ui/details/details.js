@@ -83,7 +83,7 @@ steal(
             if (!this.to_show) {
                 return;
             }
-            this.viewerControl.setMode(this.options.clientState.attr('searchMode'));
+            //this.viewerControl.setMode(this.options.clientState.attr('searchMode'));
             $('#details-holder').show();
 	    
             this.element.show();
@@ -153,10 +153,19 @@ steal(
             this.to_show = true;
         },
 
+
         addDoc : function(docid) {
             Docview.Models.File.findOne(docid, this.proxy('addDocumentData'),
                 this.proxy('failure'));
         },
+
+	displayDoc: function(docid) {
+	    this.treeControl.clearDocTree();
+	    this.docManager.clear();
+	    this.to_show = true;
+	    Docview.Models.File.findOne(docid, this.proxy('addDocumentData'),
+					this.proxy('failure'));
+	},
 
         addSpecialDoc : function(docid) {
             Docview.Models.File.findSpecialOne(docid, this.proxy('addDocumentData'),

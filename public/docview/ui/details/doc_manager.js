@@ -30,9 +30,11 @@ function DocManager() {
 	    this.docIndex = ret.docIndex;
 	    this.pageIndex = ret.page;
 	    var doc = this.documents[this.docIndex];
+
 	    return {
 		nthPage : ret.page,
 		pageType: doc.getPageTypeFor(this.pageIndex),
+		proposedPageType : doc.getProposedPageType(this.pageIndex),
 		doc: doc,
 		docIndex: this.docIndex,
 		imagePath: doc.getImagePathFor(this.pageIndex)

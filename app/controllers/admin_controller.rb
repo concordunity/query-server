@@ -2,13 +2,13 @@
 class AdminController < ApplicationController
 
   def show_docs
-	@docs = Document.all
+    @docs = Document.all
 
-	logger.info params[:asy]
-	if params[:asy] == "true"
-	    logger.info "======"
-	    render :json => @docs
-	end
+    logger.info params[:asy]
+    if params[:asy] == "true"
+      logger.info "======"
+      render :json => @docs
+    end
   end
 
   def upload_package_system
