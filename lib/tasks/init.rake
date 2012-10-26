@@ -160,17 +160,29 @@ WebLink.order("name").each_with_index {|item,index| str<< "wl_#{index} = WebLink
       if WebLink.where(:name => "aSysSetting").length == 0
 	WebLink.create(:name => "aSysSetting",:description => "系统参数设置",:controller => "Setting",:action => "sys-setting")
       else
-	WebLink.where(:name => "aSysSetting").first.destroy
+	a = WebLink.where(:name => "aSysSetting").first
+	a.description = "系统参数设置" 
+	a.controller = "Setting"
+	a.action = "sys-setting"
+	a.save
       end
       if WebLink.where(:name => "aUploadFile").length == 0
 	WebLink.create(:name => "aUploadFile",:description => "上传文件",:controller => "upload_file",:action => "import_excel")
       else
-	WebLink.where(:name => "aUploadFile").first.destroy
+	a = WebLink.where(:name => "aUploadFile").first
+        a.description = "上传文件" 
+        a.controller = "upload_file"
+        a.action = "import_excel"
+        a.save
       end
       if WebLink.where(:name => "aSearchCondition").length == 0
 	WebLink.create(:name => "aSearchCondition",:description => "高风险报关单查询",:controller => "search_condition",:action => "search_condition")
       else
-	WebLink.where(:name => "aSearchCondition").first.destroy
+	a = WebLink.where(:name => "aSearchCondition").first
+        a.description = "高风险报关单查询"
+        a.controller = "search_condition"
+        a.action = "search_condition"
+        a.save
       end
   end
 

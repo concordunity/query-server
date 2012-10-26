@@ -1,6 +1,16 @@
 #encoding=utf-8
 class AdminController < ApplicationController
 
+  def show_docs
+	@docs = Document.all
+
+	logger.info params[:asy]
+	if params[:asy] == "true"
+	    logger.info "======"
+	    render :json => @docs
+	end
+  end
+
   def upload_package_system
     result = upload(params[:upload_file])
     flash[:notice] = result[:message].join(",") 

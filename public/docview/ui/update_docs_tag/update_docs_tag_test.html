@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>update_docs_tag Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="update_docs_tag-test">  </div>
+    <div id="update_docs_tag_list">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/update_docs_tag').then(function($) {
+
+   $('#update_docs_tag-test').docview_ui_update_docs_tag();
+   $('#update_docs_tag-test').docview_ui_update_docs_tag("show");
+
+ }); 
+ </script>
+        </body>
+</html>
+

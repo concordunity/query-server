@@ -5,9 +5,10 @@
     <link href="/docview/bootstrap/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="/docview/docview.css" rel="stylesheet" type="text/css" />
     <script type='text/javascript' src='/jquery/jquery.js'></script>
+    <script type='text/javascript' src='../steal/steal.js'></script>
 </head>
 <body>
-<div class='container'>
+<div class='container-fluid'>
     <div id="navigation-header">
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
@@ -21,15 +22,16 @@
       </div>
     </div>
 <%= render :partial => "layouts/notice" %>
-    <div id="wrap" class='container well'>
-    <%= yield %>
+    <div id="wrap" class='row-fluid'>
+    <div class="span12">
+        <%= yield %>
+    </div>
     </div>
     <a href="#" id="backTop"></a>
 </div>
 <div class="footer footer-fixed">
 <%=render :partial => "layouts/version" %>
 </div>
-    <script type='text/javascript' src='../steal/steal.js'></script>
     <script type='text/javascript'>
     steal('docview/nav').then( '/libs/jquery.i18n.min.js').then(function($) {
 

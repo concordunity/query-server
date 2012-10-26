@@ -5,6 +5,7 @@ zh-CN:
     system_update: "系统升级"
   subnav:
     upload: "上传文件"
+    show_docs: "单证修改标签"
   view:
     upload: "上传" 
   date:
