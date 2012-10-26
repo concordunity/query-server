@@ -1,5 +1,15 @@
-<ul class="nav main-nav">
-    <li class="">
-        <a href="/admin/update_system"><i class="icon-file icon-white"></i> 系统升级</a>
-    </li>
-</ul>
+<div id="subnavigation-header" class="docview_subnav" style="display: <%= ["log_index","update_system","show_docs"].include?(action_name) ? "block" : "none" %>;"><div class="subnav subnav-fixed">
+    <div class="container-fluid">
+	<div class="system" style='display: <%= ["log_index","update_system"].include?(action_name) ? "" : "none"%>;'>
+        <ul class="nav nav-pills"> 
+	    <li class="<%= "update_system" == action_name ? "active" : "" %>"><a href="/admin/update_system">系统升级</a></li>
+	    <li class="<%= "log_index" == action_name ? "active" : "" %>"><a href="/admin/log_index">系统日志</a></li>
+	</ul>
+	</div>
+	<div class="documents"  style='display: <%= ["show_docs"].include?(action_name) ? "" : "none"%>;'>
+        <ul class="nav nav-pills">
+	    <li class="<%= "show_docs" == action_name ? "active" : "" %>"><a href="/admin/show_docs">修改单证标签</a></li>
+	</ul>
+	</div>
+    </div>
+</div></div>

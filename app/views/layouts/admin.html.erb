@@ -4,38 +4,29 @@
     <title>存量报关单证电子档案管理系统</title>
     <link href="/docview/bootstrap/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="/docview/docview.css" rel="stylesheet" type="text/css" />
+    <link href="/docview/subnav/subnav.css" rel="stylesheet" type="text/css" />
     <script type='text/javascript' src='/jquery/jquery.js'></script>
     <script type='text/javascript' src='../steal/steal.js'></script>
 </head>
 <body>
+    <%=render :partial=>"layouts/nav", :locals => {:user_info => @user_info }%>
+    <%= render :partial => "layouts/subnav" %>
 <div class='container-fluid'>
-    <div id="navigation-header">
-      <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container-fluid">
-            <a class="brand" href="#"><img src="/docview/img/nav-logo.png" /></a>
-	    <div class='bar'>
-	    <%=render :partial=>"layouts/nav", :locals => {:user_info => @user_info }%>
-	    </div>
-          </div>
-        </div>
-      </div>
-    </div>
-<%= render :partial => "layouts/notice" %>
+    <%= render :partial => "layouts/notice" %>
     <div id="wrap" class='row-fluid'>
     <div class="span12">
         <%= yield %>
     </div>
     </div>
+    <input id="action_name" type='hidden' value="<%= action_name%>"/>
     <a href="#" id="backTop"></a>
 </div>
 <div class="footer footer-fixed">
 <%=render :partial => "layouts/version" %>
 </div>
     <script type='text/javascript'>
-    steal('docview/nav').then( '/libs/jquery.i18n.min.js').then(function($) {
-
-		    });
+    steal('/libs/jquery.i18n.min.js').then(function($) {
+    });
     </script>
 </body>
 

@@ -3,7 +3,12 @@ zh-CN:
     log_index: "系统日志"
     system_config: "系统配置"
     system_update: "系统升级"
+    system: "系统"
+    documents: "单证操作"
   subnav:
+    log_index: "系统日志"
+    system_config: "系统配置"
+    system_update: "系统升级"
     upload: "上传文件"
     show_docs: "单证修改标签"
   view:

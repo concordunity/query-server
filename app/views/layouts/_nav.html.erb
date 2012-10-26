@@ -1,25 +1,30 @@
-<ul class="nav main-nav">
-    <li class="">
-	<a href="/admin/log_index"><i class="icon-file icon-white"></i><%= t("nav.log_index") %></a>
-    </li>
-    <li class="">
-	<a href="/admin/update_system"><i class="icon-file icon-white"></i><%= t("nav.system_update") %></a>
-    </li>
-    <li class="">
-        <a href="/admin/show_docs"><i class="icon-file icon-white"></i><%= t("subnav.show_docs") %></a>
-    </li>
-    <li class="">
-	<a href="/admin/update_system"><i class="icon-file icon-white"></i><%= t("subnav.upload") %></a>
-    </li>
-</ul>
-<ul class="nav side-nav pull-right">
-    <li class="user-info">
-	<a href="/admin/update_password"><i class="icon-cog icon-white"></i>修改密码</a>
-    </li>
-    <li class="help">
-	<a href="/docview/help/help.html"><i class="icon-book icon-white"></i>帮助</a>
-    </li>
-    <li class="logout">
-	<a href="/users/logout"><i class="icon-arrow-right icon-white"></i> 退出</a>
-    </li>
-</ul>
+    <div id="navigation-header">
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container-fluid">
+            <a class="brand" href="#"><img src="/docview/img/nav-logo.png" /></a>
+            <div class='bar'>
+	    <ul class="nav main-nav">
+		<li class="documents">
+		<a href="/admin/show_docs"><i class="icon-file icon-white"></i><%= t("nav.documents") %></a>
+		</li>
+	        <li class="system">
+		<a href="/admin/update_system"><i class="icon-file icon-white"></i><%= t("nav.system") %></a>
+		</li>
+	     </ul>
+	     <ul class="nav side-nav pull-right">
+		<li class="user-info">
+		<a href="/admin/update_password"><i class="icon-cog icon-white"></i>修改密码</a>
+		</li>
+		<li class="help">
+		<a href="/docview/help/help.html"><i class="icon-book icon-white"></i>帮助</a>
+		</li>
+		<li class="logout">
+		<a href="/users/logout"><i class="icon-arrow-right icon-white"></i> 退出</a>
+		</li>
+	    </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
