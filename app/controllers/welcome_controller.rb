@@ -13,7 +13,11 @@ class WelcomeController < ApplicationController
   end
 
   def login_admin
-    redirect_to '/docview/admin.html'
+    if user_signed_in?
+      redirect_to '/admin'
+    else
+      redirect_to '/docview/admin.html'
+    end
   end
   def img
     redirect_to '/root/blank.jpg' 
