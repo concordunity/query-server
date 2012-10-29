@@ -18,7 +18,11 @@ steal(
                 col_def_path : "//docview/ui/update_docs_tag/views/",
                 aoColumns: [
                     {"mDataProp":"doc_id", mLabel : '单证号'},
-                    {"mDataProp":"org", mLabel : '关区'}
+                    {"mDataProp":"page", mLabel : '当前页'},
+                    {"mDataProp":"subcode", mLabel : '修改后'},
+                    {"mDataProp":"commenter", mLabel : '提交者'},
+                    {"mDataProp":"info", mLabel : '描述'}
+
                 ],
                 file_name: ""
             };
