@@ -5,7 +5,7 @@ $.Model('Docview.Models.Doc',
 {
     findAll : function(params, success, error) {
 	return $.ajax({
-	    url : '/admin/show_docs',
+	    url : '/comments/get',
 	    type : 'get',
 	    data : params,
 	    success : success,
