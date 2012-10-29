@@ -32,11 +32,11 @@ steal(
 	    this.viewerController.updateComment(data);
 	},
 	
-	'form.comments submit' : function(el, ev) {
+	'.comments submit' : function(el, ev) {
 	    ev.preventDefault();
 
 	    var subcode = el.find('input[name="filter"]:checked').val();
-	    console.log("sub code ", subcode);
+	    //console.log("sub code ", subcode);
 
 	    if (this.pageType != -1 && subcode == this.pageType) {
 		alert ("选择的种类没有变化");

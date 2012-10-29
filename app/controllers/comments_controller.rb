@@ -105,7 +105,7 @@ class CommentsController < ApplicationController
   
   def delete_page_type
     DocComment.where({:doc_id => params[:doc_id],
-                       :subcode => params[:page]}).each {
+                       :page => params[:page]}).each {
       |d|
       d.delete()
     }

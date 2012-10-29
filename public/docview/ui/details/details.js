@@ -120,6 +120,14 @@ steal(
 		this.viewerControl.showPage(pageInfo);
 	    }
 	},
+
+	'.comment-confirm click' : function(el,ev) {
+	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    if (doc) {
+		this.commitDocComments();
+	    }
+	},
+
 	'.print-all click' :function (el, ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
 	    if (doc) {

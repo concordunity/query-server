@@ -44,6 +44,12 @@ function DocManager() {
     }
 }
 
+
+DocManager.prototype.updateCommentData = function(comment) {
+    var doc = this.documents[this.docIndex];
+    doc.addPageTypeComment(comment);
+}
+
 /**
  *   var docData = {
  *               label: label,

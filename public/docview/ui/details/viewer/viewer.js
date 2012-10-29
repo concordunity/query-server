@@ -89,6 +89,7 @@ steal(
 
 	updateComment : function(data) {
 	    //	    console.log("update comments ....");
+	    this.options.docManager.updateCommentData(data);
 	    this.displayCommentsControl({code: data.subcode,
 					 label : data.info});
 	},
@@ -145,6 +146,9 @@ steal(
 	handleCommentDeleted: function(data) {
 	    $('#comments').html('');
 	    this.displayCommentsControl(null);
+	    var pageInfo = this.currentPageInfo;
+	    pageInfo.doc.deleteCommentData(
+		pageInfo.nthPage);
 	},
 	// nthDoc is 0-based, and nthPage is 1-based.
 	showPage : function (pageInfo) {

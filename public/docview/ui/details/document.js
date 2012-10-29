@@ -71,10 +71,29 @@ function Document(docInfo, filters) {
     });
 }
 
+Document.prototype.deleteCommentData = function(nth) {
+    var p = -1;
+    for (i=0; i < this.comments.length; i++) {
+	if (this.comments[i] && this.comments[i].page == nth) {
+	    p = i;
+	    break;
+	}
+    }
+
+    if (p != -1) {
+	delete this.comments[p];
+    }
+}
+
+Document.prototype.addPageTypeComment = function(comment) {
+    this.comments.push(comment);
+}
+
 Document.prototype.getProposedPageType = function (nth) {
+    //console.log("we have comments ", this.comments);
     for (var i=0; i<this.comments.length;i++) {
 	var c = this.comments[i];
-	if (c.page == nth) {
+	if (c &&  (c.page == nth)) {
 	    return { code: c.subcode,
 		     label : c.info };
 	}
