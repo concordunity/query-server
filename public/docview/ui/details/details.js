@@ -128,6 +128,14 @@ steal(
 	    }
 	},
 
+	'.commit-comments click' : function(el, ev) {
+	    ev.preventDefault();
+	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    Docview.Models.file.commitComments(docid, this.proxy("commit-ok"));
+
+	},
+	commit-ok : function(data) {
+	},
 	'.print-all click' :function (el, ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
 	    if (doc) {
