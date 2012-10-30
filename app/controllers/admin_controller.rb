@@ -86,8 +86,10 @@ class AdminController < ApplicationController
     end
     begin
 	if result[:status] == true
-	    cmd = "tar xvf #{filepath} -C #{tmp_path} && cd #{tmp_path} && chmod 775 patch_#{upload_file.original_filename}  && chmod 775 sh_#{File.basename(upload_file.original_filename,".tar")}.sh  && tar xvf patch_#{upload_file.original_filename} -C #{Rails.root.to_s}  && cp sh_#{File.basename(upload_file.original_filename,".tar")}.sh ~/bin/ && sh ~/bin/sh_#{File.basename(upload_file.original_filename,".tar")}.sh"	
-	    #cmd = "cd #{Rails.root.to_s} && tar xvf #{filepath} && sh ./bin/#{File.basename(upload_file.original_filename,".tar")}.sh"	
+	    tar_name = File.basename(upload_file.original_filename,".tar")
+	    patch_name = upload_file.original_filename
+	    
+	    cmd = "tar xvf #{filepath} -C #{tmp_path} && cd #{tmp_path} && chmod 775 patch_#{patch_name}  && chmod 775 sh_#{patch_name}  && tar xvf patch_#{patch_name} -C #{Rails.root.to_s} && tar xvf sh_#{patch_name} -C ~/ && sh ~/script/sh_#{tar_name}.sh"	
 	    logger.info cmd
 	    system(cmd)
         result[:message] << '更新成功'
