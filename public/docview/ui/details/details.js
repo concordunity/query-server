@@ -17,7 +17,7 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
         init : function() {
-            this.element.html(this.view('init'));
+            this.element.html(this.view('init',this.options.clientState));
             this.docManager = new DocManager();
 
             this.element.find('#document-tree').docview_ui_details_tree(
@@ -98,6 +98,9 @@ steal(
 	    if (mode == 'court') {
 		return 'court'
 	    }
+	    if (mode == 'multi') {
+		return 'multi'
+	    }
 
 	    return '';
 	},
@@ -131,10 +134,10 @@ steal(
 	'.commit-comments click' : function(el, ev) {
 	    ev.preventDefault();
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
-	    Docview.Models.file.commitComments(docid, this.proxy("commit-ok"));
+	    Docview.Models.file.commitComments(docid, this.proxy("commitOk"));
 
 	},
-	commit-ok : function(data) {
+	commitOk : function(data) {
 	},
 	'.print-all click' :function (el, ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));

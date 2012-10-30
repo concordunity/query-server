@@ -7,6 +7,7 @@ steal(
 ).then(
     './views/init.ejs'
 ).then(
+    'docview/ui/details',
     'docview/ui/dmstable'
 ).then(function($) {
     $.Controller('Docview.Ui.update_docs_tag', {}, {
@@ -27,7 +28,23 @@ steal(
             };
             this.element.find('.docs_list').docview_ui_dmstable({table_options : table_options});
             this.tableController = this.element.find('.docs_list').controller();
+
+
+            var state = new $.Observe({
+                search: { filters: [], ids: [] },
+                access: { manage_docs: { print: true, testify: true } },
+                searchMode: 'multi',
+		returnHistory: "return-show-docs"
+            });
+            $('#detail-show-docs').docview_ui_details({ clientState: state });
+            this.detailController = $('#detail-show-docs').controller();
         },
+	"#update_docs_tag-test a.show-docs click" : function(el,ev){
+	   $("#detail-show-docs").show();
+	   $("#update_docs_tag-test").hide();
+	   var data_index = $(el).attr("data-index");
+           this.detailController.queryDoc(data_index);
+	},
 	list_docs : function(data) {
 	       this.tableController.setModelData(data);
 	},

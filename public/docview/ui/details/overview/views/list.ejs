@@ -1,5 +1,13 @@
 <p>&nbsp;</p>
 <% if (print) {
+
+   if (print == 'multi') {
+%>
+<div class="well">
+<button class="btn btn-large btn-primary comments-all" data-doc-index=<%= doc_index %>> Comments</button>
+</div>
+<%
+   }else {
    var showPrint = '打印';
    if (print == 'court') {
       showPrint = '出证';
@@ -10,14 +18,8 @@
 <button class="btn btn-large btn-primary print-all" data-doc-index=<%= doc_index %>> <%= showPrint %>(所有页面)</button>
 <button class="btn btn-large btn-primary print-selected" data-doc-index=<%= doc_index %>> <%= showPrint %>(选中页面)</button>
 </div>
-<%}%>
+<%}}%>
 
-<% if (commitComments) {
-
-<div class="well">
-<button class="btn btn-large btn-primary commit-comments" data-doc-index=<%= doc_index %>> Commit</button>
-</div>
-} %>
 
 <!--button type="button" class="btn select-all">Select All</button-->
 <ul class="thumbnails">
