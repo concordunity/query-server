@@ -125,12 +125,38 @@ Document.prototype.getPageTypeFor = function(index) {
     }
     return this.pageTypes[index -1];
 }
+
 // index is 1-based.
 Document.prototype.getImagePathFor = function(index) {
     if (index < 0) {
 	return "";
     }
     return this.directory + "/" + this.docId + '/' + this.docId + '/' + this.pages[index -1];
+}
+
+Document.prototype.getJsonString = function () {
+
+    var T_blog = this.originalTBlog;
+
+    var nthPage = 0;
+    for (var i=0; i < this.totalPages; i++) {
+	var page = T_blog[i];
+
+	nthPage ++;
+	var proposed = this.getProposedPageType(nthPage);
+	if (proposed != null) {
+	    page.TCode = proposed.code;
+	    page.T = proposed.label;
+	}
+
+	//page.TCode
+	if (page.BT) {
+	    nthPage ++;
+	}
+    }
+    var ret = $.toJSON({T_blog: T_blog});
+    console.log(ret);
+    return ret;
 }
 
 Document.prototype.getLabel = function() {

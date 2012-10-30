@@ -83,13 +83,41 @@ class CommentsController < ApplicationController
     doc_id = params[:doc_id]
     
     if doc_id.blank?
-      comments = DocComment.all
+      comments = DocComment.order("doc_id, page")
     else
-      comments = DocComment.where(:doc_id => doc_id)
+      comments = DocComment.where(:doc_id => doc_id).order("page")
     end
     render json: comments
 
   end
+
+  def commit
+    json_text = params[:json_text]
+    doc_id = params[:doc_id]
+    is_regular = params[:is_mod].blank?
+
+    tmp_file = "#{Rails.root}/tmp/xxx.json"
+    File.open(tmp_file, 'wb') do |f|
+      f.write json_text
+    end
+
+    # Sanity check. Make sure the directory exists
+    script_file = File.expand_path('~/bin/process_json.sh')
+    
+    if is_regular
+      logger.info("#{script_file} #{doc_id} #{tmp_file}")
+      system("#{script_file} #{doc_id} #{tmp_file}")
+    else
+      m = ModifiedDocument.find_by_doc_id(doc_id)
+      if m
+        folder = m.folder_id
+        system("#{script_file} #{folder_id} #{doc_id} #{tmp_file}")
+      end
+    end
+    head :no_content
+
+  end
+
 
   def create_page_type
     c = DocComment.new

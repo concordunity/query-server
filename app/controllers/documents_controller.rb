@@ -507,7 +507,7 @@ class DocumentsController < ApplicationController
       raise ActiveRecord::RecordNotFound
     end
 
-    logger.info("pdf_file is " + pdf_file)
+    #logger.info("pdf_file is " + pdf_file)
     send_file(pdf_file, :filename => File.basename(pdf_file), :type => "application/pdf")
   end
 

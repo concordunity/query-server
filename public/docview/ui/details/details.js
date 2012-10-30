@@ -124,18 +124,20 @@ steal(
 	    }
 	},
 
-	'.comment-confirm click' : function(el,ev) {
+/*	'.comment-confirm click' : function(el,ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
 	    if (doc) {
 		this.commitDocComments();
 	    }
 	},
-
+*/
 	'.commit-comments click' : function(el, ev) {
 	    ev.preventDefault();
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
-	    Docview.Models.file.commitComments(docid, this.proxy("commitOk"));
-
+	    if (doc) {
+		Docview.Models.File.commitComments(doc.getDocId(), doc.getJsonString(),
+						   this.proxy("commitOk"));
+	    }
 	},
 	commitOk : function(data) {
 	},
