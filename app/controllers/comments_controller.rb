@@ -100,7 +100,7 @@ class CommentsController < ApplicationController
 
     tmp_path = tmp_file.path
     tmp_file.write json_text
-    tmp_file.close
+
  
 
     # Sanity check. Make sure the directory exists
@@ -123,7 +123,7 @@ class CommentsController < ApplicationController
       end
     end
 
-
+    tmp_file.close
     head :no_content
 
   end
