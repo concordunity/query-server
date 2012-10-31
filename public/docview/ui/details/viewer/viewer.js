@@ -88,7 +88,6 @@ steal(
         },
 
 	updateComment : function(data) {
-	    //	    console.log("update comments ....");
 	    this.options.docManager.updateCommentData(data);
 	    this.displayCommentsControl({code: data.subcode,
 					 label : data.info});

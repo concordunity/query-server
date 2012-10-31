@@ -17,10 +17,9 @@ steal(
         },
 
 	setCommentsUI : function(pageInfo) {
-	    this.pageType = this.options.pageInfo ? this.options.pageInfo.pageType : -1;
+	    this.pageType = pageInfo.pageType;
 	    this.element.html(this.view('init', {pageType : this.pageType}));
 	    
-	    //console.log("we set type to " + pageType);
 	    this.element.find(":radio[value=" + this.pageType +"]").attr('checked',true);
         },
 	clearContent: function() {
