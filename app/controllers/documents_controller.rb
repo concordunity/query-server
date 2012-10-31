@@ -246,6 +246,11 @@ class DocumentsController < ApplicationController
 
       res = %x[ #{script_name} ]
 
+      if res.match(/No password/)
+        render json: { :status => :error, :message => 'No password' }, :status => 407 
+        return
+      end
+
       if res.match(/System busy/)
         render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
         return

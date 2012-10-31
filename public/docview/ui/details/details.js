@@ -301,7 +301,9 @@ steal(
                 message = '无法查阅单证'+ docid + '，权限不足。';
             } else if (jqXHR.status == 500) {
                 message = '系统内部错误';
-            } else if (jqXHR.status == 400) {
+            } else if (jqXHR.status == 407) {
+		message = '系统安全子系统未初始化，请联系管理员。';
+	    } else if (jqXHR.status == 400) {
                 message = '系统内部错误： 无法获取单证电子图像。';
             }
             this.options.clientState.attr('alert', {
