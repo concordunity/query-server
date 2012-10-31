@@ -14,39 +14,39 @@ class UploadFileController < ApplicationController
     if upload_result[:status] == true
       file_url = File.join(Rails.root,"public","docview","export_data",upload_file_name.original_filename)
       begin
-        result = format_data_for_users(file_url)
+        result = format_system_data(file_url)
         result_info[:message]="return_format_data for success"
         result.each_with_index do |row,index|
-	  @user = User.find_by_username(row[0])
-	  if @user
-		@user.fullname = row[1]
-		@user.role_ids = row[2]
-		@user.orgs = row[3]
-		@user.doc_type = row[4]
-		@user.password = 123456
-		@user.save
-	  else
-		logger.info(row)
-		@user = User.new
-		@user.username = row[0] 
-		@user.fullname = row[1] 
-		@user.role_ids = row[2]
-		@user.orgs = row[3] 
-		@user.doc_type = row[4] 
-		@user.password = 123456
-		if @user.email.blank?
-		  if !@user.username.index('@customs.gov.cn').nil?
-		    @user.email = @user.username
-		  else
-		    @user.email = @user.username + '+no-reply@customs.gov.cn'
-		  end
-		end
-		@user.save	
-	  end
-	  success_count += 1
-	end
+          @user = User.find_by_username(row[0])
+          if @user
+            @user.fullname = row[1]
+            @user.role_ids = row[2]
+            @user.orgs = row[3]
+            @user.doc_type = row[4]
+            @user.password = 123456
+            @user.save
+          else
+            logger.info(row)
+            @user = User.new
+            @user.username = row[0] 
+            @user.fullname = row[1] 
+            @user.role_ids = row[2]
+            @user.orgs = row[3] 
+            @user.doc_type = row[4] 
+            @user.password = 123456
+            if @user.email.blank?
+              if !@user.username.index('@customs.gov.cn').nil?
+                @user.email = @user.username
+              else
+                @user.email = @user.username + '+no-reply@customs.gov.cn'
+              end
+            end
+            @user.save	
+          end
+          success_count += 1
+        end
       rescue => e
-	logger.info e
+        logger.info e
         result_info[:message]="return_format_data for error"
       end
     else
@@ -187,10 +187,10 @@ class UploadFileController < ApplicationController
           tmp_arr << imtodi
         end
       end
-	TemporaryImport.import tmp_arr
-	ImportMostTimeOrgDocInfo.destroy_all
-	ImportMostTimeOrgDocInfo.import tmp_arr
-	TemporaryImport.destroy_all
+      TemporaryImport.import tmp_arr
+      ImportMostTimeOrgDocInfo.destroy_all
+      ImportMostTimeOrgDocInfo.import tmp_arr
+      TemporaryImport.destroy_all
       result[:message] = "import success for import_most_time_org_doc_info"
     else
       result[:message] = "import failure for import_most_time_org_doc_info"
@@ -251,38 +251,45 @@ class UploadFileController < ApplicationController
       return nil
     end
   end
-  
+
   def format_row(row)
-	result = []
-	row.each_with_index do |column|
-		result << (column.class == Float ? column.to_i : column ).to_s.gsub(/^[\s|\t]+|[\s|\t]+$/,'')
-	end
-	return result
-  end
-
-  def format_data_for_users(file_url)
     result = []
-    sheet = self.open_excel File.join(file_url)
-    sheet.each_with_index { |row,index|
-      if index != 0 && !row[0].nil?
-	row = format_row(row)
-        role = Role.find_by_name(row[2])
-        row[2] = (role.nil? ? [32] : [role.id])
-	row[3] = (row[3] == "" || row[3].nil?) ? '2200' : row[3].gsub(/[\,|\，]/,",")
-	if row[4] == "不限"
-		row[4] = 0
-	elsif row[4] == "进口"
-		row[4] = 2
-	elsif row[4] == "出口"
-		row[4] = 1
-        end
-      result << row
-      end 
-    } unless sheet.blank?
+    row.each_with_index do |column|
+      result << (column.class == Float ? column.to_i : column ).to_s.gsub(/^[\s|\t]+|[\s|\t]+$/,'')
+    end
+    return result
+  end
+  def format_system_data(file_url)
 
+    result = []
+        sheet = self.open_excel(File.join(file_url))
+	sheet.each_with_index { |row,index|
+	    if index != 0 && !row[0].nil?
+		row = format_row(row)
+	        role = Role.find_by_name(row[2])
+		row[2] = (role.nil? ? [32] : [role.id])
+  		if row[3] == '' || row[3].nil?
+			row[3] = '2200'
+		else
+			row[3] = row[3].gsub(/[\,|，]/,",")
+		end
+=begin
+		row[3] = ((row[3] == "" || row[3].nil?) ? '2200' : row[3] #row[3].gsub(/[\,|\，]/,","))
+=end
+		if row[4] == "不限"
+			row[4] = 0 
+		end
+		if row[4] == "进口"
+	        	row[4] = 2 
+		end
+		if row[4] == "出口"
+	        	row[4] = 1 
+		end
+      	    end 
+	    result << row
+	}	
     return result    
   end
-
   #import data into excel for formatting data (打开excel文件，然后生成对应格式的数据源)
   def format_data(file_url)
     result = [] 
