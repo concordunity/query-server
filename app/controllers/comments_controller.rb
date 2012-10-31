@@ -83,9 +83,9 @@ class CommentsController < ApplicationController
     doc_id = params[:doc_id]
     
     if doc_id.blank?
-      comments = DocComment.order("doc_id, page")
+      comments = DocComment.where(:state => 0).order("doc_id, page")
     else
-      comments = DocComment.where(:doc_id => doc_id).order("page")
+      comments = DocComment.where({:state => 0, :doc_id => doc_id}).order("page")
     end
     render json: comments
 
@@ -96,24 +96,34 @@ class CommentsController < ApplicationController
     doc_id = params[:doc_id]
     is_regular = params[:is_mod].blank?
 
-    tmp_file = "#{Rails.root}/tmp/xxx.json"
-    File.open(tmp_file, 'wb') do |f|
-      f.write json_text
-    end
+    tmp_file = Tempfile.new("json", "/tmp")
+
+    tmp_path = tmp_file.path
+    tmp_file.write json_text
+    tmp_file.close
+ 
 
     # Sanity check. Make sure the directory exists
-    script_file = File.expand_path('~/bin/process_json.sh')
+    script_file = File.expand_path('~/bin/update_json.sh')
     
     if is_regular
-      logger.info("#{script_file} #{doc_id} #{tmp_file}")
-      system("#{script_file} #{doc_id} #{tmp_file}")
+      logger.info("#{script_file} #{tmp_path}  #{doc_id}")
+      system("#{script_file} #{tmp_path}  #{doc_id}")
+
+      DocComment.where(:doc_id => params[:doc_id]).each  {
+        |d|
+        d.state = 1
+        d.save
+      }
     else
       m = ModifiedDocument.find_by_doc_id(doc_id)
       if m
         folder = m.folder_id
-        system("#{script_file} #{folder_id} #{doc_id} #{tmp_file}")
+        system("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")
       end
     end
+
+
     head :no_content
 
   end
@@ -123,6 +133,7 @@ class CommentsController < ApplicationController
     c = DocComment.new
     c.doc_id = params[:doc_id]
     c.code = 1
+    c.state = 0
     c.subcode = params[:subcode]
     c.page = params[:page]
     c.commenter = current_user.username
