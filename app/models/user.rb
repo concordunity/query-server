@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  include Rolify::Roles
+  include Rolify
   # extend Rolify::Dynamic
   has_and_belongs_to_many :roles, :join_table => :users_roles
   # Include default devise modules. Others available are:
