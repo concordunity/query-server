@@ -59,6 +59,8 @@ class UploadFileController < ApplicationController
     result = {}
     result[:message] = []
     params[:url_time_path] = Time.now.to_i.to_s
+    params[:doc_ids] = Document.all.collect(&:doc_id)
+
     zfci = zero_find_check_info(params[:upload_file])
     niplr = normal_import_price_less_record(params[:upload_file_1])
     imtodi = import_most_time_org_doc_info(params[:upload_file_2])
@@ -74,12 +76,12 @@ class UploadFileController < ApplicationController
     resutl_format_data = return_format_data(upload_file_name)
     if resutl_format_data[:status] == true
       tmp_arr = []
-      doc_ids = Document.all.collect(&:doc_id)
+      doc_ids = params[:doc_ids] 
       ZeroFindCheckInfo.transaction do
 
       begin 
         resutl_format_data[:data].each do |row|
-          TemporaryZero.new do |zfci|
+          ZeroFindCheckInfo.new do |zfci|
             zfci.business_units_number = row[0]
             zfci.operating_name = row[1]
             zfci.number_import_export_declarations = row[2]
@@ -100,7 +102,7 @@ class UploadFileController < ApplicationController
           end
         end
         #TemporaryZero.import tmp_arr
-        ZeroFindCheckInfo.destroy_all
+        ZeroFindCheckInfo.delete_all
         ZeroFindCheckInfo.import tmp_arr
         #TemporaryZero.destroy_all
         result[:message] = "import success for zero_find_check_info"
@@ -121,7 +123,7 @@ class UploadFileController < ApplicationController
     resutl_format_data = return_format_data(upload_file_name)
     if resutl_format_data[:status] == true
       tmp_arr = []
-      doc_ids = Document.all.collect(&:doc_id)
+      doc_ids = params[:doc_ids] 
 	NormalImportPriceLessRecord.transaction do
       begin
 
@@ -150,7 +152,8 @@ class UploadFileController < ApplicationController
           end
         end
         #TemporaryNormal.import tmp_arr
-        NormalImportPriceLessRecord.destroy_all
+        #NormalImportPriceLessRecord.destroy_all
+        NormalImportPriceLessRecord.delete_all
         NormalImportPriceLessRecord.import tmp_arr
         #TemporaryNormal.destroy_all
         result[:message] = "import success for normal_import_price_less_record"
@@ -172,7 +175,7 @@ class UploadFileController < ApplicationController
     if resutl_format_data[:status] == true
       tmp_arr = []
       test_arr = []
-      doc_ids = Document.all.collect(&:doc_id)
+      doc_ids = params[:doc_ids] 
       ImportMostTimeOrgDocInfo.transaction do
       begin
       resutl_format_data[:data].each do |row|
@@ -196,7 +199,7 @@ class UploadFileController < ApplicationController
         end
       end
       #TemporaryImport.import tmp_arr
-      ImportMostTimeOrgDocInfo.destroy_all
+      ImportMostTimeOrgDocInfo.delete_all
       ImportMostTimeOrgDocInfo.import tmp_arr
       #TemporaryImport.destroy_all
       result[:message] = "import success for import_most_time_org_doc_info"

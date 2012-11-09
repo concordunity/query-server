@@ -136,6 +136,7 @@ steal(
 			},1);*/
 
 			this.showMessage("上传成功");
+			return true;
 		}
 	},
 	getDialogStatus : function() {
