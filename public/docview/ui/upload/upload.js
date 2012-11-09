@@ -16,9 +16,10 @@ steal(
 	   this.dialog_id = "#show_dialog";
 	   this.dialog_user = this.options.clientState.attr("user").fullname; 
 	   //console.log(this.dialog_user);
+/*
 	   $('#dialog').docview_ui_dialog({dialog_id: this.dialog_id});
 	   this.dialogController = $('#dialog').controller();
-
+*/
            this.element.html(this.view('init'));
            this.element.hide();
         },
