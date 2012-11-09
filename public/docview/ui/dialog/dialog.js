@@ -14,7 +14,6 @@ steal(
     $.Controller('Docview.Ui.dialog', {}, {
         init : function() {
            this.element.html(this.view('init'));
-	   console.log(this.options.dialog_id);
 	   $(this.options.dialog_id).dialog({
 		autoOpen: false,
 		width: 538,
