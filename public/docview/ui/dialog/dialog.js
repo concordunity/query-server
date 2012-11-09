@@ -4,10 +4,10 @@ steal(
     'jquery/controller/view'
 ).then(
     'jquery/jquery.js',
+    'docview/bootstrap/bootstrap.css',
     'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js'
 ).then(
-    'docview/bootstrap/bootstrap.css',
-    "./jquery-ui-1.8.12.custom.css"
+    //"./jquery-ui-1.8.12.custom.css"
 ).then(
     './views/init.ejs'
 ).then(function($) {

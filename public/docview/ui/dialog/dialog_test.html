@@ -15,7 +15,16 @@
   <div id='show_dialog' title="后台运行中。。。。。"></div>
  <script type='text/javascript' src='../../../steal/steal.js'></script>
  <script type='text/javascript'>
-steal('jquery/dom/route', 'docview/ui/dialog').then(function($) {
+steal(
+	'jquery/dom/route', 
+	'docview/ui/dialog'
+).then(
+	'jquery/jquery.js',
+	"docview/ui/dialog/jquery-ui-1.8.12.custom.css"
+).then(
+    'docview/bootstrap/bootstrap.css',
+    'libs/development-bundle/ui/jquery-ui-1.8.19.custom.js'
+).then(function($) {
     var dialog_id = "#show_dialog";
     $('#dialog-test').docview_ui_dialog({dialog_id: dialog_id});
     var controller = $('#dialog-test').controller();
