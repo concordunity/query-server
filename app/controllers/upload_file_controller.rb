@@ -58,6 +58,7 @@ class UploadFileController < ApplicationController
   def import_excel
     result = {}
     result[:message] = []
+    params[:url_time_path] = Time.now.to_i.to_s
     zfci = zero_find_check_info(params[:upload_file])
     niplr = normal_import_price_less_record(params[:upload_file_1])
     imtodi = import_most_time_org_doc_info(params[:upload_file_2])
@@ -74,6 +75,8 @@ class UploadFileController < ApplicationController
     if resutl_format_data[:status] == true
       tmp_arr = []
       doc_ids = Document.all.collect(&:doc_id)
+      ZeroFindCheckInfo.transaction do
+
       begin 
         resutl_format_data[:data].each do |row|
           TemporaryZero.new do |zfci|
@@ -96,14 +99,15 @@ class UploadFileController < ApplicationController
             tmp_arr << zfci
           end
         end
-        TemporaryZero.import tmp_arr
+        #TemporaryZero.import tmp_arr
         ZeroFindCheckInfo.destroy_all
         ZeroFindCheckInfo.import tmp_arr
-        TemporaryZero.destroy_all
+        #TemporaryZero.destroy_all
         result[:message] = "import success for zero_find_check_info"
       rescue => e
         logger.info e
         result[:message] = "error for zero ===#{e}"
+      end
       end
     else
       result[:message] = "import failure for zero_find_check_info"
@@ -118,6 +122,7 @@ class UploadFileController < ApplicationController
     if resutl_format_data[:status] == true
       tmp_arr = []
       doc_ids = Document.all.collect(&:doc_id)
+	NormalImportPriceLessRecord.transaction do
       begin
 
         resutl_format_data[:data].each do |row|
@@ -144,14 +149,15 @@ class UploadFileController < ApplicationController
             tmp_arr << niplr
           end
         end
-        TemporaryNormal.import tmp_arr
+        #TemporaryNormal.import tmp_arr
         NormalImportPriceLessRecord.destroy_all
         NormalImportPriceLessRecord.import tmp_arr
-        TemporaryNormal.destroy_all
+        #TemporaryNormal.destroy_all
         result[:message] = "import success for normal_import_price_less_record"
       rescue => e
         logger.info e
         result[:message] = "error for normal"
+      end
       end
     else
       result[:message] = "import failure for normal_import_price_less_record"
@@ -167,6 +173,8 @@ class UploadFileController < ApplicationController
       tmp_arr = []
       test_arr = []
       doc_ids = Document.all.collect(&:doc_id)
+      ImportMostTimeOrgDocInfo.transaction do
+      begin
       resutl_format_data[:data].each do |row|
         ImportMostTimeOrgDocInfo.new do |imtodi|		
           imtodi.declarations_number = row[0]
@@ -187,11 +195,15 @@ class UploadFileController < ApplicationController
           tmp_arr << imtodi
         end
       end
-      TemporaryImport.import tmp_arr
+      #TemporaryImport.import tmp_arr
       ImportMostTimeOrgDocInfo.destroy_all
       ImportMostTimeOrgDocInfo.import tmp_arr
-      TemporaryImport.destroy_all
+      #TemporaryImport.destroy_all
       result[:message] = "import success for import_most_time_org_doc_info"
+      rescue => e
+	logger.info e
+      end
+      end
     else
       result[:message] = "import failure for import_most_time_org_doc_info"
     end
@@ -203,7 +215,7 @@ class UploadFileController < ApplicationController
     result_info = {}
     upload_result = upload(upload_file_name)
     if upload_result[:status] == true
-      file_url = File.join(Rails.root,"public","docview","export_data",upload_file_name.original_filename)
+      file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
       begin
         result = format_data(file_url)
         result_info[:message]="return_format_data for success"
@@ -307,10 +319,10 @@ class UploadFileController < ApplicationController
     def upload_file_to_server(file)
       if !file.original_filename.empty?
         filename = file.original_filename
-        filepath = "#{Rails.root.to_s}/public/docview/export_data/#{filename}"
-        if Dir.entries("#{Rails.root.to_s}/public/docview/export_data/").include?(filename)
-          #system("rm -f #{Rails.root.to_s}/public/docview/export_data/#{filename}")
-        end
+	tmp_file_path = Rails.root.join("public","docview","export_data",params[:url_time_path])
+	system("mkdir #{tmp_file_path}")
+        filepath = File.join(tmp_file_path,filename)
+
         File.open(filepath, "wb") do |f|
           f.write(file.read)
         end

@@ -24,6 +24,26 @@ $.Model('Docview.Models.User',
             dataType : 'json user.models'
         })
     },
+    getDialog : function(params, success, error) {
+        return $.ajax({
+            url: '/get_dialog',
+            type: 'get',
+            data : params,
+            dataType: 'json',
+            success: success,
+            error: error
+        });
+    },
+    setDialog : function(params, success, error) {
+        return $.ajax({
+            url: '/set_dialog',
+            type: 'get',
+            data : params,
+            dataType: 'json',
+            success: success,
+            error: error
+        });
+    },
     findOne: function(id, success, error) {
         return $.ajax({
             url: '/accounts/' + id,

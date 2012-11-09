@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>dialog Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <button id="buttonTest">测试</button>
+    <div id="dialog-test">  </div>
+  </div>
+  </div>
+  <div id='show_dialog' title="后台运行中。。。。。"></div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/dialog').then(function($) {
+    var dialog_id = "#show_dialog";
+    $('#dialog-test').docview_ui_dialog({dialog_id: dialog_id});
+    var controller = $('#dialog-test').controller();
+    $("#buttonTest").click(function() {
+	controller.openDialog(dialog_id,'hello world!');
+	setTimeout(function(){
+		controller.closeDialog(dialog_id);
+		},12000);
+    });
+ }); 
+ </script>
+        </body>
+</html>
+

@@ -1,7 +1,11 @@
 Dms::Application.routes.draw do
 
-  get "/admin/show_docs" => "admin#show_docs"
 
+  get 'set_dialog' => 'settings#set_dialog'
+
+  get 'get_dialog' => 'settings#get_dialog'
+
+  get "/admin/show_docs" => "admin#show_docs"
 
   post "/comments/commit" => "comments#commit"
   post "/comments/pagetype" => "comments#create_page_type"
