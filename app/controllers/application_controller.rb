@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   private
   def load_layout
     if user_signed_in? && current_user.username == "admin"
-	redirect_to "/admin/update_system"
+      return true;
     else
 	redirect_to "/"
     end

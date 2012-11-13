@@ -1,6 +1,7 @@
 #encoding=utf-8
 class AdminController < ApplicationController
 
+  before_filter :load_layout
   def show_docs
     @docs = Document.all
 
