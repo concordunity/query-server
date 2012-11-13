@@ -101,6 +101,9 @@ steal(
 	    if (mode == 'multi') {
 		return 'multi'
 	    }
+	    if (mode == 'show_doc') {
+		return 'show_doc'
+	    }
 
 	    return '';
 	},

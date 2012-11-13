@@ -33,7 +33,7 @@ steal(
             var state = new $.Observe({
                 search: { filters: [], ids: [] },
                 access: { manage_docs: { print: true, testify: true } },
-                searchMode: 'multi',
+                searchMode: 'show_doc',
 		returnHistory: "return-show-docs"
             });
             $('#detail-show-docs').docview_ui_details({ clientState: state });
