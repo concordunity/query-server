@@ -19,9 +19,13 @@ steal(
 ).then(
 	'docview/bootstrap/bootstrap.css',
 	'docview/ui/search_some_condition/views/search_some_condition.css' 
+).then(
+	'docview/ui/search_some_condition/thinkaway.scroller.js',
+	'./thinkaway.scroller.js'
 ).then(function($) {
 	$.Controller('Docview.Ui.search_some_condition', {}, {
 		init : function() {
+			//console.log("   intit    =====");
 			new LabelChinese().initLabelSettings();
 
 			this.element.html(this.view('init'));
@@ -58,6 +62,10 @@ steal(
 			$("#search_results").show();
 			$("#second_results").html("");
 			$("#second_results").show();
+			//scroll to view ..
+			Scroller.scrollTo('search_results',800);
+
+
 		},
 		".normal-import-record click" : function(el,ev){
 			this.options.clientState.attr('searchMode', 'high-risk');
@@ -67,6 +75,9 @@ steal(
 			{});
 			$("#search_results").show();
 			$("#second_results").hide();
+			
+			
+			Scroller.scrollTo('search_results',800);
 		},
 
 		".import-most-time click" : function(el,ev){
@@ -77,6 +88,8 @@ steal(
 			{});
 			$("#search_results").show();
 			$("#second_results").hide();
+			//scroll to view ..
+			Scroller.scrollTo('search_results',800);
 		},
 		show_search_result : function(data){
 		},
@@ -102,7 +115,8 @@ steal(
 		var controller = $('#search_results').controller();
 		controller.setModelData(data);	   
 		*/
-
+	        //alert("----");	
+		//console.log("===========");
 		$("#search_results").html(this.view('zero_find_check_info',data));
 		var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 
@@ -175,6 +189,10 @@ steal(
 		};
 		$("#search_results").html(this.view('normal_import_price_less_record',data));
 		var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
+		
+		//
+		//console.info("I'm in ..");
+		//
 
 		this.element.find('div#search_results table').dataTable({
 			"sDom": dmstable_params,
@@ -243,6 +261,8 @@ steal(
 			}
 			$("#search_results").html(this.view('import_most_time_org_doc_info',data));
 			var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
+			
+			//console.info('OK');
 
 			this.element.find('div#search_results table').dataTable({
 				"sDom": dmstable_params,
