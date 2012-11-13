@@ -6,16 +6,20 @@ class SettingsController < ApplicationController
 
 
   def set_dialog
-	dialog_path = Rails.root.join("public","docview","export_data",params[:full_name].gsub(/\s+/,"_"))
+	dialog_path = Rails.root.join("public","docview","export_data",current_user.username)
 	system("touch #{dialog_path}")
 	render json: {status: 200} 
   end
 
   def get_dialog
-	dialog_path = File.join(Rails.root,"public","docview","export_data",params[:full_name].gsub(/\s+/,"_"))
+	dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
 	dialog_tag = File.exists?(dialog_path)
+	result = ""
+	File.open(dialog_path,"r") do |f|
+	    result << f.read
+	end
 	system("rm #{dialog_path}")
-	render json: {status: 200,message: dialog_tag} 
+	render json: {status: 200,message: dialog_tag, result: result} 
   end
 
   def index

@@ -15,7 +15,6 @@ steal(
         init : function() {
 	   this.dialog_id = "#show_dialog";
 	   this.dialog_user = this.options.clientState.attr("user").fullname; 
-	   //console.log(this.dialog_user);
 	   $('#dialog').docview_ui_dialog({dialog_id: this.dialog_id});
 	   this.dialogController = $('#dialog').controller();
            this.element.html(this.view('init'));
@@ -46,7 +45,6 @@ steal(
 	"form[name='upfile_form'] submit" : function(el,ev){
 	    ev.preventDefault();
 	    var upload_file = $("#upload_file");
-	    //console.log(upload_file);
 	},
 */
         show : function() {
@@ -110,22 +108,12 @@ steal(
 			val_file_3 = false;	
 		}
 		
-		console.log(upload_file);
-		console.log(upload_file_1);
-		console.log(upload_file_2);
-		console.log(val_file_1);
-		console.log(val_file_2);
-		console.log(val_file_3);
-
 		if (val_file_1 && val_file_2 && val_file_3) {
 			this.showMessage("上传失败:文件命名不规范，请选择要上传的文件");
                         return false;
 		}
 */
 		var result = {status:true, message: []};
-		//console.log(upload_file);
-		//console.log(upload_file_1);
-		//console.log(upload_file_2);
 
 		result = this.getUploadInfo(upload_file,result);
 		result = this.getUploadInfo(upload_file_1,result);
@@ -157,6 +145,7 @@ steal(
 				getDialogStatus({full_name: that.dialog_user});
 				},2000);
 			}
+			that.showMessage(data.result);
 			that.dialogController.closeDialog(that.dialog_id);
 		},{});	
 	},

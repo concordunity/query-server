@@ -200,3 +200,9 @@ padding-top: 20px;
 	position: relative;
     	overflow: hidden;
 }
+.docview_ui_dmstable table [class*=span],
+.row-fluid .docview_ui_dmstable table [class*=span] {
+  display: table-cell;
+  float: left;
+  margin-left: 0;
+}

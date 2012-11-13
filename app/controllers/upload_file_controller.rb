@@ -26,7 +26,6 @@ class UploadFileController < ApplicationController
             @user.password = 123456
             @user.save
           else
-            logger.info(row)
             @user = User.new
             @user.username = row[0] 
             @user.fullname = row[1] 
@@ -61,12 +60,24 @@ class UploadFileController < ApplicationController
     params[:url_time_path] = Time.now.to_i.to_s
     params[:doc_ids] = Document.all.collect(&:doc_id)
 
-    zfci = zero_find_check_info(params[:upload_file])
-    niplr = normal_import_price_less_record(params[:upload_file_1])
-    imtodi = import_most_time_org_doc_info(params[:upload_file_2])
-    result[:message] << zfci[:message]
-    result[:message] << niplr[:message]
-    result[:message] << imtodi[:message]
+    begin
+    	zfci = zero_find_check_info(params[:upload_file])
+	niplr = normal_import_price_less_record(params[:upload_file_1])
+	imtodi = import_most_time_org_doc_info(params[:upload_file_2])
+	result[:message] << zfci[:message]
+	result[:message] << niplr[:message]
+	result[:message] << imtodi[:message]
+	dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
+        if (!params[:upload_file].nil? && zfci[:status] == false) || (!params[:upload_file_1].nil? && niplr[:status] == false) || (!params[:upload_file_2].nil? && imtodi[:status] == false)
+	    write_to_file(dialog_path,"导入失败,请查检上传文档格式是否正确")
+	elsif (zfci[:status] == false && niplr[:status] == false && imtodi[:status] == false)
+	    write_to_file(dialog_path,"导入失败,请查检上传文档格式是否正确")
+        else
+	    write_to_file(dialog_path,'导入成功')
+	end
+    rescue => e
+	write_to_file(dialog_path,'2导入失败,请查检上传文档格式是否正确')
+    end
     render :nothing => true 
     #render json: {:status => 200,:message => result}
   end
@@ -77,9 +88,9 @@ class UploadFileController < ApplicationController
     if resutl_format_data[:status] == true
       tmp_arr = []
       doc_ids = params[:doc_ids] 
-      ZeroFindCheckInfo.transaction do
 
       begin 
+      ZeroFindCheckInfo.transaction do
         resutl_format_data[:data].each do |row|
           ZeroFindCheckInfo.new do |zfci|
             zfci.business_units_number = row[0]
@@ -105,14 +116,16 @@ class UploadFileController < ApplicationController
         ZeroFindCheckInfo.delete_all
         ZeroFindCheckInfo.import tmp_arr
         #TemporaryZero.destroy_all
-        result[:message] = "import success for zero_find_check_info"
+        result[:message] = "成功导入‘查获率为0的重点查验企业’表"
+      end
       rescue => e
         logger.info e
-        result[:message] = "error for zero ===#{e}"
-      end
+	result[:status] = false
+        result[:message] = "'查获率为0的重点查验企业'表，导入失败，请检查下文档格式"
       end
     else
-      result[:message] = "import failure for zero_find_check_info"
+      result[:status] = false
+      result[:message] = "'查获率为0的重点查验企业'表，导入失败，请检查下文档格式"
     end
 
     return result	
@@ -124,9 +137,8 @@ class UploadFileController < ApplicationController
     if resutl_format_data[:status] == true
       tmp_arr = []
       doc_ids = params[:doc_ids] 
-	NormalImportPriceLessRecord.transaction do
       begin
-
+	NormalImportPriceLessRecord.transaction do
         resutl_format_data[:data].each do |row|
           NormalImportPriceLessRecord.new do |niplr|
 
@@ -156,14 +168,15 @@ class UploadFileController < ApplicationController
         NormalImportPriceLessRecord.delete_all
         NormalImportPriceLessRecord.import tmp_arr
         #TemporaryNormal.destroy_all
-        result[:message] = "import success for normal_import_price_less_record"
+	result[:message] = "成功导入'一般贸易进口价格偏低报关单记录文档'表"
+      end
       rescue => e
         logger.info e
-        result[:message] = "error for normal"
-      end
+	result[:status] = false
+	result[:message] = "'一般贸易进口价格偏低报关单记录文档'表，导入失败，请检查下文档格式"
       end
     else
-      result[:message] = "import failure for normal_import_price_less_record"
+      result[:message] = "'一般贸易进口价格偏低报关单记录文档'表，导入失败，请检查下文档格式"
     end
 
     return result
@@ -176,39 +189,41 @@ class UploadFileController < ApplicationController
       tmp_arr = []
       test_arr = []
       doc_ids = params[:doc_ids] 
-      ImportMostTimeOrgDocInfo.transaction do
       begin
-      resutl_format_data[:data].each do |row|
-        ImportMostTimeOrgDocInfo.new do |imtodi|		
-          imtodi.declarations_number = row[0]
-          imtodi.mode_transport = row[1]
-          test_arr << row[2]
-          imtodi.release_time = (row[2]).strftime("%Y-%m-%d %H:%M:%S")
-          imtodi.accept_declaration_time = (row[3]).strftime("%Y-%m-%d %H:%M:%S")
-          imtodi.overall_operating_hours_hours = row[4]
-          imtodi.declaration_customs_code = row[5]
-          imtodi.declaration_customs = row[6]
-          imtodi.org_applied=row[0][0,4]
-          imtodi.exists_in_system = false
-          if doc_ids.include?(imtodi.declarations_number.to_s)
-            imtodi.exists_in_system = true
-          end
-
-          #imtodi.save
-          tmp_arr << imtodi
-        end
-      end
-      #TemporaryImport.import tmp_arr
-      ImportMostTimeOrgDocInfo.delete_all
-      ImportMostTimeOrgDocInfo.import tmp_arr
-      #TemporaryImport.destroy_all
-      result[:message] = "import success for import_most_time_org_doc_info"
+          ImportMostTimeOrgDocInfo.transaction do
+	      resutl_format_data[:data].each do |row|
+	          ImportMostTimeOrgDocInfo.new do |imtodi|		
+	              imtodi.declarations_number = row[0]
+		      imtodi.mode_transport = row[1]
+		      test_arr << row[2]
+		      imtodi.release_time = (row[2]).strftime("%Y-%m-%d %H:%M:%S")
+		      imtodi.accept_declaration_time = (row[3]).strftime("%Y-%m-%d %H:%M:%S")
+		      imtodi.overall_operating_hours_hours = row[4]
+		      imtodi.declaration_customs_code = row[5]
+		      imtodi.declaration_customs = row[6]
+		      imtodi.org_applied=row[0][0,4]
+		      imtodi.exists_in_system = false
+		      if doc_ids.include?(imtodi.declarations_number.to_s)
+		          imtodi.exists_in_system = true
+		      end
+		      #imtodi.save
+		      tmp_arr << imtodi
+                  end
+	      end
+	      #TemporaryImport.import tmp_arr
+	      ImportMostTimeOrgDocInfo.delete_all
+	      ImportMostTimeOrgDocInfo.import tmp_arr
+	      #TemporaryImport.destroy_all
+      	      result[:message] = "成功导入'进口通关时间超长报关单文档'表"
+         end
       rescue => e
 	logger.info e
-      end
+	result[:status] = false
+	result[:message] = "'进口通关时间超长报关单文档'表，导入失败，请检查下文档格式"
       end
     else
-      result[:message] = "import failure for import_most_time_org_doc_info"
+      result[:status] = false
+      result[:message] = "'进口通关时间超长报关单文档'表，导入失败，请检查下文档格式"
     end
 
     return result
@@ -221,16 +236,16 @@ class UploadFileController < ApplicationController
       file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
       begin
         result = format_data(file_url)
-        result_info[:message]="return_format_data for success"
+        result_info[:message]="数据整合成功"
         result_info[:status] = true
         result_info[:data] = result
       rescue
-        result_info[:message]="return_format_data for error"
+        result_info[:message]="数据整合失败"
         result_info[:status] = false
         result_info[:data] = []
       end
     else
-      result_info[:message]="upload file for error"
+      result_info[:message]="上传文件失败"
       result_info[:status] = false
       result_info[:data] = []
     end
@@ -333,4 +348,9 @@ class UploadFileController < ApplicationController
       end
     end
 
+    def write_to_file(filepath,content)
+      File.open(filepath, "wb") do |f|
+        f.write(content)
+      end
+    end
   end

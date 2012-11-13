@@ -155,7 +155,7 @@ Document.prototype.getJsonString = function () {
 	}
     }
     var ret = $.toJSON({T_blog: T_blog});
-    console.log(ret);
+   // console.log(ret);
     return ret;
 }
 
