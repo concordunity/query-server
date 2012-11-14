@@ -65,7 +65,7 @@ steal(
 	    
         },
 	'li a.edit-tag click' : function (el, ev) {
-	    console.log("processing clicking .... ");
+	    //console.log("processing clicking .... ");
 	    ev.preventDefault();
 	    this.modal = this.element;
             this.modal.dialog({
