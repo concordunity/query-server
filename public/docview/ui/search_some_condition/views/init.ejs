@@ -13,7 +13,7 @@
 				</td>
 				<td>
 					<div>
-						<button type="button" class="find-zero-rate btn btn-primary" ><%= $.i18n._('btn.search')  %></button>
+						<button type="button" class="find-zero-rate btn btn-primary"  data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button>
 					</div>
 				</td>
 			</tr>
@@ -27,7 +27,7 @@
 				<td><%== $.View("//docview/ui/views/org.ejs",{ label: '', name : 'normal_org_applied'})%>
 				</td>
 				<td>
-					<div><button type="button" class="normal-import-record btn btn-primary" ><%= $.i18n._('btn.search')  %></button></div>
+					<div><button type="button" class="normal-import-record btn btn-primary"  data-loading-text="Search...." autocomplete="off" ><%= $.i18n._('btn.search')  %></button></div>
 				</td>
 			</tr>
 			<tr>
@@ -40,7 +40,7 @@
 				<td><%== $.View("//docview/ui/views/org.ejs",{ label: '', name : 'import_org_applied'})%>
 				</td>
 				<td>
-					<div><button type="button" class="import-most-time btn btn-primary" ><%= $.i18n._('btn.search')  %></button></div> 
+					<div><button type="button" class="import-most-time btn btn-primary"  data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
 				</td>
 			</tr>
 		</table>

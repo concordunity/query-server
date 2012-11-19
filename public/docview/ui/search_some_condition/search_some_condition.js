@@ -53,8 +53,9 @@ steal(
 			}
 		},
 		".find-zero-rate click" : function(el,ev){
+			ev.preventDefault();	
 			this.options.clientState.attr('searchMode', 'high-risk');
-
+			$(el).find('.btn-primary').button('loading');
 			$("#search_results").hide();
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"zero_find_check_info","org_applied":$("select[name='zero_org_applied']").val()},
 			this.proxy("find_zero_rate"),
@@ -145,6 +146,7 @@ steal(
 			});
 			$('#search_pages').docview_ui_paging('showPages',data); 
 			this.setTagVal("zero_find_check_info"); 
+			$('.find-zero-rate').button('reset');
 		},
 		normal_import_record : function(data){
 		/*
