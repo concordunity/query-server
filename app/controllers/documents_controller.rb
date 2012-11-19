@@ -252,7 +252,7 @@ class DocumentsController < ApplicationController
       end
 
       if res.match(/System busy/)
-        render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
+        render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 401 
         return
       end
 

@@ -308,6 +308,8 @@ steal(
 		message = '系统安全子系统未初始化，请联系管理员。';
 	    } else if (jqXHR.status == 400) {
                 message = '系统内部错误： 无法获取单证电子图像。';
+	    } else if (jqXHR.status == 401) {
+                message = '系统内部错误： 系统繁忙，请稍后再试。';
             }
             this.options.clientState.attr('alert', {
                 type: t,
