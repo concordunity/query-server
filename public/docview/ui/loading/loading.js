@@ -15,10 +15,10 @@ steal(
 	   ev.preventDefault();
 	   $(el).button("loading");
 	   window.setTimeout(function(){
-		console.log(' =====1');
+		//console.log(' =====1');
 		$(el).button("reset");	
 		},3000);
-	   console.log("====2");
+	   //console.log("====2");
 	   
 	},
         show : function() {

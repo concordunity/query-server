@@ -297,6 +297,10 @@ steal(
                 return true;
             }
 
+	    //progress loading ..
+	    $('.advanced button[type=submit]').button('loading');
+	    $.createMask();
+
 	    var maxn = 50;
 	    $.ajax({
 		url: '/settings',
@@ -351,6 +355,7 @@ steal(
                 isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
+
         },
 	
 	'div.well div.personal_history form submit' : function(el, ev) {

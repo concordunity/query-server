@@ -7,6 +7,7 @@ steal(
     './views/init.ejs',
     'docview/ui/dmstable',
     'docview/models',
+    'docview/ui/select_page',
     'docview/ui/queryform'
 ).then(function($) {
     $.Controller('Docview.Ui.Export_query', {}, {
@@ -22,6 +23,8 @@ steal(
 	    };
 	    this.element.find('div.well').docview_ui_queryform({formParams: formParams});
 	    this.tableController = undefined;
+	   // $("#select-pages").docview_ui_select_page();
+	   // this.selectPageController = $("#select-pages").controller();
         },
 
 	'form.stats_export submit' : function(el, ev) {
@@ -37,7 +40,9 @@ steal(
 	    //console.log(data.results);
 		var table_options = {
 		    file_name: "",
-		    aaData: data.results,
+		    aaData: [],
+		   bProcessing:true, 
+		   // aaData: data.results,
 		    col_def_path : "//docview/ui/export_query/views/",
 		    aoColumns: [
 			{"mDataProp" : "doc_id", mLabel : '单证号' },

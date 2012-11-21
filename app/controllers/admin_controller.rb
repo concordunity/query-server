@@ -3,8 +3,8 @@ class AdminController < ApplicationController
 
   before_filter :load_layout
   def show_docs
-    @docs = Document.all
-
+    #@docs = Document.all
+	@docs = DocComment.all
     logger.info params[:asy]
     if params[:asy] == "true"
       logger.info "======"

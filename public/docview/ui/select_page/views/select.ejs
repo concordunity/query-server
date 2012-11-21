@@ -1,0 +1,5 @@
+<select>
+   <% for(var i=0;i<this.length;i++){%>
+   <option data-start-index='<%= this[i][0]%>' data-end-index='<%= this[i][1]%>' ><%= this[i][0] + "~" + this[i][1]%></option>
+   <%}%>
+</select>

@@ -11,7 +11,9 @@
 //    'docview/ui/details',
     'docview/login'
 ).then(
-    'libs/jquery.i18n.min.js'
+    'docview/bootstrap/bootstrap-button.js',
+    'libs/jquery.i18n.min.js',
+    'libs/jquery.mask.js'
 ).then(
     'docview/label_zh_CN.js'
 ).then(

@@ -87,6 +87,8 @@ steal(
                      "sUrl" : "media/language/ch_ZN.txt"
                  }
             });
+	    $('.advanced button[type=submit]').button('reset');
+	    $.closeMask();
         },
         'td a click': function(el, ev) {
             ev.preventDefault();
