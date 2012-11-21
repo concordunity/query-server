@@ -25,20 +25,7 @@ steal(
 	    this.tableController = undefined;
 	   // $("#select-pages").docview_ui_select_page();
 	   // this.selectPageController = $("#select-pages").controller();
-        },
-
-	'form.stats_export submit' : function(el, ev) {
-	    ev.preventDefault();
-	    if (this.tableController != undefined) {
-		this.tableController.clearData();
-	    }
-	    Docview.Models.File.findPendingDocuments({org_applied : el.find('select[name="org_applied"]').val()}, this.proxy('handleData'),
-						     this.proxy('handleError'));
-	},
-	handleData : function (data) {
-	    if (this.tableController == undefined) {
-	    //console.log(data.results);
-		var table_options = {
+	    var table_options = {
 		    file_name: "",
 		    aaData: [],
 		   bProcessing:true, 
@@ -49,17 +36,27 @@ steal(
 			{"mDataProp" : "edc_date", mLabel : '借出日期' }
 		    ],
 		    col_width: [0,0,0]
-		};
+	    };
 		
-		this.element.find('.export_results').docview_ui_dmstable({ table_options: table_options });
-		this.tableController = this.element.find('.export_results').controller();
-	    } else {
-	    
-		this.tableController.setModelData(data.results);
+	    this.element.find('.export_results').docview_ui_dmstable({ table_options: table_options });
+	    this.tableController = this.element.find('.export_results').controller();
+        },
 
+	'form.stats_export submit' : function(el, ev) {
+	    ev.preventDefault();
+	    if (this.tableController != undefined) {
+		this.tableController.clearData();
 	    }
+	    $.createMask();
+	    Docview.Models.File.findPendingDocuments({org_applied : el.find('select[name="org_applied"]').val()}, this.proxy('handleData'),
+						     this.proxy('handleError'));
+	},
+	handleData : function (data) {
+		this.tableController.setModelData(data.results);
+		$.closeMask();
 	},
 	handleError: function (jqstatus, error) {
+		$.closeMask();
 	},
         show : function() {
         }

@@ -58,27 +58,26 @@ steal(
 			$(el).find('.btn-primary').button('loading');
 			$("#search_results").hide();
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"zero_find_check_info","org_applied":$("select[name='zero_org_applied']").val()},
-			this.proxy("find_zero_rate"),
-			{});
+			this.proxy("find_zero_rate"),function(){
+				$.closeMask();
+			});
 			$("#search_results").show();
 			$("#second_results").html("");
 			$("#second_results").show();
-			//scroll to view ..
-			Scroller.scrollTo('search_results',800);
-
-
+			//loading ..
+			$.createMask();
 		},
 		".normal-import-record click" : function(el,ev){
 			this.options.clientState.attr('searchMode', 'high-risk');
 			$("#search_results").hide();
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"normal_import_price_less_record","org_applied":$("select[name='normal_org_applied']").val()},
-			this.proxy("normal_import_record"),
-			{});
+			this.proxy("normal_import_record"),function(){
+				$.closeMask();
+			});
 			$("#search_results").show();
 			$("#second_results").hide();
 			
-			
-			Scroller.scrollTo('search_results',800);
+			$.createMask();	
 		},
 
 		".import-most-time click" : function(el,ev){
@@ -86,11 +85,12 @@ steal(
 			$("#search_results").hide();
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"import_most_time_org_doc_info","org_applied":$("select[name='import_org_applied']").val()},
 			this.proxy("import_most_time"),
-			{});
+			function(){
+				$.closeMask();
+			});
 			$("#search_results").show();
 			$("#second_results").hide();
-			//scroll to view ..
-			Scroller.scrollTo('search_results',800);
+			$.createMask();
 		},
 		show_search_result : function(data){
 		},
@@ -147,6 +147,10 @@ steal(
 			$('#search_pages').docview_ui_paging('showPages',data); 
 			this.setTagVal("zero_find_check_info"); 
 			$('.find-zero-rate').button('reset');
+			//unmask , loading success .
+			$.closeMask();
+			//scroll to view ..	
+			Scroller.scrollTo('search_results',800);
 		},
 		normal_import_record : function(data){
 		/*
@@ -193,7 +197,7 @@ steal(
 		var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 		
 		//
-		//console.info("I'm in ..");
+		console.info("I'm in ..");
 		//
 
 		this.element.find('div#search_results table').dataTable({
@@ -220,7 +224,10 @@ steal(
 				}
 			});
 			$('#search_pages').docview_ui_paging('showPages',data); 
-			this.setTagVal("normal_import_price_less_record"); 
+			this.setTagVal("normal_import_price_less_record");
+			 
+			Scroller.scrollTo('search_results',800);
+			$.closeMask();
 		},
 		import_most_time : function(data){
 		/*
@@ -293,6 +300,8 @@ steal(
 
 				$('#search_pages').docview_ui_paging('showPages',data); 
 				this.setTagVal("import_most_time_org_doc_info"); 
+				Scroller.scrollTo('search_results',800);
+				$.closeMask();
 			},
 			'li a.docview-paging click' : function(el,ev) { 
 				ev.preventDefault();

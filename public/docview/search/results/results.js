@@ -125,6 +125,7 @@ steal(
 		message : message
 	    });
             //console.log("[Error]", data);
+	    $.closeMask();
         },
 
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {

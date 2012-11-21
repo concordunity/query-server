@@ -208,6 +208,7 @@ steal(
                     years:years
                 };
                 //console.log(select_hash);
+		$.createMask();
                 $.ajax({
                     url : '/document_histories/dh_report',
                     type : 'post',
@@ -238,7 +239,8 @@ steal(
                 });
             },
             show_stats :function (data) {
-                var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
+               	$.closeMask();
+		 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
                 if (this.element.find('select[name="groupby"]').val() == '4') {
 		
                     dmstable_params = "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
@@ -368,6 +370,7 @@ steal(
                     heading: h,
                     message : message
                 });
+		$.closeMask();
             }
 
         });

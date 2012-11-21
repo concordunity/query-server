@@ -254,7 +254,7 @@ steal(
 	    $('#search-results').docview_search_results('clearResults');
 	    this.setFilters(el);
             this.options.clientState.attr('searchMode', 'by_doc_source');
-
+	    $.createMask();
 	    var cntrl = this.element.find('div.daterange-holder-src').controller();
 	    var dates = cntrl.getInputs(el);
 	    if (dates === "") {
@@ -271,6 +271,8 @@ steal(
 		years : el.find('select[name="years"]').val(),
 		filters: this.filters
 	    });
+	    //loading ..`:wq
+
 	},
         '.advanced submit': function(el, ev) {
             this.removeFormErrors(el);
@@ -311,6 +313,7 @@ steal(
 		    maxn = parseInt(data.maxn);
 		},
 		error : function() {
+			$.closeMask();
 		}
 	    });
 

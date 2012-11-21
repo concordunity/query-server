@@ -36,7 +36,8 @@ steal(
 	    this.lastEl = undefined;
 	},
 	query : function(params) {
-	    $.ajax({
+		$.createMask();
+		$.ajax({
 		url: '/qh/query_search',
 		type: 'post',
 		data: params,
@@ -59,7 +60,8 @@ steal(
 	    }
 	},
 	queryDocHistory : function(params) {
-	    $.ajax({
+	    	$.createMask();
+		$.ajax({
 		url: '/dh/query_search',
 		type: 'post',
 		data: params,
@@ -108,9 +110,12 @@ steal(
                     "sUrl" : "media/language/ch_ZN.txt"
                  }
             });
+	    
+	    $.closeMask();
 	},
 	failure : function(jqXHR, textStatus, errorThrown) {
 	    this.handleCommonFailure(jqXHR, textStatus, errorThrown, this.options);
+	    $.closeMask();
 	}
     });
 });
