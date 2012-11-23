@@ -139,10 +139,13 @@ steal(
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
 	    if (doc) {
 		Docview.Models.File.commitComments(doc.getDocId(), doc.getJsonString(),
-						   this.proxy("commitOk"));
+						   this.proxy("commitOk"),this.proxy("commitError"));
 	    }
 	},
 	commitOk : function(data) {
+	},
+	commitError : function(data) {
+	    
 	},
 	'.print-all click' :function (el, ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));

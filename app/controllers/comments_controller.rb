@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
   respond_to :json
 
   @@pageType = {
+    0 => "此页单证类型标识有误",
     1 => "合同",
     2 => "发票",
     3 => "装箱清单",
@@ -108,14 +109,17 @@ class CommentsController < ApplicationController
     script_file = File.expand_path('~/bin/update_json.sh')
     
     if is_regular
-      logger.info("#{script_file} #{tmp_path}  #{doc_id}")
-      system("#{script_file} #{tmp_path}  #{doc_id}")
 
-      DocComment.where(:doc_id => params[:doc_id]).each  {
-        |d|
-        d.state = 1
-        d.save
-      }
+      doc = Document.where(:doc_id => params[:doc_id]).first
+      if doc
+          logger.info("#{script_file} #{tmp_path} #{doc.folder_id}  #{doc_id}")
+	  system("#{script_file} #{tmp_path} #{doc.folder_id} #{doc_id}")
+
+	  DocComment.where(:doc_id => params[:doc_id]).each  {|d|
+		  d.state = 1
+			  d.save
+	  }
+      end
     else
       m = ModifiedDocument.find_by_doc_id(doc_id)
       if m

@@ -11,6 +11,7 @@ steal(
     'docview/docview.css',
     'docview/bootstrap/bootstrap.min.js',
     'docview/ui/comments',
+    'docview/ui/errorcomment',
     'libs/iviewer/jquery.mousewheel.min.js'
 ).then (
     './views/viewer.ejs',
@@ -26,7 +27,7 @@ steal(
     {
         init: function() {
             this.element.html(this.view('viewer',
-					{doc_rights : this.options.clientState.attr('access').attr('manage_docs')}));
+					{doc_rights : this.options.clientState.attr('access').attr('manage_docs'), searchMode : this.options.clientState.attr("searchMode")}));
 	    this.currentPageInfo = undefined;
 
 	    this.courtMode = false;
@@ -39,6 +40,7 @@ steal(
 
 	    this.pluginCreated = false;
 	    this.commentsController = undefined;
+	    this.errorCommentController = undefined;
 
 	    // this.element.find('.dropdown').hide();
         },
@@ -91,6 +93,16 @@ steal(
 	    this.options.docManager.updateCommentData(data);
 	    this.displayCommentsControl({code: data.subcode,
 					 label : data.info});
+	},
+	'li.error-comments click' : function(el, ev) {
+	    ev.preventDefault();
+	    if (this.errorCommentController) {
+		this.errorCommentController.setCommentsUI(this.currentPageInfo);
+	    } else {
+		$('#comments').docview_ui_errorcomment({pageInfo: this.currentPageInfo,
+						    controller : this});
+		this.errorCommentController = $('#comments').controller();
+	    }
 	},
 	'li.comments click' : function(el, ev) {
 	    ev.preventDefault();

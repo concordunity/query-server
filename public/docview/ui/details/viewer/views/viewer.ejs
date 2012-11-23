@@ -5,7 +5,11 @@
         <a href="#">&larr; 前一页</a>
       </li>
 <li id="pageno"></li>
+<% if (this.searchMode == 'show_doc'){%>
 <li class="comments"><a href="#">我要反馈</a> </li>
+<% }else{ %>
+<li class="error-comments"><a href="#">反馈意见</a> </li>
+<% } %>
       <li class="next">
         <a href="#">后一页 &rarr;</a>
       </li>
