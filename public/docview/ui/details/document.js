@@ -53,12 +53,13 @@ function Document(docInfo, filters) {
         subgroup.push(images[i].FN);
 	this.pageTypes.push(pt);
         this.pages.push(images[i].FN);
-	this.originalIndices.push(i);
+	var org_num = this.originalIndices.length;
+	this.originalIndices.push(org_num);
         if (images[i].BT) {
             subgroup.push(images[i].BT);
 	    this.pageTypes.push(pt);
             this.pages.push(images[i].BT);
-	    this.originalIndices.push(i);
+	    this.originalIndices.push(this.originalIndices.length);
         }
         prevType = pt;
         prevGroupName = images[i].T;
@@ -69,6 +70,7 @@ function Document(docInfo, filters) {
         name: prevGroupName,
         pages: subgroup
     });
+    //console.log(this.originalIndices.join(","));
 }
 
 Document.prototype.deleteCommentData = function(nth) {
