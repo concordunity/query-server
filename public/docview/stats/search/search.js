@@ -173,7 +173,7 @@ steal(
                 })
             },
             showStats : function(data) {
-                this.element.find('.stats_stats').html($.View('//docview/stats/search/views/stats_table', {
+		$('.stats_stats h1.legend-h1 div').append($.View('//docview/stats/search/views/stats_table', {
                     data : data
                 }));
             },

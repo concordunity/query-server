@@ -141,7 +141,7 @@ steal(
 		
 		this.element.find('li.comments').hide();
 		//console.log(this.currentPageInfo);
-		$('#comments').html(this.view('comment', {proposedPageType : proposedPageType}));
+		$('#comments').html(this.view('comment', {proposedPageType : proposedPageType, searchMode : this.options.clientState.attr("searchMode")}));
 	    } else {
 		this.element.find('li.comments').show();
 	    }
@@ -166,7 +166,7 @@ steal(
 	    this.currentPageInfo = pageInfo;
 
 	    $('#comments').html('');
-	    //console.log(pageInfo);
+	    console.log(pageInfo);
 	    //console.log(pageInfo.doc);
 	    //console.log(pageInfo.doc.comments);
 	    //console.log(pageInfo.proposedPageType);

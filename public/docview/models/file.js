@@ -7,7 +7,18 @@ $.Model('Docview.Models.File',
 //	//        //console.log(data);
 //	return this._super(data.results);
 //    },
+    findDocComments : function(params, success, error) {
+        return $.ajax({
+            url : '/find_doc_comments',
+            type : 'get',
+            data : params,
+            success : success,
+            error : error,
+	    async : false,
 
+            dataType : 'json file.models'
+        });
+    },
     uploadFile : function(params, success, error) {
         return $.ajax({
             url : '/upload_file',

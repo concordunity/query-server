@@ -284,7 +284,7 @@ class DocumentsController < ApplicationController
     end
 
     # Needs to find out all comments.
-    comments = DocComment.where({:doc_id => doc_id, :code => 1})
+    comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
 
     #  TODO(weidong): error processing.
     respond_to do |format|

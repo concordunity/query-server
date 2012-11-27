@@ -5,3 +5,4 @@ button.button-option-onblure {background: #0088CC;color: #FFFFFF;}
 button.button-option-onblure:hover {background: #0088CC;color: #FFFFFF;}
 button.button-option {width: 95px;}
 table.search-condition-table tr td {height: 80px;vertical-align: top;}
+input[name=frm_total]{width:50px;}

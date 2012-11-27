@@ -1,4 +1,9 @@
 
 <form class="delete-comment">
-<p> 反馈信息： <%= proposedPageType.label %> <button type="submit" class="btn btn-primary">删除此反馈</button> </p>
+<p> 反馈信息： <%= proposedPageType.label %> 
+<% console.log(this.searchModel)%>
+<%if (searchMode == "show_doc") {%>
+  <button type="submit" class="btn btn-primary">删除此反馈</button>
+<% }%>
+</p>
 </form>

@@ -1,5 +1,6 @@
 Dms::Application.routes.draw do
 
+  get '/find_doc_comments' => 'comments#find_doc_commit'
 
   get 'set_dialog' => 'settings#set_dialog'
 

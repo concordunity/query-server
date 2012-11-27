@@ -10,7 +10,10 @@
 %>
 <%= to_show %></td>
   <td><%= this.data.created_at %>
-<% if (showButtons) { %>
+<%
+
+showButtons = false;
+ if (showButtons) { %>
      <br><button class="btn btn-mini save-docgroup"><i class="icon-star icon-blue"></i>存为单证组</button><button class="btn btn-mini redo-multi"><i class="icon-search icon-blue"></i>重新查阅</button>
 <% } %>
 

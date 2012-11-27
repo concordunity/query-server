@@ -138,8 +138,15 @@ steal(
 	    ev.preventDefault();
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
 	    if (doc) {
-		Docview.Models.File.commitComments(doc.getDocId(), doc.getJsonString(),
+	        var status = true;
+		Docview.Models.File.findDocComments({doc_id : doc.docId},function(data){
+		    status = data.status;
+		    console.log(status);
+		},{});
+		if (status == true) {
+			Docview.Models.File.commitComments(doc.getDocId(), doc.getJsonString(),
 						   this.proxy("commitOk"),this.proxy("commitError"));
+		}
 	    }
 	},
 	commitOk : function(data) {

@@ -144,7 +144,7 @@ class CommentsController < ApplicationController
     c.info = @@pageType[c.subcode]
 
     logger.info "======1"
-    @dc = DocComment.where(:doc_id => c.doc_id, :code => c.code, :state => c.state, :subcode => c.subcode, :page => c.page, :commenter => c.commenter, :info => c.info).first
+    @dc = DocComment.where(:doc_id => c.doc_id, :code => c.code, :state => c.state, :subcode => c.subcode, :page => c.page, :info => c.info).first
 
     logger.info "======2"
     result = {}
@@ -167,4 +167,19 @@ class CommentsController < ApplicationController
     }
     head :no_content
   end
+
+  def find_doc_commit
+      logger.info "=======0"
+      @doc = DocComment.where(:doc_id => params[:doc_id], :state => 0, :subcode => 0).all
+      status = true
+      logger.info @doc.length
+      if @doc.length == 0
+        status = true
+      else
+        status = false;
+      end
+      logger.info "=======1"
+      render json: {:status => status}, :status => 200
+  end
+
 end
