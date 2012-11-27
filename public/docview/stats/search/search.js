@@ -21,7 +21,8 @@ steal(
     )
 //
 .then(
-    'docview/ui/search_condition'
+    'docview/ui/search_condition',
+    'libs/jquery.date.js'
     )
 
 .then(function($) {
@@ -94,7 +95,7 @@ steal(
                     },
                     dataType : 'json',
                     success :function(data){
-			$('.stats_stats h1.legend-h1 div').html('查阅总数为: <b>'+data.query_total+'</b>,查阅率为: <b>'+data.query_p+'</b>');
+			$('.stats_stats h1.legend-h1 div').html('截止到 '+ $.date(new Date).format('yyyy-MM-dd') + '为止,系统中单证电子档案查阅总数为: <b>'+data.query_total+'</b> 份,查阅率为: <b>'+data.query_p+' </b><div id="stats_total" style="display:inline" ></div>');
 		    }, //this.proxy('show_stats'),
                     error : this.proxy('failure')
                 });
@@ -173,7 +174,7 @@ steal(
                 })
             },
             showStats : function(data) {
-		$('.stats_stats h1.legend-h1 div').append($.View('//docview/stats/search/views/stats_table', {
+                this.element.find('.stats_stats').html($.View('//docview/stats/search/views/stats_table', {
                     data : data
                 }));
             },
@@ -275,7 +276,9 @@ steal(
                     this.search_result = data;
                 //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
                 } else {
+		    console.info(data);
                     this.element.find('div.stats_stats').html(this.view('stats_total', data));
+		    $('#stats_total').html('档案总数为: <b>' + data.docs_total + ' </b>份,总计页数为: <b>'+ data.pages_total+'</b> 页');
                 }
                 this.element.find('div.stats_stats table').dataTable({
                     "sDom": dmstable_params,

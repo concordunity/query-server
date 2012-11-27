@@ -8,13 +8,15 @@ class UploadFileController < ApplicationController
 
   def system_upload 
     upload_file_name = params[:upload_user]
+    params[:url_time_path] = Time.now.to_i.to_s
     upload_result = upload(upload_file_name)
     success_count = 0
     result_info = Hash.new
     if upload_result[:status] == true
-      file_url = File.join(Rails.root,"public","docview","export_data",upload_file_name.original_filename)
+      file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
       begin
         result = format_system_data(file_url)
+
         result_info[:message]="return_format_data for success"
         result.each_with_index do |row,index|
           @user = User.find_by_username(row[0])
@@ -315,8 +317,8 @@ class UploadFileController < ApplicationController
 		if row[4] == "出口"
 	        	row[4] = 1 
 		end
-      	    end 
 	    result << row
+      	    end 
 	}	
     return result    
   end

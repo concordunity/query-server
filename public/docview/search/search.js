@@ -64,6 +64,10 @@ steal(
 		if($target.hasClass('in')){
 			$btn.click();
 		}
+	    });
+	   $('form').submit(function(){	
+		var $form = $(this);
+                $form.find('.filters :checked').prop("checked", false);
 	    });	
         },
 
