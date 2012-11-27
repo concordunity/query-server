@@ -47,6 +47,7 @@ steal(
 
                 $("#div_query_form").html(this.view("query_form",{title : "用户查阅历史查询"}));
                 //                $("#div_stats").html(this.view("stats"));
+		//preload ..
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
 		this.element.find('div.stats_query_quota').docview_ui_queryquota();
@@ -80,6 +81,22 @@ steal(
                     dateOptions : {
                         labelString: ""
                     }
+                });
+		//query all stats ..	
+                $.ajax({
+                    url : '/document_histories/dh_report',
+                    type : 'post',
+                    data : {
+                        from_date : '',
+                        to_date : '',
+                        groupby :0, 
+                        condition_value :{from_date:'',to_date:'',groupby:0}
+                    },
+                    dataType : 'json',
+                    success :function(data){
+			$('.stats_stats h1.legend-h1 div').html('查阅总数为: <b>'+data.query_total+'</b>,查阅率为: <b>'+data.query_p+'</b>');
+		    }, //this.proxy('show_stats'),
+                    error : this.proxy('failure')
                 });
             },
             '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
@@ -207,7 +224,6 @@ steal(
                     doc_type:doc_type,
                     years:years
                 };
-                //console.log(select_hash);
 		$.createMask();
                 $.ajax({
                     url : '/document_histories/dh_report',
@@ -240,6 +256,16 @@ steal(
             },
             show_stats :function (data) {
                	$.closeMask();
+		/*
+		console.info(data);
+		
+		var query_length = 0;
+		for(var key in data.query_stats)query_length++;
+		
+		data.query_total = query_length;
+		data.query_p =  ((query_length / data.docs_total) * 100).toFixed(2) + '%' ;
+		//data.pages_total = parseInt(query_length % 10 == 0 ? query_length / 10 : (query_length /10) + 1);
+		*/
 		 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
                 if (this.element.find('select[name="groupby"]').val() == '4') {
 		

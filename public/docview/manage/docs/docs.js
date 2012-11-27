@@ -71,7 +71,7 @@ steal(
 	    var doc_id = ctrl.getId();
 	    var gid = el.find('select[name="gid"]').val();
 	    var username = el.find('input[name="username"]').val();
-
+            var org = el.find('select[name="org"]').val();
 
 	    var cntl = this.element.find('div.daterange-holder').controller();
 	    var dates = cntl.getInputs(el);
@@ -85,6 +85,7 @@ steal(
 		doc_id : doc_id,
 		username : username,
 		gid : gid,
+		org : org,
 		from_date : from_date,
 		to_date : to_date
 	    });

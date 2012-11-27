@@ -103,12 +103,16 @@ class DocumentHistoriesController < ApplicationController
       end
     end 
 
+    if !params[:org].blank?
+        search_conditions[:org] = params[:org]	
+    end
     if !doc_id.blank?
       #doc_id_condition = "doc_id='#{params[:doc_id]}'"
       search_conditions[:doc_id] = params[:doc_id]
     end
 
     sql_conditions = (search_conditions.length == 0) ? ["true"] : search_conditions
+    logger.info sql_conditions
     @query_histories = DocumentHistory.where(sql_conditions).order("created_at desc").limit(500).all
     #logger.info  @query_histories.length
     #logger.info "======"

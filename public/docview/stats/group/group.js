@@ -94,7 +94,8 @@ steal(
 				  {cntl : this, dg: dgRow.model()}));
 	    this.element.find('.ed_dg_multi_holder').docview_ui_multi({clientState: this.options.clientState});
 	    var ctrl = this.element.find('.ed_dg_multi_holder').controller();
-	    ctrl.setUIValue(dgRow.model().doc_ids);
+	    var doc_ids_str = (typeof dgRow.model().doc_ids) === 'string' ? dgRow.model().doc_ids : dgRow.model().doc_ids.join(' ');
+	    ctrl.setUIValue(doc_ids_str);
 	},
         '.cancel-edit click': function(el, ev) {
             var editRow = el.closest('tr');
@@ -140,7 +141,6 @@ steal(
 	updateGroupRow : function(data) {
 	    // var dg = new Docview.Models.DocGroup(data.doc_group);
 	    var oldRow = data.elements(this.elements);
-
 	    oldRow.next().remove();
 	    var newRow = $(this.view('doc_group_row', data)).css('display', 'none');
 	    oldRow.replaceWith(newRow);

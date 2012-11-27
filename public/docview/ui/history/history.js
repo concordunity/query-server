@@ -36,6 +36,7 @@ steal(
 	    this.lastEl = undefined;
 	},
 	query : function(params) {
+		console.log(params);
 		$.createMask();
 		$.ajax({
 		url: '/qh/query_search',
@@ -105,6 +106,7 @@ steal(
 	    this.oTable = this.element.find('table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
 		"iDisplayLength": 100,
+		"aaSorting" : [[1,"desc"]],
                 "sPaginationType": "bootstrap",
                 "oLanguage" : {
                     "sUrl" : "media/language/ch_ZN.txt"

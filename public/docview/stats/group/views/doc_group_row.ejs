@@ -8,7 +8,7 @@
     <td><%= d_name %></td>
 
     <td><% if (this.doc_ids instanceof Array) { %>
-    <%= this.doc_ids.join() %><% } else {%>
+    <%= this.doc_ids.join(' ') %><% } else {%>
 <%= this.doc_ids %>
     <% } %></td>
 

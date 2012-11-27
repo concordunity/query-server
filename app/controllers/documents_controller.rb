@@ -654,6 +654,7 @@ class DocumentsController < ApplicationController
   def add_history(d, action)
     dh = DocumentHistory.create(:action =>  t('doc.' + action),
                                 :user_id=> current_user.id,
+				:org => d.org,
                                 :doc_id => d.doc_id,
                                 :ip => current_user.current_sign_in_ip,
                                 :email => current_user.display_name)

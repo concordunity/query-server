@@ -48,7 +48,7 @@
 			var loading_text = document.createElement('p');
 			loading.id = 'mask-loading';
 			loading_text.style.marginTop = '10px';
-			loading_text.innerText = '正在查询中，请稍后...';
+			loading_text.innerText = '正在查询中，请稍候...';
 			loading.appendChild(loading_text);
 			document.body.appendChild(loading);			
 		},

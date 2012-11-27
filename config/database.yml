@@ -14,6 +14,7 @@ development:
   reconnect: false
   database: dms_development
   pool: 5
+#  host: 13.141.43.230
   username: root
   password: mysql5
   socket: /var/run/mysqld/mysqld.sock
@@ -26,6 +27,7 @@ test:
   encoding: utf8
   reconnect: false
   database: dms_test
+#  host: 13.141.43.230
   pool: 5
   username: root
   password: mysql5
@@ -36,6 +38,7 @@ production:
   encoding: utf8
   reconnect: false
   database: dms_production
+#  host: 13.141.43.230
   pool: 5
   username: root
   password: mysql5

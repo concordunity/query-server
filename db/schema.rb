@@ -11,7 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120907050547) do
+ActiveRecord::Schema.define(:version => 20121126044112) do
+
+  create_table "doc_comments", :force => true do |t|
+    t.string   "doc_id"
+    t.integer  "page"
+    t.integer  "code"
+    t.integer  "subcode"
+    t.string   "commenter"
+    t.string   "info"
+    t.integer  "state",      :default => 0
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "doc_comments", ["code"], :name => "index_doc_comments_on_code"
+  add_index "doc_comments", ["doc_id"], :name => "index_doc_comments_on_doc_id"
+  add_index "doc_comments", ["state"], :name => "index_doc_comments_on_state"
 
   create_table "doc_group_entries", :force => true do |t|
     t.string   "doc_id"
@@ -40,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
     t.integer  "user_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "org"
   end
 
   create_table "document_pages", :force => true do |t|
@@ -50,9 +67,11 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
     t.integer  "year"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "folder_id"
   end
 
   add_index "document_pages", ["doc_id", "paget"], :name => "index_document_pages_on_doc_id_and_paget", :unique => true
+  add_index "document_pages", ["folder_id"], :name => "index_document_pages_on_folder_id"
 
   create_table "documents", :force => true do |t|
     t.string   "doc_id"
@@ -157,6 +176,42 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
 
   add_index "normal_import_price_less_records", ["declarations_number"], :name => "index_normal_import_price_less_records_on_declarations_number", :unique => true
 
+  create_table "qdocs", :id => false, :force => true do |t|
+    t.integer  "id",            :default => 0, :null => false
+    t.string   "doc_id"
+    t.integer  "pages"
+    t.integer  "folder_id"
+    t.string   "doc_type"
+    t.string   "org"
+    t.string   "org_applied"
+    t.boolean  "modified"
+    t.boolean  "checkedout"
+    t.boolean  "inquired"
+    t.string   "label"
+    t.string   "serial_number"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.date     "edc_date"
+  end
+
+  create_table "qdocs2", :id => false, :force => true do |t|
+    t.integer  "id",            :default => 0, :null => false
+    t.string   "doc_id"
+    t.integer  "pages"
+    t.integer  "folder_id"
+    t.string   "doc_type"
+    t.string   "org"
+    t.string   "org_applied"
+    t.boolean  "modified"
+    t.boolean  "checkedout"
+    t.boolean  "inquired"
+    t.string   "label"
+    t.string   "serial_number"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.date     "edc_date"
+  end
+
   create_table "query_histories", :force => true do |t|
     t.integer  "user_id"
     t.string   "doc_id"
@@ -207,6 +262,8 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "sources", ["code"], :name => "index_sources_on_code", :unique => true
+
   create_table "special_documents", :force => true do |t|
     t.string   "doc_id"
     t.integer  "pages"
@@ -214,10 +271,10 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
     t.string   "doc_type"
     t.string   "label"
     t.string   "serial_number"
-    t.date     "edc_date"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.integer  "phase"
+    t.date     "edc_date"
   end
 
   add_index "special_documents", ["folder_id"], :name => "index_special_documents_on_folder_id"
@@ -257,13 +314,28 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
 
   add_index "temporary_normals", ["declarations_number"], :name => "index_temporary_normals_on_declarations_number", :unique => true
 
+  create_table "temporary_zeros", :force => true do |t|
+    t.string   "business_units_number"
+    t.string   "operating_name"
+    t.integer  "number_import_export_declarations"
+    t.integer  "number_import_export_inspection"
+    t.float    "import_export_inspection_rate"
+    t.string   "declarations_number"
+    t.string   "import_export"
+    t.string   "examination_handling_results"
+    t.string   "declaration_customs"
+    t.datetime "date_value"
+    t.boolean  "exists_in_system",                  :default => false
+    t.string   "org_applied"
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
+  end
+
+  add_index "temporary_zeros", ["declarations_number"], :name => "index_temporary_zeros_on_declarations_number", :unique => true
+
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
-    t.string   "username",               :default => "", :null => false
-    t.string   "fullname",               :default => "", :null => false
-    t.string   "orgs",                   :default => "", :null => false
     t.string   "encrypted_password",     :default => "", :null => false
-    t.integer  "doc_type",               :default => 0,  :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -272,16 +344,19 @@ ActiveRecord::Schema.define(:version => 20120907050547) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
+    t.string   "username"
+    t.string   "fullname"
+    t.string   "orgs"
+    t.integer  "doc_type"
     t.integer  "failed_attempts",        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-  add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
   create_table "users_roles", :id => false, :force => true do |t|
     t.integer "user_id"

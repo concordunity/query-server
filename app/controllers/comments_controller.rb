@@ -142,8 +142,21 @@ class CommentsController < ApplicationController
     c.page = params[:page]
     c.commenter = current_user.username
     c.info = @@pageType[c.subcode]
-    c.save
-    render json: c
+
+    logger.info "======1"
+    @dc = DocComment.where(:doc_id => c.doc_id, :code => c.code, :state => c.state, :subcode => c.subcode, :page => c.page, :commenter => c.commenter, :info => c.info).first
+
+    logger.info "======2"
+    result = {}
+    status = 200
+    if @dc
+      result = c
+      status = 201
+    else
+      c.save
+      result = c
+    end
+    render json: result, :status => status
   end
   
   def delete_page_type

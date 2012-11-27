@@ -26,7 +26,7 @@ steal(
 		break;
 	    case 404:
 		type = 'info';
-		message = '系统中没有相关信息' + this.error_context;
+		message = '系统中没有相关信息';// + this.error_context;
 		break;
 	    case 500:
 		message = '系统内部错误';

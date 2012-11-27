@@ -206,3 +206,11 @@ padding-top: 20px;
   float: left;
   margin-left: 0;
 }
+
+
+/*link, */
+form[name=upload_user_form] a{
+	margin:25px;
+	float:left;
+	text-decoration:underline;
+}
