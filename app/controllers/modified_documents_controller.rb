@@ -67,12 +67,14 @@ class ModifiedDocumentsController < ApplicationController
       raise ActiveRecord::RecordNotFound
     end
 
+    comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
     labels = [ '删改单', '退补税', '其他' ]
     #  TODO(weidong): error processing.
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: { :doc_info => @special_doc,
           :directory => "/docimages_mod",
+	  :comments => comments,
           :label => labels[@special_doc.mtype],
           :image_info => response } }
     end
