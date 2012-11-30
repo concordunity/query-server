@@ -53,11 +53,9 @@ steal(
 			this.proxy('showResults'),
 			this.proxy('failure')
                     );
-		    $(".table-total").hide();
 		} else if (mode == 'by_doc_source') {
                     this.element.html("Searching...");
                     this.element.show();
-		    $(".table-total").show();
                     Docview.Models.File.by_doc_source(
 			newVal, //{doc_ids: newVal.ids},
 			this.proxy('showResults'),
