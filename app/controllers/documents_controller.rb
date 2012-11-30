@@ -419,6 +419,15 @@ class DocumentsController < ApplicationController
       @document.doc_type = 'JK3Y'
     end
 
+    
+    if @document.doc_type == 'CC5Y' 
+      @document.doc_type = 'CK5Y'
+    end
+
+    if @document.doc_type == 'CC3Y'
+      @document.doc_type = 'CK3Y'
+    end
+
     @document.doc_source = src 
     # Set phase
     if @document.phase.nil?
@@ -582,7 +591,7 @@ class DocumentsController < ApplicationController
       end
     end
 
-    render json: { :results => @documents }, :status => 200
+    render json: { :results => @documents[0,1000] , :totals => @documents.length}, :status => 200
   end
 
   def stats_export

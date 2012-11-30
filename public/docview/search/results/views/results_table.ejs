@@ -9,8 +9,8 @@
     </thead>
     <tbody>
     
-    <% for(var i = 0; i < this.length; i++) { %>
-        <%== $.View('//docview/search/results/views/result.ejs', new Docview.Models.File(this[i])) %>
+    <% for(var i = 0; i < this.results.length; i++) { %>
+        <%== $.View('//docview/search/results/views/result.ejs', new Docview.Models.File(this.results[i])) %>
     <% } %>
         
         

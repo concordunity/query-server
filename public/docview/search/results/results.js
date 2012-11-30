@@ -53,9 +53,11 @@ steal(
 			this.proxy('showResults'),
 			this.proxy('failure')
                     );
+		    $(".table-total").hide();
 		} else if (mode == 'by_doc_source') {
                     this.element.html("Searching...");
                     this.element.show();
+		    $(".table-total").show();
                     Docview.Models.File.by_doc_source(
 			newVal, //{doc_ids: newVal.ids},
 			this.proxy('showResults'),
@@ -79,7 +81,11 @@ steal(
 		});
 	    }
 	    
-            this.element.html(this.view('results_table', data.results));
+            this.element.html(this.view('results_table', data));
+	    if (data.totals != undefined) {
+	      var info = ("总共" + data.totals+ "条记录，单次最大1000条");
+	      $(".by_doc_source .by_doc_source_total").html(info);
+	    }
             this.oTable = this.element.find('table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
                 "sPaginationType": "bootstrap",
