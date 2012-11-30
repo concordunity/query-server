@@ -65,10 +65,6 @@ steal(
 			$btn.click();
 		}
 	    });
-	   $('form').submit(function(){	
-		var $form = $(this);
-                $form.find('.filters :checked').prop("checked", false);
-	    });	
         },
 
 	"button.button-option click" : function(el,ev){
@@ -231,6 +227,10 @@ steal(
                 });
 
 		this.searchSingleDoc(docId);
+                el.find('.filters :checked').prop("checked", false);
+		//this.setFilters(el);
+		//this.options.clientState.attr('search', { filters: this.filters});
+		
 	    }
         },
 	// Internal function only. Show a single document ID.
@@ -258,6 +258,9 @@ steal(
 			doc_ids: ids,
 			filters: this.filters
                     });
+		    el.find('.filters :checked').prop("checked", false);
+		    //this.setFilters(el);
+		    //this.options.clientState.attr('search', { filters: this.filters});
 		}
             }
         },
@@ -366,7 +369,9 @@ steal(
                 isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
-
+	    //el.find('.filters :checked').prop("checked", false);
+	    //this.setFilters(el);
+	    //this.options.clientState.attr('search', { filters: this.filters});
 	    $.createMask();
         },
 	
