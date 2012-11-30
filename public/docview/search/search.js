@@ -57,6 +57,7 @@ steal(
 								   th_options : {include_user : false}});
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
             //this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
+/*
 	   $('form.multi,form.advanced,form.by_doc_source').submit(function() {
 		var $form = $(this);
 		var $btn = $form.find('button[data-toggle]');
@@ -65,6 +66,7 @@ steal(
 			$btn.click();
 		}
 	    });
+*/
         },
 
 	"button.button-option click" : function(el,ev){
