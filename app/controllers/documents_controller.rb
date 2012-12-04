@@ -398,6 +398,10 @@ class DocumentsController < ApplicationController
   # POST /documents.json
   def create
     @document = Document.new(params[:document])
+    @document_old = Document.find_by_doc_id(@document.doc_id)
+    unless @document_old.nil?
+	@document.id = @document_old.id
+    end
     @document.inquired = false
     @document.checkedout = false
 

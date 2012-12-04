@@ -40,7 +40,14 @@ class FoldersController < ApplicationController
   # POST /folders
   # POST /folders.json
   def create
+    folder_id=params[:id]
     @folder = Folder.new(params[:folder])
+
+    unless folder_id.blank?
+        @folder_old = Folder.find(folder_id)
+	@folder.id = @folder_old.id unless @folder_old.nil? 
+    end
+
 
     respond_to do |format|
       if @folder.save

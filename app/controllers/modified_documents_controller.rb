@@ -112,10 +112,10 @@ class ModifiedDocumentsController < ApplicationController
   # POST /special_documents.json
   def create
     @special_document = ModifiedDocument.new(params[:special_document])
-    @md = ModifiedDocument.where(:doc_id => @special_document.doc_id, :folder_id => @special_document.folder_id)
-
+    @md = ModifiedDocument.where(:doc_id => @special_document.doc_id, :folder_id => @special_document.folder_id).first
+    @special_document.id = @md.id unless @md.nil?
     respond_to do |format|
-      if @md.nil? && @special_document.save
+      if @special_document.save
         # Now, find the regular document
         d = Document.find_by_doc_id(params[:doc_id])
         if d and d.phase == 1

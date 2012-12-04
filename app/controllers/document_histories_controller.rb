@@ -94,7 +94,7 @@ class DocumentHistoriesController < ApplicationController
 
     if doc_id.blank? and !gid.blank?
       dg = DocGroup.find_by_id(params[:gid])
-      doc_ids = !dg.nil? ? dg.doc_group_entries.collect { |t| "'" + t.doc_id + "'" } : []
+      doc_ids = !dg.nil? ? dg.doc_group_entries.collect { |t| t.doc_id } : []
       # doc_id_condition = doc_ids.blank? ? "false" : "doc_id in (#{doc_ids.join(",")})"
       if doc_ids.blank?
         raise ActiveRecord::RecordNotFound
