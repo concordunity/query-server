@@ -19,12 +19,18 @@ class ModifiedDocumentsController < ApplicationController
   end
 
   def query
+    response = []
+    mtype_label = []
     doc_id = params[:doc_id]
+    labels = [ '删改单', '退补税', '其他' ]
     @document = Document.find_by_doc_id(doc_id)
+    comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
+    result = [] 
 
-
+#    logger.info "======1"
     if @document
 
+#    logger.info "======2"
       # check user's privileges
       if !current_user.can_view?(@document)
         render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
@@ -37,46 +43,50 @@ class ModifiedDocumentsController < ApplicationController
         return
       end
 
-      @special_doc = ModifiedDocument.find_by_doc_id(doc_id)
-      if !@special_doc
+    #logger.info "======3"
+      @special_doces = ModifiedDocument.where(:doc_id => doc_id).all
+      if @special_doces.length == 0 
         raise ActiveRecord::RecordNotFound
       end
 
-      # Now, find the folder_name
-      folder = Folder.find(@special_doc.folder_id)
-      folder_id = folder.folder_id
+    #logger.info "======4"
+      @special_doces.each do |special_doc|
 
-      script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{folder_id} #{doc_id}"
-      res = %x[ #{script_name} ]
+          # Now, find the folder_name
+	  folder = Folder.find(special_doc.folder_id)
+	  folder_id = folder.folder_id
 
-      if res.match(/System busy/)
-        render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
-        return
+	  script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{folder_id} #{doc_id}"
+	  res = %x[ #{script_name} ]
+
+	  if res.match(/System busy/)
+	      render json: { :status => :error, :message => 'The sysmte is busy. Try it later' }, :status => 400 
+	      return
+	  end
+
+	  if res.match(/The requested document is not found/)
+	      render json: { :status => :error, :message => 'The document does not exist' }, :status => 400 
+	      return
+	  end
+	  # Create query_history record.
+	  #response = { :name => 'test', 'info' => 'good' }
+	  response = JSON.parse(res)
+	  mtype_label = labels[special_doc.mtype]	  
+	  result << { :doc_info => special_doc, :directory => "/docimages_mod", :comments => comments, :label => mtype_label, :image_info => response }
+	  #logger.info "-----result -----"
       end
-
-      if res.match(/The requested document is not found/)
-        render json: { :status => :error, :message => 'The document does not exist' }, :status => 400 
-        return
-      end
-
-      response = JSON.parse(res)
-
-      # Create query_history record.
-      #response = { :name => 'test', 'info' => 'good' }
+	
+    #logger.info "======5"
     else
       raise ActiveRecord::RecordNotFound
     end
 
-    comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
-    labels = [ '删改单', '退补税', '其他' ]
+    #logger.info result
+
     #  TODO(weidong): error processing.
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: { :doc_info => @special_doc,
-          :directory => "/docimages_mod",
-	  :comments => comments,
-          :label => labels[@special_doc.mtype],
-          :image_info => response } }
+      format.json { render json: { :result => result } }
     end
   end
 

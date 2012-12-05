@@ -141,7 +141,7 @@ steal(
 	        var status = true;
 		Docview.Models.File.findDocComments({doc_id : doc.docId},function(data){
 		    status = data.status;
-		    console.log(status);
+		    //console.log(status);
 		},{});
 		if (status == true) {
 			Docview.Models.File.commitComments(doc.getDocId(), doc.getJsonString(),
@@ -202,17 +202,24 @@ steal(
 	},
 
         addSpecialDoc : function(docid) {
-            Docview.Models.File.findSpecialOne(docid, this.proxy('addDocumentData'),
-                this.proxy('failure'));
+            Docview.Models.File.findSpecialOne(docid, this.proxy('addSpecialDocumentData'), this.proxy('failure'));
+	//note: special doc
+            //Docview.Models.File.findSpecialOne(docid, this.proxy('addDocumentData'), this.proxy('failure'));
         },
+	addSpecialDocumentData : function(data) {
+	    var that = this;
+	    $.each(data["result"],function(i){
+		console.log("===1====");
+		console.log(i);
+		console.log(data["result"][i]);
+		that.addDocumentData(data["result"][i]);
+	    })
+	},
         getDoc : function(nth) {
             return this.documents[nth];
         },
         addDocumentData : function(data) {
             this.show();
-
-	    
-
             // Load all data
             /*document: {
               pages: [] // Array of pages
@@ -222,24 +229,31 @@ steal(
 	      }*/
 	    
 	    var filters = "";
-
+	    console.log("=======1");
             var filter = this.options.clientState.attr('search').filters;
             if (filter != undefined && filter.length > 0 &&
 		this.options.clientState.attr('searchMode') != 'high-risk' &&
 		this.options.clientState.attr('searchMode') != 'advanced') {
                 filters = filter;
             }
+	    console.log("=======2");
 	    var docIndex = this.docManager.getNumDocs();
 
+	    console.log("=======3");
+	    console.log(data);
 	    var doc = new Document(data, filters);
+	    console.log("=======4");
 	    this.docManager.addDocument(doc);
+	    console.log("=======5");
 	    if (doc.hasSpecialDoc()) {
 		this.addSpecialDoc(doc.getDocId());
 	    }
 
+	    console.log("=======6");
 	    // Add tree.
 	    // TODO(weidong)
 	    this.treeControl.addDocTree(doc, docIndex);
+	    console.log("=======7");
            // this.showPage(0, 1);
             this.showOverview(0);
 
