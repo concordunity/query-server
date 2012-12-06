@@ -7,7 +7,7 @@ function Document(docInfo, filters) {
     var metadata = docInfo.doc_info;
     this.groups = new Array();
     this.comments = docInfo.comments;
-
+    this.folder_id = docInfo.folder_id;
     this.directory = docInfo.directory;
     this.docId = metadata.doc_id;
     
@@ -108,7 +108,12 @@ Document.prototype.getComments = function() {
 }
 
 Document.prototype.getThumbnailPaths = function() {
-    var path = this.directory + "/" + this.docId + '/' + this.docId + '/thumb/t_';
+    var path = this.directory + "/";
+    //console.log('this.directory = ',this.directory);
+    if (this.folder_id != undefined && this.directory === "/docimages_mod") {
+	path = path + this.folder_id + "_";
+    }
+    path = path + this.docId + '/' + this.docId + '/thumb/t_';
 
     var ret = []
     for (i=0; i< this.pages.length; i++) {
@@ -133,7 +138,14 @@ Document.prototype.getImagePathFor = function(index) {
     if (index < 0) {
 	return "";
     }
-    return this.directory + "/" + this.docId + '/' + this.docId + '/' + this.pages[index -1];
+    var path = this.directory + "/";
+    if (this.folder_id != undefined && this.directory === "/docimages_mod") {
+        path = path + this.folder_id + "_";
+    }
+    path = path + this.docId + '/' + this.docId + '/' + this.pages[index -1];
+
+    //console.log(path);
+    return path; 
 }
 
 Document.prototype.getJsonString = function () {
@@ -157,7 +169,7 @@ Document.prototype.getJsonString = function () {
 	}
     }
     var ret = $.toJSON({T_blog: T_blog});
-   // console.log(ret);
+   //console.log(ret);
     return ret;
 }
 
@@ -183,7 +195,7 @@ Document.prototype.getNumImages = function () {
 Document.prototype.getPrintUrl = function (base, pageSelection) {
     var url = base + "?doc_id=" + this.docId;
     if (this.isSpecialDoc) {
-	url = url + "&mod=1";
+	url = url + "&mod=1&folder_id="+this.folder_id;
     }
 
     if (pageSelection) {

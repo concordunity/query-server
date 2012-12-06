@@ -129,6 +129,7 @@ steal(
             navEl.append(this.view('pages', {
                 doc_label : docInfo.getLabel(),
 		doc_index : doc_index,
+		folder_id : docInfo.folder_id,
                 groups: docInfo.getPageGroups()
             }));
         },

@@ -142,9 +142,10 @@ class CommentsController < ApplicationController
     c.page = params[:page]
     c.commenter = current_user.username
     c.info = @@pageType[c.subcode]
+    c.folder_id = params[:folder_id]
 
     logger.info "======1"
-    @dc = DocComment.where(:doc_id => c.doc_id, :code => c.code, :state => c.state, :subcode => c.subcode, :page => c.page, :info => c.info).first
+    @dc = DocComment.where(:folder_id => c.folder_id, :doc_id => c.doc_id, :code => c.code, :state => c.state, :subcode => c.subcode, :page => c.page, :info => c.info).first
 
     logger.info "======2"
     result = {}
@@ -161,6 +162,7 @@ class CommentsController < ApplicationController
   
   def delete_page_type
     DocComment.where({:doc_id => params[:doc_id],
+		       :folder_id => params[:folder_id],
                        :page => params[:page]}).each {
       |d|
       d.delete()

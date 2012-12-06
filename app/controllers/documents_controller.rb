@@ -279,19 +279,23 @@ class DocumentsController < ApplicationController
                                  :email => current_user.display_name,
                                  :print => false)
       end
+
+      @folder = Folder.find(@document.folder_id)
+      logger.info(@folder.folder_id);
     else
       raise ActiveRecord::RecordNotFound
     end
 
     # Needs to find out all comments.
     comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
-
+    comments = comments.where(:folder_id => @folder.folder_id) unless @folder.nil?
     #  TODO(weidong): error processing.
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: { :doc_info => @document,
           :directory => "/docimages",
           :label => doc_id,
+	  :folder_id => (@folder.nil? ? "" : @folder.folder_id),
           :comments => comments,
           :special_doc_info => special_doc_info,
           :image_info => response } }
@@ -501,6 +505,7 @@ class DocumentsController < ApplicationController
 
   def print
     doc_id = params[:doc_id]
+    folder_id = params[:folder_id] || 0
     @document = Document.find_by_doc_id(doc_id)
 
     if @document.nil?
@@ -517,7 +522,7 @@ class DocumentsController < ApplicationController
       page_selections = params[:pages].split(',')
       pages=page_selections.join(' ')
     end
-    script_name = "#{ENV['HOME']}/bin/print_doc_with_watermark.sh #{doc_id} #{dir} \"#{pages}\""
+    script_name = "#{ENV['HOME']}/bin/print_doc_with_watermark.sh #{doc_id} #{folder_id} #{dir} \"#{pages}\""
 
     pdf_file = %x[ #{script_name} ]
 
@@ -602,7 +607,7 @@ class DocumentsController < ApplicationController
     if params[:org_applied].blank?
       @documents = Document.where(:phase => 1).order("edc_date desc")
     else
-      @documents = Document.where({:org_applied => params[:org_applied], :phase => 1}).order("edc_date desc")
+      @documents = Document.where({:org => params[:org_applied], :phase => 1}).order("edc_date desc")
     end
     render json: { :results => @documents }, :status => 200
   end

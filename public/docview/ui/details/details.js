@@ -120,6 +120,7 @@ steal(
 	showPage : function(index, page) {
 	    //console.log("show page ", page, " doc index ", index);
 	    var pageInfo = this.docManager.gotoPage(index, page);
+	    //console.log("when showPage way,this pageInfo is :",pageInfo);
             $("#document-overview").hide();
             $("#document-viewer").show();
 	    if (pageInfo) {
@@ -156,6 +157,7 @@ steal(
 	},
 	'.print-all click' :function (el, ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
+	    //console.log(doc);
 	    if (doc) {
 		this.print_doc(doc, '');
 	    }
@@ -209,9 +211,9 @@ steal(
 	addSpecialDocumentData : function(data) {
 	    var that = this;
 	    $.each(data["result"],function(i){
-		console.log("===1====");
-		console.log(i);
-		console.log(data["result"][i]);
+		//console.log("===1====");
+		//console.log(i);
+		//console.log(data["result"][i]);
 		that.addDocumentData(data["result"][i]);
 	    })
 	},
@@ -229,31 +231,32 @@ steal(
 	      }*/
 	    
 	    var filters = "";
-	    console.log("=======1");
+	    //console.log("=======1");
             var filter = this.options.clientState.attr('search').filters;
             if (filter != undefined && filter.length > 0 &&
 		this.options.clientState.attr('searchMode') != 'high-risk' &&
 		this.options.clientState.attr('searchMode') != 'advanced') {
                 filters = filter;
             }
-	    console.log("=======2");
+	    //console.log("=======2");
 	    var docIndex = this.docManager.getNumDocs();
 
-	    console.log("=======3");
-	    console.log(data);
+	    //console.log("=======3");
+	    //console.log(data);
 	    var doc = new Document(data, filters);
-	    console.log("=======4");
+	    //console.log("=======4");
+	    //console.log(doc);
 	    this.docManager.addDocument(doc);
-	    console.log("=======5");
+	    //console.log("=======5");
 	    if (doc.hasSpecialDoc()) {
 		this.addSpecialDoc(doc.getDocId());
 	    }
 
-	    console.log("=======6");
+	    //console.log("=======6");
 	    // Add tree.
 	    // TODO(weidong)
 	    this.treeControl.addDocTree(doc, docIndex);
-	    console.log("=======7");
+	    //console.log("=======7");
            // this.showPage(0, 1);
             this.showOverview(0);
 

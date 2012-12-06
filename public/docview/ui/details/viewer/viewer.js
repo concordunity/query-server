@@ -96,6 +96,8 @@ steal(
 	},
 	'li.error-comments click' : function(el, ev) {
 	    ev.preventDefault();
+	    //console.log("when you click error-comments,that pageInfo is");
+	    //console.log(this.currentPageInfo);	
 	    if (this.errorCommentController) {
 		this.errorCommentController.setCommentsUI(this.currentPageInfo);
 	    } else {
@@ -151,6 +153,7 @@ steal(
 	    ev.preventDefault();
 	    var pageInfo = this.currentPageInfo;
 	    Docview.Models.File.deleteComment(pageInfo.doc.getDocId(),
+						pageInfo.folder_id,
 					      pageInfo.nthPage, this.proxy('handleCommentDeleted'));
 	},
 
@@ -166,7 +169,8 @@ steal(
 	    this.currentPageInfo = pageInfo;
 
 	    $('#comments').html('');
-	    console.log(pageInfo);
+	    //console.log('current pageInfo in viewer.js by showPage ');
+	    //console.log(pageInfo);
 	    //console.log(pageInfo.doc);
 	    //console.log(pageInfo.doc.comments);
 	    //console.log(pageInfo.proposedPageType);

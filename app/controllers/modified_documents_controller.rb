@@ -24,7 +24,6 @@ class ModifiedDocumentsController < ApplicationController
     doc_id = params[:doc_id]
     labels = [ '删改单', '退补税', '其他' ]
     @document = Document.find_by_doc_id(doc_id)
-    comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
     result = [] 
 
 #    logger.info "======1"
@@ -57,6 +56,7 @@ class ModifiedDocumentsController < ApplicationController
 	  folder_id = folder.folder_id
 
 	  script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{folder_id} #{doc_id}"
+	  logger.info script_name
 	  res = %x[ #{script_name} ]
 
 	  if res.match(/System busy/)
@@ -72,7 +72,11 @@ class ModifiedDocumentsController < ApplicationController
 	  #response = { :name => 'test', 'info' => 'good' }
 	  response = JSON.parse(res)
 	  mtype_label = labels[special_doc.mtype]	  
-	  result << { :doc_info => special_doc, :directory => "/docimages_mod", :comments => comments, :label => mtype_label, :image_info => response }
+	  
+	  comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
+	  comments = comments.where(:folder_id => folder_id) unless folder.nil?	
+
+	  result << { :doc_info => special_doc, :folder_id => folder_id, :directory => "/docimages_mod", :comments => comments, :label => mtype_label, :image_info => response }
 	  #logger.info "-----result -----"
       end
 	

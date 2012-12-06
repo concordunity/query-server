@@ -28,6 +28,7 @@ steal(
 	},
 	handleCommentsOk : function(data) {
 	    this.clearContent();
+	    console.log('添加反馈信息后，返回的结果');
 	    this.viewerController.updateComment(data);
 	},
 	
@@ -39,10 +40,13 @@ steal(
 	    if (this.pageType != -1 && subcode == this.pageType) {
 		alert ("选择的种类没有变化");
 	    } else {
+		console.log('已经点击了反馈信息的选项,创建新的修改单证种类(addComments),当前pageInfo的内容如下：');
 		var pageInfo = this.options.pageInfo;
+		console.log(pageInfo);
 		Docview.Models.File.addComments(pageInfo.doc.getDocId(),
 						pageInfo.nthPage,
 						subcode, 
+						pageInfo.folder_id,
 						this.proxy('handleCommentsOk'),
 						this.proxy('failure'));
 	    }

@@ -10,6 +10,9 @@ function DocManager() {
 	var ret = null;
 	if (docIndex < this.documents.length) {
 	    var numPages = this.documents[docIndex].pages.length;
+		//console.log('======documents====');
+		//console.log(this.documents[docIndex]);
+	    var folder_id = this.documents[docIndex].folder_id;
 	    if (nth > 0 && nth <= numPages) {
 		ret = { docIndex: docIndex, page: nth};
 	    } else if (nth == numPages + 1) {
@@ -21,7 +24,7 @@ function DocManager() {
 		if (docIndex > 0) {
 		    docIndex --;
 		    var numPages = this.documents[docIndex].pages.length;
-		    ret = { docIndex: docIndex, page: numPages }
+		    ret = { docIndex: docIndex, page: numPages, folder_id: folder_id }
 		}
 	    }
 	}
@@ -31,12 +34,16 @@ function DocManager() {
 	    this.pageIndex = ret.page;
 	    var doc = this.documents[this.docIndex];
 
+	    //console.log("========doc");
+	    //console.log(ret);
+	    //console.log(doc);
 	    return {
 		nthPage : ret.page,
 		pageType: doc.getPageTypeFor(this.pageIndex),
 		proposedPageType : doc.getProposedPageType(this.pageIndex),
 		doc: doc,
 		docIndex: this.docIndex,
+		folder_id: folder_id,
 		imagePath: doc.getImagePathFor(this.pageIndex)
 	    };
 	}

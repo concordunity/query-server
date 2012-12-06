@@ -117,27 +117,26 @@ $.Model('Docview.Models.File',
 	});
     },
 
-    addComments : function(doc_id, 
-			   page,
-			   subcode,
-			   success, error) {
+    addComments : function(doc_id, page, subcode, folder_id, success, error) {
 	return $.ajax({
 	    url: '/comments/pagetype',
 	    type : 'post',
 	    data: {doc_id : doc_id,
 		   page : page,
 		   code : 1,
-		   subcode : subcode},
+		   subcode : subcode,
+		   folder_id : folder_id},
 	    dataType: 'json',
 	    success : success,
 	    error : error
 	});
     },
-    deleteComment : function(docid, nthPage, success, error) {
+    deleteComment : function(docid, folder_id, nthPage, success, error) {
 	return $.ajax({
 	    url: '/comments/delete_pagetype',
 	    type: 'post',
 	    data : {doc_id : docid,
+	    	    folder_id : folder_id,
 		    page: nthPage},
 	    dataType: 'json',
 	    success : success,

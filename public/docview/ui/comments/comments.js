@@ -27,7 +27,7 @@ steal(
 	},
 	handleCommentsOk : function(data) {
 	    this.clearContent();
-	  
+	    console.log(data);
 	    this.viewerController.updateComment(data);
 	},
 	
@@ -41,9 +41,11 @@ steal(
 		alert ("选择的种类没有变化");
 	    } else {
 		var pageInfo = this.options.pageInfo;
+		console.log(pageInfo);
 		Docview.Models.File.addComments(pageInfo.doc.getDocId(),
 						pageInfo.nthPage,
 						subcode, 
+						pageInfo.folder_id,
 						this.proxy('handleCommentsOk'));
 	    }
 	},
