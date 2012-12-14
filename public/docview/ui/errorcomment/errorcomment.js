@@ -18,7 +18,7 @@ steal(
 
 	setCommentsUI : function(pageInfo) {
 	    this.pageType = pageInfo.pageType;
-	    this.element.html(this.view('init', {pageType : this.pageType, nthPage : this.nthPage}));
+//	    this.element.html(this.view('init', {pageType : this.pageType, nthPage : this.nthPage}));
 	    
 	    this.element.find(":radio[value=" + this.pageType +"]").attr('checked',true);
 	    this.options.pageInfo = pageInfo;
@@ -28,7 +28,7 @@ steal(
 	},
 	handleCommentsOk : function(data) {
 	    this.clearContent();
-	    console.log('添加反馈信息后，返回的结果');
+	    //console.log('添加反馈信息后，返回的结果');
 	    this.viewerController.updateComment(data);
 	},
 	

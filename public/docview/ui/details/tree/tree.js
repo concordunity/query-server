@@ -120,6 +120,8 @@ steal(
         },
 	
         addDocTree : function(docInfo, doc_index) {
+
+	    console.log("In treeController ,docInfo is ",docInfo,",doc_index is ",doc_index);
             var pageCount = 1;
             var navEl = this.element.find('ul.nav');
 	    
@@ -130,6 +132,8 @@ steal(
                 doc_label : docInfo.getLabel(),
 		doc_index : doc_index,
 		folder_id : docInfo.folder_id,
+		comments : docInfo.comments,
+		searchMode : this.options.clientState.attr("searchMode"),
                 groups: docInfo.getPageGroups()
             }));
         },

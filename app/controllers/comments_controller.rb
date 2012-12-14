@@ -95,36 +95,42 @@ class CommentsController < ApplicationController
   def commit
     json_text = params[:json_text]
     doc_id = params[:doc_id]
-    is_regular = params[:is_mod].blank?
-
+    is_regular = params[:is_mod]
+    folder_id = params[:folder_id].to_s
     tmp_file = Tempfile.new("json", "/tmp")
 
     tmp_path = tmp_file.path
     tmp_file.write json_text
     tmp_file.close
 
- 
-
     # Sanity check. Make sure the directory exists
     script_file = File.expand_path('~/bin/update_json.sh')
     
-    if is_regular
+    if is_regular == "false"
 
       doc = Document.where(:doc_id => params[:doc_id]).first
       if doc
-          logger.info("#{script_file} #{tmp_path} #{doc.folder_id}  #{doc_id}")
-	  system("#{script_file} #{tmp_path} #{doc.folder_id} #{doc_id}")
+          #logger.info("#{script_file} #{tmp_path} #{folder_id}  #{doc_id}")
+	  #system("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")
 
-	  DocComment.where(:doc_id => params[:doc_id]).each  {|d|
+          logger.info("#{script_file} #{tmp_path} #{doc_id}")
+	  system("#{script_file} #{tmp_path} #{doc_id}")
+	  DocComment.where(:doc_id => params[:doc_id], :folder_id => folder_id).each  {|d|
 		  d.state = 1
-			  d.save
+		  d.save
 	  }
       end
     else
-      m = ModifiedDocument.find_by_doc_id(doc_id)
+      #m = ModifiedDocument.find_by_doc_id(doc_id)
+    logger.info folder_id
+      m = ModifiedDocument.where(["folder_id = ? and doc_id = ? ", folder_id, doc_id]).first
       if m
-        folder = m.folder_id
-        system("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")
+          logger.info("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")
+          system("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")
+	  DocComment.where(:doc_id => params[:doc_id], :folder_id => folder_id).each  {|d|
+		  d.state = 1
+		  d.save
+	  }
       end
     end
 
@@ -135,24 +141,33 @@ class CommentsController < ApplicationController
 
   def create_page_type
     c = DocComment.new
+    c.folder_id = params[:folder_id]
     c.doc_id = params[:doc_id]
     c.code = 1
     c.state = 0
-    c.subcode = params[:subcode]
     c.page = params[:page]
+
+    c.subcode = params[:subcode]
     c.commenter = current_user.username
     c.info = @@pageType[c.subcode]
-    c.folder_id = params[:folder_id]
 
     logger.info "======1"
-    @dc = DocComment.where(:folder_id => c.folder_id, :doc_id => c.doc_id, :code => c.code, :state => c.state, :subcode => c.subcode, :page => c.page, :info => c.info).first
-
+    @dc = DocComment.where(:folder_id => c.folder_id, :doc_id => c.doc_id, :code => c.code, :state => c.state, :page => c.page).first
+#:subcode => c.subcode, , :info => c.info
     logger.info "======2"
     result = {}
     status = 200
     if @dc
-      result = c
-      status = 201
+      if c.subcode == 0 
+          result = c
+	  status = 201
+      else
+          @dc.subcode = c.subcode
+	  @dc.commenter = c.commenter
+	  @dc.info = c.info
+          @dc.save
+	  result = @dc 
+      end
     else
       c.save
       result = c
@@ -172,7 +187,7 @@ class CommentsController < ApplicationController
 
   def find_doc_commit
       logger.info "=======0"
-      @doc = DocComment.where(:doc_id => params[:doc_id], :state => 0, :subcode => 0).all
+      @doc = DocComment.where(:doc_id => params[:doc_id], :folder_id => params[:folder_id], :state => 0, :subcode => 0).all
       status = true
       logger.info @doc.length
       if @doc.length == 0

@@ -117,7 +117,7 @@ steal(
                 }
             },
             '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
-                // console.log("sstats/search", newVal, oldVal, this.mainTabOn);
+                //console.log("sstats/search", newVal, oldVal, this.mainTabOn);
                 var cat = $.route.attr('category');
 	    
                 if (cat === 'stats') {
@@ -276,7 +276,7 @@ steal(
                     this.search_result = data;
                 //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
                 } else {
-		    console.info(data);
+		    //console.info(data);
                     this.element.find('div.stats_stats').html(this.view('stats_total', data));
 		    $('#stats_total').html('档案总数为: <b>' + data.docs_total + ' </b>份,总计页数为: <b>'+ data.pages_total+'</b> 页');
                 }

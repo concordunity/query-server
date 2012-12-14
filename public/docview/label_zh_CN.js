@@ -21,6 +21,7 @@ LabelChinese.prototype.initLabelSettings = function() {
 	'subnav.upload_file' : '文件上传',
 	'subnav.search_condition' : '高风险报关单查询',
 	'subnav.multi_document' : '批量查阅',
+	'subnav.all_print' : '批量打印',
 	'subnav.advanced_search' : '随机抽样查阅',
 	'subnav.by_doc_source' : '单证暂存',
 	'subnav.personal_history' : '个人查阅历史',

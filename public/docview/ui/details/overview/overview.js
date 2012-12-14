@@ -45,6 +45,7 @@ steal(
 		var timestamp = new Date().getTime();
 		var el = $(ev.target);
 		var imgSrc = el.attr('src');
+		console.log(imgSrc);
 		var pos = imgSrc.indexOf('?');
 		if (pos != -1) {
 		    imgSrc = imgSrc.substring(0, pos);
@@ -53,9 +54,12 @@ steal(
 	    }, 1000);
 	},
 	showDoc : function(docIndex, docInfo, printString) {
+	    //console.log("show doc", docIndex, docInfo,printString);
 	    //console.log("show doc", docIndex, docInfo, docInfo.getThumbnailPaths(), printString);
-	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : docInfo.getThumbnailPaths(), print: printString } ));
-
+	    var thumb_paths = docInfo.getThumbnailPaths();
+	    var comment_list = docInfo.getCommentList(docIndex, docInfo, thumb_paths); 
+	    //console.log(comment_list);
+	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : thumb_paths, print: printString, comment_list: comment_list} ));
 	    this.element.find('a.thumbnail img').error(this.proxy('reloadImage'));
 	},
 

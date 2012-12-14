@@ -143,11 +143,11 @@ $.Model('Docview.Models.File',
 	    error : error
 	});
     },
-    commitComments : function (docid, jsontext, success, error) {
+    commitComments : function (params, success, error) {
 	return $.ajax({
             url: '/comments/commit',
             type: 'post',
-            data: {doc_id: docid, json_text: jsontext},
+            data: params, 
             success: success,
             error: error});	
     },

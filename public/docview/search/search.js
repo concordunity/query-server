@@ -139,6 +139,9 @@ steal(
 	    if (to_show != 'multi') {
 		this.element.find('.multi').hide();
 	    }
+	    if (to_show != 'all_print') {
+		this.element.find('.all_print').hide();
+	    }
 	    if (to_show != 'advanced') {
 		this.element.find('.advanced').hide();
 	    }

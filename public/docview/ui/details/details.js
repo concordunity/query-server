@@ -140,20 +140,40 @@ steal(
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
 	    if (doc) {
 	        var status = true;
-		Docview.Models.File.findDocComments({doc_id : doc.docId},function(data){
+		Docview.Models.File.findDocComments({doc_id : doc.docId, folder_id : doc.folder_id},function(data){
 		    status = data.status;
 		    //console.log(status);
 		},{});
+
+		console.log("current status is ",status);
+
 		if (status == true) {
-			Docview.Models.File.commitComments(doc.getDocId(), doc.getJsonString(),
-						   this.proxy("commitOk"),this.proxy("commitError"));
+			console.log("current doc is ",doc);
+			Docview.Models.File.commitComments({doc_id : doc.getDocId(), json_text : doc.getJsonString(), folder_id : doc.folder_id, is_mod : doc.isSpecialDoc},
+						   this.proxy("commitOk"),this.proxy("failure"));
+		}else{
+		    this.commitError();
 		}
 	    }
 	},
 	commitOk : function(data) {
+	    var t = 'info';
+            var h = '提示信息：';
+            var message = '成功修改单证标签种类。';
+            var docid = $.route.attr('id');
+
+	    console.log("=====commitOk");
+	    console.log(data);
+            if (data.status == 204) {
+                type = 'error';
+                message = '单证标签种类失败';
+	    }
+	    this.options.clientState.attr('alert', { type: t, heading: h, message : message });
 	},
-	commitError : function(data) {
-	    
+	commitError : function() {
+	   console.log("=====commitError");
+	  
+	   this.options.clientState.attr('alert', { type: "info", heading: "提示信息：", message : "单证标签种类失败"}); 
 	},
 	'.print-all click' :function (el, ev) {
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
@@ -181,11 +201,24 @@ steal(
 	    }
 	},
         // This will reset the documents data.
-        queryDoc : function(docid) {
+        queryDoc : function(docid,folderid) {
             this.treeControl.clearDocTree();
 	    this.docManager.clear();
 
             this.addDoc(docid);
+
+	    var docIndex = 0;
+	    this.showOverview(docIndex);
+	    console.log("folderid is ",folderid);
+	    if (folderid != undefined) {
+		docIndex = $("div.folder-id-"+folderid).attr("data-index");
+		console.log("div.folder-id-"+folderid);
+		console.log($("div.folder-id-"+folderid));
+		console.log("docIndex is ",docIndex);
+		if (docIndex != undefined && docIndex != null){
+		    this.showOverview(docIndex);
+		}
+	    }
             this.to_show = true;
         },
 
@@ -326,6 +359,9 @@ steal(
             if (jqXHR.status == 404) {
                 type = 'info';
                 message = '系统中没有单证' + docid + '档案信息';
+            } else if (jqXHR.status == 204) {
+                type = 'info';
+                message = '单证标签种类失败';
             } else if (jqXHR.status == 403) {
                 type = 'info';
                 message = '无法查阅单证'+ docid + '，权限不足。';

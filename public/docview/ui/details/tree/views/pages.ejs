@@ -1,4 +1,9 @@
-﻿<li><font size=-1><a class="doc-overview" href="#<%= doc_index %>"><%= doc_label %></a></font></li>
+﻿<li><font size=-1><a class="doc-overview" href="#<%= doc_index %>"><%= doc_label %></a>
+<%if (searchMode == "show_doc") {%>
+<div><%= (comments.length == 0) ? "" : ("(总共有" + comments.length +"张问题页面)")%></div>
+<div data-index='<%= doc_index %>' class='folder-id-<%= folder_id%>'>册号：<br/> <%= folder_id %></div>
+<% } %>
+</font></li>
 <% var pageCount = 1; %>
 <% for (var i = 0; i < groups.length; i++) { %>
     <li class="nav-header type-<%= groups[i].type %>" data-toggle="collapse" data-target="#tree-group-<%= doc_index %>-<%= i %>">

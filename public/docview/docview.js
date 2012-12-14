@@ -41,6 +41,7 @@
                     advanced : false,
 		    by_doc_source : false,
 		    upload_file : false,
+		    all_print : false,
 		    search_condition : false
                 },
                 stats: {

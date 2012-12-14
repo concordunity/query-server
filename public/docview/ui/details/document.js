@@ -18,7 +18,7 @@ function Document(docInfo, filters) {
     }
     this.pages = new Array();
     this.pageTypes = new Array();
-
+    this.pageBT = new Array();
     
     var images = docInfo.image_info.T_blog;
     this.originalTBlog = images;
@@ -55,11 +55,13 @@ function Document(docInfo, filters) {
         this.pages.push(images[i].FN);
 	var org_num = this.originalIndices.length;
 	this.originalIndices.push(org_num);
+	this.pageBT.push(org_num+1);
         if (images[i].BT) {
             subgroup.push(images[i].BT);
 	    this.pageTypes.push(pt);
             this.pages.push(images[i].BT);
 	    this.originalIndices.push(this.originalIndices.length);
+	    this.pageBT.push(org_num+1);
         }
         prevType = pt;
         prevGroupName = images[i].T;
@@ -87,6 +89,24 @@ Document.prototype.deleteCommentData = function(nth) {
     }
 }
 
+Document.prototype.updateCommentData = function(comment) {
+    var nth = comment.page;
+    var is_tag = false;
+    for (i=0; i < this.comments.length; i++) {
+	if (this.comments[i] && this.comments[i].page == nth) {
+	    console.log("for current page",nth);
+	    console.log('current comment is ',this.comments[i]);
+	    console.log('it will update comment is ',comment);
+	    this.comments[i] = comment;
+	    is_tag = true;
+	    break;
+	}
+    }
+    if (is_tag == false){
+        this.comments.push(comment);
+    }
+}
+
 Document.prototype.addPageTypeComment = function(comment) {
     this.comments.push(comment);
 }
@@ -105,6 +125,26 @@ Document.prototype.getProposedPageType = function (nth) {
 
 Document.prototype.getComments = function() {
     this.comments;
+}
+
+Document.prototype.getCommentList = function(docIndex, docInfo, thumbs) {
+    var comment_list = new Array(); 
+    var comments = docInfo.comments
+    //console.log('current comments list is :',comments);
+    for(var i = 1; i <= thumbs.length; i++) {
+	var tmp_comment = false;
+	for(var j = 0; j < comments.length; j++) {
+	    if (comments[j] != undefined && comments[j].page == i){
+		tmp_comment = true;	
+	    }
+	}
+	if (tmp_comment == true) {
+	    comment_list.push(true);
+	}else{
+	    comment_list.push(false);
+	}
+    }
+    return comment_list;
 }
 
 Document.prototype.getThumbnailPaths = function() {

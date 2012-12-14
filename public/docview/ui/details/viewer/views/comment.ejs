@@ -1,8 +1,10 @@
 
 <form class="delete-comment">
-<p> 反馈信息： <%= proposedPageType.label %> 
+<p> 反馈信息： <%= proposedPageType.label %> </p>
+<div>
 <%if (searchMode == "show_doc") {%>
   <button type="submit" class="btn btn-primary">删除此反馈</button>
+  <button type="button" class="btn btn-primary comments" data-toggle="collapse" data-target="#page-type"> 选择单证类型 &gt;&gt; </button>
 <% }%>
-</p>
+</div>
 </form>

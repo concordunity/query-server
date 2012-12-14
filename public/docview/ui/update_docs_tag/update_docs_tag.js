@@ -8,6 +8,7 @@ steal(
     './views/init.ejs'
 ).then(
     'docview/ui/details',
+    'docview/alerts',
     'docview/ui/dmstable'
 ).then(function($) {
     $.Controller('Docview.Ui.update_docs_tag', {}, {
@@ -30,8 +31,8 @@ steal(
             this.element.find('.docs_list').docview_ui_dmstable({table_options : table_options});
             this.tableController = this.element.find('.docs_list').controller();
 
-
             var state = new $.Observe({
+		alert: { type: "info", heading: "", message: "" }, 
                 search: { filters: [], ids: [] },
                 access: { manage_docs: { print: true, testify: true } },
                 searchMode: 'show_doc',
@@ -39,12 +40,14 @@ steal(
             });
             $('#detail-show-docs').docview_ui_details({ clientState: state });
             this.detailController = $('#detail-show-docs').controller();
+	    $('#alerts').docview_alerts({clientState: state});
         },
 	"#update_docs_tag-test a.show-docs click" : function(el,ev){
 	   $("#detail-show-docs").show();
 	   $("#update_docs_tag-test").hide();
 	   var data_index = $(el).attr("data-index");
-           this.detailController.queryDoc(data_index);
+	   var folder_id = $(el).attr("folder-id");
+           this.detailController.queryDoc(data_index,folder_id);
 	},
 	list_docs : function(data) {
 	       this.tableController.setModelData(data);

@@ -19,15 +19,16 @@ steal(
 	setCommentsUI : function(pageInfo) {
 	    this.pageType = pageInfo.pageType;
 	    this.element.html(this.view('init', {pageType : this.pageType}));
-	    
 	    this.element.find(":radio[value=" + this.pageType +"]").attr('checked',true);
+	    this.options.pageInfo = pageInfo;
+	    console.log("setCommentsUI in comment.js, pageInfo is ",pageInfo);
         },
 	clearContent: function() {
 	    this.element.html('');
 	},
 	handleCommentsOk : function(data) {
 	    this.clearContent();
-	    console.log(data);
+	    //console.log(data);
 	    this.viewerController.updateComment(data);
 	},
 	
@@ -41,7 +42,7 @@ steal(
 		alert ("选择的种类没有变化");
 	    } else {
 		var pageInfo = this.options.pageInfo;
-		console.log(pageInfo);
+		console.log("when submit for addComments,that pageInfo is :",pageInfo);
 		Docview.Models.File.addComments(pageInfo.doc.getDocId(),
 						pageInfo.nthPage,
 						subcode, 

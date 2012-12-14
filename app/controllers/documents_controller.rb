@@ -21,6 +21,10 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def all_print
+
+  end 
+
   def multi_query
     doc_ids = params[:doc_ids]
     @documents = Document.where(:doc_id => doc_ids)

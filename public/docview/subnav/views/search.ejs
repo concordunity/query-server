@@ -4,6 +4,9 @@
 <% if (this.multi) { %>
     <li><a href="#multi"><%= $.i18n._('subnav.multi_document') %></a></li>
 <% } %>
+<% if (this.all_print) { %>
+    <li><a href="#all_print"><%= $.i18n._('subnav.all_print') %></a></li>
+<% } %>
 <% if (this.advanced) { %>
     <li><a href="#advanced"><%= $.i18n._('subnav.advanced_search') %></a></li>
 <% } %>

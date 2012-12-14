@@ -1,0 +1,7 @@
+<%for(var i = 0; i < this.length ; i++){%>
+        <li <%= this[i]%>>
+                <%== $.View('./views/item.ejs', this[i] )%>
+        </li>
+<%}%>
+
+<a class="btn btn-primary print"><i class="icon-print icon-white"></i> Print</a>

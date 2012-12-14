@@ -126,7 +126,7 @@ steal(
 	    }
 
 	    // Check for search sub tabs
-	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition') {
+	    if (subcategory == 'single' || subcategory == 'multi' || subcategory == 'advanced' || subcategory == 'personal_history' || subcategory == 'upload' || subcategory == 'search_some_condition' || subcategory == 'all_print') {
 		$('#document-details').hide();
 	    }
         }

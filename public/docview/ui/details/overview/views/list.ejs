@@ -31,10 +31,9 @@ if (i > 0 && i % 6 == 0) {
 </div><div class="row"><%
 } %>      
 <li class="span2">
-
 <a href="#<%= (i+1) %>" class="thumbnail" data-doc-index=<%= doc_index %>>
 <img src="<%= images[i] %>" />
-<!-- <img class='error icon-pencil icon-white' /> -->
+<img class='error icon-pencil icon-white' style="display:<%= (comment_list[i] == true) ? "" : "none"%>;"/> 
 </a>
 			第<%= (i+1) %>页<input type="checkbox" class="select_checkbox_print" value="<%= i %>"></input>
 	

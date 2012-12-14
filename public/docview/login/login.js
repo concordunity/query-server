@@ -16,6 +16,7 @@ steal(
     'docview/manage/accounts/roles',
     'docview/manage/docs',
     'docview/ui/details',
+    'docview/ui/print',
     'docview/ui/syssetting',
     'docview/ui/export_query',
     'docview/stats/group',
@@ -165,6 +166,11 @@ steal(
                     this.options.clientState.attr('access')
                         .attr('search').attr('advanced', true);
 		    this.setNavIfEmpty('search', 'advanced');
+                    break;
+                case ("all_print"):
+                    this.options.clientState.attr('access')
+                        .attr('search').attr('all_print', true);
+		    this.setNavIfEmpty('search', 'all_print');
                     break;
                 case ("search_condition"):
                     this.options.clientState.attr('access')
@@ -316,6 +322,7 @@ steal(
 	    $('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
 	    $('#settings').docview_settings({clientState: this.options.clientState});
 	    $('#system-upload').docview_ui_upload_user({clientState: this.options.clientState});
+	    $('#all-print').docview_ui_print({clientState: this.options.clientState});
 	    var login_info = " 最近一次登录时间 "+ user_info.last_time + ", IP 地址 " + user_info.last_ip;
             this.options.clientState.attr('login', {message: this.options.clientState.attr('user').attr('fullname') + login_info});
             this.options.clientState.attr('alert', {

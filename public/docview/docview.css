@@ -214,3 +214,4 @@ form[name=upload_user_form] a{
 	float:left;
 	text-decoration:underline;
 }
+ul.unstyled li.error-comments {width: 105px;}
