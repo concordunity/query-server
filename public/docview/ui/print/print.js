@@ -1,4 +1,5 @@
 steal(
+    'jquery/controller',
     'jquery/view/ejs',
     'jquery/controller/view',
     'docview/bootstrap/bootstrap.css'
