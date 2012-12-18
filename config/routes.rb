@@ -1,5 +1,7 @@
 Dms::Application.routes.draw do
 
+  post "/documents/all_print" => "documents#all_print"
+
   get '/find_doc_comments' => 'comments#find_doc_commit'
 
   get 'set_dialog' => 'settings#set_dialog'

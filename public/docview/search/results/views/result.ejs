@@ -1,19 +1,19 @@
-<tr <%= this%>>
+<tr <%= this.row%>>
+    <% if(this.search_model == 'all_print'){%>
+    <td><input type='checkbox' checked='checked' /></td>
+    <% }%>
     <td>
-<%
-if (this.access_info == "denied") {
-%>
-权限不足，不能查阅 <%= this.doc_id %> 
-<% } else if (this.access_info == "inquired") { %>
-缉私局等扣留, 不能查阅 <%= this.doc_id %> 
-<% } else { %>
+    <% if (this.row.access_info == "denied") { %>
+	    权限不足，不能查阅 <%= this.row.doc_id %> 
+    <% } else if (this.row.access_info == "inquired") { %>
+	    缉私局等扣留, 不能查阅 <%= this.row.doc_id %> 
+    <% } else { %>
+       	    <a href="#"><%= this.row.doc_id %></a>
+    <% } %>
 
-<a href="#"><%= this.doc_id %></a>
-<% } %>
+    </td>
+    <td><%= this.row.doc_type %></td>
+    <td><%= this.row.serial_number %></td>
 
-</td>
-    <td><%= this.doc_type %></td>
-    <td><%= this.serial_number %></td>
-
-    <td><%= this.pages %></td>
+    <td><%= this.row.pages %></td>
 </tr>

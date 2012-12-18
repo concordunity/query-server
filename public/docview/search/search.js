@@ -6,6 +6,7 @@ steal(
     'jquery/lang/observe/delegate',
     'docview/models',
     'docview/ui/history',
+    'docview/ui/print',
     'docview/ui/daterange'
 //    'docview/bootstrap/bootstrap.css'
 //    'libs/datepicker/css/datepicker.css'
@@ -53,9 +54,11 @@ steal(
 		{dateOptions : {labelString: "理单日期"}});
 	    this.element.find('div.single_holder').docview_ui_single({label: {labelString: "报关单号"}});
 	    this.element.find('div.multi_holder').docview_ui_multi();
+	    this.element.find('div.print_holder').docview_ui_multi();
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : {include_user : false}});
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
+	    this.element.find('div.all-print-action').docview_ui_print({clientState: this.options.clientState});
             //this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
 /*
 	   $('form.multi,form.advanced,form.by_doc_source').submit(function() {
@@ -269,6 +272,30 @@ steal(
 		}
             }
         },
+	// print all docs
+	".all_print submit" : function(el,ev) {
+	    ev.preventDefault();	
+	    console.log("all print");
+	    var src=document.activeElement;
+	    console.log(src.name);
+	    console.log(src.value);
+	    console.log($(el));
+            var ctrl = $('.all_print div.print_holder').controller();
+            if (ctrl.validateInput(el) ) {
+	    //var search_doc = el.find("");
+	    //Docview.Models.Print.findAll({docs: search_doc},this.proxy("showList"),this.proxy("faliure")); 
+		var ids = ctrl.getIds();
+                console.log(ids);
+		if (src.value == 'search'){
+		    this.options.clientState.attr('search', { doc_ids: ids});
+		} else {
+		    //print all docs
+		    var controller = $(".all-print-action").controller();
+		    controller.printAll({doc_ids: ids})
+		}
+	//	Docview.Models.Doc.findAllPrint(ids,this.proxy("showList"),this.proxy("failure"));
+	    }
+	},
 	'.by_doc_source submit' : function(el, ev) {
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');

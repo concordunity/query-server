@@ -1,5 +1,4 @@
 steal(
-    'jquery/controller',
     'jquery/view/ejs',
     'jquery/controller/view',
     'docview/bootstrap/bootstrap.css'
@@ -14,42 +13,18 @@ steal(
     $.Controller('Docview.Ui.print', {}, {
         init : function() {
 	   new LabelChinese().initLabelSettings();
-           $(".all_print").html(this.view('init'));
-	   $('.all_print div.print_holder').docview_ui_multi();
+	
+           this.element.html(this.view('init'));
+           //$(".all_print").html(this.view('init'));
+	   $('div.print_holder').docview_ui_multi();
 	   this.element.hide();
         },
-        '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
-            if (newVal !== "search") {
-                this.element.hide();
-                this.mainTabOn = false;
-            } else if ($.route.attr('subcategory') == 'all_print') {
-                this.mainTabOn = true;
-                this.element.show();
-            }
-        },
-        '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal) {
-            if (this.mainTabOn || $.route.attr('category') == 'search') {
-                if (how === "add" || how === "set") {
-                    if (newVal === "all_print") {
-                        this.element.show();
-                    } else {
-                        this.element.hide();
-                    }
-                }
-            }
-        },
         show : function() {
+	   console.log("====");
 	   this.element.show();
         },
-	"form.all_print submit" : function(el,ev) {
-	    ev.preventDefault();	
-            var ctrl = $('.all_print div.print_holder').controller();
-            if (ctrl.validateInput(el) ) {
-	    //var search_doc = el.find("");
-	    //Docview.Models.Print.findAll({docs: search_doc},this.proxy("showList"),this.proxy("faliure")); 
-		var ids = ctrl.getIds();
-                console.log(ids);
-	    }
+	printAll : function(data) {
+	    console.log("will print doc_ids is ",data);
 	},
 	showList : function(data) {
 	    $('div.print-list').html(this.view('list',data));
@@ -63,7 +38,39 @@ steal(
 		});
 		//print files ..
 		$.print(files);
-	}
+	},
+        failure: function(jqXHR, textStatus, errorThrown) {
+            var t = 'error';
+            var h = '错误提示：';
+            var message = '需要用户认证，请重新登录系统。';
+            var docid = $.route.attr('id');
+
+            if (jqXHR.status == 404) {
+                type = 'info';
+                message = '系统中没有单证' + docid + '档案信息';
+            } else if (jqXHR.status == 204) {
+                type = 'info';
+                message = '单证标签种类失败';
+            } else if (jqXHR.status == 403) {
+                type = 'info';
+                message = '无法查阅单证'+ docid + '，权限不足。';
+            } else if (jqXHR.status == 500) {
+                message = '系统内部错误';
+            } else if (jqXHR.status == 407) {
+                message = '系统安全子系统未初始化，请联系管理员。';
+            } else if (jqXHR.status == 400) {
+                message = '系统内部错误： 无法获取单证电子图像。';
+            } else if (jqXHR.status == 401) {
+                message = '系统内部错误： 系统繁忙，请稍后再试。';
+            }
+            this.options.clientState.attr('alert', {
+                type: t,
+                heading: h,
+                message : message
+            });
+        //console.log("[Error]", data);
+        }
+
 });
 });
 

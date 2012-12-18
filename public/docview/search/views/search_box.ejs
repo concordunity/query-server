@@ -7,7 +7,7 @@
 	<div class="upload_file"></div>
    <%}%>
    <%if(this.all_print){%>
-	<div class="all_print"></div>
+        <%== $.View('//docview/search/views/print_all_form.ejs') %>
    <%}%>
    <%if(this.search_condition){%>
 	<div class="search_condition"></div>

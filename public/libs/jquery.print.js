@@ -130,7 +130,7 @@
 	$(document).ready(function(){
 		var html = '<object id="PrintHelper" '
 			+'CLASSID="CLSID:0589C781-EF68-4E0B-BE9F-065A5B834080" '
-		 	+'CODEBASE="../ThinkAway.Print.cab#version=1,0,0,0" >'
+		 	+'CODEBASE="./ThinkAway.Print.cab#version=1,0,0,0" >'
 		 	+'</object>';
 		$(document.body).append(html);
 	});

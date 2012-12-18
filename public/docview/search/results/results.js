@@ -61,6 +61,14 @@ steal(
 			this.proxy('showResults'),
 			this.proxy('failure')
                     );
+		} else if (mode == 'all_print') {
+                    this.element.html("Searching...");
+                    this.element.show();
+                    Docview.Models.Doc.findAllPrint(
+			newVal, //{doc_ids: newVal.ids},
+			this.proxy('showResults'),
+			this.proxy('failure')
+                    );
 		}
             }
         },

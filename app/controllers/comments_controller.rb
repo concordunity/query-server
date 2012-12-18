@@ -106,6 +106,9 @@ class CommentsController < ApplicationController
     # Sanity check. Make sure the directory exists
     script_file = File.expand_path('~/bin/update_json.sh')
     
+
+    folder = Folder.find_by_folder_id(folder_id)
+
     if is_regular == "false"
 
       doc = Document.where(:doc_id => params[:doc_id]).first
@@ -123,7 +126,7 @@ class CommentsController < ApplicationController
     else
       #m = ModifiedDocument.find_by_doc_id(doc_id)
     logger.info folder_id
-      m = ModifiedDocument.where(["folder_id = ? and doc_id = ? ", folder_id, doc_id]).first
+      m = ModifiedDocument.where(["folder_id = ? and doc_id = ? ", folder.id, doc_id]).first
       if m
           logger.info("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")
           system("#{script_file} #{tmp_path} #{folder_id} #{doc_id}")

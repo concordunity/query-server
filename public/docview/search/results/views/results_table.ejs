@@ -1,6 +1,9 @@
 <table class="table table-condensed table-striped">
     <thead>
         <tr>
+	    <% if (this.search_model == "all_print"){%>
+            <th>请选择</th>
+	    <% } %>
             <th>报关单号</th>
             <th>报关单类别</th>
             <th>理单号</th>
@@ -10,7 +13,7 @@
     <tbody>
     
     <% for(var i = 0; i < this.results.length; i++) { %>
-        <%== $.View('//docview/search/results/views/result.ejs', new Docview.Models.File(this.results[i])) %>
+        <%== $.View('//docview/search/results/views/result.ejs', { row: (new Docview.Models.File(this.results[i])), search_model: this.search_model}) %>
     <% } %>
         
         

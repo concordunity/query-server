@@ -22,7 +22,25 @@ class DocumentsController < ApplicationController
   end
 
   def all_print
+    doc_ids = params[:doc_ids]
+    @documents = Document.where(:doc_id => doc_ids)
 
+    ids = @documents.map { |x| x.doc_id }
+    not_found_ids = doc_ids.reject{|x| ids.include? x}
+
+
+    @documents.each { |d|
+      if !current_user.can_view?(d)
+        d.access_info = "denied"
+      else
+        d.access_info = "";
+        if d.inquired && !current_user.can_inquire?
+          d.access_info = "inquired"
+        end
+      end
+    }
+
+    render json: { :results => @documents, :not_found => not_found_ids, :search_model => 'all_print'}, :status => 200
   end 
 
   def multi_query
