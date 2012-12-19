@@ -71,7 +71,9 @@ class ModifiedDocumentsController < ApplicationController
 	  # Create query_history record.
 	  #response = { :name => 'test', 'info' => 'good' }
 	  response = JSON.parse(res)
-	  mtype_label = labels[special_doc.mtype]	  
+	  #mtype_label = labels[special_doc.mtype]	  
+	  special_type = SpecialTypeDoc.find_by_doc_code(special_doc.serial_number[0,4]) 
+	  mtype_label = special_type.nil? ? "其他" : special_type.doc_name 
 	  
 	  comments = DocComment.where({:doc_id => doc_id, :code => 1, :state => 0})
 	  comments = comments.where(:folder_id => folder_id) unless folder.nil?	
