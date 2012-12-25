@@ -692,12 +692,23 @@ class DocumentsController < ApplicationController
   end
 
   def add_history(d, action)
-    dh = DocumentHistory.create(:action =>  t('doc.' + action),
+    tmp_time = Time.now
+    dh = DocumentHistory.where(:action =>  t('doc.' + action),
+                                :user_id=> current_user.id,
+                                :org => d.org,
+                                :doc_id => d.doc_id,
+                                :ip => current_user.current_sign_in_ip,
+                                :email => current_user.display_name,
+				:created_at => ((tmp_time-10).to_s .. (tmp_time).to_s)).first;
+
+    if dh.nil? || dh.blank?
+        dh = DocumentHistory.create(:action =>  t('doc.' + action),
                                 :user_id=> current_user.id,
 				:org => d.org,
                                 :doc_id => d.doc_id,
                                 :ip => current_user.current_sign_in_ip,
                                 :email => current_user.display_name)
+    end 
     return dh
   end
 

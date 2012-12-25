@@ -19,6 +19,30 @@ class ApplicationController < ActionController::Base
   end
   # exception.action, exception.subject                                             
   private
+
+  def session_expiry
+    if session[:expiry_time].blank?
+      update_activity_time
+    elsif (Time.now - session[:expiry_time]) < getTimeOut
+      update_activity_time
+    else
+      reset_session
+      #flash[:notice] = "连接超时，请重新登录！"
+      redirect_to '/docview/docview.html'
+    end
+  end
+
+  def update_activity_time
+    session[:expiry_time] = Time.now
+  end
+
+  def getTimeOut
+        #@setting = Setting.where({:name=>"timeout"}).first
+        #return @setting.value.to_i || 1800
+	return 1800
+  end
+
+
   def load_layout
     if user_signed_in? && current_user.username == "admin"
       return true;
@@ -28,6 +52,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_user!
+    session_expiry
     if authenticate_user!
       return true;
     end

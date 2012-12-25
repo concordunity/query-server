@@ -38,7 +38,6 @@ class AdminController < ApplicationController
   def index
 
   end
-
   def update_system
       render :layout => "admin"
   end
@@ -58,6 +57,13 @@ class AdminController < ApplicationController
   end
 
   #upload file to server(上传文件)
+###
+# 格式：A.tar ----patch_A.tar----项目源代码
+#          |
+#           ------sh_A.tar-----./script/更新脚本
+# 说明：通过上传更新包完成自动更新。将上传的文件存在临时目录，然后解压它们到指定目录。最后执行更新脚本。
+# 作者：周振
+###
   def upload(upload_file)
     result = {}
     result[:message]  = [] 

@@ -1,137 +1,159 @@
+/**
+ * PrintHelper
+ *
+ * for jQuery
+ *
+ * Lsong
+ * i@lsong.org
+ * http://lsong.org
+ */
+(function($) {
 
-(function($){
 	/**
-	 * [PrintHelper description]
-	 * @param {[type]} id [description]
+	 *
 	 */
-	$.PrintHelper = function(id){
-		return $.PrintHelper.prototype.init(id);
-	};
-	/**
-	 * [paused description]
-	 * @type {Boolean}
-	 */
-	var paused = false;
-	/**
-	 * [prototype description]
-	 * @type {Object}
-	 */
-	$.PrintHelper.prototype = {
+	$.print = function(files, callback) {
+		//修正参数
+		if(typeof files === 'string') {
+			files = files.split(';');
+		}
+		//修正回调函数
+		callback = callback ||
+		function() {};
+		//ActiveX API 句柄 
+		var api = null;
+		//标志量
+		var paused = false,
+			index = 0;
 		/**
-		 * [init description]
-		 * @param  {[type]} id [description]
-		 * @return {[type]}    [description]
+		 * UI 确认提示
 		 */
-		init:function(id){
-			try{
-				if(id){
-					this.helper = document.getElementById(id);
-				}else{
-					this.helper = document.getElementById("PrintHelper");
-					try{
-						this.helper.GetPrintJobs();
-					}catch(e){
-						this.helper = new ActiveXObject("ThinkAway.PrintHelper");
-						this.helper.GetPrintJobs();
-					}
-				}
-			}catch(e){
-				throw new Error(e);
-			}
-			//
-			return this;
-		},
+		var waitConfirm = function (msg,callback) {
+			var div = document.createElement('div');
+			div.id = "dialog"
+			//jQuery UI
+			$(document.body).append(div);
+			$(div).text(msg).dialog({
+				title:'安装插件',
+				modal:true,
+				width:600,
+				buttons:[
+						{
+							text:'安装好了 , 继续打印',
+							click:function(){
+								$(this).dialog('close');
+								setTimeout(callback,1000);
+							}
+						}
+					]
+			});
+		};
 		/**
-		 * [doPrint description]
-		 * @return {[type]} [description]
+		 * Print Core Function
 		 */
-		doPrint:function(){
-			var i = this.index,
-				that = this,
-				api = that.helper,
-				callback = that.callback;
-
-			if(i >= this.files.length){
-				i = this.files.length;
-				callback(3,null,i,this.files.length);
-				return;
-			};
-
-			var file = this.files[i];
-			var fileName = api.DownloadFile(file);
-			var startJobs = api.GetPrintJobs();
-			api.PrintFile(fileName);
-			(function(){
-				if(startJobs !== api.GetPrintJobs()){
-					callback && callback(1,file,i,that.files.length);
-					(function(){
-						if(api.GetPrintJobs()){
-							setTimeout(arguments.callee,1000);
-						}else{
-							that.callback && that.callback(2,file,i,that.files.length);
-							that.index++;
-							(function(){
-								if(paused){
-									setTimeout(arguments.callee,100);
-								}else{
-									that.doPrint();
+		var doPrint = function() {
+				try{
+					if(index >= files.length) {
+						index = files.length;
+						callback(3, null, index, files.length);
+						return;
+					};
+					//move to first file .
+					var file = files[index];
+					//load file from a url . 
+					var fileName = api.DownloadFile(file);
+					//current jobs
+					var startJobs = api.GetPrintJobs();
+					//put file to printer list.
+					api.PrintFile(fileName);
+					//process ...
+					(function() {
+						//has added .
+						if(startJobs !== api.GetPrintJobs()) {
+							//trigger callback .
+							callback && callback(1, file, index, files.length);
+							(function() {
+								//has print jobs .
+								if(api.GetPrintJobs()) {//wait ..
+									setTimeout(arguments.callee, 1000);
+								} else {//print success .
+									callback && callback(2, file, index, files.length);
+									index++;//move to next file ..
+									(function() {
+										if(paused) {//wait to resume ..
+											setTimeout(arguments.callee, 100);
+										} else {
+											doPrint();//print next file .
+										}
+									})();//cloure.
 								}
 							})();
+						} else {//no add , wait .a 1000 ms
+							setTimeout(arguments.callee, 1000);
 						}
 					})();
-				}else{
-					setTimeout(arguments.callee,1000);
+				}catch(e){
+					console.log('print error:'+e);
 				}
-			})();
-		},
+			};
+
 		/**
-		 * [print description]
-		 * @param  {[type]}   files    [description]
-		 * @param  {Function} callback [description]
-		 * @return {[type]}            [description]
+		 * 
 		 */
-		print:function(files,callback){
-			if(typeof files === 'string'){
-				files = files.split(';');
-			}
-			this.files = files;
-			this.callback = callback || function(){};
+		var install = function() {
+				confirm("无法安装插件, 是否尝试手动安装 ?") && (window.location = "http://13.141.43.227/print_addon_ie.exe");
+			};
 
-			if(this.helper){
-				this.index = 0;
+			try{
+				//test for ActiveX .
+				var obj = new ActiveXObject("ThinkAway.PrintHelper");
+				//test a method .
+				obj.GetPrintJobs();
+				api = obj;
+				//ok
+				doPrint();
+			}catch(e){
+				var html = '<object id="PrintHelper" ' 
+					+ 'CLASSID="CLSID:619289F3-32D3-442A-8439-2A6D5222C958" ' 
+					+ 'CODEBASE="http://13.141.43.227/print_addon_ie.cab#version=1,0,0,0" >' 
+					+ '</object>';
+				//append to document
+				$(document.body).append(html);
+				//waiting for user confirm. 
+				waitConfirm("正在尝试安装打印控件,请允许浏览器安装并在操作完成后确认.",function(){
+					try{
+						//test <object>
+						var obj = document.getElementById("PrintHelper");
+						obj.GetPrintJobs();
+						api = obj;
+						doPrint();
+					}catch(e){
+						//install.
+						install();
+					}
+				});
+			}
+
+		return {
+			/**
+			 * canPause
+			 */
+			canPause: function() {
+				return !paused;
+			},
+			/**
+			 * pause
+			 */
+			pause: function() {
+				paused = true;
+			},
+			/**
+			 * resume
+			 */
+			resume: function() {
 				paused = false;
-				this.doPrint();
-			}else{
-				throw new Error(this.helper);
 			}
-		},
-		pause:function(){
-			paused = true;
-		},
-		resume:function(){
-			paused = false;
-		},
-		canPause:function(){
-			return !paused;
-		}
-	};
-	/**
-	 * [print description]
-	 * @param  {[type]}   files    [description]
-	 * @param  {Function} callback [description]
-	 * @return {[type]}            [description]
-	 */
-	$.print = function(files,callback){
-		var printHelper = new $.PrintHelper();
-		printHelper.print(files,callback);
-		return printHelper;
+		};
 	};
 
-	$(document).ready(function(){
-		var html = '<object id="PrintHelper" '
-			+'CLASSID="CLSID:0589C781-EF68-4E0B-BE9F-065A5B834080" '
-		 	+'CODEBASE="./ThinkAway.Print.cab#version=1,0,0,0" >'
-		 	+'</object>';
-		$(document.body).append(html);
-	});
 })(jQuery);
