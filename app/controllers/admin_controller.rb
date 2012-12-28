@@ -61,7 +61,6 @@ class AdminController < ApplicationController
     end
   end
 
-  #upload file to server(上传文件)
 ###
 # 格式：A.tar ----patch_A.tar----项目源代码
 #          |
@@ -101,9 +100,11 @@ class AdminController < ApplicationController
 	    tar_name = File.basename(upload_file.original_filename,".tar")
 	    patch_name = upload_file.original_filename
 	    
-	    cmd = "chmod 775 #{filepath} && cp #{filepath} ~/src/ && tar xvf #{filepath} -C #{tmp_path} && cd #{tmp_path} && chmod 775 patch_#{patch_name}  && chmod 775 sh_#{patch_name}  && tar xvf patch_#{patch_name} -C #{Rails.root.to_s} && tar xvf sh_#{patch_name}  && sh ./script/sh_#{tar_name}.sh && rm -rf #{tmp_path}"	
-	    logger.info cmd
-	    system(cmd)
+	    #cmd = "chmod 775 #{filepath} && cp #{filepath} ~/src/ && tar xvf #{filepath} -C #{tmp_path} && cd #{tmp_path} && chmod 775 patch_#{patch_name}  && chmod 775 sh_#{patch_name}  && tar xvf patch_#{patch_name} -C #{Rails.root.to_s} && tar xvf sh_#{patch_name}  && sh ./script/sh_#{tar_name}.sh && rm -rf #{tmp_path}"	
+	    #logger.info cmd
+	    #system(cmd)
+	    logger.info("sh #{File.join(Rails.root.to_s,"bin","update_system.sh")} #{filepath} #{tmp_path} #{Rails.root.to_s}")
+	    system("sh #{File.join(Rails.root.to_s,"bin","update_system.sh")} #{filepath} #{tmp_path} #{Rails.root.to_s}")
         result[:message] << '更新成功'
 	end
     rescue => e
