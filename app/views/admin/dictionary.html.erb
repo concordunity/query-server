@@ -1,0 +1,34 @@
+
+<div class="container well">
+<form action="/admin/import_dictionary" name="upload_form"  method="POST" enctype="multipart/form-data">
+	<table class="upload-table table-size">
+     	  <tr>
+	    <td> 请上传更新程序包： <input class='upload_file' type="file" name="upload_file"  /></td>
+	    <td>
+	        <button type="submit" class="btn btn-primary submit-button"><i class="icon-upload icon-white"></i><%= t("view.upload")%></button>
+        	<button id="dictionary-export" type="input" class="btn btn-primary "><i class="icon-upload icon-white"></i><%= t("view.export")%></button>
+        	<button id="dictionary-update" type="input" class="btn btn-primary "><i class="icon-upload icon-white"></i><%= t("view.update")%></button>
+	    </td>
+	  </tr>
+	</table>
+</form>
+</div>
+<div id='dictionary-list'></div>
+
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/dictionary','docview/models').then(function($) {
+   $('#dictionary-list').docview_ui_dictionary();
+   var controller =  $('#dictionary-list').controller();
+   controller.createView();
+
+   Docview.Models.File.getDictionary({doc_type: ""},function(data){
+        controller.setView(data,"org","1");
+        },{})
+   $("#dictionary-update").click(function(){
+        controller.updateDictionary();
+        });
+  $("#dictionary-export").click(function(){
+	controller.exportToExcel();
+	});
+ });
+ </script>

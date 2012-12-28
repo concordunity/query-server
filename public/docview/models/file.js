@@ -7,6 +7,29 @@ $.Model('Docview.Models.File',
 //	//        //console.log(data);
 //	return this._super(data.results);
 //    },
+    
+    updateDictionary : function(params, success, error) {
+        return $.ajax({
+            url : '/dictionary_info/update_dictionary',
+            type : 'get',
+            data : params,
+            success : success,
+            error : error,
+	    async : false,
+            dataType : 'json file.models'
+        });
+    },
+    getDictionary : function(params, success, error) {
+        return $.ajax({
+            url : '/dictionary_info/get_dictionary',
+            type : 'get',
+            data : params,
+            success : success,
+            error : error,
+	    async : false,
+            dataType : 'json file.models'
+        });
+    },
     findDocComments : function(params, success, error) {
         return $.ajax({
             url : '/find_doc_comments',

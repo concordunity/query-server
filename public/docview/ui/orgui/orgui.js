@@ -5,14 +5,40 @@ steal(
     'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs',
-  'docview/bootstrap/bootstrap.min.js'
+    'libs/org_arr.js',
+    'docview/bootstrap/bootstrap.min.js'
 ).then(function($) {
     $.Controller('Docview.Ui.Orgui', {}, {
         init : function() {
-            this.element.html(this.view('init'));
+	    //var orgs = this.options.orgs;
+	    var orgs = orgArrayDictionary; 
+	    console.log('==org_arr.js==');
+	    console.log(orgArrayDictionary);
+	    //console.log('==org==');
+	    //console.log(orgs);
+            this.element.html(this.view('init',{orgsDic : orgs}));
 
 	    this.resetState();
-
+	    var strjson = '{"';
+	    strjson = strjson + "1000" + '" : "'+  "尚未选择关区" +'" , "';
+	    for(var i = 0;i < orgs.length;i++){
+		var org = orgs[i];
+//		if (org.dic_num == 2200) {
+//			org.dic_name = "所有关区";
+//		}
+		if (org.dic_num == 2200) {
+		    strjson = strjson +'2200" : "所有关区';
+		}else{
+		    strjson = strjson + org.dic_num + '" : "'+  org.dic_name;
+		}
+		if (i+1 < orgs.length){
+		    strjson = strjson + '" , "';
+		}
+	    } 
+	    strjson = strjson + '"}';
+	    console.log("orgs json is:",strjson);
+	    this.labelMap =  eval('(' + strjson + ')');  
+/*
 	    this.labelMap = {
 		'1000': '尚未选择关区',
 		'2200': '所有关区',
@@ -39,6 +65,7 @@ steal(
 		'2223': '驻南汇办事处',
 		'2224': '驻崇明办事处'
 	    };
+*/
 
 	    this.setSelectionValues();
 	    //console.log(this.labelMap['2200']);

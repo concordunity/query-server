@@ -13,7 +13,9 @@
   <%== $.View('//docview/manage/docs/views/court_form.ejs') %>
 <% } %>
 <% if (this.dh_report) { %>
-  <%== $.View('//docview/manage/docs/views/dh_report.ejs') %>
+<% //console.log("--------doc----dh_re-----history");%>
+<% //console.log(this.orgsDic);%>
+  <%== $.View('//docview/manage/docs/views/dh_report.ejs',{orgsDic : this.orgsDic}) %>
 <% } %>
   </div>
 </div>

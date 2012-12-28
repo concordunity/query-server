@@ -2,6 +2,11 @@
 class AdminController < ApplicationController
 
   before_filter :load_layout
+
+  def dictionary
+      
+  end
+
   def show_docs
     #@docs = Document.all
 	@docs = DocComment.all
@@ -117,4 +122,6 @@ class AdminController < ApplicationController
         end
       end
     end 
+
+
 end

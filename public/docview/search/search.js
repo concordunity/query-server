@@ -6,6 +6,7 @@ steal(
     'jquery/lang/observe/delegate',
     'docview/models',
     'docview/ui/history',
+    'docview/ui/dictionary',
     'docview/ui/print',
     'docview/ui/daterange'
 //    'docview/bootstrap/bootstrap.css'
@@ -21,6 +22,7 @@ steal(
 )
 // External JS
 .then(
+    'libs/comments_arr.js',
     'docview/bootstrap/bootstrap.min.js'
 //    'libs/datepicker/js/locales/bootstrap-datepicker.zh-CN.js'
 )
@@ -38,8 +40,13 @@ steal(
     /* @Prototype */
     {
         init: function() {
-            this.element.html(this.view('search_box', this.options.clientState.attr(
-		'access').attr('search')));
+	    //$("#dictionary-tag").docview_ui_dictionary();
+	    //var dicController =  $("#dictionary-tag").controller();
+	    //this.orgsDic = dicController.getDictionary("comments");
+	    this.comment_dic = commentsArrayDictionary;
+	    var search =  this.options.clientState.attr('access').attr('search');
+	    search.doc_type = this.comment_dic;
+            this.element.html(this.view('search_box', search));
 
             // Hide box until route conditions are met
             this.element.hide();

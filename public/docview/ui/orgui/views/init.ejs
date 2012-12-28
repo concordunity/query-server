@@ -11,43 +11,19 @@
 
 <table class="table table-condense">
 <tr>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2233'>浦东机场</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2202'>吴淞</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2201'>浦江</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2225'>外高桥港区</input> </label> </td>
+<%
+ var count = 0;
+ for(var i=0;i<this.orgsDic.length;i++){
+    org=this.orgsDic[i];
+    if (org.dic_num != 2200){
+	count = count + 1;
+%>
+<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='<%= org.dic_num%>'><%= org.dic_name%></input> </label> </td>
+<% if (count%4 == 0) { %>
+	</tr>
+	<tr>
+<% }}} %>
 </tr>
-<tr>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2248'>洋山</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2210'>浦东</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2203'>虹桥机场</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2209'>浦江(龙吴)</input> </label> </td>
-</tr>
-<tr>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2218'>外高桥保税区</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2204'>经济技术开发区</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2212'>奉贤</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2213'>莘庄</input> </label> </td>
-</tr>
-<tr>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2217'>嘉定</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2220'>金山</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2222'>青浦</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2221'>松江</input> </label> </td>
-</tr>
-<tr>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2241'>现场业务一处</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2242'>现场业务二处</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2243'>现场业务三处</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2206'>驻邮局办事处</input> </label> </td>
-</tr>
-<tr>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2205'>驻车站办事处</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2223'>驻南汇办事处</input> </label> </td>
-<td> <label class='checkbox'> <input type='checkbox' name='org'  class='org-check' value='2224'>驻崇明办事处</input> </label> </td>
-<td></td>
-</tr>
-<tr>
-
 </table>
 </form>
 </div>

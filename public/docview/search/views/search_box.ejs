@@ -1,7 +1,9 @@
 
   <div class="search-form well">
    <% if (this.single) { %>
-      <%== $.View('//docview/search/views/single_doc_form.ejs') %>
+<% 
+%>
+      <%== $.View('//docview/search/views/single_doc_form.ejs',{doc_type: this.doc_type}) %>
    <% } %>
    <%if(this.upload_file){%>
 	<div class="upload_file"></div>
@@ -13,13 +15,17 @@
 	<div class="search_condition"></div>
    <%}%>
    <% if (this.multi) { %>
-        <%== $.View('//docview/search/views/multiple_doc_form.ejs') %>
+<% 
+%>
+        <%== $.View('//docview/search/views/multiple_doc_form.ejs',{doc_type: this.doc_type}) %>
    <% } %>
    <% if (this.advanced) { %>
         <%== $.View('//docview/search/views/advanced_form.ejs',this) %>
    <% } %>
    <% if (this.by_doc_source) { %>
-        <%== $.View('//docview/search/views/by_doc_source.ejs') %>
+<% 
+%>
+        <%== $.View('//docview/search/views/by_doc_source.ejs',{doc_type: this.doc_type}) %>
    <% } %>
    <%== $.View('//docview/search/views/personal_history.ejs') %>
   </div>

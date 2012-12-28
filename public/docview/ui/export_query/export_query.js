@@ -8,6 +8,7 @@ steal(
     'docview/ui/dmstable',
     'docview/models',
     'docview/ui/select_page',
+    'docview/ui/dictionary',
     'docview/ui/queryform'
 ).then(function($) {
     $.Controller('Docview.Ui.Export_query', {}, {

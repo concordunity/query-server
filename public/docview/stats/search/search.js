@@ -22,6 +22,8 @@ steal(
 //
 .then(
     'docview/ui/search_condition',
+    'docview/ui/dictionary',
+    'libs/org_arr.js',
     'libs/jquery.date.js'
     )
 
@@ -40,13 +42,21 @@ steal(
         /* @Prototype */
         {
             init: function() {
+
+
                 this.element.html(
 		    this.view('search_box',
 			      this.options.clientState.attr('access').attr('stats')));
                 // Hide box until route conditions are met
                 this.element.hide();
 
-                $("#div_query_form").html(this.view("query_form",{title : "用户查阅历史查询"}));
+		//$("#dictionary-tag").docview_ui_dictionary();
+		//var dicController =  $("#dictionary-tag").controller();
+		//this.orgsDic = dicController.getDictionary("org");
+		this.orgsDic = orgArrayDictionary; 
+		//console.log("-----state------");
+		//console.log(this.orgsDic);
+                $("#div_query_form").html(this.view("query_form",{title : "用户查阅历史查询",orgsDic : this.orgsDic}));
                 //                $("#div_stats").html(this.view("stats"));
 		//preload ..
                 $("#div_stats").docview_ui_search_condition();

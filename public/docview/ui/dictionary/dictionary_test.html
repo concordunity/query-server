@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>dictionary Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+<div class='dictionary-update'><button id='update-dictionary' class='btn btn-large btn-primary'>更新</button></div>
+    <div id="dictionary-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/dictionary','docview/models').then(function($) {
+
+   $('#dictionary-test').docview_ui_dictionary();
+   var controller =  $('#dictionary-test').controller();
+   controller.createView();
+
+   Docview.Models.File.getDictionary({doc_type: ""},function(data){
+	controller.setView(data,"org","1");
+	},{})
+   $("#update-dictionary").click(function(){
+	controller.updateDictionary();
+	});
+ }); 
+ </script>
+        </body>
+</html>
+

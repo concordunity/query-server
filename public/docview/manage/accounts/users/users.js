@@ -7,6 +7,7 @@ steal(
     'docview/models', 
     'docview/ui/dmstable',  
     'docview/ui/orgui',
+    'docview/ui/dictionary',
     'docview/bootstrap/bootstrap.css'
 )
 
@@ -22,6 +23,7 @@ steal(
 // External JS
 .then(
     'docview/bootstrap/bootstrap.min.js',
+    'libs/org_arr.js',
     'docview/datatables/bootstrap-pagination.js',
     'docview/docview.css'
 ).then(function($) {
@@ -54,6 +56,13 @@ steal(
 	    this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
 	    this.tableController = this.element.find('.user-list').controller();
             // By default we're hidden until the route conditions are met
+
+
+	    //$("#dictionary-tag").docview_ui_dictionary();
+	    //var dicController =  $("#dictionary-tag").controller();
+	    //this.orgsDic = dicController.getDictionary("org");
+	    this.orgsDic = orgArrayDictionary; 
+
             this.element.hide();
 	    this.mainTabOn = false;
         },
@@ -151,9 +160,11 @@ steal(
         // Creating a user
         '#new-user-btn click': function() {
             // Load up the creation form
-            $('#new-user').html(this.view('new_user', {cntl : this}));
-	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui();
 
+	    console.log('------new-user----');
+	    //console.log(this.orgsDic);
+            $('#new-user').html(this.view('new_user', {cntl : this}));
+	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
         },
         '#new-user-form submit': function(el, ev) {
             ev.preventDefault();
@@ -276,7 +287,11 @@ steal(
 	    var editHtml = this.view('edit_user', 
 				     {cntl : this, user: userInfo.model});
 	    userRow.after(editHtml);
-	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
+	    //userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
+
+	    console.log('------eidt-user----');
+	    //console.log(this.orgsDic);
+	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
 	    var ctrl =userRow.next().find('div.edit-org-selection-holder').controller();
 	    ctrl.setOrgs(userInfo.model.orgs);
 

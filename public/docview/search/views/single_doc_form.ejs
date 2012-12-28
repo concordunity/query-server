@@ -5,7 +5,7 @@
 <div class="row-fluid">
 <button type="submit" class="btn btn-primary btn-large"><i class="icon-search icon-white"></i>
 <%= $.i18n._('btn.search') %></button> 
-<%== $.View('//docview/search/views/filters_form.ejs', {type: "single"}) %>
+<%== $.View('//docview/search/views/filters_form.ejs', {type: "single", doc_type : this.doc_type}) %>
 </div>
 
 </form>

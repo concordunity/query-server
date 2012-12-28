@@ -16,8 +16,8 @@
        <label class="control-label">单证组</label>
        <div class="dg_select_holder controls"></div>
    </div>
-
- <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
+<% this.orgsDic = orgArrayDictionary;%>
+ <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
 </fieldset>
 
     <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看</button>

@@ -7,26 +7,34 @@ steal(
 ).then(
     'docview/ui/daterange',
     'docview/ui/single',
+    'docview/ui/dictionary',
+    'libs/org_arr.js',
     './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.Queryform', {}, {
         init : function() {
-            this.element.html(this.view('init', this.options.formParams));
 
+	    //$("#dictionary-tag").docview_ui_dictionary();
+	    //var dicController =  $("#dictionary-tag").controller();
+	    //var orgsDic = dicController.getDictionary("org");
+	    var orgsDic = orgArrayDictionary; 
+            this.element.html(this.view('init', this.options.formParams));
 	    this.form = this.element.find("form.form-horizontal");
 
 	    var form = this.form;
 	    var that = this;
 	    this.dateRangeController = undefined;
 	    this.docidController = undefined;
-
+	    
 	    $.each(this.options.formParams.formFields, function(index, name) {
+		//console.log('-------queryform.js--------');
+		//console.log(orgsDic);
 		if (name == 'org') {
 		    var label = that.options.formParams.orgLabel || "理单关区";
-		    form.append($.View("//docview/ui/views/org.ejs", {name: "org", label : label }));
+		    form.append($.View("//docview/ui/views/org.ejs", {name: "org", label : label ,orgsDic: orgsDic}));
 		} else if (name == 'org_applied') {
 		    var label = that.options.formParams.orgAppliedLabel || "申报关区";
-		    form.append($.View("//docview/ui/views/org.ejs", {name: "org_applied", label : label }));
+		    form.append($.View("//docview/ui/views/org.ejs", {name: "org_applied", label : label,orgsDic : orgsDic}));
 		} else if (name == 'daterange') {
 		    form.append(that.view(name));
 		    var label = that.options.formParams.dataRangeLabel || "日期";	

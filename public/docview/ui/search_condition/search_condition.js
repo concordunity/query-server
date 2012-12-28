@@ -7,11 +7,18 @@ steal(
     'docview/datatables/jquery.dataTables.js'
     ).then(
     './views/init.ejs',
+    'docview/ui/dictionary',
+    'libs/org_arr.js',
     'docview/ui/daterange'
     ).then(function($) {
     $.Controller('Docview.Ui.search_condition', {}, {
         init : function() {
-            this.element.html(this.view('init',this.options.select_option));
+
+	    //$("#dictionary-tag").docview_ui_dictionary();
+	    //var dicController =  $("#dictionary-tag").controller();
+	    //var orgsDic = dicController.getDictionary("org");
+	    var orgsDic = orgArrayDictionary;
+            this.element.html(this.view('init',{orgsDic : orgsDic}));
             this.element.find('div.daterange-holder-2').docview_ui_daterange({
                 dateOptions : {
                     labelString: ""

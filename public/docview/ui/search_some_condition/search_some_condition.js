@@ -15,6 +15,8 @@ steal(
 ).then(
 	'docview/ui/details',
 	'docview/ui/paging',
+	'docview/ui/dictionary',
+	'libs/org_arr.js',
 	'docview/ui/dmstable'
 ).then(
 	'docview/bootstrap/bootstrap.css',
@@ -27,8 +29,11 @@ steal(
 		init : function() {
 			//console.log("   intit    =====");
 			new LabelChinese().initLabelSettings();
-
-			this.element.html(this.view('init'));
+			//$("#dictionary-tag").docview_ui_dictionary();
+			//var dicController =  $("#dictionary-tag").controller();
+			//var orgsDic = dicController.getDictionary("org");
+			var orgsDic = orgArrayDictionary;
+			this.element.html(this.view('init',{orgsDic: orgsDic}));
 			this.element.hide();
 			$('#search_pages').docview_ui_paging();
 		},
@@ -197,7 +202,7 @@ steal(
 		var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
 		
 		//
-		console.info("I'm in ..");
+		//console.info("I'm in ..");
 		//
 
 		this.element.find('div#search_results table').dataTable({

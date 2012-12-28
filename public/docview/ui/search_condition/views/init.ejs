@@ -29,7 +29,7 @@
           </div>
 	  </div>
     <div class="daterange-holder-2"> </div>
-     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org'} ) %>
+     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
         <div id="frm_docType_years_select"></div>
     </fieldset>  
   <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>

@@ -13,6 +13,7 @@ steal(
     './doc_manager.js',
     './document.js',
     './views/init.ejs',
+    'libs/comments_arr.js',
     'docview/docview.css'
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {

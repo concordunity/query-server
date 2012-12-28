@@ -6,6 +6,7 @@ steal(
 ).then(
     'docview/models',
     'docview/bootstrap/bootstrap.min.js',
+    'libs/comments_arr.js',
     './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.Comments', {}, {

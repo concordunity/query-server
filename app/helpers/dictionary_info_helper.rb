@@ -1,0 +1,2 @@
+module DictionaryInfoHelper
+end

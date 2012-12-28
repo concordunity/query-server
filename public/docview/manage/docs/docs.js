@@ -16,6 +16,8 @@ steal(
 )
 // External JS
 .then(
+    'docview/ui/dictionary',
+    'libs/org_arr.js',
     'docview/bootstrap/bootstrap.min.js'
 )
 .then(function($) {
@@ -32,6 +34,12 @@ steal(
     /* @Prototype */
     {
         init: function() {
+	    //var manage_docs =  this.options.clientState.attr('access').attr('manage_docs');
+	    //$("#dictionary-tag").docview_ui_dictionary();
+	    //var dicController =  $("#dictionary-tag").controller();
+	    //this.orgsDic = dicController.getDictionary("org");
+	    this.orgsDic = orgArrayDictionary; 
+	    //manage_docs.orgsDic = this.orgsDic;
             this.element.html(this.view('init', this.options.clientState.attr('access').attr('manage_docs')));
 	    this.error_context = '';
             // Hide box until route conditions are met

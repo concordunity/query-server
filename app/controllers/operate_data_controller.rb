@@ -82,8 +82,11 @@ class OperateDataController < ApplicationController
   def export_excel
     title = params[:tableHeader]
     titleColumn = params[:tableTitle]
-
-    excel_name = params[:tableFile]
+    if  params[:tableFile].nil? ||  params[:tableFile] == ""
+   	 excel_name = "excel"
+    else
+	 excel_name = params[:tableFile]
+    end
     export_data = JSON.parse(params[:tableData])
 
     new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
