@@ -3,12 +3,32 @@ class AdminController < ApplicationController
 
   before_filter :load_layout
 
+  #接收格式：｛:action => '', :describe => ""｝
+  def system_log
+	sys_log(params)	
+	render :nothing => true 
+  end
+
+  def query_log
+	sys_log(params)	
+	query_history_log(params)
+	render :nothing => true 
+  end
+
+  def document_log
+	sys_log(params)	
+	document_history_log(params)
+	render :nothing => true 
+  end
+
   def dictionary
       
   end
 
   def show_docs
     #@docs = Document.all
+    logger.info current_user.to_json 
+
 	@docs = DocComment.all
     logger.info params[:asy]
     if params[:asy] == "true"

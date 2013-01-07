@@ -41,7 +41,6 @@
                     advanced : false,
 		    by_doc_source : false,
 		    upload_file : false,
-		    all_print : false,
 		    search_condition : false
                 },
                 stats: {
@@ -57,6 +56,7 @@
                     check: false,
                     copy: false,
                     print: false,
+		    all_print : false,
                     testify: false
                 },
                 manage_accounts: {

@@ -146,11 +146,14 @@ steal(
                 }
                 if (newVal !== undefined) {
                     //this.element.find('.stats_query').hide();
-
+		    if(newVal !== 'stats_stats'){
+			$(".stats_usage").hide();	
+		    }
                     this.element.find('.' + newVal).show();
             
                     if (newVal == 'stats_stats') {
                     //this.reloadStats();
+			$(".stats_usage").show();
                     } else if (newVal == 'stats_usage') {
                         this.reloadUsage();
                     } else if (newVal == 'stats_query') {
@@ -288,7 +291,7 @@ steal(
                 } else {
 		    //console.info(data);
                     this.element.find('div.stats_stats').html(this.view('stats_total', data));
-		    $('#stats_total').html('档案总数为: <b>' + data.docs_total + ' </b>份,总计页数为: <b>'+ data.pages_total+'</b> 页');
+		    $('.stats_usage').html('档案总数为: <b>' + data.docs_total + ' </b>份,总计页数为: <b>'+ data.pages_total+'</b> 页').show().addClass('alert alert-info').css("background",'whiteSmoke').css('border-color', '#E3E3E3');
                 }
                 this.element.find('div.stats_stats table').dataTable({
                     "sDom": dmstable_params,

@@ -65,7 +65,7 @@ steal(
 	    this.element.find('div.self_history').docview_ui_history({clientState: this.options.clientState,
 								   th_options : {include_user : false}});
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
-	    this.element.find('div.all-print-action').docview_ui_print({clientState: this.options.clientState});
+	    //this.element.find('div.all-print-action').docview_ui_print({clientState: this.options.clientState});
             //this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
 /*
 	   $('form.multi,form.advanced,form.by_doc_source').submit(function() {
@@ -148,9 +148,6 @@ steal(
 	    }
 	    if (to_show != 'multi') {
 		this.element.find('.multi').hide();
-	    }
-	    if (to_show != 'all_print') {
-		this.element.find('.all_print').hide();
 	    }
 	    if (to_show != 'advanced') {
 		this.element.find('.advanced').hide();
@@ -279,6 +276,7 @@ steal(
 		}
             }
         },
+/*
 	// print all docs
 	".all_print submit" : function(el,ev) {
 	    ev.preventDefault();	
@@ -303,6 +301,7 @@ steal(
 	//	Docview.Models.Doc.findAllPrint(ids,this.proxy("showList"),this.proxy("failure"));
 	    }
 	},
+*/
 	'.by_doc_source submit' : function(el, ev) {
             ev.preventDefault();
 	    $('#search-results').docview_search_results('clearResults');

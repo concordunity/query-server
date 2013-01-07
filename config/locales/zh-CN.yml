@@ -1,4 +1,30 @@
 zh-CN:
+  search:
+    single: "单票查阅"
+    multi: "批量查阅"
+    advanced: "随机抽样查阅"
+    upload_file: "文件上传"
+    search_condition: "高风险报关单查询"
+    by_doc_source: "单证暂存"
+    personal_history: "个人历史查阅"
+  manage_doc:
+    inquire: "添加/解除涉案标记" 
+    checkout: "电子档案借出/归还"
+    print_doc: "打印"
+    court_doc: "出证"
+    all_print: "批量打印"
+    dh_report: "操作历史"
+  stats:
+    stats_query: "查阅历史"
+    create_group: "单证组管理"
+    stats_stats: "绩效统计"
+    stats_usage: "涉案/借出单证清单"
+    stats_export: "出口删改单"
+  manage_account:
+    users: "用户管理"
+    roles: "权限管理"
+    system_upload: "用户信息及权限上传"
+    sys-setting: "系统参数"
   nav:
     log_index: "系统日志"
     system_config: "系统配置"

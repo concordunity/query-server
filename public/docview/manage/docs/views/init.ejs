@@ -13,14 +13,16 @@
   <%== $.View('//docview/manage/docs/views/court_form.ejs') %>
 <% } %>
 <% if (this.dh_report) { %>
-<% //console.log("--------doc----dh_re-----history");%>
-<% //console.log(this.orgsDic);%>
   <%== $.View('//docview/manage/docs/views/dh_report.ejs',{orgsDic : this.orgsDic}) %>
+<% } %>
+<% if (this.all_print) { %>
+  <%== $.View('//docview/manage/docs/views/print_all_form.ejs') %>
 <% } %>
   </div>
 </div>
   <div class="container-fluid">
     <div class="row-fluid">
         <div id="docs_history"></div>
+        <div id="all-print-list"></div>
     </div>
   </div>

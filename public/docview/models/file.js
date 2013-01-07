@@ -26,7 +26,7 @@ $.Model('Docview.Models.File',
             data : params,
             success : success,
             error : error,
-	    async : false,
+	    async : true,
             dataType : 'json file.models'
         });
     },

@@ -167,9 +167,14 @@ steal(
 		    this.setNavIfEmpty('search', 'advanced');
                     break;
                 case ("all_print"):
+/*
+		    
                     this.options.clientState.attr('access')
                         .attr('search').attr('all_print', true);
 		    this.setNavIfEmpty('search', 'all_print');
+*/
+		    this.options.clientState.attr('access') .attr('manage_docs').attr('all_print', true);
+                    this.setNavIfEmpty('manage_docs', 'all_print');
                     break;
                 case ("search_condition"):
                     this.options.clientState.attr('access')

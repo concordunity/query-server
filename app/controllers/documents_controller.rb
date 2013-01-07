@@ -21,6 +21,93 @@ class DocumentsController < ApplicationController
     end
   end
 
+  #批量打印选项的打印功能
+  def all_print_doc
+    ignore_auth = false
+    result = []
+    result_error = []
+    res_message = {}
+    params[:doc_ids].each do |doc_id|
+    @document = Document.find_by_doc_id(doc_id)
+    if @document
+      # check user's privileges
+      if !ignore_auth
+        if !current_user.can_view?(@document)
+          res_message = { :status => 403, :message => t('doc.not_authorized') }
+        end
+        # Now check for user's org
+        if @document.inquired &&  !(can? :inquired, Document)
+          res_message = { :status => 403, :message => t('doc.not_authorized') }
+        end
+      end
+      logger.info "=============1"
+      logger.info res_message == {}
+      logger.info res_message
+
+      if res_message == {}
+          script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{doc_id}"
+	  res = %x[ #{script_name} ]
+	  if res.match(/No password/)
+		res_message = { :status => 407, :message => 'No password' }
+	  end
+=begin
+	  if res.match(/System busy/)
+                res_message = { :status => 401, :message => 'The sysmte is busy. Try it later' }
+          end
+=end
+          if res.match(/The requested document is not found/)
+        	res_message = { :status => 400, :message => 'The document does not exist' }
+          end
+      end
+      
+      @folder = Folder.find(@document.folder_id)
+      logger.info "=============2"
+      logger.info res_message == {}
+      if res_message == {}
+	result << "/docimages/" + doc_id + "/wm_" + doc_id + ".pdf"
+	mds = ModifiedDocument.where(:doc_id => doc_id)
+	unless mds.nil?
+	  mds.each do |special_doc|
+
+          # Now, find the folder_name
+          folder = Folder.find(special_doc.folder_id)
+          folder_id = folder.folder_id
+
+          script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{folder_id} #{doc_id}"
+          logger.info script_name
+          res = %x[ #{script_name} ]
+
+=begin
+          if res.match(/System busy/)
+             res_message = { :status => 400, :message => 'The sysmte is busy. Try it later' }
+          end
+=end
+          if res.match(/The requested document is not found/)
+              res_message = { :status => 400, :message => 'The document does not exist' }
+          end
+	  logger.info "=============3"
+	  logger.info res_message == {}
+	  if res_message == {}
+	      result << "/docimages_mod/" + folder_id + "_" + doc_id + "/wm_" + doc_id + ".pdf"
+	  else
+	      result_error << "册号为" + folder_id  + "单证" + doc_id  	
+	  end
+	  end
+	end
+      else
+	#报错的单证
+        result_error << "册号为" + @folder.folder_id  + "单证" + doc_id  	
+      end
+    end
+    end unless params[:doc_ids].nil?
+    logger.info "=============4"
+    logger.info res_message
+    logger.info "============" 
+    logger.info result
+    logger.info result_error
+    render json: { :path=> result, :no_path => result_error}, :status => 200
+  end
+  #批量打印选项的查询功能
   def all_print
     doc_ids = params[:doc_ids]
     @documents = Document.where(:doc_id => doc_ids)

@@ -1,11 +1,16 @@
 Dms::Application.routes.draw do
 
+  post "/system_log" => "admin#system_log"
+  post "/query_log" => "admin#query_log"
+  post "/document_log" => "admin#document_log"
+
   post "/admin/import_dictionary" => "dictionary_info#import_dictionary"
 
   get "/admin/dictionary" => "admin#dictionary"
   get "dictionary_info/update_dictionary" => "dictionary_info#update_dictionary"
   get "dictionary_info/get_dictionary" => "dictionary_info#get_dictionary"
 
+  post "/documents/all_print_doc" => "documents#all_print_doc"
   post "/documents/all_print" => "documents#all_print"
 
   get '/find_doc_comments' => 'comments#find_doc_commit'

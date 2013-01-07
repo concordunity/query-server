@@ -110,7 +110,7 @@ class DocumentHistoriesController < ApplicationController
       #doc_id_condition = "doc_id='#{params[:doc_id]}'"
       search_conditions[:doc_id] = params[:doc_id]
     end
-
+    search_conditions[:user_id] = current_user.id
     sql_conditions = (search_conditions.length == 0) ? ["true"] : search_conditions
     logger.info sql_conditions
     @query_histories = DocumentHistory.where(sql_conditions).order("created_at desc").limit(500).all

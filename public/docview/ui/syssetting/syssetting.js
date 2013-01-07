@@ -31,6 +31,7 @@ steal(
             this.element.find('input[name="maxn"]').val(data.maxn);
             this.element.find('input[name="checkout_period"]').val(data.checkout_period);
             this.element.find('input[name="max_queries_per_month"]').val(data.max_queries_per_month);
+            this.element.find('input[name="timeout_value"]').val(data.timeout_value);
         },
         show : function() {
         },
@@ -60,6 +61,7 @@ steal(
 	    var maxn = el.find('input[name="maxn"]').val();
 	    var period = el.find('input[name="checkout_period"]').val();
 	    var max_queries = el.find('input[name="max_queries_per_month"]').val();
+	    var timeout_value = el.find('input[name="timeout_value"]').val();
 
 	    var maxn_i = parseInt(maxn);
 	    var period_i = parseInt(period);
@@ -80,9 +82,15 @@ steal(
 		return false;
 	    }
 
+	    if (timeout_value < 600 || timeout_value > 1800) {
+		this.displayInputError(el, el.find('input[name="timeout_value"]'), "系统超时设置参数必须在 600 和 1800 之间。");
+		return false;
+	    }
+
             Docview.Models.User.setSetting(
 		{maxn : maxn,
 		 checkout_period : period,
+		 timeout_value : timeout_value,
 		 max_queries_per_month : max_queries},
 		this.proxy('setDataOk'),
 		this.proxy('failure'));

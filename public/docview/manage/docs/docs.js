@@ -50,9 +50,11 @@ steal(
             this.element.find('.print_doc').hide();
             this.element.find('.court_doc').hide();
             this.element.find('.dh_report').hide();
+            this.element.find('.all_print').hide();
 	    $('#downloadFrame').hide();
 
 	    $('#manage-docs-container div form div.multi_holder').docview_ui_multi();
+	    $('#manage-docs-container div form div.print_holder').docview_ui_multi();
 	    $('#manage-docs-container div form div.single_holder').docview_ui_single({label: {labelString: "报关单号"}});
 	    $('#manage-docs-container div form div.single_sou_holder').docview_ui_single({no_help : true,label: {labelString: "报关单号"}});
 
@@ -61,6 +63,8 @@ steal(
 								th_options: { include_user : true } });
 //	    this.element.find('.input-date').datepicker();
 	    this.element.find('div.daterange-holder').docview_ui_daterange({dateOptions : { labelString: "日期"}});
+//all print
+	    this.element.find('#all-print-list').docview_ui_print({clientState: this.options.clientState});
             this.mainTabOn = false;
         },
 	removeFormErrors: function(form) {
@@ -134,6 +138,10 @@ steal(
 	    this.element.find('#docs_history').hide();
 	    this.element.find('#docs_history').docview_ui_history('clearResults');
 	},
+	hideAllPrint : function() {
+	    this.element.find('#all-print-list').hide();
+	    this.element.find('#all-print-list').docview_ui_print('clearResults');
+	},
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
 	    // console.log("docs sub change", this.mainTabOn, newVal, oldVal);
 /*
@@ -143,6 +151,7 @@ steal(
 */
 	    if (this.mainTabOn) {
 		this.element.find('#docs_history').docview_ui_history('clearResults');
+		//this.element.find('#all-print-list').docview_ui_history('clearResults');
 		this.element.show();
 		if (oldVal !== undefined) {
                     this.element.find('.' + oldVal).hide();
@@ -152,19 +161,23 @@ steal(
 		  //  }
 		}
 		if (newVal !== undefined) {
+		    console.log(newVal);
 		    $('#downloadFrame').hide();
 	            this.element.find('.inquire').hide();
 		    if (newVal == 'dh_report') {
 			this.element.find('#docs_history').show();
-
+			this.element.find('#all-print-list').hide();
 			this.element.find('.stats_query').show();
 			this.element.find('.dg_select_holder').docview_docgroup_dgselect('reloadDocGroup');
+		    } else if (newVal == 'all_print'){
+			this.element.find('#all-print-list').show();
 		    } else {
 			this.hideDocsHistory();
+			this.hideAllPrint();
 		    }
-
+		    console.log('==== subcate=',newVal);
 		    $('#document-details').hide();
-		    
+		    $("#all-print-list").hide(); 
                     this.element.find('.' + newVal).show();
 		}
 	    }
@@ -354,6 +367,39 @@ steal(
 		$('#document-details').docview_ui_details('queryDoc', docId);
 		this.element.hide();
 	    }	    
+	},
+	// print all docs
+	"form.all_print submit" : function(el,ev) {
+	    ev.preventDefault();	
+	    //console.log("all print");
+	    var src=document.activeElement;
+		//console.log(src);
+	    //console.log(src.name);
+	    //console.log(src.value);
+	    //console.log($(el));
+        var ctrl = $('.all_print div.print_holder').controller();
+        if (ctrl.validateInput(el) ) {
+	    //var search_doc = el.find("");
+	    //Docview.Models.Print.findAll({docs: search_doc},this.proxy("showList"),this.proxy("faliure")); 
+		var ids = ctrl.getIds();
+       //console.log(ids);
+		var controllerAllPrint = $("#all-print-list").controller();
+		if (src.value == 'search'){// || (myAction && myAction == 'search') ){
+		    controllerAllPrint.printAll({doc_ids: ids})
+		    //this.options.clientState.attr('manage_docs', { doc_ids: ids});
+		} else if(src.value == 'print'){// || (myAction && myAction == 'print')) {
+		    //print all docs
+		    //ids have checked
+		   var print_files_codes = [];
+			$('#all-print-list input:checked').closest('tr').each(function(i,item){
+				var model = $(item).model();
+				print_files_codes.push(model.doc_id);
+			}); 
+		//	console.log(print_files_codes);
+		   controllerAllPrint.printAllDoc(print_files_codes);
+		}
+	//	Docview.Models.Doc.findAllPrint(ids,this.proxy("showList"),this.proxy("failure"));
+	    }
 	},
 	'.print_doc submit' : function(el, ev) {
 	    ev.preventDefault();

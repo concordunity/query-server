@@ -30,11 +30,20 @@ temporary
 rails g model temporary_import declarations_number:string mode_transport:string release_time:datetime accept_declaration_time:datetime overall_operating_hours_hours:float declaration_customs_code:string declaration_customs:string exists_in_system:boolean org_applied:string
 rails destroy model temporary_import
 
-
-
-
+######################################################################################################################################################
 dictionary字典表
 编号	名称		类别
 dic_num	dic_name	dic_type
 rails g model dictionary_info dic_num:string dic_name:string dic_type:string
 
+######################################################################################################################################################
+
+sys_log
+编号	名称		类别
+dic_num	dic_name	dic_type
+user_id
+role_id
+user_name
+role_name
+action
+describe

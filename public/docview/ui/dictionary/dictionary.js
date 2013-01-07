@@ -10,6 +10,7 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.dictionary', {}, {
         init : function() {
+	  this.createView();
 	},
 	createView : function(){
            this.element.html(this.view('init'));
@@ -47,6 +48,7 @@ steal(
 	    Docview.Models.File.updateDictionary({},{ },{});
 	},
         show : function() {
+		       Docview.Models.File.getDictionary({asy: true, doc_type: ""},this.proxy("setView"), {})
         }
 });
 });

@@ -14,8 +14,13 @@
   </div>
  <script type='text/javascript' src='../../../steal/steal.js'></script>
  <script type='text/javascript'>
-steal('jquery/dom/route', 'docview/ui/dictionary','docview/models').then(function($) {
-
+steal(
+'jquery/jquery.js',
+'libs/jquery.log.js'
+).then(
+'jquery/dom/route', 'docview/ui/dictionary','docview/models').then(function($) {
+   log('system',{current_action : "search.single",describe : "test"});
+   log('query',{current_action : "search.single",describe : "test", org : "2225", doc_type: "JK5Y", doc_id: "222520121250004811"});
    $('#dictionary-test').docview_ui_dictionary();
    var controller =  $('#dictionary-test').controller();
    controller.createView();

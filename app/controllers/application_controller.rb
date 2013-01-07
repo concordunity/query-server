@@ -17,6 +17,61 @@ class ApplicationController < ActionController::Base
         :status => 403  }
      end
   end
+#记录系统总日志
+  def sys_log(params)
+	logger.info "==========" 
+	logger.info current_user.to_json
+ 	role_id = current_user.roles[0].id	
+	user_id = current_user.id
+	p_action = params[:current_action]
+	p_describe = params[:describe]
+	
+	SysLog.create do |sl|
+		sl.user_id = user_id
+		sl.role_id = role_id 
+		sl.action = t(p_action)
+		#sl.action = p_action
+		sl.describe = p_describe
+		sl.user_name = current_user.display_name
+		sl.role_name = current_user.roles[0].name
+	end
+  end
+  
+  def query_history_log(params)
+ 	role_id = current_user.roles[0].id	
+	ids = Document.where(:doc_id => params[:doc_ids]).collect(&:doc_id)
+
+	QueryHistory.create do |qh|
+	    qh.user_id = current_user.id
+	    qh.action = t(params[:current_action])
+	    qh.describe = params[:describe]
+	    qh.role_id = role_id
+	    qh.org = params[:org]
+	    qh.doc_type = params[:doc_type]
+	    qh.doc_id = params[:doc_id]
+	    qh.bulkids = ids.join(" ")
+	    qh.ip = current_user.current_sign_in_ip
+	    qh.email = current_user.display_name
+	    qh.print = false
+	end
+  end
+
+  def document_history_log(params)
+ 	role_id = current_user.roles[0].id	
+	DocumentHistory.create do |dh|
+	    dh.user_id = current_user.id
+	    dh.action = t(params[:current_action])
+	    dh.describe = params[:describe]
+	    dh.role_id = role_id
+	    dh.org = params[:org]
+	    dh.doc_type = params[:doc_type]
+	    dh.doc_id = params[:doc_id]
+	    dh.ip = current_user.current_sign_in_ip
+	    dh.email = current_user.display_name
+
+	end
+  end
+
   # exception.action, exception.subject                                             
   private
 
@@ -37,9 +92,9 @@ class ApplicationController < ActionController::Base
   end
 
   def getTimeOut
-        #@setting = Setting.where({:name=>"timeout"}).first
-        #return @setting.value.to_i || 1800
-	return 1800
+        @setting = Setting.where({:name=>"timeout_value"}).first
+	return (@setting.nil?) ? 1800 : @setting.value.to_i
+	#return 1800
   end
 
 
