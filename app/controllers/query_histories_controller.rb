@@ -113,7 +113,8 @@ class QueryHistoriesController < ApplicationController
     u = Setting.find_by_name('max_queries_per_month')
     if u
       monthly_quota = u.value.to_i
-      QueryHistory.where(:created_at => 2.month.ago .. Time.now).group(:user_id).count.each { |k,v|
+	  dt = DateTime.now
+      QueryHistory.where(:created_at => dt.months_ago(1) .. dt).group(:user_id).count.each { |k,v|
         if v > monthly_quota
           user = User.find_by_id(k)
           if user

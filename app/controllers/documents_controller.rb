@@ -37,7 +37,7 @@ class DocumentsController < ApplicationController
         end
         # Now check for user's org
         if @document.inquired &&  !(can? :inquired, Document)
-          res_message = { :status => 403, :message => t('doc.not_authorized') }
+          res_message = { :status => 403.1, :message => t('doc.not_authorized') }
         end
       end
       logger.info "=============1"
@@ -344,7 +344,7 @@ class DocumentsController < ApplicationController
         end
         # Now check for user's org
         if @document.inquired &&  !(can? :inquired, Document)
-          render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403 
+          render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403.1 
           return
         end
       end
@@ -461,15 +461,17 @@ class DocumentsController < ApplicationController
     end
 
     dh = []
+	docs = []
     @documents.each { |d| 
       d.inquired = (params[:caction] == 'add')
-      dh.push(add_history(d, caction))
+      #dh.push(add_history(d, caction))
       d.save
+	  docs.push(d)
     }
 
     respond_to do |format|
       format.html { redirect_to document_url }
-      format.json { render json: { :dh_info => dh } }
+      format.json { render json: { :dh_info => dh, :docs => docs} }
     end 
 
   end
@@ -493,15 +495,17 @@ class DocumentsController < ApplicationController
     end
     
     dh = []
+	docs = []
     @documents.each { |d| 
       d.checkedout = (params[:caction] == 'checkout')
-      dh.push(add_history(d, caction))
+      #dh.push(add_history(d, caction))
       d.save
+	  docs.push(d)
     }
 
     respond_to do |format|
       format.html { redirect_to document_url }
-      format.json { render json: { :dh_info => dh } }
+      format.json { render json: { :dh_info => dh, :docs => docs} }
     end 
 
 
@@ -652,7 +656,7 @@ class DocumentsController < ApplicationController
       raise ActiveRecord::RecordNotFound
     end
 
-    add_history(@document, 'testify')
+#    add_history(@document, 'testify')
     dir='docimages'
     if !params[:mod].blank?
       dir='docimages_mod'
@@ -786,12 +790,12 @@ class DocumentsController < ApplicationController
                                 :doc_id => d.doc_id,
                                 :ip => current_user.current_sign_in_ip,
                                 :email => current_user.display_name,
-				:created_at => ((tmp_time-10).to_s .. (tmp_time).to_s)).first;
+								:created_at => ((tmp_time-10).to_s .. (tmp_time).to_s)).first;
 
     if dh.nil? || dh.blank?
         dh = DocumentHistory.create(:action =>  t('doc.' + action),
                                 :user_id=> current_user.id,
-				:org => d.org,
+								:org => d.org,
                                 :doc_id => d.doc_id,
                                 :ip => current_user.current_sign_in_ip,
                                 :email => current_user.display_name)

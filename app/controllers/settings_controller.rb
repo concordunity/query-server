@@ -13,12 +13,18 @@ class SettingsController < ApplicationController
 
   def get_dialog
 	dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
-	dialog_tag = File.exists?(dialog_path)
+	dialog_path_end = File.join(Rails.root,"public","docview","export_data",current_user.username + ".end")
 	result = ""
-	File.open(dialog_path,"r") do |f|
-	    result << f.read
+	dialog_tag = false
+	if  File.exists?(dialog_path_end)
+		File.open(dialog_path,"r") do |f|
+	    	result << f.read
+		end
+
+		system("rm #{dialog_path}")
+		system("rm #{dialog_path_end}")
+		dialog_tag = true 
 	end
-	system("rm #{dialog_path}")
 	render json: {status: 200,message: dialog_tag, result: result} 
   end
 

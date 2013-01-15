@@ -126,6 +126,7 @@ steal(
 	},
 	'{Docview.Models.DocGroup} destroyed': function(User, ev, user) {
 	    user.elements(this.element).remove();
+		log('system',{ current_action:'stats.create_group',describe:'单证组删除成功' });
 	},
 	'tr.edit-group td div form submit' : function(el, ev) {
 	    ev.preventDefault();
@@ -145,6 +146,7 @@ steal(
 	    var newRow = $(this.view('doc_group_row', data)).css('display', 'none');
 	    oldRow.replaceWith(newRow);
 	    newRow.fadeIn('slow');
+		log('system',{ current_action:'stats.create_group',describe:'单证组更新成功' });
 	},
 	newGroupOk: function(dg, response) {
 
@@ -154,6 +156,7 @@ steal(
             this.element.find('tbody').prepend(newRow);
             newRow.fadeIn('slow');
 	    $('#new-doc-group').collapse('hide');
+		log('system',{ current_action:'stats.create_group',describe:'单证组添加成功' });
 	}
     });
 });

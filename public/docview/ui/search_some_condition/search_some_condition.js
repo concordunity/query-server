@@ -57,13 +57,39 @@ steal(
 				}
 			}
 		},
+		getMessage : function(tag,select_value){
+		    var message = ",查询的关区条件为:";
+		    var title = ""
+		    if (tag == 'zero'){
+			title = "查获率为0的重点查验企业";
+		    } else if (tag == 'normal') {
+			title = "一般贸易进口价格偏低报关单记录";
+		    } else if (tag == 'import'){
+			title = "进口通关时间超长报关单";
+		    }
+		    message = title + message;
+		    if (select_value == "") {
+			    message = message + "不限";
+		    } else {
+			    message = message + select_value;
+		    }
+		    log("system",{current_action: "search.search_condition", describe: message});
+		    return;
+		},
 		".find-zero-rate click" : function(el,ev){
 			ev.preventDefault();	
 			this.options.clientState.attr('searchMode', 'high-risk');
 			$(el).find('.btn-primary').button('loading');
 			$("#search_results").hide();
+			that = this;
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"zero_find_check_info","org_applied":$("select[name='zero_org_applied']").val()},
-			this.proxy("find_zero_rate"),function(){
+			function(data){
+			    var select_value = $("select[name='zero_org_applied']").val();
+			    that.getMessage("zero",select_value);
+			    that.find_zero_rate(data);
+			},
+			//this.proxy("find_zero_rate"),
+			function(){
 				$.closeMask();
 			});
 			$("#search_results").show();
@@ -75,8 +101,15 @@ steal(
 		".normal-import-record click" : function(el,ev){
 			this.options.clientState.attr('searchMode', 'high-risk');
 			$("#search_results").hide();
+			that = this;
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"normal_import_price_less_record","org_applied":$("select[name='normal_org_applied']").val()},
-			this.proxy("normal_import_record"),function(){
+			//this.proxy("normal_import_record"),
+			function(data){
+			    var select_value = $("select[name='normal_org_applied']").val();
+			    that.getMessage("normal",select_value);
+			    that.normal_import_record(data);
+			},
+			function(){
 				$.closeMask();
 			});
 			$("#search_results").show();
@@ -88,8 +121,14 @@ steal(
 		".import-most-time click" : function(el,ev){
 			this.options.clientState.attr('searchMode', 'high-risk');
 			$("#search_results").hide();
+			that = this;
 			Docview.Models.Monitoring.getSearchData({"urlValue":"/search_condition","typeValue":"get"},{"search_condition":"import_most_time_org_doc_info","org_applied":$("select[name='import_org_applied']").val()},
-			this.proxy("import_most_time"),
+			//this.proxy("import_most_time"),
+			function(data){
+                            var select_value = $("select[name='import_org_applied']").val();
+                            that.getMessage("import",select_value);
+                            that.import_most_time(data);
+                        },
 			function(){
 				$.closeMask();
 			});
@@ -338,13 +377,26 @@ steal(
 				//console.log(son_table);
 				var document = el.closest('tr').model();
 				if(son_table == "son_table"){
+					that = this;
 					this.options.clientState.attr('searchMode', 'high-risk');
 					Docview.Models.Monitoring.getSearchData({"urlValue":"/get_son_table","typeValue":"get"},{"operating_name":document.operating_name,"org_applied": $("select[name='zero_org_applied']").val()},
-					this.proxy("setSonTable"),
+					//this.proxy("setSonTable"),
+					function(data){
+					    var sv =  $("select[name='zero_org_applied']").val();	
+					    var message = "查阅公司为"+ document.operating_name + ",搜索关区";	
+					    if (sv == ""){
+						message = message + "不限"; 	
+					    }else {
+
+						message = message + sv; 	
+					    } 
+					    log("system",{current_action: "search.search_condition", describe: message});
+					    that.setSonTable(data);
+					},
 					{});
 
 				}else{
-					//console.log(document.declarations_number);
+					console.log(document.declarations_number);
 					$.route.attrs({category: 'document', id: document.declarations_number}, true);
 					$('#document-details').docview_ui_details('queryDoc', document.declarations_number);
 					$('#search-box').hide();

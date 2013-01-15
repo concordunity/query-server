@@ -57,29 +57,70 @@ class UploadFileController < ApplicationController
   end
 
   def import_excel
+	logger.info "===========进入import_excel方法体内====="
     result = {}
     result[:message] = []
+	logger.info "=====1"
     params[:url_time_path] = Time.now.to_i.to_s
-    params[:doc_ids] = Document.all.collect(&:doc_id)
-
+	logger.info "=====2"
+    #params[:doc_ids] = Document.all.collect(&:doc_id)
+	params[:doc_ids] = []
+	logger.info "=====3"
+    status = {1 => "上传失败,请选择一个文件上传。", 2 => "导入失败,请查检上传文档格式是否正确", 3 => "导入成功",
+	      'z' => "月查获率为0的重点查验企业", 'n' => '一般贸易进口价格偏低报关单记录文档', 'i' => "进口通关时间超长报关单文档"}
+    message = [] 
+	logger.info "=====4"
+    dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
+    dialog_path_end = File.join(Rails.root,"public","docview","export_data",current_user.username+".end")
+	logger.info "===========准备进行相关验证========"
+	system("touch #{dialog_path}")
     begin
-    	zfci = zero_find_check_info(params[:upload_file])
-	niplr = normal_import_price_less_record(params[:upload_file_1])
-	imtodi = import_most_time_org_doc_info(params[:upload_file_2])
-	result[:message] << zfci[:message]
-	result[:message] << niplr[:message]
-	result[:message] << imtodi[:message]
-	dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
-        if (!params[:upload_file].nil? && zfci[:status] == false) || (!params[:upload_file_1].nil? && niplr[:status] == false) || (!params[:upload_file_2].nil? && imtodi[:status] == false)
-	    write_to_file(dialog_path,"导入失败,请查检上传文档格式是否正确")
-	elsif (zfci[:status] == false && niplr[:status] == false && imtodi[:status] == false)
-	    write_to_file(dialog_path,"导入失败,请查检上传文档格式是否正确")
-        else
-	    write_to_file(dialog_path,'导入成功')
-	end
+        if params[:upload_file].nil? && params[:upload_file_1].nil? && params[:upload_file_2].nil?
+	    	message << (status[1]) 
+			logger.info "===========请选择一个文件进行上传========"
+		else
+		
+			logger.info "===========生成标记文件========"
+        	write_to_file(dialog_path,status[3])
+			logger.info "===========开始进行各个文件的上传流程========"
+			zfci = zero_find_check_info(params[:upload_file])
+			niplr = normal_import_price_less_record(params[:upload_file_1])
+			imtodi = import_most_time_org_doc_info(params[:upload_file_2])
+			result[:message] << zfci[:message]
+			result[:message] << niplr[:message]
+			result[:message] << imtodi[:message]
+	
+			logger.info "=========针对各个结果进行验证=========="
+			if !params[:upload_file].nil? 
+	        	if zfci[:status] == true
+					message << (status['z'] + status[3]) 
+				else 
+					message << (status['z'] + status[2]) 
+				end
+			end
+	    	if !params[:upload_file_1].nil? 
+				if niplr[:status] == true
+					message << (status['n'] + status[3]) 
+				else
+		    		message << (status['n'] + status[2]) 
+				end
+			end
+			if !params[:upload_file_2].nil? 
+				logger.info "=========进出口显示结果=========="
+				logger.info imtodi 
+				if imtodi[:status] == true
+					message << (status['i'] + status[3]) 
+				else
+					message << (status['i'] + status[2]) 
+				end
+			end
+		end
     rescue => e
-	write_to_file(dialog_path,'2导入失败,请查检上传文档格式是否正确')
+		message << (status[2]) 
     end
+    write_to_file(dialog_path,message.join(" "))
+	system("touch #{dialog_path_end}")
+    logger.info message.join(" ")
     render :nothing => true 
     #render json: {:status => 200,:message => result}
   end
@@ -115,9 +156,12 @@ class UploadFileController < ApplicationController
           end
         end
         #TemporaryZero.import tmp_arr
-        ZeroFindCheckInfo.delete_all
-        ZeroFindCheckInfo.import tmp_arr
+		Thread.new do 
+        	ZeroFindCheckInfo.delete_all
+			ZeroFindCheckInfo.import tmp_arr
+		end
         #TemporaryZero.destroy_all
+		result[:status] = true 
         result[:message] = "成功导入‘查获率为0的重点查验企业’表"
       end
       rescue => e
@@ -167,10 +211,13 @@ class UploadFileController < ApplicationController
         end
         #TemporaryNormal.import tmp_arr
         #NormalImportPriceLessRecord.destroy_all
-        NormalImportPriceLessRecord.delete_all
-        NormalImportPriceLessRecord.import tmp_arr
+		Thread.new do 
+        	NormalImportPriceLessRecord.delete_all
+			NormalImportPriceLessRecord.import tmp_arr
+		end
         #TemporaryNormal.destroy_all
-	result[:message] = "成功导入'一般贸易进口价格偏低报关单记录文档'表"
+		result[:status] = true 
+		result[:message] = "成功导入'一般贸易进口价格偏低报关单记录文档'表"
       end
       rescue => e
         logger.info e
@@ -213,10 +260,13 @@ class UploadFileController < ApplicationController
                   end
 	      end
 	      #TemporaryImport.import tmp_arr
-	      ImportMostTimeOrgDocInfo.delete_all
-	      ImportMostTimeOrgDocInfo.import tmp_arr
+		  Thread.new do 
+	      	  ImportMostTimeOrgDocInfo.delete_all
+			  ImportMostTimeOrgDocInfo.import tmp_arr
+		  end
 	      #TemporaryImport.destroy_all
-      	      result[:message] = "成功导入'进口通关时间超长报关单文档'表"
+		  result[:status] = true 
+		  result[:message] = "成功导入'进口通关时间超长报关单文档'表"
          end
       rescue => e
 	logger.info e
@@ -227,7 +277,6 @@ class UploadFileController < ApplicationController
       result[:status] = false
       result[:message] = "'进口通关时间超长报关单文档'表，导入失败，请检查下文档格式"
     end
-
     return result
   end
 

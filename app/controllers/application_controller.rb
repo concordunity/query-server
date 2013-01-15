@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked, :get_util, :login_admin]
+  before_filter :check_user!, :except => [:welcome, :api_get_status, :api_query, :isUserLocked, :get_util, :login_admin, :sys_log, :system_log]
   #protect_from_forgery
 
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
@@ -19,56 +19,118 @@ class ApplicationController < ActionController::Base
   end
 #记录系统总日志
   def sys_log(params)
-	logger.info "==========" 
-	logger.info current_user.to_json
- 	role_id = current_user.roles[0].id	
-	user_id = current_user.id
 	p_action = params[:current_action]
 	p_describe = params[:describe]
+	if current_user
+	    logger.info "====ok======" 
+	    logger.info current_user.to_json
+	    role_id = current_user.roles[0].id	
+	    user_id = current_user.id
 	
-	SysLog.create do |sl|
+	    SysLog.create do |sl|
 		sl.user_id = user_id
 		sl.role_id = role_id 
 		sl.action = t(p_action)
 		#sl.action = p_action
 		sl.describe = p_describe
 		sl.user_name = current_user.display_name
+		sl.email = current_user.display_name
 		sl.role_name = current_user.roles[0].name
+	    end
+	else
+	    logger.info "====error======" 
+	    logger.info params 
+	#    logger.info request.to_json
+	    logger.info request.remote_ip
+	    @user = User.find_by_username(params[:login_user])	
+	    user_id = @user.id
+	    role_id = @user.roles[0].id
+	    user_name = @user.username + "(" + @user.fullname + ")"
+	    role_name = Role.find(role_id).name
+	    if @user
+		
+	        SysLog.create do |sl|
+	  	    sl.user_id = user_id
+		    sl.role_id = role_id 
+		    sl.action = t(p_action)
+		    sl.describe = p_describe
+		    sl.user_name = user_name 
+		    sl.email = user_name 
+		    sl.role_name = role_name
+	    end
+	    end
 	end
   end
   
   def query_history_log(params)
  	role_id = current_user.roles[0].id	
 	ids = Document.where(:doc_id => params[:doc_ids]).collect(&:doc_id)
+	doc = Document.find_by_doc_id(params[:doc_id])
 
 	QueryHistory.create do |qh|
 	    qh.user_id = current_user.id
 	    qh.action = t(params[:current_action])
 	    qh.describe = params[:describe]
 	    qh.role_id = role_id
-	    qh.org = params[:org]
-	    qh.doc_type = params[:doc_type]
-	    qh.doc_id = params[:doc_id]
-	    qh.bulkids = ids.join(" ")
+	    qh.org = doc.org 
+	    qh.doc_type = doc.doc_type
+	    qh.doc_id = doc.doc_id
+	    qh.bulkids = ids.join(" ") unless ids.nil?
 	    qh.ip = current_user.current_sign_in_ip
 	    qh.email = current_user.display_name
 	    qh.print = false
+		qh.status = params[:status] || true
+		qh.user_name = current_user.display_name
+		qh.role_name = current_user.roles[0].name
+	end unless doc.nil?
+
+	if params[:filters]
+		doctype_log(params)	
 	end
   end
 
   def document_history_log(params)
  	role_id = current_user.roles[0].id	
+	doc = Document.find_by_doc_id(params[:doc_id])
+
 	DocumentHistory.create do |dh|
 	    dh.user_id = current_user.id
 	    dh.action = t(params[:current_action])
 	    dh.describe = params[:describe]
 	    dh.role_id = role_id
-	    dh.org = params[:org]
-	    dh.doc_type = params[:doc_type]
-	    dh.doc_id = params[:doc_id]
+	    dh.org = doc.org 
+	    dh.doc_type = doc.doc_type 
+	    dh.doc_id = doc.doc_id 
 	    dh.ip = current_user.current_sign_in_ip
 	    dh.email = current_user.display_name
+		dh.status = params[:status] || true
+		dh.user_name = current_user.display_name
+		dh.role_name = current_user.roles[0].name
+	end unless doc.nil?
+	if params[:filters]
+		doctype_log(params)	
+	end
+  end
+  def doctype_log(params)
+ 	role_id = current_user.roles[0].id	
+	doc = Document.find_by_doc_id(params[:doc_id])
 
+	params[:filters].each do |f|
+		QueryDoctypeLog.create do |dh|
+	    	dh.user_id = current_user.id
+			dh.action = t(params[:current_action])
+			dh.describe = params[:describe]
+			dh.role_id = role_id
+			dh.org = doc.org 
+			dh.doc_type = doc.doc_type 
+			dh.doc_id = doc.doc_id 
+			dh.ip = current_user.current_sign_in_ip
+			dh.email = current_user.display_name
+			dh.status = params[:status] || true
+			dh.filters = f
+			dh.user_name = current_user.display_name
+			dh.role_name = current_user.roles[0].name
+		end
 	end
   end
 

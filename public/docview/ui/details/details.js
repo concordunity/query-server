@@ -225,7 +225,19 @@ steal(
 
 
         addDoc : function(docid) {
-            Docview.Models.File.findOne(docid, this.proxy('addDocumentData'),
+	    that = this;
+            Docview.Models.File.findOne(docid, function(data){
+							var filters = that.options.clientState.attr('search').filters;
+							var filter_arr = [];
+							console.log(filters);
+							$.each(filters,function(index,value){
+								filter_arr.push(value);
+							});
+							console.log(filter_arr);
+							log("query",{current_action: "search.search", describe: "成功查阅单证。", doc_id: docid, filters: filter_arr});    
+		    that.addDocumentData(data);	
+		},
+		//this.proxy('addDocumentData'),
                 this.proxy('failure'));
         },
 
@@ -263,7 +275,6 @@ steal(
               metadata: {} // metadata
               groups: [subgroup, subgroup, ...] // groups of images
 	      }*/
-	    
 	    var filters = "";
 	    //console.log("=======1");
             var filter = this.options.clientState.attr('search').filters;
@@ -301,16 +312,17 @@ steal(
             $('#details-holder').hide();
 
             dFrame.show();
-	    var p = this.getPrintString();
-
-	    var base = "/docs/print";
-	    if (p === 'court') {
-		base = "/docs/testify";
-	    }
-
-	    var url = doc.getPrintUrl(base, pageSelection);
-	    //console.log("Print URL is ", url);
-	    dFrame[0].contentWindow.loadPDF(url);
+			var p = this.getPrintString();
+			var message = {current_action: "manage_docs.print_doc", describe: "进行了单证打印操作。", doc_id: doc.docId};
+			var base = "/docs/print";
+			if (p === 'court') {
+					base = "/docs/testify";
+					message = {current_action: "manage_docs.court_doc", describe: "进行了单证出证操作。", doc_id: doc.docId};
+			}
+			log("document",message);
+			var url = doc.getPrintUrl(base, pageSelection);
+			//console.log("Print URL is ", url);
+			dFrame[0].contentWindow.loadPDF(url);
         },
         // Need to work with IE7, where href attr is the whole URL.
         getHrefNoHash: function(el) {
@@ -363,23 +375,33 @@ steal(
             } else if (jqXHR.status == 204) {
                 type = 'info';
                 message = '单证标签种类失败';
+            } else if (jqXHR.status == 403.1) {
+                type = 'info';
+                message = '无法查阅单证'+ docid + '，权限不足。';
             } else if (jqXHR.status == 403) {
                 type = 'info';
                 message = '无法查阅单证'+ docid + '，权限不足。';
             } else if (jqXHR.status == 500) {
                 message = '系统内部错误';
             } else if (jqXHR.status == 407) {
-		message = '系统安全子系统未初始化，请联系管理员。';
-	    } else if (jqXHR.status == 400) {
-                message = '系统内部错误： 无法获取单证电子图像。';
-	    } else if (jqXHR.status == 401) {
-                message = '系统内部错误： 系统繁忙，请稍后再试。';
+					message = '系统安全子系统未初始化，请联系管理员。';
+			} else if (jqXHR.status == 400) {
+					message = '系统内部错误： 无法获取单证电子图像。';
+			} else if (jqXHR.status == 401) {
+					message = '系统内部错误： 系统繁忙，请稍后再试。';
             }
             this.options.clientState.attr('alert', {
                 type: t,
                 heading: h,
                 message : message
             });
+			
+            if (jqXHR.status == 403.1) {
+                	var message_var = '无法查阅单证'+ docid + '，此单证已经被涉案。';
+					log("query",{current_action: "search.search", describe: message_var, doc_id: docid, current_status: false});    
+			} else {
+					log("query",{current_action: "search.search", describe: message, doc_id: docid});    
+			}
         //console.log("[Error]", data);
         }
     });

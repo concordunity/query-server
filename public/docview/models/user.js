@@ -31,6 +31,7 @@ $.Model('Docview.Models.User',
             data : params,
             dataType: 'json',
             success: success,
+			async : true,
             error: error
         });
     },
@@ -40,6 +41,7 @@ $.Model('Docview.Models.User',
             type: 'get',
             data : params,
             dataType: 'json',
+			async : true,
             success: success,
             error: error
         });

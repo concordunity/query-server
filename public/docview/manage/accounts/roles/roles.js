@@ -289,6 +289,7 @@ steal(
                     var newRow = $(this.view('role_row', role)).css('display', 'none');
                     this.element.find('tbody').prepend(newRow);
                     newRow.fadeIn('slow');
+					log('system',{current_action:'manage_account.roles',describe:'成功创建新角色'});
                 } else {
                     // Throw an alert
                     this.options.clientState.attr('alert', {
@@ -296,10 +297,13 @@ steal(
                         heading: "Error!",
                         message: "There was an error while trying to create this role."
                     });
+					log('system',{current_action:'manage_account.roles',describe:'创建新角色失败'});
                 }
                 $('#new-role').collapse('hide');
                 $('#new-role-form .btn-primary').button('reset');
                 $('#new-role-form .cancel-create').button('reset');
+				
+				//system log ..
             },
         
             // Editing a role
@@ -351,6 +355,7 @@ steal(
                     message : '成功更新角色 ' + role.name
                 });
                 this.reload();
+				log('system',{current_action:'manage_account.roles',describe:'成功更新角色'});
             },
         
             // Deleting a role
@@ -382,6 +387,7 @@ steal(
                 this.lastEl.closest('.role').remove();
             //console.log('role destroyed ...', data);
             //role.elements(this.element).remove();
+				log('system',{current_action:'manage_account.roles',describe:'成功删除角色'});
             },
             roleDestroyFailed : function(jqXHR, textStatus, errorThrown) {
                 var t = 'error';
@@ -416,6 +422,7 @@ steal(
                     message : message
                 });
 
+				log('system',{current_action:'manage_account.roles',describe:message});
                 $('#new-role-form .btn-primary').button('reset');
                 $('#new-role-form .cancel-create').button('reset');
                 if (this.lastEl) {

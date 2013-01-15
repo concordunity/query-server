@@ -23,6 +23,7 @@ steal(
 .then(
     'docview/ui/search_condition',
     'docview/ui/dictionary',
+    'docview/ui/syslog',
     'libs/org_arr.js',
     'libs/jquery.date.js'
     )
@@ -42,31 +43,30 @@ steal(
         /* @Prototype */
         {
             init: function() {
-
-
                 this.element.html(
-		    this.view('search_box',
-			      this.options.clientState.attr('access').attr('stats')));
-                // Hide box until route conditions are met
+						this.view('search_box',
+								this.options.clientState.attr('access').attr('stats')));
+				// Hide box until route conditions are met
                 this.element.hide();
 
-		//$("#dictionary-tag").docview_ui_dictionary();
-		//var dicController =  $("#dictionary-tag").controller();
-		//this.orgsDic = dicController.getDictionary("org");
-		this.orgsDic = orgArrayDictionary; 
-		//console.log("-----state------");
-		//console.log(this.orgsDic);
-                $("#div_query_form").html(this.view("query_form",{title : "用户查阅历史查询",orgsDic : this.orgsDic}));
+				//$("#dictionary-tag").docview_ui_dictionary();
+				//var dicController =  $("#dictionary-tag").controller();
+				//this.orgsDic = dicController.getDictionary("org");
+				this.orgsDic = orgArrayDictionary; 
+				//console.log("-----state------");
+				//console.log(this.orgsDic);
+                //$("#div_query_form").html(this.view("query_form",{title : "用户查阅历史查询",orgsDic : this.orgsDic}));
+                $("#div_query_form").docview_ui_syslog({clientState: this.options.clientState});
                 //                $("#div_stats").html(this.view("stats"));
-		//preload ..
+				//preload ..
                 $("#div_stats").docview_ui_search_condition();
                 $("#div_usage").html(this.view("usage"));
-		this.element.find('div.stats_query_quota').docview_ui_queryquota();
+				this.element.find('div.stats_query_quota').docview_ui_queryquota();
                 this.mainTabOn = false;
                 this.search_result = null;
 
                 // Hide search types until route conditions are met
-                this.element.find('.stats_query').hide();
+                //this.element.find('.stats_query').hide();
                 this.element.find('.stats_stats').hide();
                 this.element.find('.stats_usage').hide();
 
@@ -238,7 +238,7 @@ steal(
                     doc_type:doc_type,
                     years:years
                 };
-		$.createMask();
+				$.createMask();
                 $.ajax({
                     url : '/document_histories/dh_report',
                     type : 'post',
@@ -317,7 +317,9 @@ steal(
                     }
                 });
 
+				log('system',{current_action:'stats.stats_stats',describe:'绩效统计查询'});
             },
+/*
             '.stats_query submit': function(el, ev) {
                 ev.preventDefault();
                 this.removeFormErrors(el);
@@ -354,6 +356,7 @@ steal(
                     to_date : to_date
                 });
             },
+*/
             // Filters
             '.select-all click': function(el) {
                 this.element.find('.filters .checkbox input').prop("checked", true);
@@ -412,7 +415,7 @@ steal(
                     heading: h,
                     message : message
                 });
-		$.closeMask();
+				$.closeMask();
             }
 
         });

@@ -36,7 +36,7 @@ steal(
 	    this.lastEl = undefined;
 	},
 	query : function(params) {
-		console.log("method:query",params);
+		console.log(params);
 		$.createMask();
 		$.ajax({
 		url: '/qh/query_search',
@@ -48,7 +48,6 @@ steal(
 	    });
 	},
 	querySelf : function(params) {
-		console.log('method:querySelf');
 	    Docview.Models.History.findSelf(params, this.proxy('showResult'),
 					    this.proxy('failure'));
 	},
@@ -62,7 +61,6 @@ steal(
 	    }
 	},
 	queryDocHistory : function(params) {
-		console.log('method:queryDocHistory');
 	    	$.createMask();
 		$.ajax({
 		url: '/dh/query_search',
@@ -116,7 +114,6 @@ steal(
             });
 	    
 	    $.closeMask();
-		log('system',{current_action:'stats.stats_stats',describe:'查询历史记录'});
 	},
 	failure : function(jqXHR, textStatus, errorThrown) {
 	    this.handleCommonFailure(jqXHR, textStatus, errorThrown, this.options);

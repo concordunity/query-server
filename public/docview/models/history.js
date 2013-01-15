@@ -3,6 +3,19 @@ steal('jquery/model', 'jquery/lang/json')
 
 $.Model('Docview.Models.History',
 {
+    
+    findLog: function(params, success, error) {
+        return $.ajax({
+            url : '/find_log', 
+            type : 'post',
+            data : params,
+            success : success,
+            error : error,
+			async : false,
+            dataType : 'json history.models'
+        });
+    },
+
     findSelf : function(params, success, error) {
 	$.ajax({
 	    url: '/qh/u',

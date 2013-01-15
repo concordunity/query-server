@@ -55,6 +55,7 @@ steal(
 	handleData : function (data) {
 		this.tableController.setModelData(data.results);
 		$.closeMask();
+		log('system',{current_action:'stats.stats_stats',describe:'查询出口删改单'});
 	},
 	handleError: function (jqstatus, error) {
 		$.closeMask();

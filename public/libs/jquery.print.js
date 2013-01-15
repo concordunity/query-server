@@ -101,7 +101,7 @@
 		 * 
 		 */
 		var install = function() {
-				confirm("无法安装插件, 是否尝试手动安装 ?") && (window.location = "http://13.141.43.227/print_addon_ie.exe");
+				confirm("无法安装插件, 是否尝试手动安装 ?") && (window.open("/print_addon_ie.exe"));
 			};
 
 			try{

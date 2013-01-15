@@ -40,10 +40,33 @@ rails g model dictionary_info dic_num:string dic_name:string dic_type:string
 
 sys_log
 编号	名称		类别
-dic_num	dic_name	dic_type
 user_id
 role_id
 user_name
 role_name
 action
 describe
+
+
+query_doctype_log
+编号	名称		类别
+user_id
+role_id
+doc_id
+org
+doc_type
+ip
+print
+email
+user_name
+role_name
+action
+describe
+status
+
+
+
+
+
+
+

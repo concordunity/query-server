@@ -17,7 +17,9 @@ steal(
         loadData : function() {
             Docview.Models.User.getSetting(this.proxy('setData'), this.proxy('failure'));
         },
-        failure : function(a, b, c) {
+        failure : function(savedData) {
+			
+			log('system',{current_action:'manage_accont.sys-setting',describe:'系统参数保存失败'},savedData);
         },
         setDataOk : function(data) {
             this.element.find('div.info-box').html(this.view("alert", {
@@ -25,6 +27,7 @@ steal(
                 heading: "系统信息",
                 message: "成功保存系统参数"
             }));
+			log('system',{current_action:'manage_account.sys-setting',describe:'成功保存系统参数'});
         },
         setData : function(data) {
             //console.log(data);
@@ -92,7 +95,7 @@ steal(
 		 checkout_period : period,
 		 timeout_value : timeout_value,
 		 max_queries_per_month : max_queries},
-		this.proxy('setDataOk'),
+		this.proxy('setDataOk',{ check_period : period,timeout_value : timeout_value,max_queries_per_month : max_queries }),
 		this.proxy('failure'));
         },
         displayInputError: function(form, inputField, message) {

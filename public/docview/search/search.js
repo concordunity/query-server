@@ -252,7 +252,7 @@ steal(
 	    this.element.hide();
 	    $('#document-details').docview_ui_details('queryDoc', docId);
 	},
-        '.multi submit': function(el, ev) {
+    '.multi submit': function(el, ev) {
             ev.preventDefault();
 	    this.options.clientState.attr('searchMode', 'multi');
 	    $('#search-results').docview_search_results('clearResults');
@@ -266,7 +266,7 @@ steal(
 		if (ids.length == 1) {
 		    this.searchSingleDoc(ids[0]);
 		} else {
-                    this.options.clientState.attr('search', {
+			this.options.clientState.attr('search', {
 			doc_ids: ids,
 			filters: this.filters
                     });

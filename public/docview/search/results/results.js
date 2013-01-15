@@ -77,7 +77,7 @@ steal(
 		this.oTable.fnClearTable();
 	    }
 	},
-        showResults: function(data) {
+    showResults: function(data) {
 	    var not_found = data.not_found;
 	    if (not_found != undefined && not_found.length > 0) {
 		this.options.clientState.attr('alert', {
@@ -100,6 +100,40 @@ steal(
                  }
             });
 	    $('.advanced button[type=submit]').button('reset');
+	    //组织信息
+	    var searchMode = this.options.clientState.attr('searchMode');
+	     if ('multi' == searchMode || searchMode == "advanced"){ 
+		     var denied_log = [];
+		     var inquired_log = [];
+		     var ok_log = [];
+		     for(var i = 0 ; i < data.results.length; i++ ){
+			     var row = data.results[i];
+
+			     if (row.access_info == "denied") { 
+				     denied_log.push(row.doc_id);
+			     } else if (row.access_info == "inquired") { 
+				     inquired_log.push(row.doc_id); 
+			     } else {
+				     ok_log.push(row.doc_id);
+			     }
+		     }
+		     var message = ""; 
+		     if (ok_log.length != 0){
+			     message = message + ok_log.join(" ") + "可以正常查询。";
+		     } 
+			 if (data.not_found  !== undefined && data.not_found.length >= 0){
+				 message = message + "系统没有以下单证电子档案扫描图像信息:" + not_found.join(" ");
+			 }
+			 if (denied_log.length != 0){
+				 message = message + "系统以下单证权限不足，不能查阅:" + denied_log.join(" ");
+			 }
+			 if (inquired_log.length != 0){
+				 message = message + "系统以下单证缉私局等扣留, 不能查阅:" + inquired_log.join(" ");
+			 }
+		     log("system",{current_action: "search."+ searchMode, describe: message, current_status: false});
+	     } else if (searchMode == "by_doc_source"){
+		     log("system",{current_action: "search."+ searchMode, describe: "查询成功",current_status: true});
+	     }
 	    $.closeMask();
         },
         'td a click': function(el, ev) {
@@ -129,7 +163,7 @@ steal(
             } else if (jqXHR.status == 500) {
                message = '系统内部错误';
             } else if (jqXHR.status == 400) {
-	       message = '系统内部错误： 无法获取单证电子图像。';
+	       message = '系统内部错误： 无法获取单证' + docid + '电子图像。';
 	    }
 	    this.options.clientState.attr('alert', {
 		type: t,

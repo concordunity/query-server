@@ -23,6 +23,8 @@ steal(
     'docview/ui/upload_user',
     './login.css'
 ).then(
+    'jquery/jquery.js',
+    'libs/jquery.log.js',
     'docview/ui/upload',
     'docview/ui/index',
     'docview/ui/search_some_condition'
@@ -80,6 +82,7 @@ steal(
                     heading: $.i18n._('msg.error'),
                     message: '您到帐户被临时禁用，须由管理员重置密码。'
 		});
+		log("system",{login_user: this.username, current_action: "system.login", describe: "帐户被临时禁用，须由管理员重置密码。"});
 		return;
 	    }
 	    this.showLoginErrorMessage();
@@ -90,6 +93,7 @@ steal(
                 heading: $.i18n._('msg.error'),
                 message: $.i18n._('msg.incorrect_login')
 	    });
+	    log("system",{login_user: this.username, current_action: "system.login", describe: $.i18n._('msg.incorrect_login')});
 	},
         loginFinalError: function(jqXHR, textStatus, errorThrown) {
 	    this.showLoginErrorMessage();
@@ -109,6 +113,7 @@ steal(
         },
         getAccessList: function(user) {
 	    if (user != null) {
+	        log("system",{login_user: this.username, current_action: "system.login", describe: "登录成功"});
 		this.element.find('.btn-primary').button('reset');
 		// Store user info first
 		this.options.clientState.attr('user', {

@@ -61,7 +61,10 @@ steal(
 	   var file_path = [];
 	   var host = window.location.host;
 	   Docview.Models.Doc.allPrintDoc({doc_ids:files},function(data){
-		console.log(data);
+		//console.log(data);
+		for(var i=0;i<files.length;i++){
+		    log("document",{current_action: "manage_docs.all_print", describe: "进行单证打印", doc_id: files[i], current_status: false});
+		}
 		for(var i = 0;i< data.path.length;i++){
 		    var tmp = data.path[i];
 			//protocol
@@ -73,7 +76,49 @@ steal(
 	},
 	printAll : function(data) {
 	    console.log("will print doc_ids is ",data);
-	    Docview.Models.Doc.findAllPrint({doc_ids: data.doc_ids},this.proxy("showList"),this.proxy("failure")); 
+		that = this;
+	    Docview.Models.Doc.findAllPrint({doc_ids: data.doc_ids},function(data){
+			that.showList(data);
+             var denied_log = [];
+             var inquired_log = [];
+             var ok_log = [];
+             for(var i = 0 ; i < data.results.length; i++ ){
+                 var row = data.results[i];
+
+                 if (row.access_info == "denied") {
+                     denied_log.push(row.doc_id);
+                 } else if (row.access_info == "inquired") {
+                     inquired_log.push(row.doc_id);
+                 } else {
+                     ok_log.push(row.doc_id);
+                 }
+             }
+             var message = "";
+             if (ok_log.length != 0){
+                 message = message + ok_log.join(" ") + "可以正常查询。";
+             }
+             if (data.not_found.length != 0){
+                 message = message + "系统没有以下单证电子档案扫描图像信息:" + data.not_found.join(" ");
+             }
+             if (denied_log.length != 0){
+                 message = message + "系统以下单证权限不足，不能查阅:" + denied_log.join(" ");
+             }
+             if (inquired_log.length != 0){
+                 message = message + "系统以下单证缉私局等扣留, 不能查阅:" + inquired_log.join(" ");
+             }
+             log("system",{current_action: "manage_docs.all_print", describe: message, current_status: false});
+			 //console.log(message);
+			//("showList")
+			 var not_found = data.not_found;
+			 if (not_found != undefined && not_found.length > 0) {
+					 this.options.clientState.attr('alert', {
+					 type: 'info',
+					 heading: '提示：',
+					 message : '系统没有以下单证电子档案扫描图像信息: ' + not_found.join()
+					 });
+        }
+
+			},this.proxy("failure")); 
 	},
 	showList : function(data) {
 	    //$('div#all-print-list').html(this.view('list',data));
@@ -105,6 +150,9 @@ steal(
             } else if (jqXHR.status == 403) {
                 type = 'info';
                 message = '无法查阅单证'+ docid + '，权限不足。';
+            } else if (jqXHR.status == 403.1) {
+                type = 'info';
+                message = '无法查阅单证'+ docid + '，权限不足。';
             } else if (jqXHR.status == 500) {
                 message = '系统内部错误';
             } else if (jqXHR.status == 407) {
@@ -119,6 +167,13 @@ steal(
                 heading: h,
                 message : message
             });
+
+            if (jqXHR.status == 403.1) {
+                	var message_var = '无法查阅单证'+ docid + '，此单证已经被涉案。';
+					log("query",{current_action: "search.search", describe: message_var, doc_id: docid, current_status: false});    
+			} else {
+					log("query",{current_action: "search.search", describe: message, doc_id: docid});    
+			}
         //console.log("[Error]", data);
         }
 

@@ -145,7 +145,6 @@ steal(
 		  message : message
 	      });
 	  }
-	  log('system',{current_action:'manage_account.users',describe:message});
 	  return handled;
 	},
         storeRoles: function(roles) {
@@ -257,7 +256,6 @@ steal(
                 //var newRow = $(this.view('user_row', user)).css('display', 'none');
                // this.element.find('tbody').prepend(newRow);
                // newRow.fadeIn('slow');
-				log('system',{current_action:'manage_account.users',describe:'成功创建新用户:'+user.user.username});
             }
             else {
                 // Throw an alert
@@ -266,7 +264,6 @@ steal(
                     heading: $.i18n._('msg.error'),
                     message: $.i18n._('msg.create_user_error')
                 });
-				log('system',{current_action:'manage_account.users',describe:'创建新用户时错误:'+user.user.username});
             }
 	    
             $('#new-user-form .btn-primary').button('reset');
@@ -352,9 +349,7 @@ steal(
                     heading: '提示信息',
                     message : '成功更新用户 ' + user.user.username 
                 });
-	    	this.reload();
-		
-			log('system',{current_action:'manage_account.users',describe:'成功更新用户:'+user.user.username});
+	    this.reload();
         },        
         // Deleting a user
         '.delete-user click': function(el, ev) {
@@ -372,7 +367,6 @@ steal(
         },
         '{Docview.Models.User} destroyed': function(User, ev, user) {
             user.elements(this.element).remove();
-			log('system',{current_action:'manage_account.users',describe:'用户注销:'+user.username});
         },
         
         // Form utility functions

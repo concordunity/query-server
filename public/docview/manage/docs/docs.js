@@ -71,9 +71,11 @@ steal(
             form.find('.error .help-inline').remove();
 	    form.find('.error').removeClass('error');
 	},
-        '.stats_query submit': function(el, ev) {
+        '.dh_report form.stats_query submit': function(el, ev) {
             ev.preventDefault();
-            this.removeFormErrors(el);            
+		//console.log("queryDocHistory");
+        
+		this.removeFormErrors(el);            
 	    var params = {};
 	    var ctrl = el.find('.single_sou_holder').controller();
 
@@ -92,7 +94,7 @@ steal(
 	    }
 	    var from_date = dates.from;
 	    var to_date = dates.to;
-
+		
 	    this.element.find('#docs_history').docview_ui_history('queryDocHistory', {
 		doc_id : doc_id,
 		username : username,
@@ -101,7 +103,8 @@ steal(
 		from_date : from_date,
 		to_date : to_date
 	    });
-	},
+		
+		},	
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
 	    var mode = this.options.clientState.attr('searchMode');
 
@@ -120,7 +123,10 @@ steal(
 		this.element.find('.'+ to_show).show();
 
 		this.element.show();
-	
+
+	setTimeout(function(){
+		    $('.stats_query').show();
+	},100);	
             } else if (newVal == 'document' && ('court' == mode || 'print' == mode)) {
 		this.hideDocsHistory();
 		//this.element.show();
@@ -201,12 +207,14 @@ steal(
 	    }
 	},
 	inquireOk : function(data) {
+	    console.log(data);
 	    if (data.status && data.status == 400) {
 		this.options.clientState.attr('alert', {
 		    type: 'error',
 		    heading: '错误提示：',
 		    message : data.message
 		});
+	//	log("document",{current_action: "manage_docs.inquire", describe: data.message});
 		return;
 	    }
 
@@ -215,6 +223,9 @@ steal(
 		heading: '操作成功：',
 		message : '单证已增加涉案标记'
 	    });
+	    for(var i=0;i<data.docs.length;i++){
+			log("document",{current_action: "manage_docs.inquire", describe: '单证已增加涉案标记', doc_id: data.docs[i].doc_id});
+		}
 	},
 	checkoutOk : function(data) {
 	    if (data.status && data.status == 400) {
@@ -231,6 +242,9 @@ steal(
 		heading: '操作成功：',
 		message : '单证已增加借出标记'
 	    });
+	    for(var i=0;i<data.docs.length;i++){
+			log("document",{current_action: "manage_docs.checkout", describe: '单证已增加借出标记', doc_id: data.docs[i].doc_id});
+		}
 	},
 	checkinOk : function(data) {
 	    if (data.status && data.status == 400) {
@@ -247,6 +261,9 @@ steal(
 		heading: '操作成功：',
 		message : '单证已解除借出标记'
 	    });
+	    for(var i=0;i<data.docs.length;i++){
+			log("document",{current_action: "manage_docs.checkout", describe: '单证已解除借出标记', doc_id: data.docs[i].doc_id});
+		}
 	},
 	inquireRemoveOk : function(data) {
 	    if (data.status && data.status == 400) {
@@ -263,6 +280,9 @@ steal(
 		heading: '操作成功：',
 		message : '单证已解除涉案标记'
 	    });
+	    for(var i=0;i<data.docs.length;i++){
+			log("document",{current_action: "manage_docs.checkout", describe: '单证已解除涉案标记', doc_id: data.docs[i].doc_id});
+		}
 	},
 	inquireFailed : function(jqXHR, textStatus, errorThrown) {
             var handled = true;

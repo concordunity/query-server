@@ -1,7 +1,7 @@
 <div class="stats_query stats_query_quota"></div>
 
 
-<div class="well stats_query">
+<div class="stats_query">
 <form class="stats_query form-horizontal">
 <h1 class='legend-h1'><%= this.title %></h1>
 <p class="help-block">请输入条件，相关内容为空则不限该条件。</p>
@@ -16,8 +16,6 @@
        <label class="control-label">单证组</label>
        <div class="dg_select_holder controls"></div>
    </div>
-<% this.orgsDic = orgArrayDictionary;%>
- <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
 </fieldset>
 
     <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看</button>
@@ -27,12 +25,8 @@
 <div class="span6">
 <fieldset>
 
-   <div class="control-group">
-        <label class="control-label">用户名</label>
-        <div class="controls">
-              <input name="username" id="frm_total" type="text"/>
-        </div>
-   </div>
+   <% this.orgsDic = orgArrayDictionary;%>
+   <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
 
    <div class="control-group daterange-holder">
    </div>

@@ -1,5 +1,10 @@
 zh-CN:
+  system:
+    login: "登录系统"
+    logout: "退出系统"
+    locked: "帐户被临时禁用，须由管理员重置密码。"
   search:
+    search: "单证查阅"
     single: "单票查阅"
     multi: "批量查阅"
     advanced: "随机抽样查阅"
@@ -7,7 +12,7 @@ zh-CN:
     search_condition: "高风险报关单查询"
     by_doc_source: "单证暂存"
     personal_history: "个人历史查阅"
-  manage_doc:
+  manage_docs:
     inquire: "添加/解除涉案标记" 
     checkout: "电子档案借出/归还"
     print_doc: "打印"

@@ -1,4 +1,5 @@
 Dms::Application.routes.draw do
+  post "/find_log" => "admin#find_log"
 
   post "/system_log" => "admin#system_log"
   post "/query_log" => "admin#query_log"
