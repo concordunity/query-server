@@ -12,13 +12,13 @@ steal(
     './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.Upload', {}, {
-        init : function() {
+	init : function() {
 	   this.dialog_id = "#show_dialog";
 	   this.dialog_user = this.options.clientState.attr("user").fullname; 
 	   $('#dialog').docview_ui_dialog({dialog_id: this.dialog_id});
 	   this.dialogController = $('#dialog').controller();
-           this.element.html(this.view('init'));
-           this.element.hide();
+	   this.element.html(this.view('init'));
+	   this.element.hide();
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal !== "search") {
@@ -70,6 +70,7 @@ steal(
   	    }
   	    return false;
 	},
+/*
 	getUploadInfo : function(filename,result){
 	    
 	    if (filename == "") {
@@ -85,11 +86,61 @@ steal(
 	    }
 	    return result;
 	},
+*/
 	"form[name='upfile_form'] submit" : function(el,ev){
 		//ev.preventDefault();
-		var upload_file = $("#upload_file").val();
-		var upload_file_1 = $("#upload_file_1").val();
-		var upload_file_2 = $("#upload_file_2").val();
+		var hasOK = false,error;
+		$([ $("#upload_file").val(),
+			$("#upload_file_1").val(), 
+			$("#upload_file_2").val()]
+		).each(function(i,file){
+			//file name sign.
+			if(!!file){
+				//Microsoft(R) Office Excel File Format
+				if(/.xls$/i.test(file)){
+					//OK
+					hasOK = true;
+				}else{
+					hasOK = false;
+					//Error
+					error = "文件格式错误,文件后缀名必须是 '.xls' 格式。"
+					return false;
+				}
+			}else{
+				error = "没有选择文件上传";
+			}
+		});
+		//上传文件不符合要求,存在错误 , 动作取消
+		if(!hasOK){
+			this.showMessage(error);
+			return false;
+		} 
+	
+		var that = this;
+		that.dialogController.openDialog(this.dialog_id,'正在上传文件到系统,请您耐心等待。');
+
+		(function(){
+			var callee = arguments.callee;
+			Docview.Models.User.getDialog({full_name: that.dialog_user},function(data){
+				//console.log(data,arguments.callee);
+				if(!!!data || data.message == false){	
+					if(!!!data){	
+						console.log('no data');//防止服务器异常
+					}else{
+						console.log('uploading');
+					}
+					setTimeout(callee,2000);			
+				}else{	
+					console.log('upload success');
+					that.showMessage(data.result);
+					that.dialogController.closeDialog(that.dialog_id);
+
+					log('system',{ current_action:'search.upload_file',descirbe:'文件上传成功' });
+				}
+			},{});	
+	
+		})();
+		/*
 		if (upload_file == "" && upload_file_1 == "" && upload_file_2 == "") {
 			this.showMessage("上传失败:请选择要上传的文件");
 			return false;
@@ -113,6 +164,7 @@ steal(
                         return false;
 		}
 */
+/*/
 		var result = {status:true, message: []};
 
 		result = this.getUploadInfo(upload_file,result);
@@ -122,32 +174,15 @@ steal(
 			this.showMessage("上传失败");
 			return false;
 		}else{
-			that = this
-			that.dialogController.openDialog(this.dialog_id,'系统正在后台加载数据，请慢慢等待!');
-			window.setTimeout(function(){
-			Docview.Models.User.setDialog({full_name: that.dialog_user},that.proxy("getDialogStatus"),{});
-			},2000);
-			window.setTimeout(function(){
-			that.showMessage("上传成功");
-			return true;
-			},1);
 /*
 			this.showMessage("上传成功");
 			return true;
 */
+/*
 		}
+*/
 	},
 	getDialogStatus : function() {
-		that = this;
-		Docview.Models.User.getDialog({full_name: that.dialog_user},function(data){
-			while(data.message == false){
-				window.setTimeout(function(){
-				getDialogStatus({full_name: that.dialog_user});
-				},2000);
-			}
-			that.showMessage(data.result);
-			that.dialogController.closeDialog(that.dialog_id);
-		},{});	
 	},
 	showMessage : function(message) {
                 this.options.clientState.attr('alert', {

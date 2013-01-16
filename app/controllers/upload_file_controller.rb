@@ -12,18 +12,40 @@ class UploadFileController < ApplicationController
     upload_result = upload(upload_file_name)
     success_count = 0
     result_info = Hash.new
+	dih = Hash.new
+	DictionaryInfo.where(:dic_type => 'org').collect {|di| 
+		if di.dic_num.to_i == 2200
+			dih['所有关区'] = di.dic_num 
+		else
+			dih[di.dic_name] = di.dic_num
+		end
+	}
+	logger.info dih	
+
+    dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
+    dialog_path_end = File.join(Rails.root,"public","docview","export_data",current_user.username+".end")
+	logger.info "===========准备进行相关验证========"
+	system("touch #{dialog_path}")
+
     if upload_result[:status] == true
       file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
       begin
         result = format_system_data(file_url)
 
-        result_info[:message]="return_format_data for success"
         result.each_with_index do |row,index|
           @user = User.find_by_username(row[0])
+			
+		  org_ids = [] 
+		  row[3].split(/[,| ]/).each do |org|
+			logger.info "===========" 
+			logger.info org
+			logger.info dih[org] 
+			org_ids << dih[org]
+		  end
           if @user
             @user.fullname = row[1]
             @user.role_ids = row[2]
-            @user.orgs = row[3]
+            @user.orgs = org_ids.join(",") 
             @user.doc_type = row[4]
             @user.password = 123456
             @user.save
@@ -32,7 +54,7 @@ class UploadFileController < ApplicationController
             @user.username = row[0] 
             @user.fullname = row[1] 
             @user.role_ids = row[2]
-            @user.orgs = row[3] 
+            @user.orgs = org_ids.join(",") 
             @user.doc_type = row[4] 
             @user.password = 123456
             if @user.email.blank?
@@ -46,13 +68,16 @@ class UploadFileController < ApplicationController
           end
           success_count += 1
         end
+        result_info[:message]="更新成功"
       rescue => e
         logger.info e
-        result_info[:message]="return_format_data for error"
+        result_info[:message]="更新失败"
       end
     else
-      result_info[:message]="upload file for error"
+      result_info[:message]="更新失败"
     end
+    write_to_file(dialog_path,result_info[:message])
+	system("touch #{dialog_path_end}")
     render :nothing => true 
   end
 
@@ -81,7 +106,7 @@ class UploadFileController < ApplicationController
 		else
 		
 			logger.info "===========生成标记文件========"
-        	write_to_file(dialog_path,status[3])
+        	#write_to_file(dialog_path,status[3])
 			logger.info "===========开始进行各个文件的上传流程========"
 			zfci = zero_find_check_info(params[:upload_file])
 			niplr = normal_import_price_less_record(params[:upload_file_1])
@@ -156,10 +181,10 @@ class UploadFileController < ApplicationController
           end
         end
         #TemporaryZero.import tmp_arr
-		Thread.new do 
+		#Thread.new do 
         	ZeroFindCheckInfo.delete_all
 			ZeroFindCheckInfo.import tmp_arr
-		end
+		#end
         #TemporaryZero.destroy_all
 		result[:status] = true 
         result[:message] = "成功导入‘查获率为0的重点查验企业’表"
@@ -211,10 +236,10 @@ class UploadFileController < ApplicationController
         end
         #TemporaryNormal.import tmp_arr
         #NormalImportPriceLessRecord.destroy_all
-		Thread.new do 
+		#Thread.new do 
         	NormalImportPriceLessRecord.delete_all
 			NormalImportPriceLessRecord.import tmp_arr
-		end
+		#end
         #TemporaryNormal.destroy_all
 		result[:status] = true 
 		result[:message] = "成功导入'一般贸易进口价格偏低报关单记录文档'表"
@@ -260,10 +285,10 @@ class UploadFileController < ApplicationController
                   end
 	      end
 	      #TemporaryImport.import tmp_arr
-		  Thread.new do 
+		  #Thread.new do 
 	      	  ImportMostTimeOrgDocInfo.delete_all
 			  ImportMostTimeOrgDocInfo.import tmp_arr
-		  end
+		  #end
 	      #TemporaryImport.destroy_all
 		  result[:status] = true 
 		  result[:message] = "成功导入'进口通关时间超长报关单文档'表"
@@ -307,9 +332,13 @@ class UploadFileController < ApplicationController
   def upload(upload_file)
     result = {}
     unless request.get?
-      unless upload_file
+      if upload_file.nil?
         result[:message]  = "请选择一个文件"
         result[:status] = false
+	  #elsif upload_file == 'xls'
+      elsif File.extname(upload_file.original_filename).upcase != ".XLS"
+        result[:status] = false 
+        result[:message]  << "上传的文件格式不正确，请重新上传"
       else
         filepath = upload_file_to_server(upload_file)
         result[:message] = '上传成功'

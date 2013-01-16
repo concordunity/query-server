@@ -75,10 +75,10 @@ steal(
                 var to_date = dates.to;
 				var formdata = {url: url, doc_id: gid, org: org, rolename: rolename, username: username, from_date: from_date, to_date: to_date};
 				Docview.Models.History.findLog(formdata,this.proxy("setData"),{});
-			}
+			},
 			/**
 				//负责在系统日志模式下禁用 报关单号和理单关区
-			
+			*/
 			'select[name=log_type] change':function(el,ev){
 				var log_type = el.val();
 				//console.log(log_type);
@@ -95,7 +95,7 @@ steal(
 						org.attr('disabled',null);
 						break;
 				}
-			}*/
+			}
 });
 });
 

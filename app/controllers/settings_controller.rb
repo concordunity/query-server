@@ -21,8 +21,8 @@ class SettingsController < ApplicationController
 	    	result << f.read
 		end
 
-		system("rm #{dialog_path}")
-		system("rm #{dialog_path_end}")
+		system("chmod 775 #{dialog_path} && rm #{dialog_path}")
+		system("chmod 775 #{dialog_path_end} && rm #{dialog_path_end}")
 		dialog_tag = true 
 	end
 	render json: {status: 200,message: dialog_tag, result: result} 

@@ -26,7 +26,7 @@ class AdminController < ApplicationController
 	  elsif url == "document"
 		result = DocumentHistory.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
 	  elsif url == "doctype"
-#		result = QueryDoctypeLog.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
+		result = QueryDoctypeLog.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
 	  end
       rescue => e
 	    logger.info "error======"

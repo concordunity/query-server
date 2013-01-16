@@ -98,7 +98,13 @@ steal(
                  message = message + ok_log.join(" ") + "可以正常查询。";
              }
              if (data.not_found.length != 0){
-                 message = message + "系统没有以下单证电子档案扫描图像信息:" + data.not_found.join(" ");
+                 var msg_not_found =  "系统没有以下单证电子档案扫描图像信息:" + data.not_found.join(" ");
+				 that.options.clientState.attr('alert', {
+					 type: 'info',
+					 heading: '提示：',
+					 message : msg_not_found
+					 });
+				 message += msg_not_found;
              }
              if (denied_log.length != 0){
                  message = message + "系统以下单证权限不足，不能查阅:" + denied_log.join(" ");
@@ -109,14 +115,6 @@ steal(
              log("system",{current_action: "manage_docs.all_print", describe: message, current_status: false});
 			 //console.log(message);
 			//("showList")
-			 var not_found = data.not_found;
-			 if (not_found != undefined && not_found.length > 0) {
-					 this.options.clientState.attr('alert', {
-					 type: 'info',
-					 heading: '提示：',
-					 message : '系统没有以下单证电子档案扫描图像信息: ' + not_found.join()
-					 });
-        }
 
 			},this.proxy("failure")); 
 	},
