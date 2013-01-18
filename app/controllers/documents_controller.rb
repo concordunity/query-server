@@ -147,7 +147,7 @@ class DocumentsController < ApplicationController
         end
       end
     }
-
+=begin
     qh = QueryHistory.create(:user_id=> current_user.id,
                              :doc_id => nil,
                              :bulkids => ids.join(" "),
@@ -155,6 +155,7 @@ class DocumentsController < ApplicationController
                              :email => current_user.display_name,
                              :print => false)
     qh.save
+=end
     render json: { :results => @documents, :not_found => not_found_ids }, :status => 200
   end
 
@@ -380,6 +381,7 @@ class DocumentsController < ApplicationController
       if !ignore_auth
         # Create query_history record.
         #response = { :name => 'test', 'info' => 'good' }
+=begin
         qh = QueryHistory.create(:user_id=> current_user.id,
                                  :doc_id => @document.doc_id,
                                  :org => @document.org,
@@ -387,6 +389,7 @@ class DocumentsController < ApplicationController
                                  :ip => current_user.current_sign_in_ip,
                                  :email => current_user.display_name,
                                  :print => false)
+=end
       end
 
       @folder = Folder.find(@document.folder_id)
@@ -617,14 +620,17 @@ class DocumentsController < ApplicationController
   end
 
   def print
+	logger.info("===============1")
     doc_id = params[:doc_id]
     folder_id = params[:folder_id] || 0
     @document = Document.find_by_doc_id(doc_id)
 
+	logger.info("===============2")
     if @document.nil?
       raise ActiveRecord::RecordNotFound
     end
 
+	logger.info("===============3")
     #    add_history(@document, 'testify')
     dir='docimages'
     if !params[:mod].blank?
@@ -635,8 +641,11 @@ class DocumentsController < ApplicationController
       page_selections = params[:pages].split(',')
       pages=page_selections.join(' ')
     end
-    script_name = "#{ENV['HOME']}/bin/print_doc_with_watermark.sh #{doc_id} #{folder_id} #{dir} \"#{pages}\""
 
+	logger.info("===============4")
+    script_name = "#{ENV['HOME']}/bin/print_doc_with_watermark.sh #{doc_id} #{folder_id} #{dir} \"#{pages}\""
+	logger.info("==============doc/print?doc=")
+	logger.info(script_name)
     pdf_file = %x[ #{script_name} ]
 
     if pdf_file == 'NONE'

@@ -156,6 +156,10 @@ class DocumentHistoriesController < ApplicationController
   def dh_report#_condition
 
     # first check the time range.
+    doc_count = 0
+	doc_count = Document.where([" org = 2233 and datediff(created_at,edc_date) > 60"]).order("edc_date").count
+
+
     where_clause = {}
     queries = QueryHistory.where("doc_id IS NOT NULL")
     if !params[:from_date].blank? && !params[:to_date].blank?
@@ -191,7 +195,7 @@ class DocumentHistoriesController < ApplicationController
       elsif cat == '4'
         query_stats_by = search_condition_month(function_params)
       end
-
+	  results[:doc_count] = doc_count
       results[:query_stats] = query_stats_by
       render json: results
     end

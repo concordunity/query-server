@@ -1,9 +1,9 @@
 Dms::Application.routes.draw do
-  post "/find_log" => "admin#find_log"
+  post "/find_log" => "settings#find_log"
 
-  post "/system_log" => "admin#system_log"
-  post "/query_log" => "admin#query_log"
-  post "/document_log" => "admin#document_log"
+  post "/system_log" => "settings#system_log"
+  post "/query_log" => "settings#query_log"
+  post "/document_log" => "settings#document_log"
 
   post "/admin/import_dictionary" => "dictionary_info#import_dictionary"
 

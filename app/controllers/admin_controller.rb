@@ -2,7 +2,7 @@
 class AdminController < ApplicationController
 
   before_filter :load_layout , :except => [:system_log]
-
+=begin
   def find_log
 	  logger.info params
 	  logger.info params[:url]
@@ -52,7 +52,7 @@ class AdminController < ApplicationController
 	document_history_log(params)
 	render :nothing => true 
   end
-
+=end
   def dictionary
       
   end

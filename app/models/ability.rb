@@ -20,6 +20,7 @@ class Ability
         if (w.action == 'multi_query' || w.action == 'search_docs')
           can :query, Document
           can :query, ModifiedDocument
+          can :print, Document
         end
 
         if (w.action == 'print' || w.action == 'testify')

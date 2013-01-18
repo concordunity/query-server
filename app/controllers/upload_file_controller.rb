@@ -88,8 +88,7 @@ class UploadFileController < ApplicationController
 	logger.info "=====1"
     params[:url_time_path] = Time.now.to_i.to_s
 	logger.info "=====2"
-    #params[:doc_ids] = Document.all.collect(&:doc_id)
-	params[:doc_ids] = []
+    params[:doc_ids] = Document.all.collect(&:doc_id)
 	logger.info "=====3"
     status = {1 => "上传失败,请选择一个文件上传。", 2 => "导入失败,请查检上传文档格式是否正确", 3 => "导入成功",
 	      'z' => "月查获率为0的重点查验企业", 'n' => '一般贸易进口价格偏低报关单记录文档', 'i' => "进口通关时间超长报关单文档"}

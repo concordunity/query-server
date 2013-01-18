@@ -43,8 +43,9 @@ steal(
 	      this.callback('savePasswordError'));
       },
       savePasswordSuccess : function(data) {
-	  alert('密码修改成功，您需要重新登录。');
-	  Docview.Models.User.logout(this.proxy('toLoginPage'));
+		log('system',{ login_user:data.user.username,current_action:'settings.password',describe:'用户登陆密码已变更' });
+		alert('密码修改成功，您需要重新登录。');
+		Docview.Models.User.logout(this.proxy('toLoginPage'));
       },
       toLoginPage : function() {
 	  sessionStorage.clear();

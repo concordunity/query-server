@@ -27,6 +27,27 @@ steal("jquery/dom/fixture", function() {
     });
   */  
     $.fixture(
+	"POST /get_pages", function() {
+		var aaData = [];		
+         var response ={
+        aaData: aaData,
+        col_def_path : "//docview/ui/newtable/views/",
+        aoColumns: [
+        {"mDataProp":"doc_id", mLabel : '单证号'},
+        {"mDataProp":null, mLabel : '操作'}
+        ],
+        file_name: "user_info",
+        row_formatter : [] 
+    }; 
+		 return response;
+	});
+    $.fixture(
+	"get /newtable", function() {
+				
+         var response = {"docs" : [{"doc_id": '222520121250004811'},{"doc_id": '222520121250004812'},{"doc_id": '222520121250004813'}]}; 
+		 return response;
+	});
+    $.fixture(
 	"POST /documents/pending_modified", function() {
             var results = [];
             for (var i = 0; i < 100; i++) {

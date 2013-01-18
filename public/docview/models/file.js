@@ -7,6 +7,16 @@ $.Model('Docview.Models.File',
 //	//        //console.log(data);
 //	return this._super(data.results);
 //    },
+	newTable: function(params, success, error) {
+        return $.ajax({
+            url : '/newtable',
+            type : 'get',
+            data : params,
+            success : success,
+            error : error,
+            dataType : 'json file.models'
+        });
+    },
     
     updateDictionary : function(params, success, error) {
         return $.ajax({
