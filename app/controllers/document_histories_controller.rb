@@ -266,7 +266,7 @@ class DocumentHistoriesController < ApplicationController
         rmap[r.id] = r.name
       }
 
-      sql = %{SELECT role_id, count(query_histories.id)
+      sql = %{SELECT query_histories.role_id, count(query_histories.id)
         from query_histories, users_roles
         where doc_id is not null and
         #{condition[:org].nil? || condition[:org] == "" ? "true" : "org = "+condition[:org]} and

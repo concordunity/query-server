@@ -17,6 +17,23 @@ class ApplicationController < ActionController::Base
         :status => 403  }
      end
   end
+  def get_pages(params,records)
+	if  params[:goto_page].to_i > records.length || params[:goto_page].to_i < 1 || params[:goto_page].blank?
+		current_page = 1
+	else
+		current_page = params[:goto_page].to_i 
+	end
+	start_page = (current_page - 1)*100
+	end_page = (current_page)*100
+	count_records =  records.length
+	if records.length % 100 == 0
+		count_pages =  records.length / 100
+	else
+		count_pages =  records.length / 100 + 1
+	end
+	pageinfo = {:current_page => current_page, :count_records => count_records, :count_pages => count_pages }
+	return {:page_info => pageinfo, :records => records[start_page,end_page]}
+  end
 #记录系统总日志
   def sys_log(params)
 	p_action = params[:current_action]
