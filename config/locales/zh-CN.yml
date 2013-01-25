@@ -1,4 +1,6 @@
 zh-CN:
+  settings:
+    password : "修改密码"
   system:
     login: "登录系统"
     logout: "退出系统"
