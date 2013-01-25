@@ -14,20 +14,22 @@ class SettingsController < ApplicationController
 	  doc_id = params[:doc_id].blank? ? ["true"] : {:doc_id => params[:doc_id]}
       daterange = {:created_at => params[:from_date].to_date .. (params[:to_date].to_date + 1.day)} if (!params[:from_date].blank? && !params[:to_date].blank?)
 	  result = []
+	  r = Role.find_by_name('admin')
+	  no_admin = ["role_id <> ?", r.id] 
       begin 
 	  if url == "system"
 	    logger.info "system ======start"
 	    logger.info username 
 	    logger.info rolename 
 	    logger.info daterange.length 
-		result = SysLog.where(username).where(rolename).where(daterange).all#.paginate(:per_page => 10, :page => params[:page])	
+		result = SysLog.where(no_admin).where(username).where(rolename).where(daterange).all#.paginate(:per_page => 10, :page => params[:page])	
 	    logger.info "system ======end"
 	  elsif url == "query" 
-		result = QueryHistory.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
+		result = QueryHistory.where(no_admin).where(username).where(rolename).where(daterange).where(doc_id).where(org)	
 	  elsif url == "document"
-		result = DocumentHistory.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
+		result = DocumentHistory.where(no_admin).where(username).where(rolename).where(daterange).where(doc_id).where(org)	
 	  elsif url == "doctype"
-		result = QueryDoctypeLog.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
+		result = QueryDoctypeLog.where(no_admin).where(username).where(rolename).where(daterange).where(doc_id).where(org)	
 	  end
       rescue => e
 	    logger.info "error======"

@@ -114,7 +114,7 @@ steal(
                     "sUrl" : "media/language/ch_ZN.txt"
                  }
             });
-	    
+	   $('.docview_ui_history').show(); 
 	    $.closeMask();
 		log('system',{current_action:'stats.stats_stats',describe:'查询历史记录'});
 	},
