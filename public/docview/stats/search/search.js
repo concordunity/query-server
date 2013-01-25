@@ -141,6 +141,9 @@ steal(
                     return;
                 }
 
+				
+				
+
                 if (oldVal !== undefined) {
                     this.element.find('.' + oldVal).hide();
                 }
@@ -167,6 +170,22 @@ steal(
                         this.element.show();
                     }
                 }
+				//	
+				switch(oldVal){//hide old tab in page
+					case 'stats_usage':
+						this.element.find('.' + oldVal).hide();
+						break;
+				}
+				//show new tab in a page .
+				switch(newVal){
+					case 'stats_usage':
+						this.element.find('.' + newVal).show();
+						break;
+				}
+
+
+
+
             },
             reloadStats : function() {
                 $.ajax({
