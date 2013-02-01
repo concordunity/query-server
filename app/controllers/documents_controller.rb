@@ -13,12 +13,38 @@ class DocumentsController < ApplicationController
 
   respond_to :html, :json
   def index
+ 	  column_count = params[:iColumns]
+	  iSortCol_0 = params[:iSortCol_0]	  
+	  sSortDir_0 = params[:sSortDir_0]	  
+	  sSearch = params[:sSearch]
+	  mDataPro = params["mDataProp_" + iSortCol_0]
+	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
+      current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+	  conditions_arr = []
+	  if sSearch.blank?
+		conditions_arr << "true"
+	  else
+	    (0 ... column_count.to_i - 1).each do |cc|
+		    #logger.info "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
+		    conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
+		 end
+	  end
+	  orders = "#{mDataPro} #{sSortDir_0}"	
+
+	  @documents = Document.where(conditions_arr.join(" OR ")).order(orders).paginate :page => current_page, :per_page => params[:iDisplayLength]
+	  respond_to do |format|
+	  	  format.html # index.html.erb
+		  format.json { render json: { sEcho: params[:sEcho].to_i, iTotalRecords: Document.count, iTotalDisplayRecords: Document.count, aaData: @documents } }
+	  end
+
+=begin
     @documents = Document.reorder('rand()').limit(50)
 
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @documents }
     end
+=end
   end
 
   #批量打印选项的打印功能

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>pagingtable Widget Unit Test</title>
+</head>
+<body>
+  <div class="well">
+	<form class="find_doc">
+		doc_id : <input type="text" class="" name="doc_id"/>
+		org: <input type="text" class="" name="org"/>
+		<input type='submit' value="submit"/>
+	</form>
+  </div>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="pagingtable-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/pagingtable').then(function($) {
+
+   $('#pagingtable-test').docview_ui_pagingtable({tableOptions: { aaData: [],
+dataSourceUrl : "/documents",
+aoColumns : [ {"mDataProp" : "doc_id", mLabel: 'Doc Id' },
+{"mDataProp" : "org", mLabel: 'ORG'}, { "mDataProp" : null} ]
+}});
+
+	var controller = $('#pagingtable-test').controller();
+	$(".find_doc").submit(function(el,ev){
+        ev.preventDefault();
+		controller.getDocs();
+	});
+ }); 
+ </script>
+        </body>
+</html>
+

@@ -25,7 +25,8 @@ steal(
     'docview/ui/dictionary',
     'docview/ui/syslog',
     'libs/org_arr.js',
-    'libs/jquery.date.js'
+    'libs/jquery.date.js',
+    'libs/jquery.math.js'
     )
 
 .then(function($) {
@@ -105,7 +106,7 @@ steal(
                     },
                     dataType : 'json',
                     success :function(data){
-			$('.stats_stats h1.legend-h1 div').html('截止到 '+ $.date(new Date).format('yyyy-MM-dd') + '为止,系统中单证电子档案查阅总数为: <b>'+data.query_total+'</b> 份,查阅率为: <b>'+data.query_p+' </b>,存量数为：<b>'+ data.doc_count+'</b><div id="stats_total" style="display:inline" ></div>');
+			$('.stats_stats h1.legend-h1 div').html('截止到 '+ $.date(new Date).format('yyyy-MM-dd') + '为止，系统中单证电子档案查阅总数为：<b>'+data.query_total+'</b> 份，查阅率为：<b>'+data.query_p+' </b>，存量数为：<b>'+ data.doc_count+'</b><div id="stats_total" style="display:inline" ></div>');
 		    }, //this.proxy('show_stats'),
                     error : this.proxy('failure')
                 });
@@ -308,9 +309,21 @@ steal(
                     this.search_result = data;
                 //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
                 } else {
-		    //console.info(data);
+		    		//console.info(data);
                     this.element.find('div.stats_stats').html(this.view('stats_total', data));
-		    $('.stats_usage').html('档案总数为: <b>' + data.docs_total + ' </b>份,总计页数为: <b>'+ data.pages_total+'</b> 页').show().addClass('alert alert-info').css("background",'whiteSmoke').css('border-color', '#E3E3E3');
+		    		
+					$('.stats_total').html('档案总数为：<b>' 
+							+ $.thousands(data.docs_total) 
+							+ ' </b>份，总计页数为：<b>'
+							+ $.thousands(data.pages_total) 
+							+'</b> 页').show('slow')
+							.addClass('alert alert-info')
+							.css({
+									'border-color':'#E3E3E3',
+									"background":'whiteSmoke',
+									'font-size':'20px'
+								});
+					
                 }
                 this.element.find('div.stats_stats table').dataTable({
                     "sDom": dmstable_params,
