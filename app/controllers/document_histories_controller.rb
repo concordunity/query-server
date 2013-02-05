@@ -177,8 +177,8 @@ class DocumentHistoriesController < ApplicationController
     docs_records = Document.where(where_clause).where(docType_condition)
     docs_total = docs_records.count
     pages_total = docs_records.sum("pages")
-    #query_total = QueryHistory.where("doc_id IS NOT NULL").where(:doc_id => docs_records.collect(&:doc_id)).count
-    query_total = QueryHistory.where("doc_id IS NOT NULL").count
+    #query_total = QueryHistory.where("doc_id IS NOT NULL").count
+    query_total = queries.count 
 
     results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
 
@@ -307,18 +307,15 @@ class DocumentHistoriesController < ApplicationController
         end
 
         (0..(months.length - 2)).each { |i|
+	      logger.info "====#{i}===========" 
+		  logger.info Time.now.to_s
           key = months[i].strftime("%Y/%m")
           where_clause = { :created_at => months[i+1] .. months[i] }
 
           query_stats_t = QueryHistory.where("doc_id IS NOT NULL").where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org).count
-          doc_stats_t = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org).count
-          page_stats_t = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org).sum("pages")
-
-          #qq_t = query_stats_t.collect { |k,v|
-          #  { :org => k,
-          #    :qq => number_to_percentage(v * 100 / (1.0 * query_total))
-          #  }
-          #}
+          tmp_record = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group(:org)
+          doc_stats_t = tmp_record.count
+          page_stats_t = tmp_record.sum("pages")
 
           keys = Set.new
           keys.merge(query_stats_t.keys)

@@ -61,6 +61,7 @@ steal(
 		}
 
 	},
+/*
         'form.stats_stats submit' : function(el, ev) {
             ev.preventDefault();
             //this.removeFormErrors(el);
@@ -109,6 +110,7 @@ steal(
                 error : ""//this.proxy('failure')
             });
         },
+*/
         submit : function(){
 
         },
