@@ -13,6 +13,7 @@ steal(
 .then(
     'docview/ui/syssetting',
     './views/manage_docs.ejs',
+    './views/requisition_docs.ejs',
     './views/manage_accounts.ejs',
     './views/stats.ejs'
 )
@@ -38,47 +39,50 @@ steal(
             switch (newVal) {
                 case "search":
                 case "manage_docs":
+                case "requisition_docs":
                 case "manage_accounts":
                 case "stats":
+					console.log("newVal = ",newVal);
+					console.log("======");
                     this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
 
                     this.element.find('li').removeClass('active');
                     
                     // If the user entered the page by manually entering the url with
                     // the subcategory, then it should be defined.
-                var subcategory = $.route.attr('subcategory');
-                if (subcategory === 'sys-setting') {
-		    $('#sys-setting').show();
-		}
-		if (subcategory === 'system-upload') {
-		    //$('#system-upload').show();
-		}
-		if (subcategory !== undefined) {
-                    // Restore subcategory state from $.route
-                    this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
-                    this.options.clientState.attr('nav').attr(newVal, subcategory);
-                } else {
-                    // Restore subcategory state from clientState
-		    subcategory = this.options.clientState.attr('nav').attr(newVal);
-                    if (subcategory === 'sys-setting') {
-			$('#sys-setting').show();
-		    }	
-                    if (subcategory === 'stats_export') {
-			$('#stats-export').show();
-		    }	
-                    if (subcategory === 'system_upload') {
-			$('#system-upload').show();
-		    }	
-                    this.element.find('a[href="#' + subcategory + '"]')
-                        .closest('li').addClass('active');
-                    $.route.attr('subcategory', subcategory);
-                    }
+                	var subcategory = $.route.attr('subcategory');
+					if (subcategory === 'sys-setting') {
+							$('#sys-setting').show();
+					}
+					if (subcategory === 'system-upload') {
+							//$('#system-upload').show();
+					}
+					if (subcategory !== undefined) {
+							// Restore subcategory state from $.route
+							this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
+							this.options.clientState.attr('nav').attr(newVal, subcategory);
+					} else {
+						// Restore subcategory state from clientState
+						subcategory = this.options.clientState.attr('nav').attr(newVal);
+						if (subcategory === 'sys-setting') {
+								$('#sys-setting').show();
+						}	
+						if (subcategory === 'stats_export') {
+								$('#stats-export').show();
+						}	
+						if (subcategory === 'system_upload') {
+								$('#system-upload').show();
+						}	
+						console.log("subcategory.newVal = ",subcategory);
+						this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
+						$.route.attr('subcategory', subcategory);
+					}
                 
-                this.element.show();
-                break;
-	    case "document":
-		break;
-            default:
+					this.element.show();
+					break;
+				case "document":
+					break;
+				default:
                     this.element.hide();
             }
         },

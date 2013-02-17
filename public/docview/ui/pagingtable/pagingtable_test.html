@@ -22,11 +22,19 @@
  <script type='text/javascript'>
 steal('jquery/dom/route', 'docview/ui/pagingtable').then(function($) {
 
-   $('#pagingtable-test').docview_ui_pagingtable({tableOptions: { aaData: [],
-dataSourceUrl : "/documents",
-aoColumns : [ {"mDataProp" : "doc_id", mLabel: 'Doc Id' },
-{"mDataProp" : "org", mLabel: 'ORG'}, { "mDataProp" : null} ]
-}});
+   $('#pagingtable-test').docview_ui_pagingtable({
+	tableOptions: { 
+		    aaData: [],
+			dataSourceUrl : "/documents",
+			aoData : [
+						{ "name": "more_data", "value": "my_value" },
+						{ "name": "doc_id", "value": "222520121250004811" },
+						{ "name": "org", "value": "2225" },
+						{ "name": "username", "value": "zhouzhen" }
+			],
+			aoColumns : [ {"mDataProp" : "doc_id", mLabel: 'Doc Id' },
+			{"mDataProp" : "org", mLabel: 'ORG'}, { "mDataProp" : null} ]
+			}});
 
 	var controller = $('#pagingtable-test').controller();
 	$(".find_doc").submit(function(el,ev){

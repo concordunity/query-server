@@ -237,15 +237,6 @@ steal(
                 }
 
                 var select_hash = {};
-                /*
-                $($("#condition_view").find("select")).each(function(index,value){
-                    var select_id = value.id;
-                    var select_value = $("#"+select_id).val();
-                    var select_text = $("#"+select_id).find("option:selected").text();
-
-                    select_hash[select_id]=select_value;
-                });
-                */
                 var org = el.find("select[name=org]").val();
                 var doc_type = el.find("select[name=doc_type]").val();
                 var years = el.find("select[name=years]").val();

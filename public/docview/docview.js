@@ -39,24 +39,31 @@
                     single : false,
                     multi : false,
                     advanced : false,
-		    by_doc_source : false,
-		    upload_file : false,
-		    search_condition : false
+					by_doc_source : false,
+					upload_file : false,
+					search_condition : false
                 },
                 stats: {
                     stats_stats : false,
-		    stats_query : false,
+					stats_query : false,
                     create_group : false,
                     stats_usage : false,
-		    stats_export : false,
-		    advanced : false
+					stats_export : false,
+					advanced : false
                 },
+                requisition_docs: {
+					application : false,
+					approval: false,
+					register : false,
+					write_off :false,
+					lending_statistics : false
+				}, 
                 manage_docs: {
                     inquire: false,
                     check: false,
                     copy: false,
                     print: false,
-		    all_print : false,
+					all_print : false,
                     testify: false
                 },
                 manage_accounts: {
@@ -70,6 +77,7 @@
             nav: {
                 search: "",
                 stats: "", // "history",
+                requisition_docs: "", // "application",
                 manage_docs: "", // "inquire",
                 manage_accounts: ""   //"users"
             },

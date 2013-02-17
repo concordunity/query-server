@@ -32,33 +32,51 @@ steal(
                     $(tableElement).append("<th>" + v.mLabel + " </th>");
 				}
             });
-			this.showResult();
-        },
-		showResult : function(){
+//			this.showResult();
+//        },
+//		showResult : function(){
 			this.dataTable = this.element.find('table').dataTable({
 				bJQueryUI: true,
 				bProcessing: true,
 				bServerSide: true,
+				"sAjaxSource" : this.options.tableOptions.dataSourceUrl,
 				//"sServerMethod": "POST",
 				"sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
 				"sPaginationType" : "bootstrap",
 				"bSort": true, 
-				"oSearch": {doc_id : "20121250004811"},
+		//		"oSearch": {doc_id : "20121250004811"},
 				"aoColumns": this.options.tableOptions.aoColumns,	
 				"oLanguage" : {
                     "sUrl" : "/docview/media/language/ch_ZN.txt"
                 },
-				"sAjaxSource" : this.options.tableOptions.dataSourceUrl,
+				"fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+					oSettings.jqXHR = $.ajax( {
+						"dataType": 'json',
+						"type": "get",
+						"url": sSource,
+						"error" : that.proxy("displayError"),
+						"data": aoData,
+						"success": fnCallback
+					}); 
+				},
 				"fnServerParams": function ( aoData ) {
-					aoData.push( 
-						{ "name": "more_data", "value": "my_value" },
-						{ "name": "doc_id", "value": "222520121250004811" },
-						{ "name": "org", "value": "2225" },
-						{ "name": "username", "value": "zhouzhen" }
-					 );
+					var aod = that.options.tableOptions.aoData;
+					//aoData.sendParams = aod;
+					$.each(aod,function(n,value) {
+						aoData.push(value);
+					});
 				}  
 				});
-
+//			this.findSource();
+		},
+		displayError : function(data){
+			console.log(JSON.parse(data.responseText).error);
+			console.log(data.status);
+		},
+		findSource : function(){
+			this.dataTable.bProcessing =true;
+			this.dataTable.bServerSide=true;
+			this.dataTable.sAjaxSource=this.options.tableOptions.dataSourceUrl;
 		},
 		getDocs : function(el,ev){
             ev.preventDefault();

@@ -11,6 +11,7 @@ steal(
     'docview/subnav',
     'docview/alerts',
     'docview/search',
+    'docview/ui/requisition',
     'docview/search/results',
     'docview/manage/accounts/users',
     'docview/manage/accounts/roles',
@@ -157,123 +158,119 @@ steal(
                 switch (permissions.web_links[i].action) {
                     // Search
                 case ("query"):
-                    this.options.clientState.attr('access')
-                        .attr('search').attr('single', true);
-		    this.setNavIfEmpty('search', 'single');
-		    break;
+                    this.options.clientState.attr('access').attr('search').attr('single', true);
+					this.setNavIfEmpty('search', 'single');
+					break;
                 case ("multi_query"):
-                    this.options.clientState.attr('access')
-                        .attr('search').attr('multi', true);
-		    this.setNavIfEmpty('search', 'multi');
+                    this.options.clientState.attr('access').attr('search').attr('multi', true);
+					this.setNavIfEmpty('search', 'multi');
                     break;
                 case ("search_docs"):
-                    this.options.clientState.attr('access')
-                        .attr('search').attr('advanced', true);
-		    this.setNavIfEmpty('search', 'advanced');
+                    this.options.clientState.attr('access').attr('search').attr('advanced', true);
+					this.setNavIfEmpty('search', 'advanced');
                     break;
-                case ("all_print"):
+				case ("application_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('application', true);
+					this.setNavIfEmpty('requisition_docs', 'application');
+					break;
+				case ("approval_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('approval', true);
+					this.setNavIfEmpty('requisition_docs', 'approval');
+					break;
+				case ("register_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('register', true);
+					this.setNavIfEmpty('requisition_docs', 'register');
+					break;
+				case ("write_off_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('write_off', true);
+					this.setNavIfEmpty('requisition_docs', 'write_off');
+					break;
+				case ("lending_statistics_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('lending_statistics', true);
+					this.setNavIfEmpty('requisition_docs', 'lending_statistics');
+					break;
+				case ("all_print"):
 /*
 		    
                     this.options.clientState.attr('access')
                         .attr('search').attr('all_print', true);
 		    this.setNavIfEmpty('search', 'all_print');
 */
-		    this.options.clientState.attr('access') .attr('manage_docs').attr('all_print', true);
+					this.options.clientState.attr('access') .attr('manage_docs').attr('all_print', true);
                     this.setNavIfEmpty('manage_docs', 'all_print');
                     break;
                 case ("search_condition"):
-                    this.options.clientState.attr('access')
-                        .attr('search').attr('search_condition', true);
-		    this.setNavIfEmpty('search', 'search_condition');
+                    this.options.clientState.attr('access').attr('search').attr('search_condition', true);
+					this.setNavIfEmpty('search', 'search_condition');
                     break;
                 case ("import_excel"):
-                    this.options.clientState.attr('access')
-                        .attr('search').attr('upload_file', true);
-		    this.setNavIfEmpty('search', 'upload_file');
+                    this.options.clientState.attr('access').attr('search').attr('upload_file', true);
+					this.setNavIfEmpty('search', 'upload_file');
                     break;
                 case ("by_doc_source"):
-		    this.options.clientState.attr('access')
-			.attr('search').attr('by_doc_source', true);
-		    this.setNavIfEmpty('search', 'by_doc_source');
-		    break;
+					this.options.clientState.attr('access').attr('search').attr('by_doc_source', true);
+					this.setNavIfEmpty('search', 'by_doc_source');
+					break;
                         
                     // Stats
                 case ("stats_query"):
-                    this.options.clientState.attr('access')
-                        .attr('stats').attr('stats_query', true);
-		    this.setNavIfEmpty('stats', 'stats_query');
+                    this.options.clientState.attr('access').attr('stats').attr('stats_query', true);
+					this.setNavIfEmpty('stats', 'stats_query');
                     break;
                 case ("stats_stats"):
-                    this.options.clientState.attr('access')
-                        .attr('stats').attr('stats_stats', true);
-		    this.setNavIfEmpty('stats', 'stats_stats');
+                    this.options.clientState.attr('access').attr('stats').attr('stats_stats', true);
+					this.setNavIfEmpty('stats', 'stats_stats');
                     break;
                 case ("stats_usage"):
-                    this.options.clientState.attr('access')
-                        .attr('stats').attr('stats_usage', true);
-		    this.setNavIfEmpty('stats', 'stats_usage');
+                    this.options.clientState.attr('access').attr('stats').attr('stats_usage', true);
+					this.setNavIfEmpty('stats', 'stats_usage');
                     break;
-		case ("create_group"):
-                    this.options.clientState.attr('access')
-                        .attr('stats').attr('create_group', true);
-		    this.setNavIfEmpty('stats', 'create_group');
+				case ("create_group"):
+                    this.options.clientState.attr('access').attr('stats').attr('create_group', true);
+					this.setNavIfEmpty('stats', 'create_group');
                     break;
-
-		case ("stats_export"):
-                    this.options.clientState.attr('access')
-                        .attr('stats').attr('stats_export', true);
-		    this.setNavIfEmpty('stats', 'stats_export');
-                    break;
-		    
-                case ("advanced"):
-                    this.options.clientState.attr('access')
-                        .attr('stats').attr('advanced', true);
-                    break;
-		    
+				case ("stats_export"):
+					this.options.clientState.attr('access').attr('stats').attr('stats_export', true);
+					this.setNavIfEmpty('stats', 'stats_export');
+					break;
+				case ("advanced"):
+					this.options.clientState.attr('access').attr('stats').attr('advanced', true);
+					break;
                 case ("inquire"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_docs').attr('inquire', true);
+                    this.options.clientState.attr('access').attr('manage_docs').attr('inquire', true);
                     this.setNavIfEmpty('manage_docs', 'inquire');
-		    break;
+					break;
                 case ("checkout"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_docs').attr('check', true);
+                    this.options.clientState.attr('access').attr('manage_docs').attr('check', true);
                     this.setNavIfEmpty('manage_docs', 'checkout');
                     break;
                 case ("print"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_docs').attr('print', true);
+                    this.options.clientState.attr('access').attr('manage_docs').attr('print', true);
                     this.setNavIfEmpty('manage_docs', 'print_doc');
                     break;
                 case ("testify"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_docs').attr('testify', true);
+                    this.options.clientState.attr('access').attr('manage_docs').attr('testify', true);
                     this.setNavIfEmpty('manage_docs', 'court_doc');
                     break;
                 case ("dh_report"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_docs').attr('dh_report', true);
+                    this.options.clientState.attr('access').attr('manage_docs').attr('dh_report', true);
                     this.setNavIfEmpty('manage_docs', 'dh_report');
                     break;
                     // Manage users
                 case ("manage_user"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_accounts').attr('users', true);
+                    this.options.clientState.attr('access').attr('manage_accounts').attr('users', true);
                     this.setNavIfEmpty('manage_accounts', 'users');
                     break;
                 case ("manage_role"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_accounts').attr('roles', true);
+                    this.options.clientState.attr('access').attr('manage_accounts').attr('roles', true);
                     this.setNavIfEmpty('manage_accounts', 'roles');
                     break;                    
                 case ("system_upload"):
-                    this.options.clientState.attr('access')
-                        .attr('manage_accounts').attr('system_upload', true);
+                    this.options.clientState.attr('access').attr('manage_accounts').attr('system_upload', true);
                     this.setNavIfEmpty('manage_accounts', 'system_upload');
                     break;                    
                 case ("sys-setting"):
-                    this.options.clientState.attr('access')
-			.attr('manage_accounts').attr('sys_setting', true);
+                    this.options.clientState.attr('access').attr('manage_accounts').attr('sys_setting', true);
 
                 default:
                     break;
@@ -320,7 +317,8 @@ steal(
 
             $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
             $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
-	    $('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
+			$('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
+			$('#requisition-docs').docview_ui_requisition({clientState: this.options.clientState});
             $('#sys-setting').docview_ui_syssetting({clientState: this.options.clientState});
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});

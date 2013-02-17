@@ -32,26 +32,28 @@ steal(
 	    var init_options = {
 		search : ["single","multi","all_print","advanced","by_doc_source","search_condition","upload_file"],
 		stats : ["stats_stats","stats_usage","stats_query","create_group"],
+		requisition_docs : [ "application", "approval", "register", "write_off", "lending_statistics" ],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
 		manage_accounts : ["users","roles","system_upload"]
 	    };
-            var that = this;
+		var that = this;
 	    var init_option_result = {};
 	    $.each(init_options,function(key,value){ 
 	        var init_nav = false;
-		var initActions = that.options.clientState.attr('access').attr(key);
-		$.each(value,function(index,subnav){
-			if (initActions.attr(subnav)) {
-			    init_nav = true;
-			}
-		});
-		init_option_result[key] = init_nav;
+			var initActions = that.options.clientState.attr('access').attr(key);
+			$.each(value,function(index,subnav){
+				if (initActions.attr(subnav)) {
+			    	init_nav = true;
+				}
+			});
+			init_option_result[key] = init_nav;
 	    })
 	    
-            this.element.html(this.view('menu_bar', {
+		this.element.html(this.view('menu_bar', {
                 user: this.options.clientState.attr('user'),
                 search: init_option_result.search,
                 stats: init_option_result.stats,
+                requisition_docs: init_option_result.requisition_docs,
                 manage_docs: init_option_result.manage_docs,
                 manage_accounts: init_option_result.manage_accounts
             }));

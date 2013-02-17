@@ -1,4 +1,7 @@
 Dms::Application.routes.draw do
+
+  get "/requisitions" => "requisition#requisitions"
+
   post "/find_log" => "settings#find_log"
 
   post "/system_log" => "settings#system_log"

@@ -14,6 +14,12 @@
                 <a href="#manage_docs"><i class="icon-file icon-white"></i> <%= $.i18n._('menu_operation') %> </a>
               </li>
           <% } %>
+          <% if (this.requisition_docs) { %>
+              <li class="">
+                <a href="#requisition_docs"><i class="icon-file icon-white"></i> <%= $.i18n._('menu_requisition') %> </a>
+              </li>
+          <% } %>
+
           <% if (this.stats) { %>
               <li class="">
                 <a href="#stats"><i class="icon-th-list icon-white"></i> <%= $.i18n._('menu_report') %></a>
