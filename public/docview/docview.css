@@ -216,3 +216,10 @@ form[name=upload_user_form] a{
 }
 ul.unstyled li.error-comments {width: 105px;}
 input.where_page {width: 40px;}
+.popover-ext{
+    margin: 10px;
+}
+.popover-ext a{
+    margin: 3px;
+}
+

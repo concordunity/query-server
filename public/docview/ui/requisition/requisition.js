@@ -7,6 +7,9 @@ steal(
     'docview/bootstrap/bootstrap.css',
     'docview/datatables/jquery.dataTables.js'
 ).then(
+    'docview/bootstrap/bootstrap-tooltip.js',
+    'docview/bootstrap/bootstrap-popover.js',
+    'docview/bootstrap/bootstrap-popinput.js',
 	'docview/ui/dmstable'
 ).then(
     'libs/json2.js',
@@ -283,7 +286,45 @@ steal(
 		},
 		failure : function(){},
         show : function() {
-        }
+        },
+		'.detial-row click':function(el,ev){
+			ev.preventDefault();
+				
+			var controller = null;
+			switch(el.attr('id')){
+				case 'approval':
+					controller = this.approvalController;
+					break;
+				case 'register':
+					controller = this.registerController;
+					break;
+				case 'write_off':
+					controller = this.writeOffController;
+					break;
+			}
+			
+			var rowModelData = controller.getRowModelDataFor(el);
+			var rowElement = rowModelData.tr;
+			var rowModel =  rowModelData.model;
+			//console.log(rowModel);
+			rowElement.hide();
+			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel });
+			rowElement.after(innerForm);
+			$('.btn-reject').popinput({ 
+				callback:function(text){
+					console.log(text)
+				} 
+			});
+		},
+		'.btn-cancel click':function(el,ev){
+			var innerForm  = el.closest('tr');
+			//innerForm.hide('slow');
+			innerForm.prev().show('slow');
+			innerForm.remove();
+		},
+		'.btn-accept click':function(el,ev){
+			console.log('accept');
+		}
 });
 });
 
