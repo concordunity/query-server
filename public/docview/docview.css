@@ -215,3 +215,4 @@ form[name=upload_user_form] a{
 	text-decoration:underline;
 }
 ul.unstyled li.error-comments {width: 105px;}
+input.where_page {width: 40px;}

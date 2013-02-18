@@ -1,6 +1,13 @@
-<div>
-单证<input type='text' />
-随附单证<input type='text' />
-所在页<input type='text' />
-<button type="button" class="btn btn-primary"><i class="icon-remove icon-white"></i> </button>
+<div class='requisition_detail_form'>
+<table>
+<thead>
+<th>单证</th>
+<th>随附单证</th>
+<th>所在页</th>
+<th>申请原由</th>
+</thead>
+<tbody>
+<%== $.View("//docview/ui/requisition/views/application/new_requisition_details_row.ejs")%>
+</tbody>
+</table>
 </div>

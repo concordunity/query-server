@@ -12,7 +12,7 @@ class DocumentsController < ApplicationController
   # GET /documents.json
 
   respond_to :html, :json
-  def index
+  def index_paging
  	  column_count = params[:iColumns]
 	  iSortCol_0 = params[:iSortCol_0]	  
 	  sSortDir_0 = params[:sSortDir_0]	  
@@ -36,15 +36,25 @@ class DocumentsController < ApplicationController
 	  	  format.html # index.html.erb
 		  format.json { render json: { sEcho: params[:sEcho].to_i, iTotalRecords: Document.count, iTotalDisplayRecords: Document.count, aaData: @documents } }
 	  end
+  end
 
-=begin
+  def index
+
     @documents = Document.reorder('rand()').limit(50)
 
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @documents }
     end
-=end
+  end
+
+  def filter_docs
+	result = false
+	doc_id = params[:doc_id]
+	org = params[:org]
+    @document = Document.find_by_doc_id_and_org(doc_id,org)
+	result = true if @document.blank?
+    render json: result
   end
 
   #批量打印选项的打印功能

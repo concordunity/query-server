@@ -20,7 +20,15 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				dataType : 'json requisition.models'
 			});
 		},
-
+		filterDocs: function(params, success, error) {
+        	return $.ajax({
+            	url : '/filter_docs', 
+				type : 'get',
+				data : params,
+				success : success,
+				error : error
+			});
+		},
 		updateRequisition: function(params, success, error) {
         	return $.ajax({
             	url : '/requisitions', 

@@ -1,5 +1,7 @@
 Dms::Application.routes.draw do
 
+  get "filter_docs" => "documents#filter_docs"
+  post "/requisitions" => "requisition#create_requisition"
   get "/requisitions" => "requisition#requisitions"
 
   post "/find_log" => "settings#find_log"

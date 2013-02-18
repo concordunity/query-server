@@ -7,40 +7,47 @@
             <fieldset class="control-group">
                 <label><%= $.i18n._('label.application.org') %></label>
             	<select name="org">
-                    <option value=''>aaa</option>
+		    <% $.each(orgJsonDictionary,function(i,v){
+			if(i !== "2200"){
+			 %>
+                    	<option value='<%= i %>'><%= v %></option>
+		    <%}})%>
             	</select>
 
             </fieldset>
+     </div>
+     <div class="span4">
             <fieldset class="control-group">
             	<label><%= $.i18n._('label.application.tel') %></label>
                 <input name="tel" type="text" />
             </fieldset>
-            
+     </div>
+	 <div class="span4">
            <fieldset>
                 <label><%= $.i18n._('label.application.department_name') %></label>
                 <input name="department_name" type="text" />
             </fieldset>
-
-        <div class="pull-left">
-            <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
-            <button type="button" class="btn cancel-create" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
         </div>
-
-     </div>
-	 <div class="span8">
-
+    </div>
+<hr />
+    <div class="row-fluid">
+        <div class="span12">
 
             <fieldset class="control-group">
-            	<label><%= $.i18n._('label.application.requisition_details') %>
-					<button type="button" id="new-requisition-details-btn" class="btn btn-primary"><i class="icon-plus icon-white"></i> </button>
+            	<label>抽单信息（最多三条） 
+				<span class='label display-info' style='display:'></span>
 				</label>
 				<div class="requisition-details-text-holder">
 					<%== $.View("//docview/ui/requisition/views/application/new_requisition_details.ejs")%>
 				</div>
             </fieldset>	
+
         </div>
 
-
+        <div class="pull-left">
+            <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
+            <button type="button" class="btn cancel-create" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
+        </div>
     </div>
 </form>
 </div>

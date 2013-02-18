@@ -12,15 +12,50 @@ class RequisitionController < ApplicationController
   end
 
   def create_requisition
+#	{"tel"=>"15101151137", "department_name"=>"研发", "requisition_details"=>{"0"=>{"single_card_number"=>"222520121250004811", "modify_accompanying_documents"=>"aa", "where_page"=>"1", "lent_reasons"=>"不知道"}, "1"=>{"single_card_number"=>"222520121250004812", "modify_accompanying_documents"=>"bb", "where_page"=>"2", "lent_reasons"=>"有问题呗"}}}
+	logger.info "=== first ====" 
+		begin
+			tel = params[:tel]
+			department_name = params[:department_name]
+			org = params[:org]
 
+			requisition = Requisition.create do |r|
+				r.tel = tel 
+				r.department_name = department_name 
+				r.org = org
+				r.apply_staff = current_user.username
+			end
+			create_requisition_details(params,requisition)	
+		rescue => e
+			logger.info "===error====" 
+			logger.info e
+		end
+	logger.info "=== last ====" 
+	render json: {:message => "ok"}, :status => 200
   end
 
   def update_requisition
 
   end
 
-  def create_requisition_details
+  def create_requisition_details(params,requisition)
+	RequisitionDetail.transaction do
+		params[:requisition_details].collect do |index,requisition_details|
+			logger.info requisition_details 
+			single_card_number = requisition_details[:single_card_number]
+			modify_accompanying_documents = requisition_details[:modify_accompanying_documents]
+			where_page = requisition_details[:where_page]
+			lent_reasons = requisition_details[:lent_reasons]
 
+			RequisitionDetail.create do |rd|
+				rd.single_card_number = single_card_number
+				rd.modify_accompanying_documents = modify_accompanying_documents
+				rd.where_page = where_page
+				rd.lent_reasons = lent_reasons
+				rd.requisition_id = requisition.id
+			end
+		end
+	end
   end
 
   def filter_requisition

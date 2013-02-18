@@ -10,6 +10,7 @@ steal(
 	'docview/ui/dmstable'
 ).then(
     'libs/json2.js',
+    'libs/org_json.js',
 	'libs/scene_lent_paper_document_json.js',
     'docview/datatables/bootstrap-pagination.js'
 ).then(
@@ -190,7 +191,97 @@ steal(
 		"#new-application-btn click" : function(el,ev){
 			console.log("===click===");
 			$("#new-application").html(this.view("//docview/ui/requisition/views/application/new_application.ejs"));
+//			this.element.find('#new-application .requisition_detail_form  .requisition_detail_doc').docview_ui_single({label: {labelString: ""}});
 		},
+		".new-requisition-details click" : function(el,ev){
+			var index = $(el).closest("tbody").find("tr").length;
+			if (index < 3){
+				$(el).closest("tr").closest("tbody").append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs",{"index":index}));
+			//	this.element.find('#new-application .requisition_detail_form  .requisition_detail_doc').docview_ui_single({label: {labelString: ""}});
+			}
+		},
+		".remove-requisition-details click" : function(el,ev){
+			var index = $(el).closest("tbody").find("tr").length;
+			console.log("data-index = ",index);
+			if (index > 1){
+				$(el).closest("tr").remove();
+			}
+		},
+		".filter-requisition-details click" : function(el,ev){
+			var doc_id = $(el).closest("tr").find(".filter_docs").val();
+			var org = $("#new-application-form select[name='org']").val();
+			console.log(doc_id,org);
+			this.filterRequisitionDetails(doc_id,org);
+		},
+		".filter_docs blur" : function(el,ev){
+			var doc_id = $(el).val();
+			var org = $("#new-application-form select[name='org']").val();
+			console.log(doc_id,org);
+			this.filterRequisitionDetails(doc_id,org);
+		},
+		filterRequisitionDetails : function(doc_id,org){
+			Docview.Models.Requisition.filterDocs({"org":org,"doc_id":doc_id},this.proxy("alertTitle"),this.proxy("failure"));
+		},
+		alertTitle : function(data){
+			var message = "";
+			$("#new-application-form span.display-info").removeClass("label-success");
+			$("#new-application-form span.display-info").removeClass("label-important");
+			if(data){
+				message = "It doesn't has in system";
+				$("#new-application-form span.display-info").addClass("label-success");
+			} else {
+				message = "It has doc in system";
+				$("#new-application-form span.display-info").addClass("label-important");
+			}
+			console.log(message);
+			$("#new-application-form span.display-info").html(message);
+		},
+		"#new-application-form submit" : function(el,ev){
+			ev.preventDefault();
+			var requisition_details = new Array(); 
+			var tel = el.find("input[name='tel']").val();
+			var org = el.find("input[name='org']").val();
+			var department_name = el.find("input[name='department_name']").val();
+			
+			$.each(el.find("tr"),function(index,item){
+				var single_card_number = $(item).find("input[name='single_card_number']").val();
+				var modify_accompanying_documents = $(item).find("input[name='modify_accompanying_documents']").val();
+				var where_page = $(item).find("input[name='where_page']").val();
+				var lent_reasons = $(item).find("input[name='lent_reasons']").val();
+				requisition_details.push({"single_card_number" : single_card_number, "modify_accompanying_documents" : modify_accompanying_documents, "where_page" : where_page, "lent_reasons": lent_reasons});
+			});
+			var requisition = {
+				tel: tel,
+				org: org,
+				department_name: department_name,
+				requisition_details: requisition_details
+			};
+			Docview.Models.Requisition.updateRequisition(requisition,this.proxy("addDataRow"),this.proxy("failure"));
+		},
+		".cancel-create click" : function(el,ev){
+			$("#new-application").collapse("hide");
+		},
+		addDataRow : function(data){
+			console.log(data);
+			$("#new-application").collapse("hide");
+			this.reload();
+		},
+        addUserRow: function(user, response) {
+            if (user.status === 200) {
+            this.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '成功添加新用户 ' + user.user.username 
+            });
+			this.reload();
+			}else {}
+		},
+		reload : function(){
+			this.reshow();
+			var sub_cat = $.route.attr('subcategory');
+			Docview.Models.Requisition.findRequisition({type: sub_cat},this.proxy("requisitionList"),{});
+		},
+		failure : function(){},
         show : function() {
         }
 });
