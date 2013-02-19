@@ -68,8 +68,18 @@
 </tr>
 </table>
 	<br />
-	<button class="btn btn-primary btn-accept">通过</button>
-	<button class="btn btn-danger btn-reject" data-toggle="popover" data-original-title="拒绝" data-content="请填写拒绝理由:" >拒绝</button>
+	<% var btn_behavior = {
+		approval: [ 1 ],
+		register: [ 2 ],
+		write_off:[ 3 ],
+	}; %>
+	<% if( !$.inArray(model.status , btn_behavior[action]) ){ %>
+		<button class="btn btn-primary btn-accept">通过</button>
+		<button class="btn btn-danger btn-reject" data-toggle="popover" data-original-title="拒绝" data-content="请填写拒绝理由:" >拒绝</button>
+	<% } %>
+	<% if("application" == action){ %>
+		<button class="btn btn-reback">撤销申请</button>
+	<% } %>
 	<button class="btn btn-info btn-print">打印</button>
 	<button class="btn btn-cancel">取消</button>
 </form>

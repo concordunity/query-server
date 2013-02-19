@@ -355,7 +355,7 @@ steal(
 			var controller = null;
 			var action = el.attr('id');
 			switch(action){
-                         	case 'application':
+				case 'application':
 					controller = this.applicationController;
 					break;
 				case 'approval':
@@ -374,7 +374,7 @@ steal(
 			var rowModel =  rowModelData.model;
 			//console.log(rowModel);
 			rowElement.hide();
-			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel });
+			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action});
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
 
@@ -430,6 +430,7 @@ steal(
 
 			//innerForm.find('.btn-cancel')
 			innerForm.find('.btn-accept').click(function(ev){
+				ev.preventDefault();
 				switch(action){
 					case 'approval':
 						data.status = 2;//审批通过
