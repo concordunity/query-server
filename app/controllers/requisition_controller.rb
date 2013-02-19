@@ -61,6 +61,31 @@ class RequisitionController < ApplicationController
   def filter_requisition
 
   end
+  
+  def change_status
+	requisition =  Requisition.where({ :id => params[:id] }).first
+	requisition.status = params[:status]
+	
+	case params[:action]
+		when "approval"
+			requisition.approving_officer = current_user.username
+			requisition.approval_time = DateTime.now
+		when "register"
+			requisition.registration_staff = current_user.username
+			requisition.check_in_timei = DateTime.now
+		when "write_off"
+			requisition.write_off_staff = current_user.username
+			requisition.write_off_time = DateTime.now
+		else
+	end
+	
+	if params[:reject_text] 
+		requisition.termination_instructions = params[:reject_text]
+	end
+	
+	requisition.save
+	render json: {:message => "ok"}, :status => 200
+  end
 
   private
   #申请
@@ -111,4 +136,6 @@ class RequisitionController < ApplicationController
     end
 	return requisition_details 
   end
+
+
 end

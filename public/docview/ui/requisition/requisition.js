@@ -289,9 +289,12 @@ steal(
         },
 		'.detial-row click':function(el,ev){
 			ev.preventDefault();
-				
+
+			var that = this;
+
 			var controller = null;
-			switch(el.attr('id')){
+			var action = el.attr('id');
+			switch(action){
 				case 'approval':
 					controller = this.approvalController;
 					break;
@@ -310,21 +313,76 @@ steal(
 			rowElement.hide();
 			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel });
 			rowElement.after(innerForm);
-			$('.btn-reject').popinput({ 
+			innerForm = rowElement.next();
+
+			var data = {
+				id:rowModel.id,//数据ID
+				action:action,
+				status: rowModel.status,//状态	
+			};
+			
+			var postData = function(data){
+					console.log(data);
+					$.ajax({
+						url:'/requisitions/change_status',
+						data: data,
+						success:function(){
+							console.log('post data success .');
+							innerForm.prev().show('slow');
+							innerForm.remove();
+							//
+							rowModel.status = data.status;
+							if(data.reject_text)
+								rowModel.termination_instructions = data.reject_text;
+							rowModel.save();
+							//reload.
+							controller.setModelData(rowModel);
+						},
+						error:function(err){
+							console.log('post data has a error:',err);
+						}
+					});
+			};
+			
+			//
+		
+			innerForm.find('.btn-reject').popinput({ 
 				callback:function(text){
-					console.log(text)
-				} 
+					console.log(text);
+					switch(action){
+						case 'approval':
+							data.status = 11;//审批不通过
+							break;
+						case 'register':
+							data.status = 12;//不通过
+							break;
+						case 'write_off':
+							data.status = 13;//
+							break;
+					}
+					data.reject_text = text;//拒绝理由
+					postData(data);
+				}
+			});
+
+			//innerForm.find('.btn-cancel')
+			innerForm.find('.btn-accept').click(function(ev){
+				switch(action){
+					case 'approval':
+						data.status = 2;//审批通过
+						break;
+					case 'register':
+						data.status = 3;//通过
+						break;
+				}
+				postData(data);
 			});
 		},
 		'.btn-cancel click':function(el,ev){
 			var innerForm  = el.closest('tr');
-			//innerForm.hide('slow');
 			innerForm.prev().show('slow');
 			innerForm.remove();
 		},
-		'.btn-accept click':function(el,ev){
-			console.log('accept');
-		}
 });
 });
 

@@ -222,4 +222,6 @@ input.where_page {width: 40px;}
 .popover-ext a{
     margin: 3px;
 }
-
+.inner_form_border_td {
+	border:2px solid #cccc00;
+}

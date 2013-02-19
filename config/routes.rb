@@ -3,7 +3,7 @@ Dms::Application.routes.draw do
   get "filter_docs" => "documents#filter_docs"
   post "/requisitions" => "requisition#create_requisition"
   get "/requisitions" => "requisition#requisitions"
-
+  get "/requisitions/change_status" => "requisition#change_status"
   post "/find_log" => "settings#find_log"
 
   post "/system_log" => "settings#system_log"
