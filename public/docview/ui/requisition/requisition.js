@@ -223,21 +223,36 @@ steal(
 			this.filterRequisitionDetails(doc_id,org);
 		},
 		filterRequisitionDetails : function(doc_id,org){
-			Docview.Models.Requisition.filterDocs({"org":org,"doc_id":doc_id},this.proxy("alertTitle"),this.proxy("failure"));
+			var result = this.validateInputOrEmpty(doc_id);
+			that = this;
+			var tag = true;
+			if (result){
+				Docview.Models.Requisition.filterDocs({"org":org,"doc_id":doc_id},
+					//this.proxy("alertTitle"),
+					function(data){
+						tag = data.status;
+						that.alertTitle(data);
+					},
+					this.proxy("failure"));
+			}else{
+				tag = false;
+			}
+			return tag; 
 		},
 		alertTitle : function(data){
-			var message = "";
-			$("#new-application-form span.display-info").removeClass("label-success");
-			$("#new-application-form span.display-info").removeClass("label-important");
-			if(data){
-				message = "It doesn't has in system";
-				$("#new-application-form span.display-info").addClass("label-success");
-			} else {
-				message = "It has doc in system";
-				$("#new-application-form span.display-info").addClass("label-important");
-			}
+			var message = data.message;
+			var show_message = "";
 			console.log(message);
-			$("#new-application-form span.display-info").html(message);
+			$("#new-application-form div.display-message").html();
+			if(data.status){
+				show_message = "<span class='label label-success' >" + message  + "</span>";
+			} else {
+				show_message = "<span class='label label-important' >" + message + "</span>";
+			}
+			$("#new-application-form div.display-message").html(show_message);
+			setTimeout(function(){
+				$("#new-application-form div.display-message").html();
+			},4000);
 		},
 		"#new-application-form submit" : function(el,ev){
 			ev.preventDefault();
@@ -251,6 +266,11 @@ steal(
 				var modify_accompanying_documents = $(item).find("input[name='modify_accompanying_documents']").val();
 				var where_page = $(item).find("input[name='where_page']").val();
 				var lent_reasons = $(item).find("input[name='lent_reasons']").val();
+                                				var result = that.validateInputOrEmpty(single_card_number);
+				if (result == false){
+					tag = false;
+				}
+
 				requisition_details.push({"single_card_number" : single_card_number, "modify_accompanying_documents" : modify_accompanying_documents, "where_page" : where_page, "lent_reasons": lent_reasons});
 			});
 			var requisition = {
@@ -259,25 +279,39 @@ steal(
 				department_name: department_name,
 				requisition_details: requisition_details
 			};
-			Docview.Models.Requisition.updateRequisition(requisition,this.proxy("addDataRow"),this.proxy("failure"));
+						if (tag){
+				var frd_tag = true;
+				$.each(requisition_details,function(i,v){
+					var frd_tag = that.filterRequisitionDetails(v.single_card_number,org);
+					if (frd_tag == false){
+						return;
+					}
+				});
+				if (frd_tag){
+					Docview.Models.Requisition.updateRequisition(requisition,this.proxy("addDataRow"),this.proxy("failure"));
+				}
+			}
 		},
 		".cancel-create click" : function(el,ev){
 			$("#new-application").collapse("hide");
 		},
 		addDataRow : function(data){
-			console.log(data);
+						console.log(data);
 			$("#new-application").collapse("hide");
-			this.reload();
-		},
-        addUserRow: function(user, response) {
-            if (user.status === 200) {
-            this.options.clientState.attr('alert', {
+            if (data.status === 200) {
+				this.options.clientState.attr('alert', {
                     type: 'info',
                     heading: '提示信息',
-                    message : '成功添加新用户 ' + user.user.username 
-            });
-			this.reload();
-			}else {}
+                    message : '成功添加新申请表单 ' + data.message
+				});
+				this.reload();
+			}else {
+				this.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '新申请表单添加失败 ' + data.message
+				});
+			}
 		},
 		reload : function(){
 			this.reshow();
@@ -285,6 +319,32 @@ steal(
 			Docview.Models.Requisition.findRequisition({type: sub_cat},this.proxy("requisitionList"),{});
 		},
 		failure : function(){},
+                		validateInputOrEmpty: function(el) {
+		    var docId = $.trim(el);
+			console.log("++++++");
+			console.log(docId);
+			if (docId === "") {
+				this.alertTitle({status: false, message: "报关单号不能为空."})
+				return false;
+			}else{
+				return this.validateInput(el);
+			}
+		},
+		validateInput: function(el) {
+			//this.removeFormErrors(el);
+			var docId = parseInt($.trim(el));
+			var message = "";
+			if (this.verifyDocId(docId)) {
+				return true;
+			}else{
+				this.alertTitle({status: false, message: "报关单号必须是18位数字."})
+				return false;
+			}
+		},
+	   // Verifies individual document ids
+		verifyDocId: function(id) {
+			return /^\d{18}$/.test(id);
+		},
         show : function() {
         },
 		'.detial-row click':function(el,ev){
@@ -295,6 +355,9 @@ steal(
 			var controller = null;
 			var action = el.attr('id');
 			switch(action){
+                         	case 'application':
+					controller = this.applicationController;
+					break;
 				case 'approval':
 					controller = this.approvalController;
 					break;
@@ -382,7 +445,7 @@ steal(
 			var innerForm  = el.closest('tr');
 			innerForm.prev().show('slow');
 			innerForm.remove();
-		},
+		}
 });
 });
 

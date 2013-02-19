@@ -8,6 +8,7 @@ class RequisitionController < ApplicationController
 
     #render :json => result, :status => 200
     #render :json => {:result => result}, :status => 200
+	logger.info result
     respond_with(result)
   end
 
@@ -39,6 +40,7 @@ class RequisitionController < ApplicationController
   end
 
   def create_requisition_details(params,requisition)
+	result = true 
 	RequisitionDetail.transaction do
 		params[:requisition_details].collect do |index,requisition_details|
 			logger.info requisition_details 
@@ -46,47 +48,51 @@ class RequisitionController < ApplicationController
 			modify_accompanying_documents = requisition_details[:modify_accompanying_documents]
 			where_page = requisition_details[:where_page]
 			lent_reasons = requisition_details[:lent_reasons]
-
+			doc = Document.find_by_doc_id_and_org(single_card_number,params[:org])
+			if doc.nil? 
+				result = false
+				a = 0/0
+			end
 			RequisitionDetail.create do |rd|
 				rd.single_card_number = single_card_number
 				rd.modify_accompanying_documents = modify_accompanying_documents
 				rd.where_page = where_page
 				rd.lent_reasons = lent_reasons
 				rd.requisition_id = requisition.id
-			end
+			end 
 		end
 	end
+	return result
   end
 
   def filter_requisition
 
   end
-  
-  def change_status
-	requisition =  Requisition.where({ :id => params[:id] }).first
-	requisition.status = params[:status]
-	
-	case params[:action]
-		when "approval"
-			requisition.approving_officer = current_user.username
-			requisition.approval_time = DateTime.now
-		when "register"
-			requisition.registration_staff = current_user.username
-			requisition.check_in_timei = DateTime.now
-		when "write_off"
-			requisition.write_off_staff = current_user.username
-			requisition.write_off_time = DateTime.now
-		else
-	end
-	
-	if params[:reject_text] 
-		requisition.termination_instructions = params[:reject_text]
-	end
-	
-	requisition.save
-	render json: {:message => "ok"}, :status => 200
-  end
 
+  def change_status
+    requisition =  Requisition.where({ :id => params[:id] }).first
+    requisition.status = params[:status]
+
+    case params[:action]
+        when "approval"
+            requisition.approving_officer = current_user.username
+            requisition.approval_time = DateTime.now
+        when "register"
+            requisition.registration_staff = current_user.username
+            requisition.check_in_timei = DateTime.now
+        when "write_off"
+            requisition.write_off_staff = current_user.username
+            requisition.write_off_time = DateTime.now
+        else
+    end
+
+    if params[:reject_text]
+        requisition.termination_instructions = params[:reject_text]
+    end
+
+    requisition.save
+    render json: {:message => "ok"}, :status => 200
+  end
   private
   #申请
   def application
@@ -117,14 +123,14 @@ class RequisitionController < ApplicationController
   end
 
   def get_requisition
-	logger.info current_user.to_json
 	orgs = current_user.orgs.split(",")
 	if orgs.include?("2200")
-		condition_org = ["org is not null"]	
+		condition_org = ["'org' is not null"]	
 	else
 		condition_org = {:org => orgs}	
 	end
-	@requisitions = Requisition.where({:status => 1}).where(condition_org).order("created_at desc")
+
+	@requisitions = Requisition.where(condition_org).order("created_at desc")
     requisition_details = get_details(@requisitions) 
 	return {:requisitions => @requisitions, :requisition_details => requisition_details}
   end
@@ -136,6 +142,4 @@ class RequisitionController < ApplicationController
     end
 	return requisition_details 
   end
-
-
 end

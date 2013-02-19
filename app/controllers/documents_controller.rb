@@ -49,11 +49,16 @@ class DocumentsController < ApplicationController
   end
 
   def filter_docs
-	result = false
+	result = {:status => false,:message => ""}
 	doc_id = params[:doc_id]
 	org = params[:org]
     @document = Document.find_by_doc_id_and_org(doc_id,org)
-	result = true if @document.blank?
+	if @document.blank?
+		result[:status] = true 
+		result[:message] = "In system ,No found doc_id" + doc_id
+	else
+		result[:message] = "In system, Found doc_id" + doc_id
+	end
     render json: result
   end
 

@@ -26,7 +26,8 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				type : 'get',
 				data : params,
 				success : success,
-				error : error
+				error : error,
+				async : true 
 			});
 		},
 		updateRequisition: function(params, success, error) {
@@ -35,9 +36,7 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				type : 'post',
 				data : params,
 				success : success,
-				error : error,
-				async : false,
-				dataType : 'json requisition.models'
+				error : error
 			});
 		}
 	},
