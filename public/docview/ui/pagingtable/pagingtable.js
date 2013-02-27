@@ -11,48 +11,70 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.Pagingtable', {}, {
         init : function() {
-
-            this.lastData = "";
+			var that = this;
+            this.options = $.extend({
+				aoColumns:[]
+			},this.options);
+			//colums options [{ id:'ID', text:'Text', width:'10px'  }]
+			$.each(this.options.columns,function(key,value){
+				//make aoColumns ..	
+				that.options.aoColumns.push({
+					mDataProp:value.id,
+					mLabel:value.text
+				});
+			});
+			//console.log(this.options);
+			if(this.options.form){
+				this.bindform(this.options.form);
+			}	
+			//preload data ...
+			if(this.options.url && this.options.data){
+				this.reload( this.options );
+			}
+        },
+		columnsRender:function(columns){
+			var tmpl = $("<div>");
+			$.each(columns,function(key,value){
+				var th = $("<th>");
+				th.text( value.text || value.id || "Untitle"+ key );
+				(value.width && th.attr('width', value.width ))
+				tmpl.append(th);
+			});	
+			return tmpl.html();
+		},
+		reload: function(options){
+			var that = this;
+			//mix options
+			options = $.extend(this.options , options);
+			//init default layoyt
             this.element.html(this.view('init'));
-            //this.element.html(this.view('init',{ file_name:this.options.table_options.file_name }));
-			this.modelData = {};
-            var tableElement = this.element.find('thead tr')[0];
+			//find columns template
+            var tableElement = this.element.find('thead tr:eq(0)');
 
-            var aoColumns = this.options.tableOptions.aoColumns;
-			var col_width = this.options.tableOptions.col_width;
-
-            var index = 0;
-            var that = this;
-            $.each(aoColumns, function(index, v) {
-               // v.fnRender = that.createNthRenderer(index);
-				console.log(v.mLabel);		
-				if (col_width){
-                    $(tableElement).append("<th style='width: " + (col_width[index]|0) + "px;'>" + v.mLabel + " </th>");
-				} else {
-                    $(tableElement).append("<th>" + v.mLabel + " </th>");
-				}
-            });
-//			this.showResult();
-//        },
-//		showResult : function(){
+			//render columns ..
+            var render = this.columnsRender(options.columns);
+            //add to header
+			tableElement.append(render);
+			console.log( options );
+			//preload data ... 
 			this.dataTable = this.element.find('table').dataTable({
 				bJQueryUI: true,
 				bProcessing: true,
 				bServerSide: true,
-				"sAjaxSource" : this.options.tableOptions.dataSourceUrl,
-				//"sServerMethod": "POST",
+				"sAjaxSource" : options.url,
+				"sServerMethod": options.type,
 				"sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
 				"sPaginationType" : "bootstrap",
 				"bSort": true, 
 		//		"oSearch": {doc_id : "20121250004811"},
-				"aoColumns": this.options.tableOptions.aoColumns,	
+				"aoColumns": options.aoColumns,	
 				"oLanguage" : {
                     "sUrl" : "/docview/media/language/ch_ZN.txt"
                 },
 				"fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
 					oSettings.jqXHR = $.ajax( {
 						"dataType": 'json',
-						"type": "get",
+						"type": options.type,
 						"url": sSource,
 						"error" : that.proxy("displayError"),
 						"data": aoData,
@@ -60,50 +82,30 @@ steal(
 					}); 
 				},
 				"fnServerParams": function ( aoData ) {
-					var aod = that.options.tableOptions.aoData;
 					//aoData.sendParams = aod;
-					$.each(aod,function(n,value) {
-						aoData.push(value);
-					});
-				}  
+					$.each(options.data,function(key,value) {
+						aoData.push({ 'name': key,'value': value  });
+					});}  
 				});
-//			this.findSource();
+		},
+		bindform:function(form){
+			var that = this;
+			var $form  = $(form);
+			$form.submit(function(ev){
+				ev.preventDefault();
+				if($.fn.serializeJson){
+					var data = $form.serializeJson();
+					that.reload({ 'data':data });
+				}else{
+					var args = $form.serialize();
+					var url = that.options.url + "?" + args;
+					that.reload( { 'url': url , 'data': {} } );	
+				}
+			});
 		},
 		displayError : function(data){
-			console.log(JSON.parse(data.responseText).error);
 			console.log(data.status);
-		},
-		findSource : function(){
-			this.dataTable.bProcessing =true;
-			this.dataTable.bServerSide=true;
-			this.dataTable.sAjaxSource=this.options.tableOptions.dataSourceUrl;
-		},
-		getDocs : function(el,ev){
-            ev.preventDefault();
-			console.log("======");
-			this.showResult();
-/*
-		    $.ajax({
-				url : '/documents',
-				type : 'GET',
-				dataType : 'json',
-				success :  this.proxy('addData'),
-				error : this.proxy('failure')
-			});
-*/
-		},
-		addData : function(data){
-            this.dataTable.fnAddData(data);
-		},
-		createNthRenderer : function(n) {
-            var path = this.options.table_options.col_def_path;
-            return function (data, val) {
-                //console.log(data, val);
-                return $.View(path + 'col_' + (n+1) + '.ejs', data.aData);
-            }
-        },
-        show : function() {
-        }
+		}
 });
 });
 

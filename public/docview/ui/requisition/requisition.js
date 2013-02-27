@@ -10,7 +10,8 @@ steal(
     'docview/bootstrap/bootstrap-tooltip.js',
     'docview/bootstrap/bootstrap-popover.js',
     'docview/bootstrap/bootstrap-popinput.js',
-	'docview/ui/dmstable'
+	'docview/ui/dmstable',
+	'docview/ui/daterange'
 ).then(
     'libs/json2.js',
     'libs/org_json.js',
@@ -22,6 +23,7 @@ steal(
     './views/approval.ejs',
     './views/register.ejs',
     './views/write_off.ejs',
+//    './views/detial_form.ejs',
     './views/lending_statistics.ejs',
     './views/init.ejs'
 ).then(function($) {
@@ -45,7 +47,11 @@ steal(
 		    this.element.find("div.register").html(this.view("register"));	
 		    this.element.find("div.write_off").html(this.view("write_off"));	
 		    this.element.find("div.lending_statistics").html(this.view("lending_statistics"));	
-
+			this.element.find('div.lending-date').docview_ui_daterange({
+				dateOptions : {
+                        labelString: "日期"
+                    }
+			});
 
 			var application_table_options = {
 				aaData: [],
@@ -53,11 +59,13 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"org", mLabel : '关区'},
 					//{"mDataProp":"single_card_number", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
-				file_name: "application"
+				aaSorting:[[0,"desc"]],
+				file_name: ""
 			};
 			this.element.find('.application-list').docview_ui_dmstable({table_options : application_table_options});
 			this.applicationController = this.element.find('.application-list').controller();
@@ -67,12 +75,14 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"apply_staff", mLabel : '申请人员'},
+					{"mDataProp":"org", mLabel : '关区'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
-				file_name: "approval"
+				aaSorting:[[0,"asc"]],
+				file_name: ""
 			};
 			this.element.find('.approval-list').docview_ui_dmstable({table_options : approval_table_options});
 			this.approvalController = this.element.find('.approval-list').controller();
@@ -83,12 +93,14 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"approving_officer", mLabel : '审批人员'},
+					{"mDataProp":"org", mLabel : '关区'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
-				file_name: "register"
+				aaSorting:[[0,"asc"]],
+				file_name: ""
 			};
 			this.element.find('.register-list').docview_ui_dmstable({table_options : register_table_options});
 			this.registerController = this.element.find('.register-list').controller();
@@ -97,16 +109,38 @@ steal(
 				col_def_path : "//docview/ui/requisition/views/write_off/",
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
-					{"mDataProp":"approving_officer", mLabel : '核销人员'},
+					{"mDataProp":"registration_staff", mLabel : '核销人员'},
+					{"mDataProp":"org", mLabel : '关区'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
-				file_name: "write_off"
+				aaSorting:[[0,"asc"]],
+				file_name: ""
 			};
 			this.element.find('.write-off-list').docview_ui_dmstable({table_options : write_off_table_options});
 			this.writeOffController = this.element.find('.write-off-list').controller();
+			
+
+			$('.input-date').datepicker();
+			
+
+			var lending_table_options = {
+				aaData: [],
+				col_def_path : "//docview/ui/requisition/views/lending_statistics/",
+				aoColumns: [
+					{"mDataProp":"created_at", mLabel : '日期'},
+					{"mDataProp":"apply_staff", mLabel : '人员'},
+					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"department_name", mLabel : '科室名称'},
+					{"mDataProp":"requisition_details", mLabel : '单证号'}
+				],
+				aaSorting:[[0,"desc"]],
+				file_name: ""
+			};
+			this.element.find('.lending-list').docview_ui_dmstable({table_options : lending_table_options});
+			this.lendingStatisticsController = this.element.find('.lending-list').controller();
 /*
 		   //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 		   this.element.find('div.daterange-holder').docview_ui_daterange( {dateOptions : {labelString: "日期"}});
@@ -117,7 +151,7 @@ steal(
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal === "requisition_docs") {	
 				this.mainTabOn = true;
-				this.reshow();
+				this.reload();
 			} else {
 				this.element.hide();
 			}
@@ -137,8 +171,13 @@ steal(
 				if (category !== undefined && category === "requisition_docs") {
 		//			this.element.find('div.requisition-list').docview_ui_dmstable();
 					if (newVal != 'single') {
+						console.log("I don't know where is this action from");
 							this.reshow();
-							Docview.Models.Requisition.findRequisition({type: newVal},this.proxy("requisitionList"),{});
+							if (newVal == "lending_statistics"){	
+									
+							}else{
+								Docview.Models.Requisition.findRequisition({type: newVal},this.proxy("requisitionList"),{});
+							}
 							$.route.attr('id', -1);
 							if (newVal != 'single') {
 									$('#document-details').hide();
@@ -219,6 +258,7 @@ steal(
 		".filter_docs blur" : function(el,ev){
 			var doc_id = $(el).val();
 			var org = $("#new-application-form select[name='org']").val();
+			console.log(' ==== blur ====');
 			console.log(doc_id,org);
 			this.filterRequisitionDetails(doc_id,org);
 		},
@@ -258,19 +298,23 @@ steal(
 			ev.preventDefault();
 			var requisition_details = new Array(); 
 			var tel = el.find("input[name='tel']").val();
-			var org = el.find("input[name='org']").val();
+			var org = el.find("select[name='org']").val();
 			var department_name = el.find("input[name='department_name']").val();
-			
-			$.each(el.find("tr"),function(index,item){
+			var tag = true;
+			$.each(el.find("tbody").find("tr"),function(index,item){
 				var single_card_number = $(item).find("input[name='single_card_number']").val();
 				var modify_accompanying_documents = $(item).find("input[name='modify_accompanying_documents']").val();
 				var where_page = $(item).find("input[name='where_page']").val();
 				var lent_reasons = $(item).find("input[name='lent_reasons']").val();
-                                				var result = that.validateInputOrEmpty(single_card_number);
+				console.log("====== submit ===== ");
+				console.log(" doc_id = ",single_card_number);
+				var result = that.validateInputOrEmpty(single_card_number);
 				if (result == false){
 					tag = false;
 				}
 
+				console.log(" tag = ",tag);
+				var result = that.validateInputOrEmpty(single_card_number);
 				requisition_details.push({"single_card_number" : single_card_number, "modify_accompanying_documents" : modify_accompanying_documents, "where_page" : where_page, "lent_reasons": lent_reasons});
 			});
 			var requisition = {
@@ -279,9 +323,10 @@ steal(
 				department_name: department_name,
 				requisition_details: requisition_details
 			};
-						if (tag){
+			if (tag){
 				var frd_tag = true;
 				$.each(requisition_details,function(i,v){
+					console.log("for requisition_detail ,current doc_id = ",v.single_card_number);
 					var frd_tag = that.filterRequisitionDetails(v.single_card_number,org);
 					if (frd_tag == false){
 						return;
@@ -319,9 +364,9 @@ steal(
 			Docview.Models.Requisition.findRequisition({type: sub_cat},this.proxy("requisitionList"),{});
 		},
 		failure : function(){},
-                		validateInputOrEmpty: function(el) {
+		validateInputOrEmpty: function(el) {
 		    var docId = $.trim(el);
-			console.log("++++++");
+			console.log("=====  validateInputOrEmpty:  =====");
 			console.log(docId);
 			if (docId === "") {
 				this.alertTitle({status: false, message: "报关单号不能为空."})
@@ -351,7 +396,7 @@ steal(
 			ev.preventDefault();
 
 			var that = this;
-
+			console.log('======1');
 			var controller = null;
 			var action = el.attr('id');
 			switch(action){
@@ -369,19 +414,22 @@ steal(
 					break;
 			}
 			
+			console.log('======2');
 			var rowModelData = controller.getRowModelDataFor(el);
 			var rowElement = rowModelData.tr;
 			var rowModel =  rowModelData.model;
-			//console.log(rowModel);
+			rowElement.model(rowModel);
 			rowElement.hide();
+
+//			rowElement.after(this.view('detial_form',{ ctx: this, model: rowModel ,action: action}));
 			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action});
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
-
+			console.log('======3');
 			var data = {
 				id:rowModel.id,//数据ID
-				action:action,
-				status: rowModel.status,//状态	
+				from_action:action,
+				status: rowModel.status//状态	
 			};
 			
 			var postData = function(data){
@@ -389,6 +437,7 @@ steal(
 					$.ajax({
 						url:'/requisitions/change_status',
 						data: data,
+						type:'post',
 						success:function(){
 							console.log('post data success .');
 							innerForm.prev().show('slow');
@@ -399,7 +448,8 @@ steal(
 								rowModel.termination_instructions = data.reject_text;
 							rowModel.save();
 							//reload.
-							controller.setModelData(rowModel);
+							that.reload();
+							//controller.setModelData(rowModel);
 						},
 						error:function(err){
 							console.log('post data has a error:',err);
@@ -417,10 +467,10 @@ steal(
 							data.status = 11;//审批不通过
 							break;
 						case 'register':
-							data.status = 12;//不通过
+							data.status = 12;//登记不通过
 							break;
 						case 'write_off':
-							data.status = 13;//
+							data.status = 13;//核销不通过
 							break;
 					}
 					data.reject_text = text;//拒绝理由
@@ -436,16 +486,57 @@ steal(
 						data.status = 2;//审批通过
 						break;
 					case 'register':
-						data.status = 3;//通过
+						data.status = 3;//完成登记
+						break;
+					case 'write_off':
+						data.status = 20;//正常完成
 						break;
 				}
 				postData(data);
+			});
+
+			innerForm.find('.btn-revocation').click(function(ev){
+				ev.preventDefault();
+				data.status = 21;//
+				postData(data);
+			});
+
+			innerForm.find('.btn-print').click(function(ev){
+				ev.preventDefault();
+				Docview.Models.Requisition.printRequisition(data,function(url){
+                    window.location.href=url;
+				},{}
+				);
 			});
 		},
 		'.btn-cancel click':function(el,ev){
 			var innerForm  = el.closest('tr');
 			innerForm.prev().show('slow');
 			innerForm.remove();
+		},
+		'form.lending_statistics submit':function(el,ev){
+			ev.preventDefault();
+			var org = el.find('select[name=org]').val();
+			var begin_date = el.find('input[name=from_date]').val();		
+			var end_date = el.find('input[name=to_date]').val();	
+			var org_user_type = el.find('select[name=org_user_type]').val();
+			var org_user = el.find('input[name=org_user]').val();	
+			
+			var data = {
+				type: org_user_type,
+				start_date: begin_date,
+				end_date: end_date,
+				username: org_user,
+				org: org
+			};
+			var that = this;
+			console.log(data);
+			Docview.Models.Requisition.lendingStatisticsList(data,function(list){
+				console.log(list);
+				that.lendingStatisticsController.setModelData(list);	
+			},function(err){
+					
+			});
 		}
 });
 });

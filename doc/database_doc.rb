@@ -69,7 +69,7 @@ requisition
 ######################################################################################################################################################
 申请人员 申请日期 科室名称 联系电话 审批人员 审批时间 登记人员 登记时间 核销人员 核销时间 终结说明 状态	关区号
 ######################################################################################################################################################
-rails g model requisition apply_staff:string date_application:datetime department_name:string tel:integer approving_officer:string approval_time:datetime registration_staff:string check_in_timei:datetime write_off_staff:string write_off_time:datetime termination_instructions:string status:integer org:integer
+rails g model requisition apply_staff:string date_application:datetime department_name:string tel:string approving_officer:string approval_time:datetime registration_staff:string check_in_time:datetime write_off_staff:string write_off_time:datetime termination_instructions:string status:integer org:integer
 ######################################################################################################################################################
 requisition_detail
 ######################################################################################################################################################

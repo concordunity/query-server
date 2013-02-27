@@ -177,6 +177,8 @@ class DocumentHistoriesController < ApplicationController
     docs_records = Document.where(where_clause).where(docType_condition)
     docs_total = docs_records.count
     pages_total = docs_records.sum("pages")
+	#sum modefy document pages
+	pages_total +=  ModifiedDocument.sum("pages");
     #query_total = QueryHistory.where("doc_id IS NOT NULL").count
     query_total = queries.count 
 

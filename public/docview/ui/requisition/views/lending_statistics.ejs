@@ -1,2 +1,44 @@
-<div class="lending-statistics-list"></div>
-lending_statistics
+
+<form class="well form-horizontal lending_statistics">
+<legend>借出统计</legend>
+<div class="row-fluid">
+
+<div class="span6">
+    <fieldset>
+	 	<div class="control-group">
+    		<label class="control-label" ><%= $.i18n._('label.application.org') %></label>
+			<div class="controls" >
+    		<select name="org">
+			<% $.each(orgJsonDictionary,function(i,v){
+				if(i !== "2200"){
+	 				%>
+        			<option value='<%= i %>'><%= v %></option>
+					<%}
+			}); %>
+    		</select>
+			</div>
+		</div>
+		<div class="lending-date" ></div>
+		<div class="control-group" >
+			<label class="control-label" >关员类型:</label>
+			<div class="controls" >
+			<select name="org_user_type" >
+				<option value="application" >申请人员</option>
+				<option value="approval"    >审批人员</option>
+				<option value="register"    >登记人员</option>
+				<option value="write_off"   >核销人员</option>
+			</select>
+			</div>
+		</div>
+		<div class="control-group" >
+			<label class="control-label" >关员工号:</label>
+			<div class="controls" >
+				<input type="text" class="" name="org_user" />	
+			</div>
+		</div>
+    </fieldset>  
+  <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i>查询 </button>
+</div>
+</div>
+</form>
+<div class='lending-list'></div>

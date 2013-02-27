@@ -1,9 +1,12 @@
 Dms::Application.routes.draw do
 
-  get "filter_docs" => "documents#filter_docs"
+  get "/documents/test" => "documents#index_paging"
+  get "/requisition_print" =>  "requisition#print"
+  get "/filter_docs" => "requisition#filter_docs"
   post "/requisitions" => "requisition#create_requisition"
+  post "/lending_statistics_list" => "requisition#lending_statistics_list"
   get "/requisitions" => "requisition#requisitions"
-  get "/requisitions/change_status" => "requisition#change_status"
+  post "/requisitions/change_status" => "requisition#change_status"
   post "/find_log" => "settings#find_log"
 
   post "/system_log" => "settings#system_log"

@@ -10,7 +10,7 @@ class CreateRequisitionDetails < ActiveRecord::Migration
       t.timestamps
     end
 	
-    add_index :requisition_details, :single_card_number
+    add_index :requisition_details, :single_card_number, :unique => true
     add_index :requisition_details, :requisition_id
   end
 end

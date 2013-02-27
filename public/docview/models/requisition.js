@@ -20,6 +20,15 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				dataType : 'json requisition.models'
 			});
 		},
+		printRequisition: function(params, success, error) {
+        	return $.ajax({
+            	url : '/requisition_print', 
+				type : 'get',
+				data : params,
+				success : success,
+				error : error
+			});
+		},
 		filterDocs: function(params, success, error) {
         	return $.ajax({
             	url : '/filter_docs', 
@@ -30,6 +39,17 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				async : true 
 			});
 		},
+		lendingStatisticsList : function(params, success, error) {
+        	return $.ajax({
+            	url : '/lending_statistics_list', 
+				type : 'post',
+				data : params,
+				success : success,
+				error : error,
+				dataType : 'json requisition.models'
+			});
+		},
+
 		updateRequisition: function(params, success, error) {
         	return $.ajax({
             	url : '/requisitions', 

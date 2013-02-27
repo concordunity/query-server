@@ -6,9 +6,9 @@
 <table class="table table-condensed table-striped"   >
 <tr>
 	<td>申请人员:</td>
-	<td><%= model.apply_staff + "(" + model.apply_staff_fullname + ")" %></td>
+	<td><%= model.apply_staff %></td>
 	<td>申请日期:</td>
-	<td><%= $.date(model.created_at).format("yyyy-MM-dd") %></td>
+	<td><%= model.created_at %></td>
 </tr>
 <tr>
 	<td>电话号码:</td>
@@ -49,49 +49,29 @@
 </tr>
 <tr>
 	<td>审核人员:</td>
-<% 
-
-if (model.approving_officer == null){ 
-	approving_officer = ""; 
-}else{
-	approving_officer = model.approving_officer + "(" + model.approving_officer_fullname  + ")"; 
-} %>
-	<td><%= approving_officer %></td>
+	<td><%= model.approving_officer %></td>
 	<td>审核时间:</td>
-	<td><%= $.date(model.approval_time).format("yyyy-MM-dd") %></td>
+	<td><%= model.approval_time %></td>
 </tr>
 <tr>
 	<td>登记人员:</td>
-	<%  
-if(model.registration_staff == null){
- registration_staff = ""; 
-}else{
- registration_staff = model.registration_staff + "(" + model.registration_staff_fullname  + ")";
- } %>
-	<td><%= registration_staff %></td>
+	<td><%= model.registration_staff %></td>
 	<td>登记时间:</td>
-	<td><%= $.date(model.check_in_time).format("yyyy-MM-dd") %></td>
+	<td><%= model.check_in_time %></td>
 </tr>
 
 <tr>
 	<td>核销人员:</td>
-<%
-if(model.registration_staff == null){
-write_off_staff = "" 
-}else{
-write_off_staff = model.write_off_staff + "(" + model.write_off_staff_fullname  + ")"; 
- }
-%>
-	<td><%= write_off_staff %></td>
+	<td><%= model.write_off_staff %></td>
 	<td>核销时间:</td>
-	<td><%= $.date(model.write_off_time).format("yyyy-MM-dd") %></td>
+	<td><%= model.write_off_time %></td>
 </tr>
 </table>
 	<br />
 	<% var btn_behavior = {
 		approval: [ 1 ],
 		register: [ 2 ],
-		write_off:[ 3 ]
+		write_off:[ 3 ],
 	}; %>
 	<% if( !$.inArray(model.status , btn_behavior[action]) ){ %>
 		<button class="btn btn-primary btn-accept">通过</button>

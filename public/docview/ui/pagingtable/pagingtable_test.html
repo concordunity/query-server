@@ -22,25 +22,31 @@
  <script type='text/javascript'>
 steal('jquery/dom/route', 'docview/ui/pagingtable').then(function($) {
 
-   $('#pagingtable-test').docview_ui_pagingtable({
-	tableOptions: { 
-		    aaData: [],
-			dataSourceUrl : "/documents",
-			aoData : [
-						{ "name": "more_data", "value": "my_value" },
-						{ "name": "doc_id", "value": "222520121250004811" },
-						{ "name": "org", "value": "2225" },
-						{ "name": "username", "value": "zhouzhen" }
+   $('#pagingtable-test').docview_ui_pagingtable({ 
+		columns : [
+				{"id" : "doc_id", text: 'Doc Id',width:'100px' },
+				{"id" : "org"	, text: 'ORG'},
+				{"id" :  null}
 			],
-			aoColumns : [ {"mDataProp" : "doc_id", mLabel: 'Doc Id' },
-			{"mDataProp" : "org", mLabel: 'ORG'}, { "mDataProp" : null} ]
-			}});
-
-	var controller = $('#pagingtable-test').controller();
-	$(".find_doc").submit(function(el,ev){
-        ev.preventDefault();
-		controller.getDocs();
+		url:'/documents/test',
+		data:{},
+		form:'.find_doc'	
 	});
+/*
+	var controller = $('#pagingtable-test').controller();
+	$(".find_doc").submit(function(ev){
+		ev.preventDefault();
+		var doc_id = $('input[name=doc_id]').val();
+		var org = $('input[name=org]').val();
+		var data = { 'doc_id':doc_id,'org':org };
+		
+		controller.reload({
+			url:'/documents/test',
+			data:data,
+			type:'get'
+		});
+	});
+*/
  }); 
  </script>
         </body>

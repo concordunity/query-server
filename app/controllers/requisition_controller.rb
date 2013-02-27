@@ -12,27 +12,240 @@ class RequisitionController < ApplicationController
     respond_with(result)
   end
 
+  #统计
+  def lending_statistics_list
+
+	where_condition = {}
+	sql_condition = ["'status' is not null AND status <> 21"] 
+	date_arr = params[:start_date].to_date.to_datetime .. params[:end_date].to_date.next.to_datetime
+	username =  params[:username]
+	case params[:type]
+	when "application"
+		sql_condition << "apply_staff like '%#{username}%'" unless username.blank? 
+		#where_condition[:apply_staff] = username unless username.blank? 
+		where_condition[:created_at] = date_arr 
+	when "approval"
+		sql_condition << "approving_officer like '%#{username}%'" unless username.blank? 
+		#where_condition[:approving_officer] = username unless username.blank? 
+		where_condition[:approval_time] = date_arr 
+	when "register"
+		sql_condition << "registration_staff like '%#{username}%'" unless username.blank? 
+		#where_condition[:registration_staff] = username unless username.blank? 
+		where_condition[:check_in_time] = date_arr 
+	when "write_off"
+		sql_condition << "write_off_staff like '%#{username}%'" unless username.blank? 
+		#where_condition[:write_off_staff] = username unless username.blank? 
+		where_condition[:write_off_time] = date_arr 
+	end
+	@requisitions = Requisition.where(:org => params[:org]).where(where_condition).where(sql_condition.join(" AND ")).order("created_at desc")
+    requisition_details = get_details(@requisitions) 
+	result = {:requisitions => @requisitions, :requisition_details => requisition_details}
+
+		
+    render :json => result, :status => 200
+    #respond_with(result)
+  end
+
+
+  def filter_docs
+    result = {:status => false,:message => ""}
+    doc_id = params[:doc_id]
+    org = params[:org]
+	ofd = OrgForDoc.find_by_org_number_and_org(doc_id[9,2],org)
+    @document = Document.find_by_doc_id(doc_id)
+	rd = RequisitionDetail.where(["'status' <> 21 AND 'status' is not null"]).find_by_single_card_number(doc_id)
+    if @document.blank? && rd.blank? && !ofd.blank?
+        result[:status] = true
+        result[:message] = "此单证：" + doc_id + ",可以正常添加。"
+    else
+        result[:message] = "此单证：" + doc_id + "，不能添加，请重新填写或者移除。"
+    end
+    render json: result
+  end
+
   def create_requisition
 #	{"tel"=>"15101151137", "department_name"=>"研发", "requisition_details"=>{"0"=>{"single_card_number"=>"222520121250004811", "modify_accompanying_documents"=>"aa", "where_page"=>"1", "lent_reasons"=>"不知道"}, "1"=>{"single_card_number"=>"222520121250004812", "modify_accompanying_documents"=>"bb", "where_page"=>"2", "lent_reasons"=>"有问题呗"}}}
 	logger.info "=== first ====" 
+	status = 200
 		begin
 			tel = params[:tel]
 			department_name = params[:department_name]
 			org = params[:org]
-
-			requisition = Requisition.create do |r|
-				r.tel = tel 
-				r.department_name = department_name 
-				r.org = org
-				r.apply_staff = current_user.username
+			
+			tag = filter_requisition(params)
+			if tag
+				requisition = Requisition.create do |r|
+					r.tel = tel 
+					r.department_name = department_name 
+					r.org = org
+					r.apply_staff = current_user.username
+					r.apply_staff_fullname = current_user.fullname
+					r.status = 1
+				end
+				logger.info "=== second ====" 
+				create_requisition_details(params,requisition)	
+			else
+				status = 500
+				raise
 			end
-			create_requisition_details(params,requisition)	
 		rescue => e
 			logger.info "===error====" 
 			logger.info e
+			status = 500
 		end
 	logger.info "=== last ====" 
-	render json: {:message => "ok"}, :status => 200
+	render json: {:message => "ok",:status => status}, :status => 200
+  end
+
+  def print_one
+	model = Requisition.find params[:id]
+	di = DictionaryInfo.find_by_dic_type_and_dic_num("scene_lent_paper_document ",model.status)
+	orgs = DictionaryInfo.find_by_dic_type_and_dic_num("org",model.org)
+	requisition_details = model.requisition_details
+	spread_sheet_row = []
+	spread_sheet_row << ["申请人员",model.apply_staff,"申请日期",model.created_at.to_s(:db)] 
+	spread_sheet_row << ["电话号码",model.tel,"关区及科室名称",orgs.dic_name + " " + model.department_name] 
+	spread_sheet_row << ["状态",di.dic_name ,"终结说明",model.termination_instructions] 
+	spread_sheet_row << ["抽单信息","","",""]
+	spread_sheet_row << ["单证号码","随附文档","所在页码","借出原因"] 
+	requisition_details.each do |rd|
+		spread_sheet_row << [rd.single_card_number,rd.modify_accompanying_documents,rd.where_page,rd.lent_reasons]
+	end	
+	spread_sheet_row << ["审核人员",model.approving_officer,"审核时间",model.approval_time.nil? ? "" :  model.approval_time.to_s(:db)]
+	spread_sheet_row << ["登记人员",model.registration_staff,"登记时间",model.check_in_time.nil? ? "" : model.check_in_time.to_s(:db)]
+	spread_sheet_row << ["核销人员",model.write_off_staff,"核销时间",model.write_off_time.nil? ? "" : model.write_off_time.to_s(:db)] 
+
+    excel_name = "application"
+    #export_data = JSON.parse(params[:tableData])
+
+    new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+    Dir.mkdir(new_path) unless Dir.exists?(new_path)
+    book = new_excel(excel_name)
+    book_excel = book[0]
+    book_sheet = book[1]
+
+    count = -1
+    spread_sheet_row.each_with_index do |new_sheet,index|
+      book_sheet.insert_row(count+1,new_sheet)
+      count += 1
+    end
+    file_name = File.join(new_path , excel_name + ".xls")
+    book_excel.write(file_name)
+    #send_file file_name
+    file_name = file_name.sub(File.join(Rails.root,"public"),'')
+    render :text => file_name
+  end
+
+  def print
+	rd = Requisition.find params[:id]
+	rdd = rd.requisition_details
+	filepath = File.join(Rails.root,"doc","requisition.xls")	
+    book,sheet = open_excel(filepath)
+	sheet.each_with_index do |row,index|
+		row.each_with_index do |column,j|
+			case row[j]
+			when "[A1]"
+				#单位名称
+				department_name = rd.department_name.nil? ? "" : rd.department_name
+				if rd.org.nil? 
+					org = ""
+				else
+					di = DictionaryInfo.find_by_dic_type_and_dic_num("org",rd.org)
+					org = di.dic_name 
+				end 
+				row[j] = org.to_s + department_name
+			when "[A2]"
+				#经办关员
+				if rd.apply_staff.nil?
+					row[j] = "" 
+				else
+					row[j] = rd.apply_staff + "(" + rd.apply_staff_fullname + ")" 
+				end
+			when "[A3]"
+				#日期
+				row[j] = rd.created_at.nil? ? "" : rd.created_at.strftime('%Y-%m-%d')
+			when "[A4]"
+				#联系电话
+				row[j] = rd.tel.nil? ? "" : rd.tel
+			when "[B1]"
+				#报关单号1
+				row[j] = rdd[0].nil? ? "" : rdd[0].single_card_number
+			when "[B2]"
+				#报关单号2
+				row[j] = rdd[1].nil? ? "" : rdd[1].single_card_number
+			when "[B3]"
+				#报关单号3
+				row[j] = rdd[2].nil? ? "" : rdd[2].single_card_number
+			when "[C1]"
+				#随附单证名称1
+				row[j] = (!rdd[0].nil? && !rdd[0].modify_accompanying_documents.nil?) ? rdd[0].modify_accompanying_documents : ""
+			when "[C2]"
+				#随附单证名称2
+				row[j] = (!rdd[1].nil? && !rdd[1].modify_accompanying_documents.nil?) ? rdd[1].modify_accompanying_documents : ""
+
+			when "[C3]"
+				#随附单证名称3
+				row[j] = (!rdd[2].nil? && !rdd[2].modify_accompanying_documents.nil?) ? rdd[2].modify_accompanying_documents : ""
+
+			when "[D1]"
+				#所在页1
+				row[j] = (!rdd[0].nil? && !rdd[0].where_page.nil?) ? rdd[0].where_page : ""
+
+			when "[D2]"
+				#所在页2
+				row[j] = (!rdd[1].nil? && !rdd[1].where_page.nil?) ? rdd[1].where_page : ""
+
+			when "[D3]"
+				#所在页3
+				row[j] = (!rdd[2].nil? && !rdd[2].where_page.nil?) ? rdd[2].where_page : ""
+
+			when "[E1]"
+				#借出原因1
+				row[j] = (!rdd[0].nil? && !rdd[0].lent_reasons.nil?) ? rdd[0].lent_reasons : ""
+
+			when "[E2]"
+				#借出原因2
+				row[j] = (!rdd[1].nil? && !rdd[1].lent_reasons.nil?) ? rdd[1].lent_reasons : ""
+
+			when "[E3]"
+				#借出原因3
+				row[j] = (!rdd[2].nil? && !rdd[2].lent_reasons.nil?) ? rdd[2].lent_reasons : ""
+
+			when "[F1]"
+				#审批科长
+				if rd.approving_officer.nil?
+					row[j] = "" 
+				else
+					row[j] = rd.approving_officer + "(" + rd.approving_officer_fullname + ")" 
+				end
+
+			when "[F2]"
+				#审批日期
+				row[j] = rd.approval_time.nil? ? "" : rd.approval_time.strftime('%Y-%m-%d')
+
+			when "[H1]"
+				#档案库经办人
+				if rd.registration_staff.nil?
+					row[j] = "" 
+				else
+					row[j] = rd.registration_staff + "(" + rd.registration_staff_fullname + ")" 
+				end
+
+			when "[H2]"
+				#实际抽单日期
+				row[j] = rd.check_in_time.nil? ? "" : rd.check_in_time.strftime('%Y-%m-%d')
+			end	
+
+		end	
+	end
+
+    new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+    Dir.mkdir(new_path) unless Dir.exists?(new_path)
+    new_path = File.join(new_path,"现场单证借阅申请单.xls")
+	book.write(new_path)	
+
+    file_name = new_path.sub(File.join(Rails.root,"public"),'')
+    render :text => file_name
   end
 
   def update_requisition
@@ -42,17 +255,15 @@ class RequisitionController < ApplicationController
   def create_requisition_details(params,requisition)
 	result = true 
 	RequisitionDetail.transaction do
+	logger.info "===  three ====" 
 		params[:requisition_details].collect do |index,requisition_details|
 			logger.info requisition_details 
 			single_card_number = requisition_details[:single_card_number]
 			modify_accompanying_documents = requisition_details[:modify_accompanying_documents]
 			where_page = requisition_details[:where_page]
 			lent_reasons = requisition_details[:lent_reasons]
-			doc = Document.find_by_doc_id_and_org(single_card_number,params[:org])
-			if doc.nil? 
-				result = false
-				a = 0/0
-			end
+			
+			logger.info "===  four ====" 
 			RequisitionDetail.create do |rd|
 				rd.single_card_number = single_card_number
 				rd.modify_accompanying_documents = modify_accompanying_documents
@@ -65,26 +276,42 @@ class RequisitionController < ApplicationController
 	return result
   end
 
-  def filter_requisition
+  def filter_requisition(params)
+		tag = true
+		params[:requisition_details].collect do |index,requisition_details|
 
+			doc_id = requisition_details[:single_card_number]
+			org = params[:org]
+			ofd = OrgForDoc.find_by_org_number_and_org(doc_id[9,2],org)
+			@document = Document.find_by_doc_id(doc_id)
+			rd = RequisitionDetail.where(["'status' <> 21 AND 'status' is not null"]).find_by_single_card_number(doc_id)
+			unless (@document.blank? && rd.blank? && !ofd.blank?)
+				tag = false
+			end
+		end
+	return tag
   end
 
   def change_status
     requisition =  Requisition.where({ :id => params[:id] }).first
     requisition.status = params[:status]
 
-    case params[:action]
+    case params[:from_action]
         when "approval"
             requisition.approving_officer = current_user.username
-            requisition.approval_time = DateTime.now
+            requisition.approving_officer_fullname = current_user.fullname
+            requisition.approval_time = Time.now
         when "register"
             requisition.registration_staff = current_user.username
-            requisition.check_in_timei = DateTime.now
+            requisition.registration_staff_fullname = current_user.fullname
+            requisition.check_in_time = Time.now
         when "write_off"
             requisition.write_off_staff = current_user.username
-            requisition.write_off_time = DateTime.now
-        else
-    end
+            requisition.write_off_staff_fullname = current_user.fullname
+            requisition.write_off_time = Time.now
+		else
+			logger.info "Unkonw from action: #{params[:from_action]}"
+		end
 
     if params[:reject_text]
         requisition.termination_instructions = params[:reject_text]
@@ -97,40 +324,39 @@ class RequisitionController < ApplicationController
   #申请
   def application
 	
-	@requisitions = Requisition.where({:apply_staff => current_user.username, :status => 1})
+	@requisitions = Requisition.where({:apply_staff => current_user.username}).where(["'status' is not null"])
     requisition_details = get_details(@requisitions) 
 	return {:requisitions => @requisitions, :requisition_details => requisition_details}
  end
 
   #审批
   def approval
-	get_requisition
+	get_requisition(1)
   end
 
   #登记
   def register
-	get_requisition
+	get_requisition(2)
   end
 
   #核销
   def write_off
-	get_requisition
+	get_requisition(3)
   end
 
-  #统计
-  def lending_statistics
-
-  end
-
-  def get_requisition
+  def get_requisition(type=nil)
 	orgs = current_user.orgs.split(",")
 	if orgs.include?("2200")
 		condition_org = ["'org' is not null"]	
 	else
 		condition_org = {:org => orgs}	
 	end
-
-	@requisitions = Requisition.where(condition_org).order("created_at desc")
+	if type.nil?
+		condition_status =  ["true"]
+	else
+		condition_status = {:status => type}
+	end
+	@requisitions = Requisition.where(["'status' is not null AND status <> 21"]).where(condition_status).where(condition_org).order("created_at desc")
     requisition_details = get_details(@requisitions) 
 	return {:requisitions => @requisitions, :requisition_details => requisition_details}
   end
@@ -142,4 +368,32 @@ class RequisitionController < ApplicationController
     end
 	return requisition_details 
   end
+  #创建sheet
+  def new_sheet(book,name)
+    sheet = book.create_worksheet :name => name
+    return sheet
+  end
+
+  #创建excel
+  def new_excel(name)
+    Spreadsheet.client_encoding = "UTF-8"
+    book = Spreadsheet::Workbook.new
+    bold_heading = Spreadsheet::Format.new(:weight => :bold, :align => :merge)
+    return [book,new_sheet(book,name),bold_heading]
+  end
+
+  # open excel and return sheet(打开excel文件，返回sheet)
+  def open_excel url
+    filepath = url
+    Spreadsheet.client_encoding = "UTF-8"
+    begin
+      book = Spreadsheet.open filepath
+      sheet = book.worksheet 0
+      return [book,sheet]
+    rescue
+      return nil
+    end
+  end
+
+
 end

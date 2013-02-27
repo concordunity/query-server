@@ -29,6 +29,7 @@ class UploadFileController < ApplicationController
 
     if upload_result[:status] == true
       file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
+	  User.transaction do 
       begin
         result = format_system_data(file_url)
 
@@ -72,7 +73,9 @@ class UploadFileController < ApplicationController
       rescue => e
         logger.info e
         result_info[:message]="更新失败"
+		raise ActiveRecord::Rollback, ex	
       end
+	  end
     else
       result_info[:message]="更新失败"
     end

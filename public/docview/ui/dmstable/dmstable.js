@@ -17,30 +17,35 @@ steal(
         init : function() {
             this.lastData = "";
             this.element.html(this.view('init',{
-		file_name:this.options.table_options.file_name
+			file_name:this.options.table_options.file_name
 	    }));
 	    this.modelData = {};
             var tableElement = this.element.find('thead tr')[0];
 
             var aoColumns = this.options.table_options.aoColumns;
-	    var col_width = this.options.table_options.col_width;
+			var col_width = this.options.table_options.col_width;
 
             var index = 0;
             var that = this;
             $.each(aoColumns, function(index, v) {
                 v.fnRender = that.createNthRenderer(index);
 		
-	    	if (col_width){
+	    		if (col_width){
                     $(tableElement).append("<th style='width: " + (col_width[index]|0) + "px;'>" + v.mLabel + " </th>");
-		} else {
+				} else {
                     $(tableElement).append("<th>" + v.mLabel + " </th>");
-		}
+				}
             });
-
+			if (this.options.table_options.aaSorting == undefined) {
+				this.aaSorting = [] 
+			} else {
+				this.aaSorting =  this.options.table_options.aaSorting;
+			} 
             this.dataTable = this.element.find('table').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
                 "sPaginationType": "bootstrap",
                 "aaData": this.options.table_options.aaData,
+				"aaSorting" : this.aaSorting, 
                 "aoColumns": this.options.table_options.aoColumns,
                 "oLanguage" : {
                     "sUrl" : "/docview/media/language/ch_ZN.txt"
