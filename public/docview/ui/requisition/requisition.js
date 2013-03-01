@@ -397,10 +397,8 @@ steal(
 			ev.preventDefault();
 
 			var that = this;
-			console.log('======1');
 			var controller = null;
 			var action = el.attr('id');
-			console.log(action);
 			switch(action){
 				case 'application':
 					controller = this.applicationController;
@@ -419,7 +417,6 @@ steal(
 					break;
 			}
 			
-			console.log('======2');
 			var rowModelData = controller.getRowModelDataFor(el);
 			var rowElement = rowModelData.tr;
 			var rowModel =  rowModelData.model;
@@ -430,7 +427,6 @@ steal(
 			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action});
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
-			console.log('======3');
 			var data = {
 				id:rowModel.id,//数据ID
 				from_action:action,
@@ -438,13 +434,11 @@ steal(
 			};
 			
 			var postData = function(data){
-					console.log(data);
 					$.ajax({
 						url:'/requisitions/change_status',
 						data: data,
 						type:'post',
 						success:function(){
-							console.log('post data success .');
 							innerForm.prev().show('slow');
 							innerForm.remove();
 							//
@@ -455,10 +449,9 @@ steal(
 							//reload.
 							that.reload();
 							//controller.setModelData(rowModel);
+							log("system" ,{ current_action: "requisition_docs." +  data.from_action , describe: scene_lent_paper_documentJsonDictionary[ data.status ] } );
 						},
-						error:function(err){
-							console.log('post data has a error:',err);
-						}
+						error:that.proxy('failure')
 					});
 			};
 			
@@ -466,7 +459,6 @@ steal(
 		
 			innerForm.find('.btn-reject').popinput({ 
 				callback:function(text){
-					console.log(text);
 					switch(action){
 						case 'approval':
 							data.status = 11;//审批不通过
@@ -511,8 +503,7 @@ steal(
 				Docview.Models.Requisition.printRequisition(data,function(url){
                     url = window.location.protocol + '//' + window.location.hostname  + '/' + url;
 					window.location.href=url;
-				},{}
-				);
+				},that.proxy('failure'));		
 			});
 		},
 		'.btn-cancel click':function(el,ev){
@@ -536,13 +527,31 @@ steal(
 				org: org
 			};
 			var that = this;
-			console.log(data);
 			Docview.Models.Requisition.lendingStatisticsList(data,function(list){
-				console.log(list);
 				that.lendingStatisticsController.setModelData(list);	
-			},function(err){
-					
-			});
+			},that.proxy('failure'));		
+		},
+		failure:function(jqXHR, textStatus, errorThrown){
+			var type,msg;
+			switch(jqXHR.status){
+				case 403:
+					type = 'info';
+					msg = "权限不足";
+					break;
+				case 404:
+					type = 'warn';
+					msg = "无法找到该页面";
+					break;
+				case 500:
+					type = 'error';
+					msg = "服务器内部错误";
+					break;
+			}
+			this.options.clientState.attr('alert',{
+				type:type,
+				heading:type.toUpperCase() + ':',
+				message: msg
+			});	
 		}
 });
 });
