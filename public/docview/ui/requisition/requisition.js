@@ -134,7 +134,8 @@ steal(
 					{"mDataProp":"apply_staff", mLabel : '人员'},
 					{"mDataProp":"org", mLabel : '关区'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'}
+					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
 				aaSorting:[[0,"desc"]],
 				file_name: ""
@@ -399,6 +400,7 @@ steal(
 			console.log('======1');
 			var controller = null;
 			var action = el.attr('id');
+			console.log(action);
 			switch(action){
 				case 'application':
 					controller = this.applicationController;
@@ -411,6 +413,9 @@ steal(
 					break;
 				case 'write_off':
 					controller = this.writeOffController;
+					break;
+				case 'lending_statistics':
+					controller = this.lendingStatisticsController;
 					break;
 			}
 			
@@ -504,7 +509,8 @@ steal(
 			innerForm.find('.btn-print').click(function(ev){
 				ev.preventDefault();
 				Docview.Models.Requisition.printRequisition(data,function(url){
-                    window.location.href=url;
+                    url = window.location.protocol + '//' + window.location.hostname  + '/' + url;
+					window.location.href=url;
 				},{}
 				);
 			});

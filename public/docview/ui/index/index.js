@@ -30,6 +30,12 @@ steal(
                 stats = true;
             }
 
+            var requisition = false;
+            var requisitionActions = this.options.clientState.attr('access').attr('requisition_docs');
+            if (requisitionActions.attr('application') || requisitionActions.attr('approval') || requisitionActions.attr('register') || requisitionActions.attr('write_off') || requisitionActions.attr("lending_statistics")) {
+                requisition = true;
+            }
+
             var manage_docs = false;
             var docActions = this.options.clientState.attr('access').attr('manage_docs');
             if (docActions.attr('print') || docActions.attr('testify') || docActions.attr('inquire') || docActions.attr('check') || docActions.attr('dh_report')) {
@@ -47,6 +53,7 @@ steal(
                 user: this.options.clientState.attr('user'),
                 search: search,
                 stats: stats,
+                requisition_docs: requisition,
                 manage_docs: manage_docs,
                 manage_accounts: manage_accounts,
 		message: message

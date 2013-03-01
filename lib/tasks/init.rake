@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 namespace :init do
 
+  desc " 日志分析"
+  task :request_log_analyzer => :environment do
+	log = File.join(Rails.root,"log","development.log")
+	html = File.join(Rails.root,"public","development.html")
+
+  	system("request-log-analyzer #{log} --format rails3  --output HTML --file  #{html}")
+  end
+
   desc "update_web_link_for_menu"
   task :update_web_link_for_menu => :environment do
 =begin

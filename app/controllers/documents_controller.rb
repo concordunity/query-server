@@ -249,13 +249,16 @@ class DocumentsController < ApplicationController
       return
     end
 
-    doc_type = get_doc_type 
+    doc_type = get_doc_type_search 
     if doc_type == 'NONE'
       render json: []
       return
     end
+	where_condition = {} 
+	sql_condition = []
+	sql_condition = ['pages < 50']
 
-    @documents = Document.order(:doc_id).where('pages < 50')
+    #@documents = Document.order(:doc_id).where('pages < 50')
     if (!params[:isMod].blank? || !params[:isTax].blank?)
       a = search_special_docs(doc_type)
       if a.empty?
@@ -264,58 +267,74 @@ class DocumentsController < ApplicationController
       end
 
       doc_ids = a.collect { |x| x.doc_id }
-      @documents = @documents.where(:doc_id => doc_ids)
+	  
+	  where_condition[:doc_id] = doc_ids 
+      #@documents = @documents.where(:doc_id => doc_ids)
     end
 
     if !doc_type.blank?
-      @documents = @documents.where(:doc_type => doc_type)
+	  where_condition[:doc_type] = doc_type 
+      #@documents = @documents.where(:doc_type => doc_type)
     end 
 
     if !params[:org].blank?
-      @documents = @documents.where(:org => params[:org])
+	  where_condition[:org] = params[:org] 
+      #@documents = @documents.where(:org => params[:org])
     end
 
     if !params[:org_applied].blank?
-      @documents = @documents.where(:org_applied => params[:org_applied])
+	  where_condition[:org_applied] = params[:org_applied] 
+      #@documents = @documents.where(:org_applied => params[:org_applied])
     end
 
     if !params[:edcStartDate].blank? && !params[:edcEndDate].blank?
       start_date = params[:edcStartDate]
       end_date = params[:edcEndDate]
 
-      # @documents = @documents.where(:edc_date => start_date.to_date..end_date.to_date)
-      @documents = @documents.where(:edc_date => start_date.to_date .. end_date.to_date.next)
+	  where_condition[:edc_date] = start_date.to_date .. end_date.to_date.next 
+      #@documents = @documents.where(:edc_date => start_date.to_date .. end_date.to_date.next)
     end
 
     if params[:docInquired] == '1'
-      @documents = @documents.where(:inquired => true)
+	  where_condition[:inquired] = true 
+      #@documents = @documents.where(:inquired => true)
     end
 
     if params[:checkedout] == '1'
-      @documents = @documents.where(:checkedout => true)
+	  where_condition[:checkedout] = true
+      #@documents = @documents.where(:checkedout => true)
     end
 
     limitN=200
-
+=begin
     u=Setting.find_by_name('maxn')
     if u
       limitN = u.value.to_i;
     end
-
+=end
 
     if !params[:total].blank?
       limitN = params[:total].to_i
     end
 
-    @documents = @documents.reorder('rand()').limit(limitN) #,  :order => "rand()")
+	
+	count = Document.where(where_condition).where(sql_condition).count
+	limit = 20000 
+	offset = count - limit  
+	if offset < limit 
+		@documents =  Document.where(where_condition).where(sql_condition).sample(limitN)
+    else
+		@documents =  Document.where(where_condition).where(sql_condition).limit(limit).offset(rand(offset)).sample(limitN)
+    end 
 
+	logger.info "============"
+#	logger.info @documents 
     respond_to do |format|
       format.html # index.html.erb                                                                                              
       format.json { render json: { :results => @documents },
         :status => 200 }    
     end
   end
-
 
   def print_doc
     @print_doc_url = params[:doc_id]
@@ -807,6 +826,24 @@ class DocumentsController < ApplicationController
       }
     end
   end
+  # return true if the user is authorized
+  # For advanced search. 
+  def get_doc_type_search
+    doc_type = params[:docType]
+	if doc_type.blank?
+		dt = ""
+	else
+    dt = ['JK3Y', 'JK5Y', 'JK11', 'CK3Y', 'CK5Y']
+      
+    dt = dt.select{ |v| v=~/#{doc_type}/} 
+   
+    if dt.empty? 
+      return "NONE"
+    end
+	end
+    return dt
+  end
+
 
 
   # return true if the user is authorized

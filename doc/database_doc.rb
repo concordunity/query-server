@@ -88,4 +88,4 @@ scene_lent_paper_document
 12	登记不通过
 13	核销不通过
 20	正常完成
-
+21  撤销

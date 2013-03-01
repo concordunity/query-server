@@ -8,7 +8,7 @@
 	<td>申请人员:</td>
 	<td><%= model.apply_staff + "(" + model.apply_staff_fullname + ")" %></td>
 	<td>申请日期:</td>
-	<td><%= $.date(model.created_at).format("yyyy-MM-dd") %></td>
+	<td><%= $.date(model.created_at).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
 	<td>电话号码:</td>
@@ -58,7 +58,7 @@ if (model.approving_officer == null){
 } %>
 	<td><%= approving_officer %></td>
 	<td>审核时间:</td>
-	<td><%= $.date(model.approval_time).format("yyyy-MM-dd") %></td>
+	<td><%= $.date(model.approval_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
 	<td>登记人员:</td>
@@ -70,7 +70,7 @@ if(model.registration_staff == null){
  } %>
 	<td><%= registration_staff %></td>
 	<td>登记时间:</td>
-	<td><%= $.date(model.check_in_time).format("yyyy-MM-dd") %></td>
+	<td><%= $.date(model.check_in_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 
 <tr>
@@ -84,7 +84,7 @@ write_off_staff = model.write_off_staff + "(" + model.write_off_staff_fullname  
 %>
 	<td><%= write_off_staff %></td>
 	<td>核销时间:</td>
-	<td><%= $.date(model.write_off_time).format("yyyy-MM-dd") %></td>
+	<td><%= $.date(model.write_off_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 </table>
 	<br />

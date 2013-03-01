@@ -223,6 +223,21 @@ class RequisitionController < ApplicationController
 				#审批日期
 				row[j] = rd.approval_time.nil? ? "" : rd.approval_time.strftime('%Y-%m-%d')
 
+			when "[I1]"
+				#现场单位审批意见
+				if ![1,11,21].include?(rd.status) 	
+					row[j] = " 同意调阅纸质单证" 
+				elsif [1,21].include?(rd.status)
+					row[j] = ""
+				else
+					row[j] = (rd.termination_instructions.nil? ? "" : rd.termination_instructions)
+					#row[j] = rd.termination_instructions.nil? ? "" : rd.termination_instructions
+				end
+
+			when "[J1]"
+				#核销时间
+				row[j] = rd.write_off_time.nil? ? "" : rd.write_off_time.strftime('%Y-%m-%d')
+
 			when "[H1]"
 				#档案库经办人
 				if rd.registration_staff.nil?

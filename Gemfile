@@ -4,7 +4,11 @@ gem 'rails', '3.2.0'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
+#gem "query_reviewer", :git => "git://github.com/nesquena/query_reviewer.git"
+#gem "query_reviewer", "~> 0.1.8"
+gem 'request-log-analyzer'
 
+gem 'bullet'
 gem 'mysql2'
 gem 'simple_form'
 gem 'haml'

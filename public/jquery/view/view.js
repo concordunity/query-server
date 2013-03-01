@@ -431,7 +431,7 @@ steal("jquery").then(function( $ ) {
 					// make an ajax request for text
 					jqXHR = $.ajax({
 						async: orig.async,
-						url: url,
+						url: url + "?" + +new Date ,
 						dataType: "text",
 						error: function() {
 							checkText("", url);

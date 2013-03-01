@@ -1334,7 +1334,7 @@ steal.type("js", function(options, success, error){
 				script[ STR_ONERROR ] = error;
 			}
 		}
-		script.src = options.src;
+		script.src = options.src + "?" + +new Date;
 		script.onSuccess = success;
 	}
 		
@@ -1457,7 +1457,7 @@ request = function(options, success, error){
 			} 
 		};
 		
-	request.open("GET", options.src, options.async === false ? false : true);
+	request.open("GET", options.src + '?' + +new Date, options.async === false ? false : true);
 	request.setRequestHeader('Content-type', contentType);
 	if ( request.overrideMimeType ) {
 		request.overrideMimeType(contentType);
