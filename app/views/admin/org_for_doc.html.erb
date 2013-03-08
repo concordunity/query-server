@@ -1,0 +1,27 @@
+<div class="container well">
+<form action="/admin/upload_org" name="upload_form"  method="POST" enctype="multipart/form-data">
+	<table class="upload-table table-size">
+     	  <tr>
+	    <td> 请上传关区对照表： <input class='upload_file' type="file" name="upload_file"  /></td>
+	    <td>
+	        <button type="submit" class="btn btn-primary submit-button"><i class="icon-upload icon-white"></i><%= t("view.upload")%></button>
+	    </td>
+	  </tr>
+	</table>
+</form>
+</div>
+<div id='org-for-doc-list'></div>
+
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/org_for_doc','docview/models').then(function($) {
+   $('#org-for-doc-list').docview_ui_org_for_doc();
+   $('#org-for-doc-list').docview_ui_org_for_doc("show");
+/*
+   var controller =  $('#org-for-doc-list').controller();
+
+  $("#org-for-doc-export").click(function(){
+	controller.exportToExcel();
+	});
+*/
+ });
+ </script>

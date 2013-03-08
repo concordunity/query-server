@@ -85,10 +85,14 @@ steal(
 	    this.element.find("button[name='"+button_name+"']").removeClass("button-option-onblure");    
 	    $(el).addClass("button-option-onblure");    
 	    if (button_name == "frm_total" && button_value == ""){
-		this.element.find("input[name='"+button_name+"']").attr("value","");
-		this.element.find("input[name='"+button_name+"']").attr("style","display:''");	
-	    } else{
+			this.element.find("input[name='"+button_name+"']").attr("value","");
+			this.element.find("input[name='"+button_name+"']").attr("style","display:''");	
+	    }else if(button_value == "other"){
+			this.element.find("input[name='"+button_name+"']").attr("value","");
+			this.element.find("div." + button_name).attr("style","display:''");	
+		} else{
 		this.element.find("input[name='"+button_name+"']").attr("style","display:none");
+		this.element.find("div." + button_name).attr("style","display:none");
 	    }
 	    this.element.find("input[name='"+button_name+"']").attr("value",button_value);
 	},
@@ -393,10 +397,13 @@ steal(
 		isMod = "1";
 	    }
             */
-
+	    var org = el.find("input[name='org']").val();
+		if (org == "other"){
+			org = el.find("select[name='select_org']").val();
+		}
 	    this.options.clientState.attr('search', {
 		total : total,
-		org : el.find("input[name='org']").val(),
+		org : org, 
 		org_applied : el.find('select[name="org_applied"]').val(),
 		docType : el.find("input[name='frm_docType']").val(),
 		years : el.find('select[name="years"]').val(),

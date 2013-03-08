@@ -17,6 +17,7 @@ class RequisitionController < ApplicationController
 
 	where_condition = {}
 	sql_condition = ["'status' is not null AND status <> 21"] 
+	org_condition = params[:org].to_s == "2200" ? [""] : {:org =>params[:org]}
 	date_arr = params[:start_date].to_date.to_datetime .. params[:end_date].to_date.next.to_datetime
 	username =  params[:username]
 	case params[:type]
@@ -37,7 +38,7 @@ class RequisitionController < ApplicationController
 		#where_condition[:write_off_staff] = username unless username.blank? 
 		where_condition[:write_off_time] = date_arr 
 	end
-	@requisitions = Requisition.where(:org => params[:org]).where(where_condition).where(sql_condition.join(" AND ")).order("created_at desc")
+	@requisitions = Requisition.where(org_condition).where(where_condition).where(sql_condition.join(" AND ")).order("created_at desc")
     requisition_details = get_details(@requisitions) 
 	result = {:requisitions => @requisitions, :requisition_details => requisition_details}
 

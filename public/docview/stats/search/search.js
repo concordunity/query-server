@@ -106,7 +106,7 @@ steal(
                     },
                     dataType : 'json',
                     success :function(data){
-			$('.stats_stats h1.legend-h1 div').html('截止到 '+ $.date(new Date).format('yyyy-MM-dd') + '为止，系统中单证电子档案查阅总数为：<b>'+data.query_total+'</b> 份，查阅率为：<b>'+data.query_p+' </b>，存量数为：<b>'+ data.doc_count+'</b><div id="stats_total" style="display:inline" ></div>');
+			$('.stats_stats h1.legend-h1 div').html('截止到 '+ $.date(new Date).format('yyyy-MM-dd') + '为止，系统中单证电子档案查阅总数为：<b>'+data.query_total+'</b> 份，查阅率为：<b>'+data.query_p+' </b><div id="stats_total" style="display:inline" ></div>');
 		    }, //this.proxy('show_stats'),
                     error : this.proxy('failure')
                 });
@@ -307,7 +307,10 @@ steal(
 							+ $.thousands(data.docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.pages_total) 
-							+'</b> 页').show('slow')
+							+ ' </b>页，存量数为：<b>'
+							+ $.thousands(data.doc_count)
+							+ ' </b>份 '
+							).show('slow')
 							.addClass('alert alert-info')
 							.css({
 									'border-color':'#E3E3E3',

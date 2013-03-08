@@ -29,6 +29,18 @@ $.Model('Docview.Models.File',
             dataType : 'json file.models'
         });
     },
+    getOrgForDoc : function(params, success, error) {
+        return $.ajax({
+            url : '/admin/get_org',
+            type : 'get',
+            data : params,
+            success : success,
+            error : error,
+	    async : true,
+            dataType : 'json file.models'
+        });
+    },
+
     getDictionary : function(params, success, error) {
         return $.ajax({
             url : '/dictionary_info/get_dictionary',

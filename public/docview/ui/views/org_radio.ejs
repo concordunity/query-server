@@ -7,6 +7,20 @@
 	  <button type="button" name="<%= name %>" value="2201" class="btn button-option ">浦江</button>
 	  <button type="button" name="<%= name %>" value="2225" class="btn button-option ">外港</button>
 	  <button type="button" name="<%= name %>" value="2248" class="btn button-option ">洋山</button>
-          <input type='hidden' name='<%= name %>' value="" />
+	  <br />
+	  <br />
+	  <button type="button" name="<%= name %>" value="2218" class="btn button-option ">保税区</button>
+	  <button type="button" name="<%= name %>" value="2221" class="btn button-option ">松江海关</button>
+	  <button type="button" name="<%= name %>" value="2210" class="btn button-option ">浦东海关</button>
+	  <button type="button" name="<%= name %>" value="other" class="btn  button-option " >其他</button>
+	  <div style="display:none" class="<%= name%>">
+	    <select class="select_org" name="select_org">
+		<% $.each(orgJsonDictionary,function(i,v){ 	%>			
+			<% if(($.inArray(i.toString(),["2233","2202","2201","2225","2248","2218","2221","2210","2200"])) == -1){ %>
+					<option value="<%= i%>"><%= v%></option>
+		<% }})%>
+		</select>
+	  </div>
+	  <input type='hidden' name='<%= name %>' value="" />
      </div>
 </div>

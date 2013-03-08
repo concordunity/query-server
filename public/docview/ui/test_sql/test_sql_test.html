@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>test_sql Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="test_sql-test">  </div>
+	<%= query_review_output%>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/test_sql').then(function($) {
+
+   $('#test_sql-test').docview_ui_test_sql();
+
+ }); 
+ </script>
+        </body>
+</html>
+

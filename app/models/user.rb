@@ -52,6 +52,12 @@ class User < ActiveRecord::Base
     }.include?('aOperateInvolved')
   end
 
+  def can_checkedout?
+    web_links.collect { |t|
+      t.name
+    }.include?('aOperateLended')
+  end
+
   def admin?
      return !roles.where(:name => 'admin').empty?
   end

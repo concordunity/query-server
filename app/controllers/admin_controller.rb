@@ -57,6 +57,20 @@ class AdminController < ApplicationController
       
   end
 
+  def org_for_doc
+
+  end
+
+  def get_org 
+	dic_type = params[:dic_type]
+	if dic_type.nil?
+	    dis = OrgForDoc.all
+	else
+	    dis = OrgForDoc.where(:dic_type => dic_type)
+	end
+	render json: dis, status: 200
+  end
+
   def show_docs
     #@docs = Document.all
     logger.info current_user.to_json 

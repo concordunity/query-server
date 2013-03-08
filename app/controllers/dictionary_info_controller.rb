@@ -35,16 +35,16 @@ class DictionaryInfoController < ApplicationController
     if result[:status] == true
 	logger.info('------2')
 	logger.info filepath
-        sheet = open_excel(filepath)
+	sheet = open_excel(filepath)
 	sheet.each_with_index do |row,index|
 #	    logger.info row
-	    if index != 0
+	    if index != 0 && (!row[0].nil? || !row[2].nil?)
 	    dis = DictionaryInfo.where(:dic_type => row[0], :dic_num => row[2]).first
 	    if dis.nil?
-		DictionaryInfo.create(:dic_type => row[0], :dic_name => row[1], :dic_num => row[2])
+			DictionaryInfo.create(:dic_type => row[0], :dic_name => row[1], :dic_num => row[2])
 	    else
-		dis.dic_name = row[1]
-		dis.save	
+			dis.dic_name = row[1]
+			dis.save	
 	    end
 	    end
 	end
@@ -59,6 +59,65 @@ class DictionaryInfoController < ApplicationController
 
     redirect_to "/admin/dictionary"	
   end
+
+  def upload_org
+    #将文件上传到服务上
+    upload_file = params[:upload_file]
+    result = {}
+    result[:message]  = []
+    filepath = ""
+    tmp_path = File.join("/","tmp",Time.now.to_i.to_s)
+    begin
+    unless request.get?
+      if upload_file.nil?
+        result[:status] = false
+        result[:message]  << "请选择一个文件"
+      elsif File.extname(upload_file.original_filename) != ".xls"
+        result[:status] = false
+        result[:message]  << "上传的文件格式不正确，请重新上传"
+      else
+        system("mkdir #{tmp_path}")
+        filepath = File.join(tmp_path,upload_file.original_filename)
+        upload_file_to_server(filepath,upload_file)
+        result[:status] = true
+        result[:message] << '上传成功'
+      end
+    end
+    rescue => e
+        logger.info e
+        result[:status] = false
+        result[:message] << '上传失败'
+    end
+      #解析文件，保存到数据库
+    logger.info('==========1=')
+    begin
+    if result[:status] == true
+	logger.info('------2')
+	logger.info filepath
+	sheet = open_excel(filepath)
+	sheet.each_with_index do |row,index|
+#	    logger.info row
+		    dis = OrgForDoc.where(:org_number=> row[0], :org=> row[2]).first
+			if dis.nil?
+				OrgForDoc.create(:org_number=> row[0], :org_name => row[1], :org => row[2])
+			else
+				dis.org_name = row[1]
+				dis.save	
+			end
+	end
+	result[:message] << "更新成功"	
+    end
+    rescue => e
+        logger.info e
+        result[:status] = false
+	result[:message] << "更新失败"	
+    end
+    flash[:notice] = result[:message].join(",")
+
+    redirect_to "/admin/org_for_doc"	
+
+  end
+
 
   def get_dictionary
 	dic_type = params[:dic_type]

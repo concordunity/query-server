@@ -80,6 +80,9 @@ class DocumentsController < ApplicationController
         if @document.inquired &&  !(can? :inquired, Document)
           res_message = { :status => 403.1, :message => t('doc.not_authorized') }
         end
+        if @document.checkedout &&  !(can? :checkedout, Document)
+          res_message = { :status => 403.1, :message => t('doc.not_authorized') }
+        end
       end
       logger.info "=============1"
       logger.info res_message == {}
@@ -165,6 +168,9 @@ class DocumentsController < ApplicationController
         if d.inquired && !current_user.can_inquire?
           d.access_info = "inquired"
         end
+        if d.checkedout && !current_user.can_checkedout?
+          d.access_info = "denied"
+        end
       end
     }
 
@@ -186,7 +192,10 @@ class DocumentsController < ApplicationController
         if d.inquired && !current_user.can_inquire?
           d.access_info = "inquired"
         end
-      end
+		if d.checkedout && !current_user.can_checkedout?
+          d.access_info = "denied"
+        end
+     end
     }
 =begin
     qh = QueryHistory.create(:user_id=> current_user.id,
@@ -219,12 +228,17 @@ class DocumentsController < ApplicationController
       limitN = params[:total].to_i
     end
 
-    docids = DocumentPage.select('distinct(doc_id)').where(:paget => filter).reorder('rand()').limit(limitN).all
+	org_condition = {}
+    if !params[:org].blank?
+	  org_condition[:org] = params[:org] 
+    end
 
+
+    docids = DocumentPage.select('distinct(doc_id)').where(:paget => filter).reorder('rand()').limit(limitN).all
     docid_str = docids.collect { |d| d.doc_id }
 
-    @documents = Document.where(:doc_id => docid_str).where('pages < 50')
-    render json: { :results => @documents }, :status => 200
+    @documents = Document.where(:doc_id => docid_str).where('pages < 50').where(org_condition)
+   render json: { :results => @documents }, :status => 200
   end
 
   def search_special_docs(doc_type)
@@ -408,7 +422,11 @@ class DocumentsController < ApplicationController
           render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403.1 
           return
         end
-      end
+		if @document.checkedout &&  !(can? :checkedout, Document)
+          render json: { :status => :error, :message => t('doc.not_authorized') }, :status => 403.1 
+          return
+        end
+     end
 
 
 
@@ -817,8 +835,8 @@ class DocumentsController < ApplicationController
     end
 
     if (check_for_inquired)
-      @documents = @documents.keep_if {
-        |d| current_user.can_view?(d) && (!d.inquired || (can? :inquire, Document))
+      @documents = @documents.keep_if { |d| 
+		current_user.can_view?(d) && (!d.inquired || (can? :inquire, Document) && (!d.checkedout || (can? :checkedout ,Document)))
       }
     else
       @documents = @documents.keep_if {

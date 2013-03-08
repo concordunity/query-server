@@ -155,9 +155,6 @@ class DocumentHistoriesController < ApplicationController
   #   "condition_value"=>{"frm_org"=>"2225", "frm_docType"=>"CK", "frm_years"=>"3"}}
   def dh_report#_condition
 
-    # first check the time range.
-    doc_count = 0
-	doc_count = Document.where([" org = 2233 and datediff(created_at,edc_date) > 60"]).order("edc_date").count
 
 
     where_clause = {}
@@ -174,7 +171,11 @@ class DocumentHistoriesController < ApplicationController
     org_condition = ((condition[:org].nil? || condition[:org] == "") ? ["true"] : {:org => condition[:org]})
     docType_condition = ((condition[:doc_type].nil? || condition[:doc_type] == "") ? ["true"] : {:doc_type => condition[:doc_type]})
 
-    docs_records = Document.where(where_clause).where(docType_condition)
+    # first check the time range.
+    doc_count = 0
+	doc_count = Document.where(["datediff(created_at,edc_date) > 60"]).where(org_condition).where( where_clause ).order("edc_date").count
+    
+	docs_records = Document.where(where_clause).where(docType_condition)
     docs_total = docs_records.count
     pages_total = docs_records.sum("pages")
 	#sum modefy document pages

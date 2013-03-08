@@ -1,10 +1,11 @@
-<div id="subnavigation-header" class="docview_subnav" style="display: <%= ["log_index","update_system","show_docs","dictionary"].include?(action_name) ? "block" : "none" %>;"><div class="subnav subnav-fixed">
+<div id="subnavigation-header" class="docview_subnav" style="display: <%= ["log_index","update_system","show_docs","dictionary","org_for_doc"].include?(action_name) ? "block" : "none" %>;"><div class="subnav subnav-fixed">
     <div class="container-fluid">
-	<div class="system" style='display: <%= ["log_index","update_system","dictionary"].include?(action_name) ? "" : "none"%>;'>
+	<div class="system" style='display: <%= ["log_index","update_system","dictionary","org_for_doc"].include?(action_name) ? "" : "none"%>;'>
         <ul class="nav nav-pills"> 
 	    <li class="<%= "update_system" == action_name ? "active" : "" %>"><a href="/admin/update_system">系统升级</a></li>
 	    <li class="<%= "log_index" == action_name ? "active" : "" %>"><a href="/admin/log_index">系统日志</a></li>
 	    <li class="<%= "dictionary" == action_name ? "active" : "" %>"><a href="/admin/dictionary">字典表管理</a></li>
+	    <li class="<%= "org_for_doc" == action_name ? "active" : "" %>"><a href="/admin/org_for_doc">关区对照表管理</a></li>
 	</ul>
 	</div>
 	<div class="documents"  style='display: <%= ["show_docs"].include?(action_name) ? "" : "none"%>;'>

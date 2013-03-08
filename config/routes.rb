@@ -1,5 +1,8 @@
 Dms::Application.routes.draw do
 
+  post "/admin/upload_org" => "dictionary_info#upload_org"
+  get "/admin/org_for_doc" => "admin#org_for_doc"
+  get "/admin/get_org" => "admin#get_org"
   get "/documents/test" => "documents#index_paging"
   get "/requisition_print" =>  "requisition#print"
   get "/filter_docs" => "requisition#filter_docs"

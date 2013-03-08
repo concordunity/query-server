@@ -9,12 +9,9 @@
     		<label class="control-label" ><%= $.i18n._('label.application.org') %></label>
 			<div class="controls" >
     		<select name="org">
-			<% $.each(orgJsonDictionary,function(i,v){
-				if(i !== "2200"){
-	 				%>
+			<% $.each(orgJsonDictionary,function(i,v){ %>
         			<option value='<%= i %>'><%= v %></option>
-					<%}
-			}); %>
+			<% }); %>
     		</select>
 			</div>
 		</div>
