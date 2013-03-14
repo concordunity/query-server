@@ -134,7 +134,7 @@ class DictionaryInfoController < ApplicationController
 	 dis.each do |dic_type| 
 	    di_arr = []
 	    di_json = []
-	    DictionaryInfo.where(:dic_type => dic_type).each do |di|
+	    DictionaryInfo.where(:dic_type => dic_type).reorder("dic_name").each do |di|
 		# org_json = {'1':'a','2':'b'}
 		# org_arr =  [{},{},{}]
 		#

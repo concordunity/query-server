@@ -148,52 +148,47 @@ steal(
 	  log('system',{current_action:'manage_account.users',describe:message});
 	  return handled;
 	},
-        storeRoles: function(roles) {
-            // Keep a reference to the list of available roles.
-            // This is useful when showing a list of available roles
-            // that we can assign to a user.
-            this.roles = roles;
-//            //console.log(this.roles);
-        },
-        getRoles: function() {
+	storeRoles: function(roles) {
+    	// Keep a reference to the list of available roles.
+        // This is useful when showing a list of available roles
+        // that we can assign to a user.
+        this.roles = roles;
+		//console.log(this.roles);
+	},
+	getRoles: function() {
 	    return this.roles;
 	},
-        // Creating a user
-        '#new-user-btn click': function() {
-            // Load up the creation form
-
-	    console.log('------new-user----');
+    // Creating a user
+	'#new-user-btn click': function() {
+		// Load up the creation form
+		console.log('------new-user----');
 	    //console.log(this.orgsDic);
-            $('#new-user').html(this.view('new_user', {cntl : this}));
+		$('#new-user').html(this.view('new_user', {cntl : this}));
 	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
-        },
-        '#new-user-form submit': function(el, ev) {
-            ev.preventDefault();
-            var username = el.find('input[name="username"]').val();
-            var fullname = el.find('input[name="fullname"]').val();
-	    var doc_type = el.find('select[name="doc_type"]').val();
-            var roles = el.find('select[name="roles"]').val();
-            var email = el.find('input[name="email"]').val();
-
-            var orgController = el.find('div.org-selection-holder').controller();
-
-
-            var password = el.find('input[name="password"]').val();
-            var confirmation = el.find('input[name="password-confirm"]').val();
-
-            // Clear any previous error messages in the form
-            this.removeFormErrors(el);
-            
-            // Scan for empty fields (jsmvc can actually do this in the model layer I believe)
-            var error = false;
-            if (username === "") {
-                this.displayFormError(el, "username", "请输入用户名");
-                error = true;
-            }
-            if (fullname === "") {
-                this.displayFormError(el, "fullname", "请输入用户全名");
-                error = true;
-            }
+	},
+	'#new-user-form submit': function(el, ev) {
+		ev.preventDefault();
+        var username = el.find('input[name="username"]').val();
+        var fullname = el.find('input[name="fullname"]').val();
+		var doc_type = el.find('select[name="doc_type"]').val();
+        var roles = el.find('select[name="roles"]').val();
+        var email = el.find('input[name="email"]').val();
+		var subjection_org = el.find('select[name=subjection_org]').val();
+        var orgController = el.find('div.org-selection-holder').controller();
+		var password = el.find('input[name="password"]').val();
+       	var confirmation = el.find('input[name="password-confirm"]').val();
+		// Clear any previous error messages in the form
+        this.removeFormErrors(el);
+        // Scan for empty fields (jsmvc can actually do this in the model layer I believe)
+       	var error = false;
+        if (username === "") {
+            error = true;
+        	this.displayFormError(el, "username", "请输入用户名");
+        }
+		if (fullname === "") {
+			this.displayFormError(el, "fullname", "请输入用户全名");
+            error = true;
+        }
             if (password === "") {
                 this.displayFormError(el, "password", "请输入密码");
                 error = true;
@@ -219,10 +214,11 @@ steal(
                     user: {
                         username: username,
                         fullname: fullname,
+						subjection_org:subjection_org,
                         orgs: orgController.getOrgs(),
                         password: password,
                         email: email,
-			doc_type : doc_type
+						doc_type : doc_type
                     }
                 });
                 
@@ -243,7 +239,7 @@ steal(
                     heading: '提示信息',
                     message : '成功添加新用户 ' + user.user.username 
 		    });
-		this.reload();
+			this.reload();
                 // Remove a few unnecessary fields in user
                 //delete user.status;
                 //delete user.password;

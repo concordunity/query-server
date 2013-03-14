@@ -59,9 +59,60 @@ steal(
 	    }
 	    return result;
 	},
+    filter_form : function(user,role){
+		var hasOK=true;
+		var hasOK1=true;
+		var hasOK2=true;
+		var message = ""; 
+		var error = [];
+	    var arrStatue = [];
+        if(!!user){
+			if(/.xls$/i.test(user)){
+					//OK
+				hasOK1 = true;
+			}else{
+				hasOK1 = false;
+				//Error
+				error.push("文件格式错误,文件后缀名必须是 '.xls' 格式。");
+			}
+		}else{
+				arrStatue.push("user");
+				error.push("没有选择文件上传");
+		}
+        if(!!role){
+			if(/.xls$/i.test(role)){
+					//OK
+				hasOK2 = true;
+			}else{
+				hasOK2 = false;
+				//Error
+				error.push("文件格式错误,文件后缀名必须是 '.xls' 格式。");
+			}
+
+		}else{
+				arrStatue.push("role");
+				error.push("没有选择文件上传");
+		}
+		console.log(arrStatue);
+        if (arrStatue.length == 2) {
+			hasOK = false;
+			message = "没有选择文件上传";
+		} else {
+			if (hasOK1 == false || hasOK2 == false){
+				hasOK = false;
+				message = "文件格式错误,文件后缀名必须是 '.xls' 格式。";
+			}
+		}
+		return [hasOK,message];
+	},
 	"form[name='upload_user_form'] submit" : function(el,ev){
 		//ev.preventDefault();
 		var upload_file = $("input.upload_file[name='upload_user']").val();
+		var upload_role = $("input.upload_file[name='upload_role']").val();
+		var result  = this.filter_form(upload_file,upload_role);
+		var hasOK = result[0];
+		var error = result[1];
+/*
 		var hasOK = false,error;
 		if(!!upload_file){
 			//Microsoft(R) Office Excel File Format
@@ -77,6 +128,7 @@ steal(
 		}else{
 				error = "没有选择文件上传";
 		}
+*/
 		//上传文件不符合要求,存在错误 , 动作取消
 		if(!hasOK){
 			this.showMessage(error);

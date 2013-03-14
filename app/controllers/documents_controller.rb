@@ -331,16 +331,19 @@ class DocumentsController < ApplicationController
       limitN = params[:total].to_i
     end
 
-	
+	sql_condition << "rand_weight < #{rand()}"
+	@documents = Document.where(where_condition).where(sql_condition.join(" AND ")).reorder("rand_weight desc").limit(limitN)
+
+=begin	
 	count = Document.where(where_condition).where(sql_condition).count
-	limit = 20000 
+	limit = 2000 
 	offset = count - limit  
 	if offset < limit 
 		@documents =  Document.where(where_condition).where(sql_condition).sample(limitN)
     else
 		@documents =  Document.where(where_condition).where(sql_condition).limit(limit).offset(rand(offset)).sample(limitN)
     end 
-
+=end
 	logger.info "============"
 #	logger.info @documents 
     respond_to do |format|
@@ -602,6 +605,7 @@ class DocumentsController < ApplicationController
     end
     @document.inquired = false
     @document.checkedout = false
+    @document.rand_weight = rand()
 
     ds = params[:source]
     src = 0

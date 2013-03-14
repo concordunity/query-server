@@ -121,7 +121,7 @@ steal(
 	
         addDocTree : function(docInfo, doc_index) {
 
-	    console.log("In treeController ,docInfo is ",docInfo,",doc_index is ",doc_index);
+	    //console.log("In treeController ,docInfo is ",docInfo,",doc_index is ",doc_index);
             var pageCount = 1;
             var navEl = this.element.find('ul.nav');
 	    

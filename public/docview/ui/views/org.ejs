@@ -1,22 +1,17 @@
-
 <div class="control-group">
 <label  class="control-label"><%= label %></label>
 <div class="controls">
- <select name="<%= name %>" style="width: 180px;">
+<select name="<%= name %>" >
 <% 
-	if (orgsDic != 'undefined'){
-	for(var i=0;i< orgsDic.length;i++){
-	    data = orgsDic[i];
-	    if (data.dic_num != "2200" ) {
- %>
-                <option value="<%= data.dic_num %>"><%= data.dic_name%>(<%=  data.dic_num%>)</option>
-	    <% }else{%>
-                <option value="">不限</option>
-<%
-	     }
-	}
+	for(var i=0;(this.orgsDic!= 'undefined') && i < this.orgsDic.length;i++){
+		var org = this.orgsDic[i];
+	    if (org.dic_num == "2200" ) { 
+			%><option value="">不限</option><%
+		}else{
+			%><option value="<%= org.dic_num %>"><%= org.dic_name%>(<%=  org.dic_num%>)</option><% 
+		}
 	}
 %>
-  </select>
-  </div>
+</select>
+</div>
 </div>

@@ -93,6 +93,7 @@ class AccountsController < ApplicationController
       @user.fullname = params[:user][:fullname]
       @user.password = params[:user][:password]
       @user.orgs = params[:user][:orgs]
+      @user.subjection_org = params[:user][:subjection_org]
       @user.email = params[:user][:email]
       @user.doc_type = params[:user][:doc_type]
     else
@@ -100,6 +101,7 @@ class AccountsController < ApplicationController
       @user.fullname = params[:fullname]
       @user.password = params[:password]
       @user.orgs = params[:orgs]
+      @user.subjection_org = params[:user][:subjection_org]
       @user.email = params[:email]
       @user.doc_type = params[:doc_type]
     end

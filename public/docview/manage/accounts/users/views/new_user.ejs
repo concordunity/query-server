@@ -48,10 +48,13 @@
                 <label><%= $.i18n._('label.user.pass_confirm') %></label>
                 <input name="password-confirm" type="password" value="123456" />
             </fieldset>
+            <fieldset class="control-group">
+            	<%== $.View('//docview/ui/views/org.ejs', { label: '隶属关区', name : 'subjection_org', orgsDic : orgArrayDictionary } ) %>
+			</fieldset>
 
             <fieldset class="control-group">
             <label><%= $.i18n._('label.user.organization') %></label>
-<div class="org-selection-holder"></div>
+			<div class="org-selection-holder"></div>
             </fieldset>	
         </div>
 

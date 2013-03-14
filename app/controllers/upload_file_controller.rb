@@ -7,6 +7,27 @@ require 'activerecord-import'
 class UploadFileController < ApplicationController
 
   def system_upload 
+    upload_user_file = params[:upload_user]
+    upload_role_file = params[:upload_role]
+
+    dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
+    dialog_path_end = File.join(Rails.root,"public","docview","export_data",current_user.username+".end")
+
+	logger.info "===========准备进行相关验证========"
+	system("touch #{dialog_path}") 
+	unless upload_user_file.nil? 
+		user_message = upload_user 
+		write_to_file(dialog_path,user_message)
+	end
+	unless upload_role_file.nil? 
+		role_message = upload_role 
+		write_to_file(dialog_path,role_message)
+	end
+	system("touch #{dialog_path_end}")
+    render :nothing => true 
+  end
+
+  def upload_user
     upload_file_name = params[:upload_user]
     params[:url_time_path] = Time.now.to_i.to_s
     upload_result = upload(upload_file_name)
@@ -22,11 +43,6 @@ class UploadFileController < ApplicationController
 	}
 	logger.info dih	
 
-    dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
-    dialog_path_end = File.join(Rails.root,"public","docview","export_data",current_user.username+".end")
-	logger.info "===========准备进行相关验证========"
-	system("touch #{dialog_path}")
-
     if upload_result[:status] == true
       file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
 	  User.transaction do 
@@ -37,7 +53,8 @@ class UploadFileController < ApplicationController
           @user = User.find_by_username(row[0])
 			
 		  org_ids = [] 
-		  row[3].split(/[,| ]/).each do |org|
+		  logger.info row[3].split(/[,|\s|\t]+/) 
+		  row[3].split(/[,|\t|\s]+/).each do |org|
 			logger.info "===========" 
 			logger.info org
 			logger.info dih[org] 
@@ -48,7 +65,6 @@ class UploadFileController < ApplicationController
             @user.role_ids = row[2]
             @user.orgs = org_ids.join(",") 
             @user.doc_type = row[4]
-            @user.password = 123456
             @user.save
           else
             @user = User.new
@@ -69,19 +85,57 @@ class UploadFileController < ApplicationController
           end
           success_count += 1
         end
-        result_info[:message]="更新成功"
+        result_info[:message]="用户表更新成功"
       rescue => e
         logger.info e
-        result_info[:message]="更新失败"
+        result_info[:message]="用户表更新失败"
 		raise ActiveRecord::Rollback, ex	
       end
 	  end
     else
-      result_info[:message]="更新失败"
+      result_info[:message]="用户表更新失败"
     end
-    write_to_file(dialog_path,result_info[:message])
-	system("touch #{dialog_path_end}")
-    render :nothing => true 
+	return result_info[:message]
+  end
+
+  def upload_role
+    upload_file_name = params[:upload_role]
+    params[:url_time_path] = Time.now.to_i.to_s
+    upload_result = upload(upload_file_name)
+    success_count = 0
+    result_info = Hash.new
+
+    if upload_result[:status] == true
+      file_url = File.join(Rails.root,"public","docview","export_data",params[:url_time_path],upload_file_name.original_filename)
+	  Role.transaction do 
+		begin
+          result = format_role(file_url)
+		  result.each_with_index do |row,index|
+			  @role = Role.find_by_name(row[0])
+		      @role = Role.new() if @role.nil?
+			  @role.name = row[0] 
+			  @role.display_name = row[0] 
+			  web_links = row[1].split(/[,| ]/) 
+			  wl_objs = WebLink.where(:description => web_links)
+			  if !wl_objs.empty?
+				   @role.web_links = wl_objs
+				  if @role.save
+					  @role.hack_display_name
+				  end
+			  end
+		  end
+		  success_count += 1
+		  result_info[:message]="权限表更新成功"
+	    rescue => e
+		  logger.info e
+		  result_info[:message]="权限表更新失败"
+		  raise ActiveRecord::Rollback, ex	
+		end
+	  end
+    else
+      result_info[:message] = "权限表更新失败"
+    end
+	return result_info[:message]
   end
 
   def import_excel
@@ -402,6 +456,18 @@ class UploadFileController < ApplicationController
 	}	
     return result    
   end
+
+  def format_role(file_url)
+    result = [] 
+    sheet = self.open_excel File.join(file_url)
+    sheet.each_with_index { |row,index|
+      if index != 0 && !row[0].nil?
+        result << row 
+      end
+      } unless sheet.blank?
+      return result
+  end
+
   #import data into excel for formatting data (打开excel文件，然后生成对应格式的数据源)
   def format_data(file_url)
     result = [] 
