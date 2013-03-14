@@ -338,6 +338,45 @@ class DocumentHistoriesController < ApplicationController
         return query_stats_by
       end
 
+      #月份部分
+      def search_condition_month2(function_params)
+		queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+        query_stats_by = {}
+        months = [Time.now.end_of_month]
+        6.times do
+          t = (months.last - 32.days).end_of_month
+          if (t.strftime("%Y/%m") == '2012/03')
+            months << (t - 1.month)
+            break;
+          end
+          months << t
+        end
+
+		logger.info "### BEGIN LOAD DATA FROM DOCUMENT STATS ###"
+		
+		(0..(months.length - 2)).each { |i|
+        	key = months[i].strftime("%Y/%m")
+        	where_clause = { :created_date => months[i + 1] .. months[i] }
+	
+			logger.info "### CREATED  DATE:#{where_clause} ###"
+			logger.info "### ORG CONDITION:#{org_condition}#{docType_condition} ###"
+				
+	
+			document_stats =  DocumentStat.where(where_clause).where(org_condition).where(docType_condition)
+	
+          	query_stats_by[key] = document_stats.collect { |obj|
+            { :org			=> obj[:org],
+              :num_docs 	=> obj[:docs],
+              :num_pages 	=> obj[:pages],
+              :num_queries	=> obj[:queries],
+              :percentage_qq=> obj[:percent_q].to_s + "%"
+            }
+          }
+        }
+		logger.info "### END OF LOAD DATA FROM DOCUMENT STATS ###"
+        return query_stats_by
+      end
+
       def get_doc_type
         doc_type = params[:condition_value][:doc_type]
 
