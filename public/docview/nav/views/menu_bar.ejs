@@ -19,7 +19,11 @@
                 <a href="#requisition_docs"><i class="icon-file icon-white"></i> <%= $.i18n._('menu_requisition') %> </a>
               </li>
           <% } %>
-
+          <% if (this.business_process) { %>
+              <li class="">
+                <a href="#business_process"><i class="icon-file icon-white"></i> <%= $.i18n._('menu_business_process') %> </a>
+              </li>
+          <% } %>
           <% if (this.stats) { %>
               <li class="">
                 <a href="#stats"><i class="icon-th-list icon-white"></i> <%= $.i18n._('menu_report') %></a>

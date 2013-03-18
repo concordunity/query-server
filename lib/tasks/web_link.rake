@@ -1,6 +1,58 @@
 # -*- coding: utf-8 -*-
 namespace :web_link do
 
+  desc "add 交接单 menu for web link"
+  task :add_business_process_for_web_link => :environment do
+      if WebLink.where(:name => "aBusinessProcessInterchangeReceiptCreate").length == 0
+	  	  WebLink.create(:name => "aBusinessProcessInterchangeReceiptCreate",:description => "交接清单录入",:controller => "eir_business_process",:action => "create_interchange_receipt")
+      else
+	  	  a = WebLink.where(:name => "aBusinessProcessInterchangeReceiptCreate").first
+		  a.description = "交接清单录入" 
+		  a.controller = "eir_business_process" 
+		  a.action = "create_interchange_receipt" 
+		  a.save
+      end
+
+      if WebLink.where(:name => "aBusinessProcessInterchangeReceiptSearch").length == 0
+	  	  WebLink.create(:name => "aBusinessProcessInterchangeReceiptSearch",:description => "交接清单接收",:controller => "eir_business_process",:action => "search_interchange_receipt")
+      else
+	  	  a = WebLink.where(:name => "aBusinessProcessInterchangeReceiptSearch").first
+		  a.description = "交接清单接收" 
+		  a.controller = "eir_business_process" 
+		  a.action = "search_interchange_receipt" 
+		  a.save
+      end
+      if WebLink.where(:name => "aBusinessProcessDishonoredBillCreate").length == 0
+	  	  WebLink.create(:name => "aBusinessProcessDishonoredBillCreate",:description => "退单录入",:controller => "eir_business_process",:action => "create_dishonored_bill")
+      else
+	  	  a = WebLink.where(:name => "aBusinessProcessDishonoredBillCreate").first
+		  a.description = "退单录入" 
+		  a.controller = "eir_business_process" 
+		  a.action = "create_dishonored_bill" 
+		  a.save
+      end
+      if WebLink.where(:name => "aBusinessProcessDishonoredBillSearch").length == 0
+	  	  WebLink.create(:name => "aBusinessProcessDishonoredBillSearch",:description => "退单查询",:controller => "eir_business_process",:action => "search_dishonored_bill")
+      else
+	  	  a = WebLink.where(:name => "aBusinessProcessDishonoredBillSearch").first
+		  a.description = "退单查询" 
+		  a.controller = "eir_business_process" 
+		  a.action = "search_dishonored_bill" 
+		  a.save
+      end
+      if WebLink.where(:name => "aBusinessProcessStatisticalInquiry").length == 0
+	  	  WebLink.create(:name => "aBusinessProcessStatisticalInquiry",:description => "交接单统计查询",:controller => "eir_business_process",:action => "statistical_inquiry")
+      else
+	  	  a = WebLink.where(:name => "aBusinessProcessStatisticalInquiry").first
+		  a.description = "交接单统计查询" 
+		  a.controller = "eir_business_process" 
+		  a.action = "statistical_inquiry" 
+		  a.save
+      end
+
+  end
+
+
 
   desc "add log menu for web link"
   task :add_log_for_web_link => :environment do

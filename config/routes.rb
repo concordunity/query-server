@@ -1,5 +1,6 @@
 Dms::Application.routes.draw do
 
+  post "/eir_business_process" => "eir_business_process#business_process"
   post "/admin/upload_org" => "dictionary_info#upload_org"
   get "/admin/org_for_doc" => "admin#org_for_doc"
   get "/admin/get_org" => "admin#get_org"

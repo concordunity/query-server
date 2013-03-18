@@ -12,15 +12,20 @@ class DocumentsController < ApplicationController
   # GET /documents.json
 
   respond_to :html, :json
+  
   def index_paging
+	documents = Document.where({ :org => params[:org]  })
+	render json: filter_proc( documents ,params )
+  end
+  
+  def filter_proc(source,params) 
  	  column_count = params[:iColumns]
 	  iSortCol_0 = params[:iSortCol_0]	  
 	  sSortDir_0 = params[:sSortDir_0]	  
 	  sSearch = params[:sSearch]
 	  mDataPro = params["mDataProp_" + iSortCol_0]
 	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
-      current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-	  conditions_arr = []
+	  conditions_arr = [] 
 	  if sSearch.blank?
 		conditions_arr << "true"
 	  else
@@ -30,13 +35,12 @@ class DocumentsController < ApplicationController
 		 end
 	  end
 	  orders = "#{mDataPro} #{sSortDir_0}"	
-
-	  @documents = Document.where(conditions_arr.join(" OR ")).order(orders).paginate :page => current_page, :per_page => params[:iDisplayLength]
-	  respond_to do |format|
-	  	  format.html # index.html.erb
-		  format.json { render json: { sEcho: params[:sEcho].to_i, iTotalRecords: Document.count, iTotalDisplayRecords: Document.count, aaData: @documents } }
-	  end
+      current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
+	  condition = {:orders =>orders,:where=>conditions_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
+	  result = source.where(condition[:where]).order(condition[:orders]).paginate(:page => condition[:page], :per_page => condition[:per_page] )
+	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: result }
   end
+
 
   def index
 
@@ -803,8 +807,10 @@ class DocumentsController < ApplicationController
         @documents = @documents.where(:edc_date => start_date.to_date..end_date.to_date).order("edc_date")
       end
     end
-
-    render json: { :results => @documents[0,1000] , :totals => @documents.length}, :status => 200
+	render json:  filter_proc(@documents , params)
+	
+	#render json: { :results => @documents , :totals => @documents.length}, :status => 200
+    #render json: { :results => @documents[0,1000] , :totals => @documents.length}, :status => 200
   end
 
   def stats_export

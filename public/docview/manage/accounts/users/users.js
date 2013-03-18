@@ -278,17 +278,15 @@ steal(
 
 	    var userInfo = this.tableController.getRowModelDataFor(el);
 
-            userRow = userInfo.tr;
-            userRow.model(userInfo.model);
+		userRow = userInfo.tr;
+		userRow.model(userInfo.model);
 	    userRow.hide();
 	    //console.log(userInfo.model);
             
-	    var editHtml = this.view('edit_user', 
-				     {cntl : this, user: userInfo.model});
+	    var editHtml = this.view('edit_user',  {cntl : this, user: userInfo.model});
 	    userRow.after(editHtml);
 	    //userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
 
-	    console.log('------eidt-user----');
 	    //console.log(this.orgsDic);
 	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
 	    var ctrl =userRow.next().find('div.edit-org-selection-holder').controller();
@@ -299,32 +297,33 @@ steal(
             ev.preventDefault();
             
             // Clear any previous error messages in the form
-            this.removeFormErrors(el);
+			this.removeFormErrors(el);
             
-	    var password = el.find('input[name="password"]').val();
-	    var confirmation = el.find('input[name="password-confirm"]').val();
-	    var fullname = el.find('input[name="fullname"]').val();
-            var orgController = el.find('div.edit-org-selection-holder').controller();
-
-	    var doc_type = el.find('select[name="doc_type"]').val();
-	    var roles = el.find('select[name="roles"]').val();
+			var password = el.find('input[name="password"]').val();
+			var confirmation = el.find('input[name="password-confirm"]').val();
+			var fullname = el.find('input[name="fullname"]').val();
+			var orgController = el.find('div.edit-org-selection-holder').controller();
+			var subjection_org = el.find('select[name=subjection_org]').val();
+			var doc_type = el.find('select[name="doc_type"]').val();
+			var roles = el.find('select[name="roles"]').val();
 
             if (password !== confirmation) {
                 this.displayFormError(el,
 				      "password-confirm",
 				      "Please confirm your new password");
-		return;
+				return;
             }
 
             // Update model entry
             // The user model row is a hidden entry right above the edit row
             var user = el.closest('tr').prev().model();
             //user.attr('roles', el.find('select').val());
-	    Docview.Models.User.update(
-		user.id,
-		{ role : roles,
-                  user : {
+			Docview.Models.User.update(
+							user.id,
+							{ role : roles,
+					user : {
 		      orgs : orgController.getOrgs(),
+			 subjection_org:subjection_org,
 		      fullname : fullname,
 		      doc_type : doc_type,
 		      password : password }

@@ -12,6 +12,7 @@ steal(
     'docview/alerts',
     'docview/search',
     'docview/ui/requisition',
+    'docview/ui/businessprocess',
     'docview/search/results',
     'docview/manage/accounts/users',
     'docview/manage/accounts/roles',
@@ -49,109 +50,105 @@ steal(
     /* @Prototype */
     {
         init: function(options) {
-	    this.checkIfUserLoggedIn();
-	    this.uiCreated = false;
+	    	this.checkIfUserLoggedIn();
+	    	this.uiCreated = false;
 	},
 	createFreshUI : function() {
 	    this.uiCreated = true;
-            this.element.html(this.view('login_menu', {}));
+        this.element.html(this.view('login_menu', {}));
 	    this.username = "";
-        },
-        '#login-form submit': function(el, ev) {
-            ev.preventDefault();
-            var username = el.find('input[name="username"]').val();
-            var password = el.find('input[name="password"]').val();
-            
-            if (username !== "" && password !== "") {
-                // Lock the login button
-		this.username = username;
-                el.find('.btn-primary').button('loading');
-                Docview.Models.User.login(
-                    { commit: 'Sign in', user : { username : username, password : password } },
-                    this.proxy('getAccessList'), this.proxy('loginError')
-                );
-            }
-        },
+	},
+	'#login-form submit': function(el, ev) {
+    	ev.preventDefault();
+        var username = el.find('input[name="username"]').val();
+       	var password = el.find('input[name="password"]').val();
+        if (username !== "" && password !== "") {
+        	// Lock the login button
+			this.username = username;
+			el.find('.btn-primary').button('loading');
+			Docview.Models.User.login(
+				{ 
+					commit: 'Sign in', 
+					user : { 
+							username : username, 
+							password : password 
+						} 
+				},
+				this.proxy('getAccessList'),
+				this.proxy('loginError')
+			);
+		}
+	},
 	checkIfUserLoggedIn : function () {
 	    this.getAccessList(null);
 	},
 	loginLockedDone : function(data) {
 	    //console.log(data);
 	    if (data.locked == true) {
-		this.options.clientState.attr('alert', {
-                    type: 'error',
-                    heading: $.i18n._('msg.error'),
-                    message: '您到帐户被临时禁用，须由管理员重置密码。'
-		});
-		log("system",{login_user: this.username, current_action: "system.login", describe: "帐户被临时禁用，须由管理员重置密码。"});
-		return;
+			this.options.clientState.attr('alert', {
+        		type: 'error',
+            	heading: $.i18n._('msg.error'),
+           		message: '您到帐户被临时禁用，须由管理员重置密码。'
+			});
+			log("system",{login_user: this.username, current_action: "system.login", describe: "帐户被临时禁用，须由管理员重置密码。"});
+			return;
 	    }
 	    this.showLoginErrorMessage();
 	},
 	showLoginErrorMessage : function() {
-            this.options.clientState.attr('alert', {
+		this.options.clientState.attr('alert', {
                 type: 'error',
                 heading: $.i18n._('msg.error'),
                 message: $.i18n._('msg.incorrect_login')
 	    });
 	    log("system",{login_user: this.username, current_action: "system.login", describe: $.i18n._('msg.incorrect_login')});
 	},
-        loginFinalError: function(jqXHR, textStatus, errorThrown) {
+	loginFinalError: function(jqXHR, textStatus, errorThrown) {
 	    this.showLoginErrorMessage();
 	},
-        loginError: function(jqXHR, textStatus, errorThrown) {
+	loginError: function(jqXHR, textStatus, errorThrown) {
 	    var message = $.i18n._('msg.incorrect_login');
 	    if (this.username) {
-		Docview.Models.User.checkIfLocked(this.username,
-						 this.proxy("loginLockedDone"),
-						 this.proxy("loginFinalError"));
-	    // Check if a user is locked.
-		this.element.find('.btn-primary').button('reset');
-		return;
+			Docview.Models.User.checkIfLocked(this.username,
+				this.proxy("loginLockedDone"),
+				this.proxy("loginFinalError"));
+	    	// Check if a user is locked.
+			this.element.find('.btn-primary').button('reset');
+			return;
 	    }
 	    this.showLoginErrorMessage();
-            this.element.find('.btn-primary').button('reset');
-        },
-        getAccessList: function(user) {
-	    if (user != null) {
-	        log("system",{login_user: this.username, current_action: "system.login", describe: "登录成功"});
-		this.element.find('.btn-primary').button('reset');
-		// Store user info first
-		this.options.clientState.attr('user', {
-                    username: user.email,
-                    fullname: user.fullname
-		});
-
-		if (window.location.pathname == "/docview/admin.html"){
-			window.location.href = "/admin";
-		}
+        this.element.find('.btn-primary').button('reset');
+	},
+    getAccessList: function(user) {
+		if (user != null) {
+			this.element.find('.btn-primary').button('reset');
+			// Store user info first
+			log("system",{login_user: this.username, current_action: "system.login", describe: "登录成功"});
+			if (window.location.pathname == "/docview/admin.html"){
+				window.location.href = "/admin";
+			}
 	    }
-        
-            Docview.Models.User.getAccessList(
-                this.proxy('storeAccessList'), this.proxy('accessListError')
-            );
-        },
-        accessListError: function(error) {
+        Docview.Models.User.getAccessList(
+            this.proxy('storeAccessList'),
+			this.proxy('accessListError')
+        );
+	},
+	accessListError: function(error) {
             if (this.uiCreated == false) {
-		this.createFreshUI();
-	    } else {
-		this.options.clientState.attr('alert', {
-                    type: 'error',
-                    heading: '错误提示: ',
-                    message: '未能获得您的登录权限信息，请尝试重新登录。'
-		});
-	    }
-
-	    
+					this.createFreshUI();
+			} else {
+					this.options.clientState.attr('alert', {
+						type: 'error',
+                    	heading: '错误提示: ',
+                    	message: '未能获得您的登录权限信息，请尝试重新登录。'
+					});
+	    	}
 
             this.element.find('.btn-primary').button('reset');
         },
-        storeAccessList: function(permissions) {
+	storeAccessList: function(permissions) {
 	    // Store user info first
-	    this.options.clientState.attr('user', {
-                username: permissions.email,
-                fullname: permissions.fullname
-	    });
+	    this.options.clientState.attr('user', permissions );
 	    $('#user-info-display').html("当前登录用户 : " + permissions.fullname);
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {
@@ -169,6 +166,26 @@ steal(
                     this.options.clientState.attr('access').attr('search').attr('advanced', true);
 					this.setNavIfEmpty('search', 'advanced');
                     break;
+                case ("create_interchange_receipt"):
+                    this.options.clientState.attr('access').attr('business_process').attr('create_interchange_receipt', true);
+                    this.setNavIfEmpty('business_process', 'create_interchange_receipt');
+                    break;                    
+                case ("search_interchange_receipt"):
+                    this.options.clientState.attr('access').attr('business_process').attr('search_interchange_receipt', true);
+                    this.setNavIfEmpty('business_process', 'search_interchange_receipt');
+                    break;                    
+                case ("create_dishonored_bill"):
+                    this.options.clientState.attr('access').attr('business_process').attr('create_dishonored_bill', true);
+                    this.setNavIfEmpty('business_process', 'create_dishonored_bill');
+                    break;                    
+                case ("search_dishonored_bill"):
+                    this.options.clientState.attr('access').attr('business_process').attr('search_dishonored_bill', true);
+                    this.setNavIfEmpty('business_process', 'search_dishonored_bill');
+                    break;                    
+                case ("statistical_inquiry"):
+                    this.options.clientState.attr('access').attr('business_process').attr('statistical_inquiry', true);
+                    this.setNavIfEmpty('business_process', 'statistical_inquiry');
+                    break;                    
 				case ("application_index"):
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('application', true);
 					this.setNavIfEmpty('requisition_docs', 'application');
@@ -281,19 +298,18 @@ steal(
             
             // load app
             this.loadApp(permissions);
-           $.route.attr('category',"init");
-           $.route.attr('subcategory',"init");
+			$.route.attr('category',"init");
+			$.route.attr('subcategory',"init");
         },
-	setNavIfEmpty : function(cat, subcat) {
-	    var nav_subcat = this.options.clientState.attr('nav').attr(cat);
-	    if (!nav_subcat) {
-		this.options.clientState.attr('nav').attr(cat, subcat);
-	    }
-	},
+		setNavIfEmpty : function(cat, subcat) {
+	    	var nav_subcat = this.options.clientState.attr('nav').attr(cat);
+	   		if (!nav_subcat) {
+				this.options.clientState.attr('nav').attr(cat, subcat);
+	    	}
+		},
         loadApp: function(user_info) {
             $('#login').hide();
-            
-            // Change background color
+			// Change background color
             $('body').removeClass('login-page');
         
         	$('#navigation-header').docview_nav({clientState: this.options.clientState});
@@ -304,21 +320,19 @@ steal(
 
             //$('#upload-file').docview_ui_upload({clientState: this.options.clientState});
 
-            if (this.options.clientState.attr('access')
-		.attr('stats').attr('stats_export')) {
-		$('#stats-export').docview_ui_export_query({clientState: this.options.clientState});
-	    }
+            if (this.options.clientState.attr('access').attr('stats').attr('stats_export')) {
+				$('#stats-export').docview_ui_export_query({clientState: this.options.clientState});
+	    	}
 
-            if (this.options.clientState.attr('access')
-                .attr('search').attr('search_condition') === true) {
-
-		$('#search-some-conditions').docview_ui_search_some_condition({clientState: this.options.clientState}); 
-	    }
+            if (this.options.clientState.attr('access').attr('search').attr('search_condition') === true) {
+				$('#search-some-conditions').docview_ui_search_some_condition({clientState: this.options.clientState}); 
+	    	}
 
             $('#manage-users').docview_manage_accounts_users({clientState: this.options.clientState});
             $('#manage-roles').docview_manage_accounts_roles({clientState: this.options.clientState});
 			$('#manage-docs').docview_manage_docs({clientState: this.options.clientState});
 			$('#requisition-docs').docview_ui_requisition({clientState: this.options.clientState});
+			$('#business-process').docview_ui_businessprocess({clientState: this.options.clientState});
             $('#sys-setting').docview_ui_syssetting({clientState: this.options.clientState});
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
@@ -326,17 +340,17 @@ steal(
 
             $('#group-docs').docview_stats_group({clientState: this.options.clientState});
 
-	    $('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
-	    $('#settings').docview_settings({clientState: this.options.clientState});
-	    $('#system-upload').docview_ui_upload_user({clientState: this.options.clientState});
-	    var login_info = " 最近一次登录时间 "+ user_info.last_time + ", IP 地址 " + user_info.last_ip;
-            this.options.clientState.attr('login', {message: this.options.clientState.attr('user').attr('fullname') + login_info});
-            this.options.clientState.attr('alert', {
-                type: 'success',
-                heading: $.i18n._('msg.welcome'),
-                message: this.options.clientState.attr('user').attr('fullname') + login_info
-            });
-	    $("#alerts").docview_ui_index({clientState: this.options.clientState, userInfo :  user_info });
+	    	$('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
+	    	$('#settings').docview_settings({clientState: this.options.clientState});
+	    	$('#system-upload').docview_ui_upload_user({clientState: this.options.clientState});
+			var login_info = " 最近一次登录时间 "+ $.date(user_info.last_time).format('yyyy-MM-dd hh:mm:ss') + ", IP 地址 " + user_info.last_ip;
+			this.options.clientState.attr('login', {message: this.options.clientState.attr('user').attr('fullname') + login_info});
+			this.options.clientState.attr('alert', {
+				type: 'success',
+				heading: $.i18n._('msg.welcome'),
+				message: this.options.clientState.attr('user').attr('fullname') + login_info
+			});
+	    	$("#alerts").docview_ui_index({clientState: this.options.clientState, userInfo :  user_info });
             
             // TODO: Reload the route so the right thing shows up.
         }

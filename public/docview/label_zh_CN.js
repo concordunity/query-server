@@ -13,6 +13,7 @@ LabelChinese.prototype.initLabelSettings = function() {
 	'search_by_id' : '按单证查询',
 	'menu_search' : '单证查阅',
 	'menu_requisition' : '单证借阅',
+	'menu_business_process' : '交接单',
 	'menu_report' : '查阅管理',
 	'menu_operation' : '单证操作',
 	'menu_accounts' : '系统管理',

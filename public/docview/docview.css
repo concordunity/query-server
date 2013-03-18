@@ -225,3 +225,5 @@ input.where_page {width: 40px;}
 .inner_form_border_td {
 	border:2px solid #cccc00;
 }
+#new-requisition div.well {width: 50%;margin-left: 20%;}
+input.small-num {width: 15px;}

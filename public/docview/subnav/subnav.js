@@ -40,6 +40,7 @@ steal(
                 case "search":
                 case "manage_docs":
                 case "requisition_docs":
+                case "business_process":
                 case "manage_accounts":
                 case "stats":
 					console.log("newVal = ",newVal);

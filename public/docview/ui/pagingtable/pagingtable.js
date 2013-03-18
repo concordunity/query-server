@@ -12,15 +12,24 @@ steal(
     $.Controller('Docview.Ui.Pagingtable', {}, {
         init : function() {
 			var that = this;
+			//defaults
             this.options = $.extend({
-				aoColumns:[]
+				aoColumns:[],
+				data:{},
+				type:'GET',
+				error:function(err){
+					console.log('has a error',err);
+				},
+				success:function(data){
+					console.log('load data :',data);
+				}
 			},this.options);
 			//colums options [{ id:'ID', text:'Text', width:'10px'  }]
 			$.each(this.options.columns,function(key,value){
 				//make aoColumns ..	
 				that.options.aoColumns.push({
-					mDataProp:value.id,
-					mLabel:value.text
+					mDataProp	:value.id,
+					mLabel		:value.text
 				});
 			});
 			//console.log(this.options);
@@ -36,7 +45,7 @@ steal(
 			var tmpl = $("<div>");
 			$.each(columns,function(key,value){
 				var th = $("<th>");
-				th.text( value.text || value.id || "Untitle"+ key );
+				th.text( value.text || value.id || "Untitle" + key );
 				(value.width && th.attr('width', value.width ))
 				tmpl.append(th);
 			});	
@@ -55,10 +64,10 @@ steal(
             var render = this.columnsRender(options.columns);
             //add to header
 			tableElement.append(render);
-			console.log( options );
+			//console.log( options );
 			//preload data ... 
 			this.dataTable = this.element.find('table').dataTable({
-				bJQueryUI: true,
+				bJQueryUI: false,
 				bProcessing: true,
 				bServerSide: true,
 				"sAjaxSource" : options.url,
@@ -76,9 +85,12 @@ steal(
 						"dataType": 'json',
 						"type": options.type,
 						"url": sSource,
-						"error" : that.proxy("displayError"),
 						"data": aoData,
-						"success": fnCallback
+						"error" : that.options.error,
+						"success": function(){
+							fnCallback.apply(this,arguments);
+							that.options.success.apply(that,arguments)
+						} 
 					}); 
 				},
 				"fnServerParams": function ( aoData ) {
@@ -102,9 +114,6 @@ steal(
 					that.reload( { 'url': url , 'data': {} } );	
 				}
 			});
-		},
-		displayError : function(data){
-			console.log(data.status);
 		}
 });
 });

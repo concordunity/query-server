@@ -33,6 +33,7 @@ steal(
 		search : ["single","multi","all_print","advanced","by_doc_source","search_condition","upload_file"],
 		stats : ["stats_stats","stats_usage","stats_query","create_group"],
 		requisition_docs : [ "application", "approval", "register", "write_off", "lending_statistics" ],
+		business_process : ["create_interchange_receipt","search_interchange_receipt","create_dishonored_bill","search_dishonored_bill","statistical_inquiry"],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
 		manage_accounts : ["users","roles","system_upload"]
 	    };
@@ -54,6 +55,7 @@ steal(
                 search: init_option_result.search,
                 stats: init_option_result.stats,
                 requisition_docs: init_option_result.requisition_docs,
+				business_process: init_option_result.business_process,
                 manage_docs: init_option_result.manage_docs,
                 manage_accounts: init_option_result.manage_accounts
             }));

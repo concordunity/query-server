@@ -58,6 +58,13 @@
 					write_off :false,
 					lending_statistics : false
 				}, 
+				business_process: {
+					create_interchange_receipt: false,
+					search_interchange_receipt: false,
+					create_dishonored_bill: false,
+					search_dishonored_bill: false,
+					statistical_inquiry: false
+				},
                 manage_docs: {
                     inquire: false,
                     check: false,
@@ -78,6 +85,7 @@
                 search: "",
                 stats: "", // "history",
                 requisition_docs: "", // "application",
+				business_process: "", //business_process
                 manage_docs: "", // "inquire",
                 manage_accounts: ""   //"users"
             },

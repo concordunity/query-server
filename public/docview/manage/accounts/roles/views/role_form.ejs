@@ -1,4 +1,4 @@
-<div class="span3">
+<div class="span2">
     <h4>单证查阅权限</h4>
     <ul style="list-style-type:none;">
     <li><input name="aQueryDocByBarcode" type="checkbox"/>单票查阅</li>
@@ -18,9 +18,7 @@
     <li><input name='aOperateLended' type='checkbox' />电子档案借出/归还</li>
     <li><input name='aOperatePrint' type='checkbox' />打印</li>
     <li><input name='aOperateTestified' type='checkbox' />出证</li>
-<% if (false) { %>
     <li><input name="aQueryDocsPrint" type="checkbox"/>批量打印</li>
-<% } %>
     <li><input name='aOperateHistory' type='checkbox' />个人操作历史</li>
     </ul>
 </div>
@@ -38,6 +36,17 @@
 </div>
 
 <div class="span2">
+    <h4>交接单</h4>
+    <ul style="list-style-type:none;">
+    <li><input name='aBusinessProcessInterchangeReceiptCreate' type='checkbox' />交接清单录入</li>
+    <li><input name='aBusinessProcessInterchangeReceiptSearch' type='checkbox' />交接清单接收</li>
+    <li><input name='aBusinessProcessDishonoredBillCreate' type='checkbox' />退单录入</li>
+    <li><input name='aBusinessProcessDishonoredBillSearch' type='checkbox' />退单查询</li>
+    <li><input name='aBusinessProcessStatisticalInquiry' type='checkbox' />交接单统计查询</li>
+    </ul>
+</div>
+
+<div class="span2">
     <h4>查阅管理权限</h4>
     <ul style="list-style-type:none;">
     <li><input name="aManageQueries" type="checkbox" />查阅历史</li>
@@ -48,7 +57,7 @@
     </ul>
 </div>
 
-<div class="span3">
+<div class="span2">
 <h4>系统管理权限</h4>
 <ul style="list-style-type:none;">
   <li><input name='aManageUsers' type='checkbox' />用户管理</li>

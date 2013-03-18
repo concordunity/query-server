@@ -8,7 +8,8 @@ steal(
     'docview/ui/history',
     'docview/ui/dictionary',
     'docview/ui/print',
-    'docview/ui/daterange'
+    'docview/ui/daterange',
+    'docview/ui/pagingtable'
 //    'docview/bootstrap/bootstrap.css'
 //    'libs/datepicker/css/datepicker.css'
 )
@@ -46,11 +47,10 @@ steal(
 	    this.comment_dic = commentsArrayDictionary;
 	    var search =  this.options.clientState.attr('access').attr('search');
 	    search.doc_type = this.comment_dic;
-            this.element.html(this.view('search_box', search));
-
-            // Hide box until route conditions are met
-            this.element.hide();
-            // Hide search types until route conditions are met
+		this.element.html(this.view('search_box', search));
+		// Hide box until route conditions are met
+		this.element.hide();
+		// Hide search types until route conditions are met
 	    this.mainTabOn = false;
 	    this.filters = [];
 
@@ -77,8 +77,15 @@ steal(
 		}
 	    });
 */
-        },
-
+		$("#search-results").docview_ui_pagingtable({
+			columns:[
+				{ "id": "doc_id",text:'报关单号' },
+				{ "id": "doc_type",text:'报关单类别' },
+				{ "id": "serial_number",text:'理单号' },
+				{ "id": "pages",text:'总页数' }
+			]
+		});
+	},
 	"button.button-option click" : function(el,ev){
 	    var button_name = $(el).attr("name");
 	    var button_value = $(el).attr("value");
@@ -129,16 +136,36 @@ steal(
 	reshow : function() {
 	    this.element.show();
 
-	    var sub_cat = $.route.attr('subcategory');
+		var sub_cat = $.route.attr('subcategory');
 	    var to_show = sub_cat;
 
 	    if (!sub_cat) {
-		to_show = this.element.find("form")[0].className;
+				to_show = this.element.find("form")[0].className;
 	    }
-	    this.element.find('.' + to_show).show();
+		this.element.find('.' + to_show).show();
+
+		if(to_show == 'advanced'){
+			org_el = this.element.find('.' + to_show + ' .adv.org' );
+			var orgs = [];
+			var org_nums = this.options.clientState.attr('user').attr('orgs');
+			if(org_nums == '2200'){
+				orgs = orgArrayDictionary;	
+			}else{
+				org_nums = ( org_nums == undefined || org_nums == '' ) ? [ 0 ] : org_nums.split( ',' );
+			
+				for(var i=0;i<org_nums.length;i++){
+					orgs.push({dic_num: org_nums[i],dic_name:orgJsonDictionary[ org_nums[i] ]});
+				}
+			}
+			org_el.html( $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgs } ) );
+			($.inArray(0,org_nums) != -1 ) && org_el.hide();
+		}
+
 	    if (sub_cat == 'by_doc_source') {
-		this.reloadESH();
-	    }	    
+				this.reloadESH();
+	    }	   
+		if(sub_cat == '.advanced'){
+		} 
 /*
 	    var to_show_class = ['single','multi','advanced','by_doc_source','personal_history','upload_file'];
 	    $.each(to_show_class,function(index,value){
@@ -148,32 +175,32 @@ steal(
 	    });
 */
             if (to_show != 'single') {
-		this.element.find('.single').hide();
-	    }
-	    if (to_show != 'multi') {
-		this.element.find('.multi').hide();
-	    }
-	    if (to_show != 'advanced') {
-		this.element.find('.advanced').hide();
-	    }
-	    if (to_show != 'by_doc_source') {
-		this.element.find('.by_doc_source').hide();
-	    }
-	    if (to_show != 'personal_history') {
-		this.element.find('.personal_history').hide();
-	    }
-	    if (to_show != 'upload_file') {
-		this.element.find('.upload_file').hide();
-	    }
-	    if (to_show != 'search_condition') {
-		$('#search-some-conditions').hide();
-		$('#search-box').show();
-		//this.element.find('.search_condition').hide();
-	    } else {
-		$('#search-box').hide();
-		$('#search-some-conditions').show();
-	    }
-	},
+					this.element.find('.single').hide();
+			}
+			if (to_show != 'multi') {
+					this.element.find('.multi').hide();
+			}
+			if (to_show != 'advanced') {
+					this.element.find('.advanced').hide();
+			}
+			if (to_show != 'by_doc_source') {
+					this.element.find('.by_doc_source').hide();
+			}
+			if (to_show != 'personal_history') {
+					this.element.find('.personal_history').hide();
+			}
+			if (to_show != 'upload_file') {
+					this.element.find('.upload_file').hide();
+			}
+			if (to_show != 'search_condition') {
+					$('#search-some-conditions').hide();
+					$('#search-box').show();
+					//this.element.find('.search_condition').hide();
+			} else {
+				$('#search-box').hide();
+				$('#search-some-conditions').show();
+			}
+			 },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             if (newVal === "search") {	
 		this.mainTabOn = true;
@@ -188,45 +215,44 @@ steal(
 	    this.clearFilters();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
-	    if (newVal == undefined) {
-		return;
-	    }
-	    if (this.mainTabOn) {
-		//$('#search-results').docview_search_results('clearResults');		
-		//$('#alerts div.alert').alert('close');
-		if (newVal == undefined && oldVal == "single" && $.route.attr('category') === 'document') {
-		    return;
-		}
+			if (newVal == undefined) {
+				return;
+			}
+			if (this.mainTabOn) {
+				//$('#search-results').docview_search_results('clearResults');		
+				//$('#alerts div.alert').alert('close');
+					if (newVal == undefined && oldVal == "single" && $.route.attr('category') === 'document') {
+							return;
+					}
+					if (newVal == undefined && oldVal == "multi") {
+							this.element.hide();
+							return;
+					}
 
-		if (newVal == undefined && oldVal == "multi") {
-		    this.element.hide();
-		    return;
-		}
+					if (oldVal !== undefined) {
+							this.element.find('.' + oldVal).hide();
+					}
+					if (newVal !== undefined) {
+							this.reshow();
+							$.route.attr('id', -1);
+							if (newVal != 'single') {
+									$('#document-details').hide();
+							}
+					}
+					this.element.find('li').removeClass('active');
+					this.element.find('a[href="#advanced"]').closest('li').addClass('active');
 
-		if (oldVal !== undefined) {
-                    this.element.find('.' + oldVal).hide();
-		}
-		if (newVal !== undefined) {
-		    this.reshow();
-		    $.route.attr('id', -1);
-		    if (newVal != 'single') {
-			$('#document-details').hide();
-		    } 
-		}
-                this.element.find('li').removeClass('active');
-                this.element.find('a[href="#advanced"]').closest('li').addClass('active');
-                
-                this.element.find('li.nav-pills').removeClass('active');
-                this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
+					this.element.find('li.nav-pills').removeClass('active');
+					this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
 
-                //this.options.clientState.attr('nav').attr(newVal, subcategory);
-                //this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
-                //this.element.find('li').removeClass('active');
-	    }
-        },
-	verifyDocId : function(num) {
-	    return /^\d+$/.test(num);
-	},
+					//this.options.clientState.attr('nav').attr(newVal, subcategory);
+					//this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
+					//this.element.find('li').removeClass('active');
+			}
+		},
+		verifyDocId : function(num) {
+	    	return /^\d+$/.test(num);
+		},
         '.single submit': function(el, ev) {
             ev.preventDefault();
 	    this.options.clientState.attr('searchMode', 'single');
@@ -320,74 +346,79 @@ steal(
 	    var from_date = dates.from;
 	    var to_date = dates.to;
 
-	    this.options.clientState.attr('search', {
-		source : el.find('select[name="source"]').val(),
-		from_date : from_date,
-		to_date : to_date,
-		docType : el.find('select[name="doc_type"]').val(),
-		years : el.find('select[name="years"]').val(),
-		filters: this.filters
-	    });
+	    //this.options.clientState.attr('search',
+		var controller = $('#search-results').controller();
+		controller.reload({
+			url:'/documents/by_doc_source',
+			type:'POST',
+			data:{
+				source : el.find('select[name="source"]').val(),
+				from_date : from_date,
+				to_date : to_date,
+				docType : el.find('select[name="doc_type"]').val(),
+				years : el.find('select[name="years"]').val(),
+				filters: this.filters
+	    	},
+			success:function(data){
+				this.element.show();
+				$.closeMask();
+			}
+		});
 	    //loading ..`:wq
 
 	},
-        '.advanced submit': function(el, ev) {
-            this.removeFormErrors(el);
-            ev.preventDefault();
-	    $('#search-results').docview_search_results('clearResults');
-            this.options.clientState.attr('searchMode', 'advanced');
-
-            this.setFilters(el);
-	    
+	'.advanced submit': function(el, ev) {
+		this.removeFormErrors(el);
+		ev.preventDefault();
+	   	$('#search-results').docview_search_results('clearResults');
+        this.options.clientState.attr('searchMode', 'advanced');
+		this.setFilters(el);
 	    var cntrl = this.element.find('div.daterange-holder').controller();
 	    var dates = cntrl.getInputs(el);
 	    if (dates === "") {
-		return;
+			return;
 	    }
-
 	    var from_date = dates.from;
 	    var to_date = dates.to;
 	    var total = $("input[name='frm_total']").val();
             //$("input[name='org']:checked").val();
 	    //var total = el.find('input[name="total"]').val();
-
 	    if (this.verifyDocId(total) == false) {
-		this.displayInputError(el, "frm_total", "随机的份数必须为数字");
-                return true;
-            }
-
+			this.displayInputError(el, "frm_total", "随机的份数必须为数字");
+        	return true;
+        }
 	    var maxn = 50;
 	    $.ajax({
-		url: '/settings',
-		type: 'GET',
-		async: false,
-		dataType : 'json',
-		success : function (data) {
-		    maxn = parseInt(data.maxn);
-		},
-		error : function() {
-			$.closeMask();
-		}
+			url: '/settings',
+			type: 'GET',
+			async: false,
+			dataType : 'json',
+			success : function (data) {
+		    	maxn = parseInt(data.maxn);
+			},
+			error : function() {
+				$.closeMask();
+			}
 	    });
 
 	    if (parseInt(total) > maxn) {
-		active_button = $("button.button-option-onblure[name='frm_total']");
-		total = maxn;
-		if(active_button.attr("value") == ""){
-		    this.displayInputError(el, "frm_total", "每次抽样总数不能超过 " + maxn);
-		    return;
-		}
+			active_button = $("button.button-option-onblure[name='frm_total']");
+			total = maxn;
+			if(active_button.attr("value") == ""){
+		    	this.displayInputError(el, "frm_total", "每次抽样总数不能超过 " + maxn);
+		    	return;
+			}
 	    }
 
 	    var isTax = undefined;
 	    var isMod = undefined;
-            var isMod_or_isTax = el.find("input[name='frm_isMod_or_isTax']").val();
+		var isMod_or_isTax = el.find("input[name='frm_isMod_or_isTax']").val();
 
 	    if (isMod_or_isTax == "isTax") {
-		isTax = "1";
+			isTax = "1";
 	    }
 	    if (isMod_or_isTax == "isMod") {
-		isMod = "1";
+			isMod = "1";
 	    }
             /*
 	    if (el.find('input[name="isTax"]')[0].checked) {
@@ -397,29 +428,29 @@ steal(
 		isMod = "1";
 	    }
             */
-	    var org = el.find("input[name='org']").val();
-		if (org == "other"){
-			org = el.find("select[name='select_org']").val();
-		}
+	    var org = el.find("select[name=org]").val();
+	    //var org = el.find("input[name='org']").val();
+		//if (org == "other"){
+		//	org = el.find("select[name='select_org']").val();
+		//}
 	    this.options.clientState.attr('search', {
-		total : total,
-		org : org, 
-		org_applied : el.find('select[name="org_applied"]').val(),
-		docType : el.find("input[name='frm_docType']").val(),
-		years : el.find('select[name="years"]').val(),
-		edcStartDate: from_date,
-		edcEndDate : to_date,
-		isTax: isTax,
-		isMod : isMod,
+			total : total,
+			org : org, 
+			org_applied : el.find('select[name="org_applied"]').val(),
+			docType : el.find("input[name='frm_docType']").val(),
+			years : el.find('select[name="years"]').val(),
+			edcStartDate: from_date,
+			edcEndDate : to_date,
+			isTax: isTax,
+			isMod : isMod,
                 isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
 	    //el.find('.filters :checked').prop("checked", false);
 	    //this.setFilters(el);
 	    //this.options.clientState.attr('search', { filters: this.filters});
-	    $.createMask();
-        },
-	
+	    	$.createMask();
+    },
 	'div.well div.personal_history form submit' : function(el, ev) {
 	    ev.preventDefault();
 	    this.removeFormErrors(el);

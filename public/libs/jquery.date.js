@@ -65,3 +65,15 @@
 		};	
 	};
 })(jQuery);
+
+
+
+(function($){
+	/**
+		My Date Picker
+	*/
+	$.fn.my_datepicker = function(options){
+		this.datepicker();
+		this.val($.date(new Date).format('yyyy-MM-dd'));
+	};
+})(jQuery);

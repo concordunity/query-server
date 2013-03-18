@@ -196,7 +196,7 @@ class DocumentHistoriesController < ApplicationController
       elsif cat == '3'
         query_stats_by = search_condition_role(function_params)
       elsif cat == '4'
-        query_stats_by = search_condition_month(function_params)
+        query_stats_by = search_condition_month2(function_params)
       end
 	  results[:doc_count] = doc_count
       results[:query_stats] = query_stats_by
@@ -360,16 +360,21 @@ class DocumentHistoriesController < ApplicationController
 	
 			logger.info "### CREATED  DATE:#{where_clause} ###"
 			logger.info "### ORG CONDITION:#{org_condition}#{docType_condition} ###"
-				
-	
-			document_stats =  DocumentStat.where(where_clause).where(org_condition).where(docType_condition)
+			document_stats = DocumentStat.select("org,sum(docs) as docs,sum(pages) as pages,sum(queries) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
 	
           	query_stats_by[key] = document_stats.collect { |obj|
+			
+			docs = obj[:docs].to_i * 1.00 		
+			queries = obj[:queries].to_i
+			percent = 0
+			percent = queries / docs if docs > 0
+			percent = "%.2f" % (percent	 * 100)
+
             { :org			=> obj[:org],
               :num_docs 	=> obj[:docs],
               :num_pages 	=> obj[:pages],
               :num_queries	=> obj[:queries],
-              :percentage_qq=> obj[:percent_q].to_s + "%"
+              :percentage_qq=> percent.to_s + " %"
             }
           }
         }

@@ -62,10 +62,12 @@ class AccountsController < ApplicationController
         no_links = WebLink.all - links
 
         user_info = { :error => "Success",
-          :last_ip => current_user.last_sign_in_ip,
-          :last_time => current_user.last_sign_in_at,
-          :fullname => current_user.fullname,
-          :email => current_user.email
+          :last_ip 		=> current_user.last_sign_in_ip,
+          :last_time 	=> current_user.last_sign_in_at,
+          :fullname 	=> current_user.fullname,
+          :email 		=> current_user.email,
+		  :orgs			=> current_user.orgs,
+		  :subjection_org => current_user.subjection_org
         }
         if current_user.admin?
           user_info["not_authorized"] = []

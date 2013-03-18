@@ -1,0 +1,58 @@
+<div class="dishonored" > 
+<button class="btn btn-primary" data-toggle="collapse" data-target="#new-dishonored" >创建退单</button>
+<div id="new-dishonored" class="collapse" >
+	<p>&nbsp;</p>
+	<div class="well">
+	<form>
+	<legend>创建退单</legend>
+	<div class="row-fluid" >
+		<div class="span6" >
+			<fieldset class="control-group" >
+				<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgArrayDictionary } )	%>
+			</fieldset>
+			<fieldset class="control-group" >
+				<label>原因</label>
+				<select name="reason" >
+					<option value="1">少票，退一册</option>
+					<option value="2">多票，退一票</option>
+					<option value="3">无清单，补清单</option>
+					<option value="4">其它</option>
+				</select>
+			</fieldset>
+		<div class="pull-left">
+			<button type="submit" class="btn btn-primary" data-loading-text="Creating .." >Submit</button>
+			<button type="button" class="btn btn-cancel" data-loading-text="Cancel" >Cancel</button>
+		</div> 
+		</div>
+		<div class="span6" >
+			<fieldset class="control-group" >
+				<label>日期</label>
+				<input name="date" type="text" />	
+			</fieldset>
+			<fieldset class="control-group" >
+				<label>备注</label>
+				<input name="explain" type="text" required />
+			</fieldset>
+		</div>
+	</div>
+	</form>
+	</div>
+</div>
+<p>&nbsp;</p>
+<div class="search-dishonored well">
+	<legend>查看退单</legend>
+	<form>
+	<div class="row-fluid" >
+		<div class="span6" >
+		<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgArrayDictionary } )	%>
+		</div>
+		<div class="span6" >
+			<label>日期</label>
+			<input name="date" type="text" />	
+		</div>
+	</div>
+	<button class="btn btn-primary">Search</button>	
+	</form>
+</div>
+<div class="create-dishonored-bill-list"></div>
+</div>

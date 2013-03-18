@@ -1,0 +1,34 @@
+<div class='well'>
+<span class='subjection_org'>
+<%= orgJsonDictionary[this.subjection_org] %>
+</span>
+<input name='interchange-receipt-date' />
+<button type="button" class="btn btn-primary search-interchange-receipt"><i class="icon-remove icon-white"></i>搜索</button>
+<form class='form' id='new-create-interchange-receipt'>
+<table>
+<thead>
+<th> 单证种类</th>
+<th>开始理单号</th>
+<th>结束理单号</th>
+<th>份数</th>
+<th>包数</th>
+<th></th>
+</thead>
+<tbody>
+<tr>
+<td>
+	<select class='' name='doc_type' >
+		<option value='1' class=''>进口三年</option>
+	</select>
+</td>
+<td><input type='text' class='' name='doc_start' /></td>
+<td><input type='text' class='' name='doc_end' /></td>
+<td><input type='text' class='small-num' name='number_copies' /></td>
+<td><input type='text' class='small-num' name='package' /></td>
+<td><button type="button" class="btn btn-primary new-interchange-receipt"><i class="icon-plus icon-white"></i>添加</button></td>
+</tr>
+</tbody>
+</table>
+</form>
+</div>
+<div class="create-interchange-receipt-list"></div>

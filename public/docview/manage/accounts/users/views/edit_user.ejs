@@ -24,6 +24,31 @@
             <option value=<%== roles[i].id %><%= is_selected %>><%== roles[i].name %></option>
         <% } %>
     </select>
+
+ <fieldset class="control-group">
+				<div class="control-group">
+				<label  class="control-label">隶属关区</label>
+				<div class="controls">
+				<select name="subjection_org" >
+				<% 
+				for(var i=0;(orgArrayDictionary != 'undefined') && i < orgArrayDictionary.length;i++){
+						var org = orgArrayDictionary[i];
+						var is_selected = ""
+						if ( user.subjection_org == org.dic_num){
+							is_selected = "selected"
+						}
+						if (org.dic_num == "2200" ) { 
+								%><option value="2200" <%= is_selected %> >总关</option><%
+						}else{
+								%><option value="<%= org.dic_num %>"  <%= is_selected%> ><%= org.dic_name%>(<%=  org.dic_num%>)</option><% 
+						}
+				}
+%>
+</select>
+</div>
+</div>
+            </fieldset>
+
     
     <label><%= $.i18n._('label.user.organization') %></label>
 

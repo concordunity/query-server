@@ -1,4 +1,11 @@
 class DocumentStat < ActiveRecord::Base
+	def self.generate_batch
+		now = "2013-03-01".to_date
+		((now - 6.month) .. now).each{|date|
+			puts date	
+			DocumentStat.generate(date)
+		}
+	end
 	#generate date with everyday .	
 	def self.generate(now = Time.now)
 		
@@ -6,15 +13,15 @@ class DocumentStat < ActiveRecord::Base
 		#today
 		today = now.to_date
 		#end of date
-		end_of_date = today
-		#yesterday
-		begin_date = today.prev_day
+		end_of_date = today.prev_day
+		#begin date
+		begin_date = today - 2.day
 		#type of doc type .
 		doc_type_dirs = [ 'JK', 'CK' ]
 		#years of doc type 
-		doc_type_years = [ 3, 5, 7 ]
+		doc_type_years = [ 3, 5, 7, 11 ]
 		#orgs
-		org_list = OrgForDoc.all.collect { |o| o[:org] } 
+		org_list = DictionaryInfo.select(:dic_num).where(:dic_type => 'org').collect(&:dic_num)
 		#query total
 		query_total = QueryHistory.where("doc_id IS NOT NULL").count
 		#each code blok ..
@@ -44,23 +51,26 @@ class DocumentStat < ActiveRecord::Base
 						:org		=> key,
 						:docs		=> docs_stats.has_key?(key)  ? docs_stats[key]  : '',
 						:pages		=> pages_stats.has_key?(key) ? pages_stats[key] : '',
-						:queries	=> query_stats.has_key?(key) ? query_stats[key] : '',
-						:percent_q	=> query_stats.has_key?(key) ? (query_total == 0 ?
-									0
-									:
-									((query_stats[key] * 1.0) / query_total) * 100.0#calc percent %
-								) : ''
+						:queries	=> query_stats.has_key?(key) ? query_stats[key] : ''
+						#:percent_q	=> query_stats.has_key?(key) ? (query_total == 0 ?
+						#			0
+						#			:
+						#			((query_stats[key] * 1.0) / query_total) * 100.0#calc percent %
+						#		) : ''
 						}
 					} 
 					#has a key , and arr set not is empty .	
 					if arr.length > 0
 						result.push arr
-						arr.each{ |ar| 
+						arr.each{ |ar|
+							#clear already datas ..
+							DocumentStat.delete_all(:created_date => today) 
+							#create a new data ..
 							document_stat = DocumentStat.new(ar)
-							document_stat[:created_date] = today
+							document_stat[:created_date] = begin_date
 							document_stat[:doc_type] = doc_type
-							document_stat[:year] = today.year
-							document_stat[:month] = today.month
+							document_stat[:year] = begin_date.year
+							document_stat[:month] = begin_date.month
 							document_stat.save
 						}
 					end
