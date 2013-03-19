@@ -1,2 +1,2 @@
 // steal model files
-steal("jquery/model", './file.js', './user.js', './role.js', './history.js', './doc_group.js', './monitoring.js', './web_link.js','./doc.js','./requisition.js')
+steal("jquery/model", './file.js', './user.js', './role.js', './history.js', './doc_group.js', './monitoring.js', './web_link.js','./doc.js','./requisition.js','./business_process.js')

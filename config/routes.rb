@@ -1,5 +1,7 @@
 Dms::Application.routes.draw do
 
+  match "/eir_business_process/:id" => "eir_business_process#delete_interchange_receipt", :via => :delete
+  post "/interchange_receipt/list" => "eir_business_process#interchange_receipt_list"
   post "/eir_business_process" => "eir_business_process#business_process"
   post "/admin/upload_org" => "dictionary_info#upload_org"
   get "/admin/org_for_doc" => "admin#org_for_doc"
