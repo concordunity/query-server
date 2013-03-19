@@ -1,1 +1,17 @@
-<div class="search-dishonored-bill-list"></div>
+<div class="search-dishonored-bill" >
+	<div class="well">
+	<form>
+	<div class="row-fluid" >
+        <div class="span6" >
+        <%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgArrayDictionary } )   %>
+        </div>
+        <div class="span6" >
+            <label>日期</label>
+            <input name="date" type="text" />
+        </div>
+    </div>
+    <button class="btn btn-primary"><i class="icon-search icon-white" ></i> 搜索</button>
+	</form>
+	</div>
+	<div class="search-dishonored-bill-list"></div>
+</div>

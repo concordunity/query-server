@@ -23,12 +23,19 @@ class EirBusinessProcessController < ApplicationController
 
   #生成退单表单
   def create_dishonored_bill
-    params	
+	DishonoredBill.create(:org => params[:org], :reason => params[:reason], :explain => params[:explain],:db_date => Time.now)
   end
-
+  def delete_dishonored_bill
+  	DishonoredBill.delete_all(:id => params[:id])
+  end
   #查询退单表单
   def search_dishonored_bill
-  	params
+	org = { :org => params[:org] }
+	if org[:org].blank?
+		org = "true"
+	end
+	#date = params[:date].to_date
+  	DishonoredBill.where(org).order("created_at desc")#.where(:created_at => date .. (date + 1.day))	
   end
 
   #统计查询

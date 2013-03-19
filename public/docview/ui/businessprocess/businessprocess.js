@@ -15,6 +15,7 @@ steal(
 ).then(
     'libs/json2.js',
     'libs/org_json.js',
+    'libs/jquery.scroller.js',
     'docview/datatables/bootstrap-pagination.js'
 ).then(
     './views/create_interchange_receipt.ejs',
@@ -92,32 +93,43 @@ steal(
 				aaData: [],
 				col_def_path : "//docview/ui/businessprocess/views/create_dishonored_bill/",
 				aoColumns: [
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+					{"mDataProp":"org", mLabel : '关区'},
+					//{"mDataProp":"db_date", mLabel : '日期'},
+					{"mDataProp":"reason", mLabel : '原因'},
+					{"mDataProp":"explain", mLabel : '备注'},
+					{"mDataProp":"created_at", mLabel : '创建时间'},
+					{"mDataProp": null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
 				aaSorting:[[0,"desc"]],
 				file_name: ""
 			};
 			this.element.find('.create-dishonored-bill-list').docview_ui_dmstable({table_options : create_dishonored_bill_table_options});
 			this.createDishonoredBillController = this.element.find('.create-dishonored-bill-list').controller();
-
+			
 			var search_dishonored_bill_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/businessprocess/views/search_dishonored_bill/",
 				aoColumns: [
 					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+					{"mDataProp":"org", mLabel : '关区'},
+					//{"mDataProp":"db_date", mLabel : '日期'},
+					{"mDataProp":"reason", mLabel : '原因'},
+					{"mDataProp":"explain", mLabel : '备注'},
+					{"mDataProp":"created_at", mLabel : '创建时间'}
 				],
 				aaSorting:[[0,"desc"]],
 				file_name: ""
 			};
-			this.element.find('.search-dishonored-bill-list').docview_ui_dmstable({table_options : create_dishonored_bill_table_options});
+			
+			this.element.find('.search-dishonored-bill-list').docview_ui_dmstable({table_options : search_dishonored_bill_table_options});
+			/*this.element.find('.search-dishonored-bill-list').docview_ui_pagingtable({
+				columns: [
+					{ 'id':'org' },
+				],
+				url: '',
+				data: {}
+			});
+			*/
 			this.searchDishonoredBillController = this.element.find('.search-dishonored-bill-list').controller();
 
 			var statistical_inquiry_table_options = {
@@ -207,44 +219,50 @@ steal(
         show : function() {
         
 		},
-		'.search-dishonored form submit':function(el,ev){
-			ev.preventDefault();
-			var btn = el.find('button[type=submit]');	
-			var org = el.find('select[name=org]').val();
-			var date = el.find('input[name=date]').val();
-		
-			var data = { 'type':'search_dishonored_bill', 'org':org, 'date':date };
-			
-			btn.button('loading');	
-			
+		search_dishonored_bill:function(data,success,error){
+			var that = this;	
 			$.ajax({
 				url:'/eir_business_process',
 				data:data,
 				type:'POST',
 				dataType:'json',
-				error:function(err){
-					console.log(err);
-					btn.button('reset');
-				},
+				error: error,
 				success:function(data){
-					console.log(data);
-					btn.button('reset');
+					that.createDishonoredBillController.setModelData(data);
+					success.apply(this,data)
 				}	
+			});
+		},
+		'.search-dishonored form submit':function(el,ev){
+			ev.preventDefault();
+			var that = this;
+			var btn = el.find('button[type=submit]');	
+			var org = el.find('select[name=org]').val();
+			//var date = el.find('input[name=date]').val();
+		
+			var data = { 'type':'search_dishonored_bill', 'org':org /*, 'date':date*/ };
+			
+			btn.button('loading');	
+			this.search_dishonored_bill(data,
+			function(data){
+				btn.button('reset');
+			},
+			function(err){
+				btn.button('reset');
 			});
 		},
 		'#new-dishonored form submit':function(el,ev){
 			ev.preventDefault();
 			
+			var that = this;	
 			var btn = el.find('button[type=submit]');	
 			
 			var org = el.find('select[name=org]').val();
-			var date = el.find('input[name=date]').val();
+			//var date = el.find('input[name=date]').val();
 			var reason = el.find('select[name=reason]').val();
 			var explain = el.find('input[name=explain]').val();
-			var data = { 'type':'create_dishonored_bill','org':org, 'date':date,'reason':reason, 'explain':explain };
-			console.log(data)	
+			var data = { 'type':'create_dishonored_bill','org':org,/* 'date':date,*/'reason':reason, 'explain':explain };
 			btn.button('loading');
-			
 			$.ajax({
 				url:'/eir_business_process',
 				data: data,
@@ -252,17 +270,75 @@ steal(
 				dataType:'json',
 				error:function(err){
 					btn.button('reset');
-					console.log(err);
+					that.options.clientState.attr('alert',{
+							'type':'error',
+							'heading': '创建退单',
+							'message': '失败 ' + err
+							});
 				},
 				success:function(data){
 					btn.button('reset');
-					console.log(data);
+					el.find('input[name=explain]').val('');
+					that.options.clientState.attr('alert',{
+							'type':'info',
+							'heading':'创建退单',
+							'message':'成功'
+							});
+					that.search_dishonored_bill({'type':'search_dishonored_bill',org:''/* ,date: $.date(new Date).format('yyyy-MM-dd')*/},function(data){
+						//el.closest('#new-dishonored').collapse('hide');
+						$.scrollTo($('.create-dishonored-bill-list')[0],1200);
+					},function(){});
 				}
 			});	
 		},
 		'#new-dishonored .btn-cancel click':function(el,ev){
 			ev.preventDefault();
 			el.closest('#new-dishonored').collapse('hide');
+		},
+		'.btn-delete click':function(el,ev){
+			ev.preventDefault();
+			var that = this;
+			var rowModel = this.createDishonoredBillController.getRowModelDataFor(el);
+			var rowElement = rowModel.tr;
+			var data = { 'type':'delete_dishonored_bill','id':rowModel.model.id  };
+			$.ajax({
+				url:'/eir_business_process',
+				data: data,
+				type: 'POST',
+				dataType: 'json',
+				error:function(err){
+					that.options.clientState.attr('alert',{
+							'type':'info',
+							'heading':'删除退单',
+							'message':'失败 ' + err
+							});
+					
+				},
+				success:function(){
+					rowElement.hide('slow');
+					rowElement.remove();
+				}
+			});
+		},
+		'.search-dishonored-bill form submit':function(el,ev){
+			ev.preventDefault();
+			var that = this;
+			var org = el.find('select[name=org]').val();
+			console.log(el);
+			var data = { 'type':'search_dishonored_bill', 'org':org /*, 'date':date*/ };
+			$.ajax({
+				url:'/eir_business_process',
+				data:data,
+				type:'POST',
+				dataType:'json',
+				error: function(err){
+
+				},
+				success:function(data){
+					that.searchDishonoredBillController.setModelData(data);
+					success.apply(this,data)
+				}	
+			});
 		}
 });
 });

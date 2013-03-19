@@ -1,15 +1,31 @@
 <div class="dishonored" > 
-<button class="btn btn-primary" data-toggle="collapse" data-target="#new-dishonored" >创建退单</button>
-<div id="new-dishonored" class="collapse" >
-	<p>&nbsp;</p>
-	<div class="well">
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#new-dishonored" data-toggle="tab">创建退单</a></li>
+    <li><a href="#search-dishonored" data-toggle="tab">查看退单</a></li>
+  </ul>
+  <div class="tab-content">
+  <div id="new-dishonored" class="tab-pane active well"  >
 	<form>
-	<legend>创建退单</legend>
 	<div class="row-fluid" >
 		<div class="span6" >
 			<fieldset class="control-group" >
-				<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgArrayDictionary } )	%>
+				<% var orgs  = [];
+					for(var i=1;i<orgArrayDictionary.length;i++){
+						orgs.push(orgArrayDictionary[i]);
+					}
+				 %>
+				<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgs } )	%>
 			</fieldset>
+			<fieldset class="control-group" >
+				<label>备注</label>
+				<input name="explain" type="text" required placehold="please" />
+			</fieldset>
+		<div class="pull-left">
+			<button type="submit" class="btn btn-primary" data-loading-text="Creating .." >创建</button>
+		</div> 
+		</div>
+		<div class="span6" >
 			<fieldset class="control-group" >
 				<label>原因</label>
 				<select name="reason" >
@@ -19,40 +35,32 @@
 					<option value="4">其它</option>
 				</select>
 			</fieldset>
-		<div class="pull-left">
-			<button type="submit" class="btn btn-primary" data-loading-text="Creating .." >Submit</button>
-			<button type="button" class="btn btn-cancel" data-loading-text="Cancel" >Cancel</button>
-		</div> 
-		</div>
-		<div class="span6" >
 			<fieldset class="control-group" >
-				<label>日期</label>
-				<input name="date" type="text" />	
-			</fieldset>
-			<fieldset class="control-group" >
-				<label>备注</label>
-				<input name="explain" type="text" required />
 			</fieldset>
 		</div>
 	</div>
 	</form>
 	</div>
-</div>
-<p>&nbsp;</p>
-<div class="search-dishonored well">
-	<legend>查看退单</legend>
+    <div class="tab-pane active" id="tab1">
+      
+    </div>
+    <div class="tab-pane search-dishonored well" id="search-dishonored">
 	<form>
 	<div class="row-fluid" >
 		<div class="span6" >
 		<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgArrayDictionary } )	%>
 		</div>
-		<div class="span6" >
+<!--		<div class="span6" >
 			<label>日期</label>
 			<input name="date" type="text" />	
 		</div>
+-->
 	</div>
-	<button class="btn btn-primary">Search</button>	
+	<button class="btn btn-primary"><i class="icon-search icon-white" ></i> 搜索</button>	
 	</form>
+    </div>
+  </div>
 </div>
+
 <div class="create-dishonored-bill-list"></div>
 </div>
