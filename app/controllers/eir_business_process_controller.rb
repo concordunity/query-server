@@ -5,15 +5,50 @@ class EirBusinessProcessController < ApplicationController
   def business_process
 	  result = send(params[:type])
       logger.info "eir_business_process========="
-  	  render json: result
+  	  #render json: result
 	  #respond_with(result)
+      respond_with(result,:location => "nil")
+  end
+
+  def interchange_receipt_list
+      idr = params[:list][:ir_date].to_datetime .. (params[:list][:ir_date].to_datetime + 1)
+      ir = InterchangeReceipt.where(:org => 2225, :ir_date => idr)
+      respond_with({:business_process => ir},:location => "nil")
+  end
+
+  def delete_interchange_receipt
+      @ir = InterchangeReceipt.find(params[:id])
+      @ir.destroy
+
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+
   end
 
   private
   #生成交接单
   def create_interchange_receipt
-		
-	return ""
+    status = 200
+    if !params[:interchange_receipt].nil?
+        @ir = InterchangeReceipt.new(params[:interchange_receipt])
+        @ir.ir_username = current_user.username
+        if @ir.doc_start <= @ir.doc_end
+            dse = @ir.doc_start .. @ir.doc_end
+            is_ir = InterchangeReceipt.where(:doc_start => dse, :doc_end => dse)
+            @ir.org = '2225'
+            @ir.ir_date = DateTime.now.to_s
+            if is_ir.length == 0
+                @ir.save
+            else
+                status = 400
+            end
+            logger.info '========4====='
+        else
+            status = 400
+        end
+    end
+    return {:interchange_receipt => @ir,:status => status}		
   end
   #接收交接单
   def search_interchange_receipt

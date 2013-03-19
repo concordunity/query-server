@@ -3,7 +3,8 @@
 	<form>
 	<div class="row-fluid" >
         <div class="span6" >
-        <%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgArrayDictionary } )   %>
+            <label>隶属关区</label>
+            <input name="org" type="text" readonly title="您当前无法修改此选项,如需改变所在的隶属关区请联系管理员修改您的用户资料" />
         </div>
         <div class="span6" >
             <label>日期</label>

@@ -1,6 +1,7 @@
 steal(
     'jquery/controller',
     'jquery/view/ejs',
+    'docview/models',
     'jquery/controller/view',
     'docview/bootstrap/bootstrap.css'
 ).then(
@@ -30,6 +31,7 @@ steal(
     $.Controller('Docview.Ui.businessprocess', {}, {
         init : function() {
            //this.element.html(this.view('init'));
+		   this.lastEl = undefined;
            this.comment_dic = commentsArrayDictionary;
            var business_process =  this.options.clientState.attr('access').attr('business_process');
 		   this.subjection_org =  this.options.clientState.attr('user').attr('subjection_org');
@@ -110,7 +112,6 @@ steal(
 				aaData: [],
 				col_def_path : "//docview/ui/businessprocess/views/search_dishonored_bill/",
 				aoColumns: [
-					{"mDataProp":"", mLabel : ''},
 					{"mDataProp":"org", mLabel : '关区'},
 					//{"mDataProp":"db_date", mLabel : '日期'},
 					{"mDataProp":"reason", mLabel : '原因'},
@@ -147,6 +148,8 @@ steal(
 			};
 			this.element.find('.statistical-inquiry-list').docview_ui_dmstable({table_options : statistical_inquiry_table_options});
 			this.statisticalInquiryController = this.element.find('.statistical-inquiry-list').controller();
+			var org = this.options.clientState.attr('user').subjection_org;
+			this.element.find('.search-dishonored-bill input[name=org]').val( orgJsonDictionary[org] + "(" + org + ")" );
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
 			console.log(newVal);
@@ -181,6 +184,7 @@ steal(
 
 							}else{
 							//	Docview.Models.Requisition.findRequisition({type: newVal},this.proxy(""),{});
+								this.reload();
 							}
 							$.route.attr('id', -1);
 							if (newVal != 'single') {
@@ -209,13 +213,128 @@ steal(
 				}
 			});
 		},
-		reload : function(){
-			this.reshow();
-			var sub_cat = $.route.attr('subcategory');
-			if (sub_cat != "application"){
-				//Docview.Models.Requisition.findRequisition({type: sub_cat},this.proxy("requisitionList"),{});
-			}
-		},
+        reload : function(){
+            this.reshow();
+            var sub_cat = $.route.attr('subcategory');
+            var org = $(".interchange-receipt span.subjection_org").text().split("-")[1];
+            var ir_date = $(".interchange-receipt input[name=interchange-receipt-date]").val();
+            Docview.Models.BusinessProcess.findBusinessProcess({type: sub_cat,list: {org: org, ir_date: ir_date}},this.proxy("businessProcessList"),{});
+        },
+        addDataRow : function(data){
+            $("#new-application").collapse("hide");
+            if (data.status === 200) {
+                this.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '成功添加新交接单 ' + data.message
+                });
+                this.reload();
+            }else {
+                this.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '新申请表单添加失败 ' + data.message
+                });
+            }
+        },
+        businessProcessList : function(data){
+            var sub_cat = $.route.attr('subcategory');
+            switch(sub_cat) {
+                case "create_interchange_receipt":
+                    this.createInterchangeReceiptController.setModelData(data.business_process);
+                    break;
+            }
+        },
+        ".delete-interchange-receipt click" : function(el,ev){
+            ev.preventDefault();
+            this.lastEl = el;
+            el.button('loading');
+            $('#alerts div.alert').alert('close');
+            if (confirm('===delete===')) {
+                var ir = this.createInterchangeReceiptController.getRowModelDataFor(el);
+                ir.tr.model(ir.model);
+                //ir.model.destroy()
+                Docview.Models.BusinessProcess.destroy(ir.model.id, this.proxy('irDestroyed'), this.proxy('irDestroyFailed'));
+                this.reload();
+            } else {
+                el.button('reset');
+            }
+        },
+        irDestroyed: function(data) {
+//                this.lastEl.closest('.role').remove();
+                this.lastEl.closest('tr').remove();
+                //log('system',{current_action:'manage_account.roles',describe:'成功删除角色'});
+        },
+        irDestroyFailed : function(jqXHR, textStatus, errorThrown) {
+                var t = 'error';
+                var h = '错误提示：';
+                var message = '需要用户认证，请重新登录系统。';
+
+                this.lastEl.button('reset');
+                switch(jqXHR.status) {
+                    case 401:
+                        break;
+                    case 404:
+                        type = 'info';
+                        message = '系统中没有相关角色';
+                        break;
+                    case 500:
+                        message = '系统内部错误';
+                        break;
+                    case 403:
+                        type = 'info';
+                        message = '失败，权限不足。';
+                        break;
+                    case 400:
+                        type = 'error';
+                        message = '交接单不能被删除，系统有相应的用户。';
+                        break;
+                    default:
+                        break;
+                }
+                this.options.clientState.attr('alert', {
+                    type: t,
+                    heading: h,
+                    message : message
+                });
+
+                //log('system',{current_action:'manage_account.roles',describe:message});
+                //$('#new-role-form .btn-primary').button('reset');
+                //$('#new-role-form .cancel-create').button('reset');
+                if (this.lastEl) {
+                    this.lastEl.button('reset');
+                }
+            },
+
+        ".search-interchange-receipt click" : function(el,ev){
+            ev.preventDefault();
+            this.reload();
+        },
+        "form#new-create-interchange-receipt submit" : function(el,ev){
+            ev.preventDefault();
+            var sub_cat = $.route.attr('subcategory');
+
+            var org = this.subjection_org;
+
+            //var ir_date = $(".interchange-receipt input[name=interchange-receipt-date]").val();   
+            var doc_type = el.find("select[name=doc_type]").val();
+            var doc_start = el.find("input[name=doc_start]").val();
+            var doc_end = el.find("input[name=doc_end]").val();
+            var number_copies = el.find("input[name=number_copies]").val();
+            var ir_package = el.find("input[name=package]").val();
+
+            var interchange_receipt = {
+                org : org,
+            //  ir_date : ir_date,
+                doc_type : doc_type,
+                doc_start : doc_start,
+                doc_end : doc_end,
+                number_copies : number_copies,
+                package : ir_package
+            };
+            console.log(interchange_receipt);
+            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,interchange_receipt: interchange_receipt},this.proxy("addDataRow"),{});
+        },
         show : function() {
         
 		},
@@ -323,7 +442,7 @@ steal(
 		'.search-dishonored-bill form submit':function(el,ev){
 			ev.preventDefault();
 			var that = this;
-			var org = el.find('select[name=org]').val();
+			var org = el.find('input[name=org]').val();
 			console.log(el);
 			var data = { 'type':'search_dishonored_bill', 'org':org /*, 'date':date*/ };
 			$.ajax({
@@ -336,7 +455,6 @@ steal(
 				},
 				success:function(data){
 					that.searchDishonoredBillController.setModelData(data);
-					success.apply(this,data)
 				}	
 			});
 		}
