@@ -1,8 +1,5 @@
 steal('jquery/model', 'jquery/lang/json').then(function($) {
 	$.Model('Docview.Models.BusinessProcess', {
-		models : function(data) {
-			return this._super(data.business_process);
-		},
 		createBusinessProcess : function(params, success, error) {
             return $.ajax({
                 url : '/eir_business_process',
@@ -20,6 +17,24 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
             dataType : 'json',
             success : success,
             error : error
+			});
+		},
+		findAllBusinessProcess : function(params, success, error) {
+        	return $.ajax({
+            	url : '/eir_business_process', 
+				type : 'post',
+				data : params,
+				success : success,
+				error : error
+			});
+		},
+		findOneBusinessProcess : function(params, success, error) {
+        	return $.ajax({
+            	url : '/eir_business_process', 
+				type : 'post',
+				data : params,
+				success : success,
+				error : error
 			});
 		},
 		findBusinessProcess : function(params, success, error) {

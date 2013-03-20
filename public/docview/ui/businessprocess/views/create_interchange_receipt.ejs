@@ -1,34 +1,65 @@
-<div class='well interchange-receipt'>
-<span class='subjection_org'>
-<%= orgJsonDictionary[this.subjection_org] + "-" + this.subjection_org %>
-</span>
-<input name='interchange-receipt-date' />
-<button type="button" class="btn btn-primary search-interchange-receipt"><i class="icon-remove icon-white"></i>搜索</button>
-<form class='form' id='new-create-interchange-receipt'>
-<table>
-<thead>
-<th> 单证种类</th>
-<th>开始理单号</th>
-<th>结束理单号</th>
-<th>份数</th>
-<th>包数</th>
-<th></th>
-</thead>
-<tbody>
-<tr>
-<td>
-	<select class='' name='doc_type' >
-		<option value='1' class=''>进口三年</option>
-	</select>
-</td>
-<td><input type='text' class='' name='doc_start' /></td>
-<td><input type='text' class='' name='doc_end' /></td>
-<td><input type='text' class='small-num' name='number_copies' /></td>
-<td><input type='text' class='small-num' name='package' /></td>
-<td><button type="submit" class="btn btn-primary new-interchange-receipt"><i class="icon-plus icon-white"></i>添加</button></td>
-</tr>
-</tbody>
-</table>
-</form>
+<div class='interchange-receipt'>
+<div class="tabbable" >
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#new-interchange-receipt" data-toggle="tab" >交接单录入</a><li>
+		<li><a href="#view-interchange-receipt" data-toggle="tab" >查看交接单</a><li>
+	</ul>
+	<div class="tab-content" >
+		<div id="new-interchange-receipt" class="tab-pane active well" >
+		<form class='form' id='new-create-interchange-receipt'>
+			<div class="row-fluid" >
+				<div class="span6">
+					<fieldset class="control-group" >
+						<label class="control-label" >开始理单号</label>
+						<input type='text' required name='doc_start' placeholder='' />
+					</fieldset>	
+					<fieldset class="control-group" >
+						<label class="control-label" >单证种类</label>
+						<select class='' name='doc_type' >
+							<% $.each(business_processJsonDictionary,function(index,value){ %>
+								<option value='<%= index %>' class=''><%= value%></option>
+							<% });%>
+						</select>
+					</fieldset>	
+				</div>
+				<div class="span6">
+					<fieldset class="control-group" >
+						<label class="control-label" >结束理单号</label>
+						<input type='text' required name='doc_end' placeholder='' />
+					</fieldset>	
+						
+					<fieldset class="control-group" >
+						<label class="control-label" >数量</label>
+						<div class="control" >
+							<span>份数:</span><input type='text' required class='small-num' style="width:50px;" name='number_copies' />
+							<span>包数:</span><input type='text' required class='small-num' style="width:50px;" name='package' />
+						</div>
+					</fieldset>	
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary btn-new"><i class="icon-plus icon-white"></i> 添加</button>
+			<button type="submit" class="btn btn-info btn-print" type="button" ><i class="icon-print icon-white"></i> 打印</button>
+		</form>
+		</div>
+		<div id="view-interchange-receipt" class="tab-pane well" >
+			<form>
+			<div class="row-fluid" >
+				<div class="span6">
+					<label class="">隶属关区</label>
+					<span class='subjection_org'>
+					<input type='text' value='<%= orgJsonDictionary[this.subjection_org] + "(" + this.subjection_org + ")" %>' readonly />
+					<input type='hidden' name="subjection_org" value='<%= this.subjection_org %>' />
+					</span>
+				</div>
+				<div class="span6">
+					<label class="">日期</label>
+					<input type="text" name='date' />
+				</div>
+				<button class="btn btn-primary"><i class="icon-search icon-white"></i> 搜索</button>
+			</div>
+			</form>
+		</div>
+	</div>
 </div>
 <div class="create-interchange-receipt-list"></div>
+</div>

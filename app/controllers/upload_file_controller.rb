@@ -60,11 +60,20 @@ class UploadFileController < ApplicationController
 			logger.info dih[org] 
 			org_ids << dih[org]
 		  end
+		  tmp_org = ""
+		  if !row[5].nil? && !dih[row[5]].nil?
+			  if row[5] == "总关"
+				  tmp_org = "2200"
+			  else
+				  tmp_org = dih[row[5]]
+			  end
+		  end
           if @user
             @user.fullname = row[1]
             @user.role_ids = row[2]
             @user.orgs = org_ids.join(",") 
             @user.doc_type = row[4]
+            @user.subjection_org = tmp_org 
             @user.save
           else
             @user = User.new
@@ -73,6 +82,7 @@ class UploadFileController < ApplicationController
             @user.role_ids = row[2]
             @user.orgs = org_ids.join(",") 
             @user.doc_type = row[4] 
+            @user.subjection_org = tmp_org 
             @user.password = 123456
             if @user.email.blank?
               if !@user.username.index('@customs.gov.cn').nil?

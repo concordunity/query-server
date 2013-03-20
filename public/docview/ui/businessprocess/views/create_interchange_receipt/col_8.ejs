@@ -1,1 +1,10 @@
-<%= this.ir_status %>
+<% var status_mapping = { 
+	1:'已经接收',
+	0:'等待接收'
+}; %>
+<% status_mapping[this.ir_status] %>
+<% if(this.ir_status == 1){ %>
+<span class="label label-info" ><%= status_mapping[this.ir_status] %></label>
+<%} else {%>
+<button class="btn btn-mini btn-danger delete-interchange-receipt"  autocomplete="off" > <i class="icon-trash icon-white"></i> 删除 </button>
+<%}%>

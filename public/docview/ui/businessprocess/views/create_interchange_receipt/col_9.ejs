@@ -1,1 +1,6 @@
-<button class="btn btn-mini btn-danger delete-interchange-receipt" data-loading-text="Deleting..." autocomplete="off"> <i class="icon-trash icon-white"></i> 删除 </button>
+<% console.log(this.ir_status,typeof this.ir_status,"'"+this.ir_status + "'" == "已经接收");%>
+<% if("'" + this.ir_status + "'"== "已经接收"){ %>
+<button class="btn btn-mini btn-danger" disabled ><i class="icon-trash icon-white"></i> 删除 </button>
+<%} else {%>
+<button class="btn btn-mini btn-danger delete-interchange-receipt"  autocomplete="off" > <i class="icon-trash icon-white"></i> 删除 </button>
+<%}%>

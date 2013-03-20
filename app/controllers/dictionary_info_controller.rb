@@ -130,11 +130,11 @@ class DictionaryInfoController < ApplicationController
   end
   def update_dictionary
 	 dis = DictionaryInfo.group("dic_type").collect(&:dic_type)	  
-	 result = {}
+	 result = ActiveSupport::OrderedHash.new 
 	 dis.each do |dic_type| 
 	    di_arr = []
 	    di_json = []
-	    DictionaryInfo.where(:dic_type => dic_type).reorder("dic_name").each do |di|
+	    DictionaryInfo.where(:dic_type => dic_type).reorder("convert(dic_name using gb2312) asc").each do |di|
 		# org_json = {'1':'a','2':'b'}
 		# org_arr =  [{},{},{}]
 		#

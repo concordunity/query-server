@@ -1,0 +1,32 @@
+<td colspan=4 style="border:2px solid #cccc00" >
+<div class=''>
+<table class="table">
+<thead>
+	<th>项目</th>
+	<th>开始理单号</th>
+	<th>结束理单号</th>
+	<th>份数</th>
+	<th>包数</th>
+</thead>
+<tbody>
+<% for(var i=0;i<this.business_process.length;i++){%>
+	<tr>
+	<td><%= business_processJsonDictionary[this.business_process[i].doc_type]%></td>
+	<td><%= this.business_process[i].doc_start%></td>
+	<td><%= this.business_process[i].doc_end%></td>
+	<td><%= this.business_process[i].number_copies%></td>
+	<td><%= this.business_process[i].package%></td>
+</tr>
+<%}%>
+<tr>
+<td colspan='3'> 合计 </td>
+<td > <%= this.sum_json.number_copies %></td>
+<td > <%= this.sum_json.package %></td>
+</tr>
+</tbody>
+</table>	
+<button class="btn btn-primary">接收</button>
+<button class="btn btn-info btn-print">打印</button>
+<button class="btn btn-cancel">取消</button>
+</div>
+</td>

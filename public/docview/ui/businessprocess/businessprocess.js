@@ -16,6 +16,7 @@ steal(
 ).then(
     'libs/json2.js',
     'libs/org_json.js',
+    'libs/business_process_json.js',
     'libs/jquery.scroller.js',
     'docview/datatables/bootstrap-pagination.js'
 ).then(
@@ -55,6 +56,7 @@ steal(
                     }
 			});
 
+			$("div.search_interchange_receipt .show-detail").hide();
 			var create_interchange_receipt_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/businessprocess/views/create_interchange_receipt/",
@@ -66,8 +68,7 @@ steal(
 					{"mDataProp":"doc_end", mLabel : '结束理单号'},
 					{"mDataProp":"number_copies", mLabel : '送单份数'},
 					{"mDataProp":"package", mLabel : '包数'},
-					{"mDataProp":"ir_status", mLabel : '状态'},
-					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+					{"mDataProp":"ir_status", mLabel : '状态'}
 				],
 				aaSorting:[[0,"desc"]],
 				file_name: ""
@@ -75,15 +76,31 @@ steal(
 			this.element.find('.create-interchange-receipt-list').docview_ui_dmstable({table_options : create_interchange_receipt_table_options});
 			this.createInterchangeReceiptController = this.element.find('.create-interchange-receipt-list').controller();
 
+			var detail_interchange_receipt_table_options = {
+				aaData: [],
+				col_def_path : "//docview/ui/businessprocess/views/detail_interchange_receipt/",
+				aoColumns: [
+					{"mDataProp":"doc_type", mLabel : '项目'},
+					{"mDataProp":"doc_start", mLabel : '开始理单号'},
+					{"mDataProp":"doc_end", mLabel : '结束理单号'},
+					{"mDataProp":"number_copies", mLabel : '送单份数'},
+					{"mDataProp":"package", mLabel : '包数'}
+				],
+				aaSorting:[[0,"desc"]],
+				file_name: ""
+			};
+			this.element.find('.search-interchange-receipt-detail').docview_ui_dmstable({table_options : detail_interchange_receipt_table_options});
+			this.detailInterchangeReceiptController = this.element.find('.search-interchange-receipt-detail').controller();
+
+
 			var search_interchange_receipt_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/businessprocess/views/search_interchange_receipt/",
 				aoColumns: [
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":"", mLabel : ''},
-					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+                    {"mDataProp":"org", mLabel : '关区'},
+                    {"mDataProp":"created_at", mLabel : '交接单生成时间'},
+                    {"mDataProp":"accept_date", mLabel : '接收时间'},
+                    {"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
 				aaSorting:[[0,"desc"]],
 				file_name: ""
@@ -149,7 +166,8 @@ steal(
 			this.element.find('.statistical-inquiry-list').docview_ui_dmstable({table_options : statistical_inquiry_table_options});
 			this.statisticalInquiryController = this.element.find('.statistical-inquiry-list').controller();
 			var org = this.options.clientState.attr('user').subjection_org;
-			this.element.find('.search-dishonored-bill input[name=org]').val( orgJsonDictionary[org] + "(" + org + ")" );
+			this.element.find('.search-dishonored-bill input[name=org]').val( org );
+			this.element.find('.search-dishonored-bill input[name=org_text]').val( orgJsonDictionary[org] + "(" + org + ")" );
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
 			console.log(newVal);
@@ -176,15 +194,14 @@ steal(
 				if (category !== undefined && category === "business_process") {
 		//			this.element.find('div.requisition-list').docview_ui_dmstable();
 					if (newVal != 'single') {
-						console.log("I don't know where is this action from");
 							this.reshow();
-							if (newVal == "lending_statistics"){	
-									
-							}else if (newVal == "application"){	
-
+							if (newVal == "create_interchange_receipt"){
+									$("#view-interchange-receipt form").submit();
+							}else if( newVal == "search_interchange_receipt"){	
+									$(".search-interchange-receipt form").submit();
 							}else{
 							//	Docview.Models.Requisition.findRequisition({type: newVal},this.proxy(""),{});
-								this.reload();
+								//this.reload();
 							}
 							$.route.attr('id', -1);
 							if (newVal != 'single') {
@@ -216,26 +233,35 @@ steal(
         reload : function(){
             this.reshow();
             var sub_cat = $.route.attr('subcategory');
-            var org = $(".interchange-receipt span.subjection_org").text().split("-")[1];
-            var ir_date = $(".interchange-receipt input[name=interchange-receipt-date]").val();
+            var org = $("." + sub_cat  + " input[name=subjection_org]").val();
+            var ir_date = $("." + sub_cat + " input[name=interchange-receipt-date]").val();
             Docview.Models.BusinessProcess.findBusinessProcess({type: sub_cat,list: {org: org, ir_date: ir_date}},this.proxy("businessProcessList"),{});
         },
         addDataRow : function(data){
-            $("#new-application").collapse("hide");
-            if (data.status === 200) {
-                this.options.clientState.attr('alert', {
-                    type: 'info',
-                    heading: '提示信息',
-                    message : '成功添加新交接单 ' + data.message
-                });
-                this.reload();
-            }else {
-                this.options.clientState.attr('alert', {
-                    type: 'info',
-                    heading: '提示信息',
-                    message : '新申请表单添加失败 ' + data.message
-                });
-            }
+			var msg = "提交时发生错误,请重新尝试";
+			var type = 'error';
+			switch(data.status){
+				case 200: 
+					type =  'success';
+					msg = "成功添加新交接单" ;
+					this.reload();
+					$.scrollTo($('.create-interchange-receipt-list')[0],1200);
+					break;
+				case 400:
+					type = 'warn';
+					msg = "开始理单号和结束理单号已经存在";
+					break;
+				case 401:
+					type = 'warn';
+					msg = "开始理单号不能大于结束理单号";
+					break;
+			}
+        	this.options.clientState.attr('alert', {
+            	type: type,
+                heading: '交接单录入',
+                message : msg 
+            });
+        //    $("#new-application").collapse("hide");
         },
         businessProcessList : function(data){
             var sub_cat = $.route.attr('subcategory');
@@ -243,27 +269,16 @@ steal(
                 case "create_interchange_receipt":
                     this.createInterchangeReceiptController.setModelData(data.business_process);
                     break;
-            }
-        },
-        ".delete-interchange-receipt click" : function(el,ev){
-            ev.preventDefault();
-            this.lastEl = el;
-            el.button('loading');
-            $('#alerts div.alert').alert('close');
-            if (confirm('===delete===')) {
-                var ir = this.createInterchangeReceiptController.getRowModelDataFor(el);
-                ir.tr.model(ir.model);
-                //ir.model.destroy()
-                Docview.Models.BusinessProcess.destroy(ir.model.id, this.proxy('irDestroyed'), this.proxy('irDestroyFailed'));
-                this.reload();
-            } else {
-                el.button('reset');
+                case "search_interchange_receipt":
+                    this.searchInterchangeReceiptController.setModelData(data.business_process);
+                    break;
             }
         },
         irDestroyed: function(data) {
-//                this.lastEl.closest('.role').remove();
-                this.lastEl.closest('tr').remove();
-                //log('system',{current_action:'manage_account.roles',describe:'成功删除角色'});
+		
+            this.lastEl.button('reset');    
+            this.lastEl.closest('tr').remove();
+			this.reload();
         },
         irDestroyFailed : function(jqXHR, textStatus, errorThrown) {
                 var t = 'error';
@@ -304,14 +319,14 @@ steal(
                 if (this.lastEl) {
                     this.lastEl.button('reset');
                 }
-            },
-
-        ".search-interchange-receipt click" : function(el,ev){
-            ev.preventDefault();
-            this.reload();
         },
-        "form#new-create-interchange-receipt submit" : function(el,ev){
+		/**
+			create interchange receipt 
+		*/
+        "#new-interchange-receipt form submit" : function(el,ev){
             ev.preventDefault();
+
+			var that = this;
             var sub_cat = $.route.attr('subcategory');
 
             var org = this.subjection_org;
@@ -332,12 +347,137 @@ steal(
                 number_copies : number_copies,
                 package : ir_package
             };
-            console.log(interchange_receipt);
-            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,interchange_receipt: interchange_receipt},this.proxy("addDataRow"),{});
+            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,interchange_receipt: interchange_receipt},this.proxy("addDataRow"),function(err){
+                that.options.clientState.attr('alert', {
+                    type: 'info',
+                    heading: '提示信息',
+                    message : '新申请表单添加失败 '
+                });
+			});
         },
+		/**
+			print interchange list in create interchange receipt page
+		*/
+		'#new-interchange-receipt .btn-print click':function(el,ev){
+			ev.preventDefault();
+			this.createInterchangeReceiptController.saveToExcel();
+		},
+		/**
+			view interchange receipt in create interchange receipt page 
+		*/
+		'#view-interchange-receipt form submit':function(el,ev){
+			ev.preventDefault();
+            var org = el.find("input[name=subjection_org]").val();
+            var date = el.find("input[name=date]").val();
+            Docview.Models.BusinessProcess.findBusinessProcess({
+				type: 'create_interchange_receipt',
+				list: {org: org, ir_date: date}
+			},this.proxy("businessProcessList"),{});
+		},
+		/**
+			delete intercahnge receipt in create interchange receipt page
+		*/
+        ".delete-interchange-receipt click" : function(el,ev){
+            ev.preventDefault();
+            //$('#alerts div.alert').alert('close');
+            if (confirm('是否删除此交接单')) {
+				this.lastEl = el;
+                var ir = this.createInterchangeReceiptController.getRowModelDataFor(el);
+                ir.tr.model(ir.model);
+				el.button('loading');
+                Docview.Models.BusinessProcess.destroy(ir.model.id, this.proxy('irDestroyed'), this.proxy('irDestroyFailed'));
+            }
+        },
+		/**
+			search interchange receipt	
+		*/
+        ".search-interchange-receipt form submit" : function(el,ev){
+            ev.preventDefault();
+			var date = el.find('input[name=date]').val();
+			Docview.Models.BusinessProcess.findAllBusinessProcess(
+				{type: "create_ir",ir_date: date},
+				this.proxy("businessProcessList"),
+				{});
+        },
+		/**
+			show interchange receipt detial and change status  ..
+		*/
+	    ".detial-row click" : function(el,ev){
+			ev.preventDefault();
+			var ir = this.searchInterchangeReceiptController.getRowModelDataFor(el);
+			var rowElement = ir.tr;
+			ir.tr.model(ir.model);
+			Docview.Models.BusinessProcess.findOneBusinessProcess(
+				{ type: "find_one",org: ir.model.org,ir_date: ir.model.ir_date },
+				function(data){
+					rowElement.hide();
+					rowElement.after($.View('//docview/ui/businessprocess/views/search_interchange_receipt/detail_form.ejs',data));
+					var innerForm = rowElement.next();					
+					innerForm.find('.btn-cancel').click(function(ev){
+						innerForm.remove();
+						rowElement.show('slow');
+					});
+					innerForm.find('.btn-print').click(function(ev){
+						ir.model.type = 'print';
+						ir.model.date = $.date(ir.model.date).format('yyyy-MM-dd');
+						$.ajax({
+							url:'/eir_business_process',
+							type:'POST',
+							data: ir.model,
+							dataType:'json',
+							error:function(err){
+								console.log('print error:',err);
+							},
+							success:function(data){
+								window.location =  data.text;
+							}
+						});
+					});
+
+					innerForm.find('.btn-primary').click(function(ev){
+						ev.preventDefault();
+						var arr = [];
+						 $.each(data.business_process,function(key,val){
+							arr.push( val.id );
+						});
+						
+						console.log(arr);
+						$.ajax({
+							url:'/eir_business_process',
+							type:'POST',
+							data: { type:'change_status', ids :arr },
+							dataType:'json',
+							error:function(err){
+								console.log('print error:',err);
+							},
+							success:function(data){
+								$('.search-interchange-receipt form').submit();
+							}
+						});
+					});
+				}, 
+				function(err){
+					console.log(err)
+				});
+
+		},
+		/**
+		Out of Date for this method , can be remove .
+		*/
+		showDetail : function(data){
+            //$(".search-interchange-receipt-detail").html(this.view('//docview/ui/businessprocess/views/search_interchange_receipt/detail_form.ejs',data));
+			//$(".search-interchange-receipt-list").hide();
+			$(".show-detail").show();
+			this.detailInterchangeReceiptController.setModelData(data.business_process);
+			
+		},
+		showDetailFailed : function(data){},
         show : function() {
         
 		},
+		/**
+			search dishonored
+		*/
 		search_dishonored_bill:function(data,success,error){
 			var that = this;	
 			$.ajax({
@@ -352,6 +492,9 @@ steal(
 				}	
 			});
 		},
+		/**
+			search dishonored
+		*/
 		'.search-dishonored form submit':function(el,ev){
 			ev.preventDefault();
 			var that = this;
@@ -370,6 +513,9 @@ steal(
 				btn.button('reset');
 			});
 		},
+		/**
+			create dishonored 
+		*/
 		'#new-dishonored form submit':function(el,ev){
 			ev.preventDefault();
 			
@@ -410,11 +556,19 @@ steal(
 				}
 			});	
 		},
+		/**
+		can be remove ..
+		*/
 		'#new-dishonored .btn-cancel click':function(el,ev){
 			ev.preventDefault();
 			el.closest('#new-dishonored').collapse('hide');
 		},
-		'.btn-delete click':function(el,ev){
+		/**
+			@category
+			@subcategory: 退单录入
+			@method 	: 删除退单
+		*/
+		'.create-dishonored-bill-list .btn-delete click':function(el,ev){
 			ev.preventDefault();
 			var that = this;
 			var rowModel = this.createDishonoredBillController.getRowModelDataFor(el);
@@ -439,11 +593,15 @@ steal(
 				}
 			});
 		},
+		/**
+			@category
+			@subcategory: 退单录入
+			@method 	: 查看退单
+		*/
 		'.search-dishonored-bill form submit':function(el,ev){
 			ev.preventDefault();
 			var that = this;
 			var org = el.find('input[name=org]').val();
-			console.log(el);
 			var data = { 'type':'search_dishonored_bill', 'org':org /*, 'date':date*/ };
 			$.ajax({
 				url:'/eir_business_process',
