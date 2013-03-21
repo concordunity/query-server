@@ -1,1 +1,30 @@
-  <% if (this.doc_type == '0') { %>不限<% } else if (this.doc_type == '1') { %>出口<% } else { %>进口<%} %>
+ 
+<% 
+	    var orgs = this.orgs.split(",");
+            var strjson = '{"';
+            strjson = strjson + "1000" + '" : "'+  "尚未选择关区" +'" , "';
+            for(var i = 0;i < orgArrayDictionary.length;i++){
+                var org = orgArrayDictionary[i];
+                if (org.dic_num == 2200) {
+                    strjson = strjson +'2200" : "所有关区';
+                }else{
+                    strjson = strjson + org.dic_num + '" : "'+  org.dic_name;
+                }
+                if (i+1 < orgArrayDictionary.length){
+                    strjson = strjson + '" , "';
+                }
+            }
+            strjson = strjson + '"}';
+            labelMap =  eval('(' + strjson + ')');
+
+ for(var j = 0; j < orgs.length; j++) { 
+            if (orgs[j] !== "") { 
+                 var ov = orgs[j];
+                 if (labelMap[ov] != undefined) {
+                    ov = labelMap[ov];
+		 }
+
+%>
+                <span class="label label-info"><%= ov %></span>
+            <% } %>
+	    <% } %>

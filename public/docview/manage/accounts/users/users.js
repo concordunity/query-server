@@ -47,7 +47,8 @@ steal(
 		    {"mDataProp":"username", mLabel : '用户名'},
 		    {"mDataProp":"fullname", mLabel : '全名'},
 		    {"mDataProp":"roles", mLabel : '角色'},
-		    {"mDataProp":"orgs", mLabel : '关区'},
+		    {"mDataProp":"subjection_org", mLabel : '隶属关区'},
+		    {"mDataProp":"orgs", mLabel : '查阅权限'},
 		    {"mDataProp":"doc_type", mLabel : '进出口类别'},
 		    {"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
   		],
