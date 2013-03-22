@@ -1,15 +1,17 @@
+# -*- coding: utf-8 -*-
 class AccountsController < ApplicationController 
 
   respond_to  :json
   
   def index 
     r = Role.find_by_name('admin')
+    @users = User.where(["id not in (?)", r.users.collect(&:id)]).order(:updated_at)
+=begin
     @users = User.order(:updated_at).reverse - r.users
     roles = []
     @users.each do |u|
        roles.append(u.roles(force_load=true))
     end
-
     #respond_to do |format|
     #  format.json { render :json => { :users => @users :only => [:email, :last_sign_in_at, :last_sign_in_ip,
     #                                                                     :current_sign_in_at, :current_sign_in_ip ]),
@@ -19,7 +21,78 @@ class AccountsController < ApplicationController
     #end
     respond_with(:users => @users, 
                  :roles => roles)
+=end
+
+    if params[:iColumns]
+		render json:  filter_proc(@users, params)
+	else
+	    roles = []
+		@users.each do |u|
+			roles.append(u.roles(force_load=true))
+		end
+		respond_with(:users => @users, :roles => roles)
+	end
   end
+
+ 
+  def filter_proc(source,params) 
+ 	  column_count = params[:iColumns]
+	  iSortCol_0 = params[:iSortCol_0]	  
+	  sSortDir_0 = params[:sSortDir_0]	  
+	  sSearch = params[:sSearch]
+	  mDataPro = params["mDataProp_" + iSortCol_0]
+	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
+	  condition_arr = [] 
+	  if sSearch.blank?
+		condition_arr << "true"
+	  else
+        
+        dis_org = DictionaryInfo.where(["dic_type='org' AND dic_name like ? ","%#{sSearch}%"])
+        dis_jck = DictionaryInfo.where(["dic_type='jck' AND dic_name like ? ","%#{sSearch}%"])
+		user_ids = [] 
+		Role.where(["name like ?","%#{sSearch}%"]).each {|r|
+			 user_ids += r.users.collect(&:id)
+		}
+		condition_dic = dis_org.collect(&:dic_num) if dis_org 
+		condition_jck = dis_jck.collect(&:dic_num) if dis_jck
+
+
+		if condition_dic || condition_jck
+			logger.info "-------"
+			logger.info condition_jck 
+			logger.info condition_dic 
+			
+		end
+		condition_user = user_ids.uniq if user_ids
+		condition_arr = ["username like '%#{sSearch}%' "]
+		condition_arr << ["fullname like '%#{sSearch}%' "]
+		condition_arr << ["id in (#{condition_user.join(",")}) "] if !condition_user.blank?
+		condition_arr << ["subjection_org in (#{condition_dic.join(",")}) "] if !condition_dic.blank?
+		if condition_dic
+			condition_dic.each do |cd|
+				condition_arr << ["orgs like '%#{condition_dic.join(",")}%' "] 
+			end
+		end
+		condition_arr << ["doc_type in (#{condition_jck.join(",")}) "] if !condition_jck.blank?
+	  end
+      logger.info "================" 
+      logger.info condition_arr 
+      logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
+	  orders = "#{mDataPro} #{sSortDir_0}" if mDataPro != "roles"	
+      current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
+      logger.info "=======0=#{orders}"	
+	  condition = {:orders =>orders,:where=>condition_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
+      logger.info "=======1=#{condition[:orders]}"	
+	  result = source.where(condition[:where]).reorder(condition[:orders]).paginate(:page => condition[:page], :per_page => condition[:per_page] )
+
+	  roles = []
+      result.each do |u|
+		  roles.append(u.roles(force_load=true))
+	  end
+	  aaData = {:users => result, :roles => roles}
+	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: aaData}
+  end
+
 
   def update
     @user = User.find(params[:id])

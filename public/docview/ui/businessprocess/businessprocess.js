@@ -165,9 +165,13 @@ steal(
 			};
 			this.element.find('.statistical-inquiry-list').docview_ui_dmstable({table_options : statistical_inquiry_table_options});
 			this.statisticalInquiryController = this.element.find('.statistical-inquiry-list').controller();
+			
+
 			var org = this.options.clientState.attr('user').subjection_org;
 			this.element.find('.search-dishonored-bill input[name=org]').val( org );
 			this.element.find('.search-dishonored-bill input[name=org_text]').val( orgJsonDictionary[org] + "(" + org + ")" );
+			
+			$('input[readonly]').tooltip({ placement: 'right'  });
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
 			console.log(newVal);

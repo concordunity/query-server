@@ -38,7 +38,7 @@ steal(
     {
         init: function() {
             this.element.html(this.view('init', {}));
-
+/*
             var table_options = {
 		aaData: [],
 
@@ -54,7 +54,32 @@ steal(
   		],
 		file_name: "user_info"
 	    };
-	    this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
+*/
+	    //this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
+	    this.element.find('.user-list').docview_ui_pagingtable({
+			tmpl_path:"/docview/manage/accounts/users/views/col_",
+			columns:[
+				{ id:'username', 		text:'用户名'		},
+				{ id:'fullname', 		text:'全名' 		},
+				{ id:'roles', 			text:'角色' 		},
+				{ id:'subjection_org', 	text:'隶属关区' 	},
+				{ id:'orgs', 			text:'查阅权限' 	},
+				{ id:'doc_type', 		text:'进出口类别' 	},
+				{ id:null, 				text:'操作'	, style:'nolinkbreak',width:150}
+			],
+			file_name: "users",
+			url:'/accounts',
+			type:'GET',
+			data:{},
+			dataType:'json',
+			error:function(){
+
+			},
+			success:function(data){
+				return Docview.Models.User.models(data.aaData);
+			}
+		});
+		
 	    this.tableController = this.element.find('.user-list').controller();
             // By default we're hidden until the route conditions are met
 
@@ -95,8 +120,19 @@ steal(
         },        
         // Data queries
         reload: function() {
-            Docview.Models.User.findAll({}, this.proxy('listUsers'), this.proxy('failure'));
+            //Docview.Models.User.findAll({}, this.proxy('listUsers'), this.proxy('failure'));
+			//console.log("=======22222=====");
             Docview.Models.Role.findAll({}, this.proxy('storeRoles'), this.proxy('failure'));
+			var that = this;
+			that.tableController.reload({
+				success:function(data){
+					var model = Docview.Models.User.models(data.aaData);
+					//that.tableController.setData(model);
+					//console.log(model);
+					return model;
+				}
+			});
+			
         },
 
 	saveToExcel : function() {
@@ -154,6 +190,7 @@ steal(
         // This is useful when showing a list of available roles
         // that we can assign to a user.
         this.roles = roles;
+		//console.log('-------------rrrrrr--------------');
 		//console.log(this.roles);
 	},
 	getRoles: function() {
@@ -276,22 +313,26 @@ steal(
 	    ev.preventDefault();
             // In place edit form
             //var userRow = el.closest('tr');
-
+/*
 	    var userInfo = this.tableController.getRowModelDataFor(el);
 
 		userRow = userInfo.tr;
 		userRow.model(userInfo.model);
 	    userRow.hide();
 	    //console.log(userInfo.model);
-            
-	    var editHtml = this.view('edit_user',  {cntl : this, user: userInfo.model});
+  */
+		var row = this.tableController.getRowFrom(el);
+		var userRow = row.element;
+		var userInfo = row.model;  
+		//console.log(userInfo);        
+	    var editHtml = this.view('edit_user',  {cntl : this, user: userInfo });
 	    userRow.after(editHtml);
 	    //userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
 
 	    //console.log(this.orgsDic);
 	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
 	    var ctrl =userRow.next().find('div.edit-org-selection-holder').controller();
-	    ctrl.setOrgs(userInfo.model.orgs);
+	    ctrl.setOrgs(userInfo.orgs);
 
         },
         '.edit-user-form submit': function(el, ev) {
@@ -317,8 +358,11 @@ steal(
 
             // Update model entry
             // The user model row is a hidden entry right above the edit row
-            var user = el.closest('tr').prev().model();
+            var user = el.closest('tr').prev();
             //user.attr('roles', el.find('select').val());
+			var row = this.tableController.getRowFrom(user);
+			user = row.model;
+			console.log(user);
 			Docview.Models.User.update(
 							user.id,
 							{ role : roles,
@@ -354,19 +398,21 @@ steal(
         },        
         // Deleting a user
         '.delete-user click': function(el, ev) {
-	    ev.preventDefault();
+			ev.preventDefault();
             el.button('loading');
-	    $('#alerts div.alert').alert('close');
+	    	$('#alerts div.alert').alert('close');
             if (confirm($.i18n._('msg.confirm.delete_user'))) {
-		var userInfo = this.tableController.getRowModelDataFor(el);
-		userInfo.tr.model(userInfo.model);
-		userInfo.model.destroy();
+				var row = this.tableController.getRowFrom(el);
+				var model = row.model;
+				model.destroy();
+				row.element.remove();
             }
             else {
                 el.button('reset');
             }
         },
         '{Docview.Models.User} destroyed': function(User, ev, user) {
+			//console.log(user,this.element);
             user.elements(this.element).remove();
 			log('system',{current_action:'manage_account.users',describe:'用户注销:'+user.username});
         },
@@ -380,6 +426,9 @@ steal(
         removeFormErrors: function(form) {
             form.find('.error > .help-inline').remove();
             form.find('.error').removeClass('error');
-        }
+        },
+		"#export_data click" : function(){
+	    	this.tableController.saveToExcel({type: "all"});
+		}
     });
 });

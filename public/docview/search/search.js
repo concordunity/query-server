@@ -83,7 +83,8 @@ steal(
 				{ "id": "doc_type",text:'报关单类别' },
 				{ "id": "serial_number",text:'理单号' },
 				{ "id": "pages",text:'总页数' }
-			]
+			],
+			disable_ejs:true
 		});
 	},
 	"button.button-option click" : function(el,ev){
