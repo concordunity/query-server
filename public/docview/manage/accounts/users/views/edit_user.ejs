@@ -1,34 +1,35 @@
 <tr class="edit-user-<%= user.id %>" style="border: 2px solid #cccc00">
-<td colspan="6">
+<td colspan='7' >
 <form class="form edit-user-form">
-
-    <legend> <%= $.i18n._('label.editing_user') + user.username %></legend>
-
+<legend> <%= $.i18n._('label.editing_user') + user.username %></legend>
+<table class="table">
+<tr>
 <div class="row-fluid">
-<div class="span6">
-    <label><%= $.i18n._('label.user.fullname') %></label>
-    <input name="fullname" type="text" value="<%= user.fullname %>"/>
-
-    
-    <label><%= $.i18n._('label.user.role') %></label>
-    <select name="roles">
-        <% var roles = cntl.getRoles(); 
-           var found = false;
-	   for (var i = 0; i < roles.length; i++) { 
+	<td colspan='4' > 
+		<fieldset class="control-group">
+	    	<label><%= $.i18n._('label.user.fullname') %></label>
+    		<input name="fullname" type="text" value="<%= user.fullname %>"/>
+		</fieldset>
+		<fieldset class="control-group">
+	    <label><%= $.i18n._('label.user.role') %></label>
+    	<select name="roles">
+        <%	var roles = cntl.getRoles(); 
+         	var found = false;
+			for (var i = 0; i < roles.length; i++) { 
                 var is_selected = "";
                 if (found == false && user.roles[0].id == roles[i].id) {
                     is_selected = " selected";
                     found = true;
                 }
-            %>
-            <option value=<%== roles[i].id %><%= is_selected %>><%== roles[i].name %></option>
+		%>
+		<option value=<%== roles[i].id %><%= is_selected %>><%== roles[i].name %></option>
         <% } %>
-    </select>
+    	</select>
+		</fieldset>
 
- <fieldset class="control-group">
-				<div class="control-group">
-				<label  class="control-label">隶属关区</label>
-				<div class="controls">
+ 		<fieldset class="control-group">
+			<label  class="control-label">隶属关区</label>
+			<div class="controls">
 				<select name="subjection_org" >
 				<% 
 				for(var i=0;(orgArrayDictionary != 'undefined') && i < orgArrayDictionary.length;i++){
@@ -43,44 +44,40 @@
 								%><option value="<%= org.dic_num %>"  <%= is_selected%> ><%= org.dic_name%>(<%=  org.dic_num%>)</option><% 
 						}
 				}
-%>
-</select>
-</div>
-</div>
-            </fieldset>
-
-    
-    <label><%= $.i18n._('label.user.organization') %></label>
-
-<div class="edit-org-selection-holder"></div>
-
-</div>
-<div class="span6">    
-
-            <label><%= $.i18n._('label.user.doc_type') %></label>
-            <select name="doc_type">
-               <% { var d = user.doc_type; %>
-                    <option value="0"<%= d=='0' ? " selected" : ""%>>不限</option>
-                    <option value="1"<%= d=='1' ? " selected" : ""%>>出口</option>
-                    <option value="2"<%= d=='2' ? " selected" : ""%>>进口</option>
-                 <% } %>
-            </select>
-
-    <label><%= $.i18n._('label.user.password.edit') %></label>
-    <input name="password" type="password" />
-    
-    <fieldset class="control-group">
-        <label><%= $.i18n._('label.user.pass_confirm') %></label>
-        <input name="password-confirm" type="password" />
-    </fieldset>
-    
-</div>
-</div>
+				%>
+				</select>
+			</div>
+		</fieldset>
+    	<label><%= $.i18n._('label.user.organization') %></label>
+		<div class="edit-org-selection-holder"></div>
+	</td>
+	<td colspan='3' >
+		<fieldset class="control-group">
+			<label><%= $.i18n._('label.user.doc_type') %></label>
+        	<select name="doc_type">
+			<% { var d = user.doc_type; %>
+        	<option value="0"<%= d=='0' ? " selected" : ""%>>不限</option>
+        	<option value="1"<%= d=='1' ? " selected" : ""%>>出口</option>
+       		<option value="2"<%= d=='2' ? " selected" : ""%>>进口</option>
+        	<% } %>
+    	    </select>
+		</fieldset>
+		<fieldset class="control-group">
+    		<label><%= $.i18n._('label.user.password.edit') %></label>
+    		<input name="password" type="password" />
+    	</fieldset>
+		<fieldset class="control-group">
+        	<label><%= $.i18n._('label.user.pass_confirm') %></label>
+        	<input name="password-confirm" type="password" />
+    	</fieldset>
     <div class="pull-right">
         <button type="submit" class="btn btn-primary" data-loading-text="Saving..." autocomplete="off"><%= $.i18n._('btn.save') %></button>
-        <button type="button" class="btn cancel-edit" data-loading-text="Cancel" autocomplete="off">
-<%= $.i18n._('btn.cancel') %></button>
+        <button type="button" class="btn cancel-edit" data-loading-text="Cancel" autocomplete="off"><%= $.i18n._('btn.cancel') %></button>
     </div>
+	</td>
+</div>
+</tr>
+</table>
 </form>
 </td>
 </tr>

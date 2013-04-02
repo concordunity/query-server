@@ -227,3 +227,4 @@ input.where_page {width: 40px;}
 }
 #new-requisition div.well {width: 50%;margin-left: 20%;}
 input.small-num {width: 15px;}
+.navbar .nav > li.nav > a {padding: 0px 5px;}

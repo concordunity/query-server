@@ -24,6 +24,17 @@ $.Model('Docview.Models.User',
             dataType : 'json user.models'
         })
     },
+
+    getUserSelect : function(params, success, error) {
+        return $.ajax({
+            url : '/user_select',
+            type : 'get',
+            data : params,
+			async : true,
+            success : success,
+            error : error
+        })
+    },
     getDialog : function(params, success, error) {
         return $.ajax({
             url: '/get_dialog',

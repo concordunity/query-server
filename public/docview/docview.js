@@ -56,7 +56,8 @@
 					approval: false,
 					register : false,
 					write_off :false,
-					lending_statistics : false
+					lending_statistics : false,
+					requisition_history: false
 				}, 
 				business_process: {
 					create_interchange_receipt: false,

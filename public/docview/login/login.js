@@ -206,6 +206,10 @@ steal(
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('lending_statistics', true);
 					this.setNavIfEmpty('requisition_docs', 'lending_statistics');
 					break;
+				case ("requisition_history_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('requisition_history', true);
+					this.setNavIfEmpty('requisition_docs', 'requisition_history');
+					break;
 				case ("all_print"):
 /*
 		    

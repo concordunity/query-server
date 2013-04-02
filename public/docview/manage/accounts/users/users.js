@@ -329,7 +329,7 @@ steal(
 	    userRow.after(editHtml);
 	    //userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
 
-	    //console.log(this.orgsDic);
+	    console.log('===init orgDic ====',this.orgsDic);
 	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
 	    var ctrl =userRow.next().find('div.edit-org-selection-holder').controller();
 	    ctrl.setOrgs(userInfo.orgs);

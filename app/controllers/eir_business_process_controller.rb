@@ -57,33 +57,38 @@ class EirBusinessProcessController < ApplicationController
     if !params[:interchange_receipt].nil?
         @ir = InterchangeReceipt.new(params[:interchange_receipt])
         @ir.ir_username = current_user.username
-        if @ir.doc_start <= @ir.doc_end
-            dse = @ir.doc_start.to_i .. @ir.doc_end.to_i
-            #is_ir = InterchangeReceipt.where(:org => current_user.subjection_org,:doc_start => dse, :doc_end => dse)
-			#is_ir = InterchangeReceipt.where(["org = ? and  (doc_start > ? or  doc_end < ?)",@ir.org, @ir.doc_end,@ir.doc_start])
-			is_ir = InterchangeReceipt.where(["org = ? and (
-					   (? >= doc_start and ? <= doc_end) 
-					or (? >= doc_start and ? <= doc_end)
-					or (doc_start >= ? and doc_end <= ?)
-					)",
-					@ir.org, 
-					@ir.doc_start,@ir.doc_start,
-					@ir.doc_end,@ir.doc_end,
-					@ir.doc_start,@ir.doc_end
-					])
-			logger.info is_ir.to_json
+
+		if @ir.doc_type.to_i > 6
             @ir.org = @ir.org || 2225 
             @ir.ir_date = DateTime.now.to_s
 			@ir.ir_status = 0
-            if is_ir.length == 0
-                @ir.save
+			@ir.save
+		else
+
+        if @ir.doc_start.to_i <= @ir.doc_end.to_i && @ir.doc_start.to_i > 0
+			ir_some = InterchangeReceipt.where(["org = ? and ( (doc_start < ? and doc_end < ? ) or (doc_start > ?  and doc_end > ?))", 
+												@ir.org, @ir.doc_start.to_i,@ir.doc_start.to_i, @ir.doc_end.to_i,@ir.doc_end.to_i])
+			
+			ir_all = InterchangeReceipt.where(:org => @ir.org)
+			count = ir_all.count - ir_some.count
+
+            @ir.org = @ir.org || 2225 
+            @ir.ir_date = DateTime.now.to_s
+			@ir.ir_status = 0
+			number_copies = @ir.doc_end.to_i - @ir.doc_start.to_i + 1
+            if count == 0 
+				if @ir.number_copies.to_i == number_copies
+					@ir.save
+				else
+					status = 403
+				end
             else
                 status = 400
             end
-            logger.info '========4====='
         else
             status = 401
         end
+		end
     end
     return {:interchange_receipt => @ir,:status => status}		
   end
@@ -107,8 +112,14 @@ class EirBusinessProcessController < ApplicationController
 	if org[:org].blank?
 		org = "true"
 	end
-	#date = params[:date].to_date
-  	DishonoredBill.where(org).order("created_at desc")#.where(:created_at => date .. (date + 1.day))	
+	if  params[:date].nil?
+		date = {} 
+	else
+		pdate = params[:date].to_date
+		date = {:created_at => pdate .. (pdate + 1.day)}
+    end
+
+  	DishonoredBill.where(org).order("created_at desc").where(date)
   end
 
   #统计查询
@@ -128,7 +139,95 @@ class EirBusinessProcessController < ApplicationController
 
   #打印
   def print 
-    return {:text => export_excel	}
+    #return {:text => export_excel	}
+    return {:text => print_excel	}
+  end
+
+  def print_excel
+	logger.info "=====print excel ====="
+  	ir_date = params[:ir_date] || DateTime.now.strftime("%Y-%m-%d")
+	ir_org = params[:ir_org] || current_user.subjection_org
+	ir_username = params[:ir_username] || current_user.username
+   	excel_name = "交接单"
+	file_name_arr = []
+	filepath = File.join(Rails.root,"doc","business_process.xls")	
+    book,sheet = open_excel(filepath)
+	idr = ir_date.to_datetime .. (ir_date.to_datetime + 1)
+	result = []
+	count = 0 
+	sum_copies = 0
+	sum_package = 0 
+	irs_result = {:sum_copies => 0, :sum_package => 0, :data => []} 
+
+    @irs = InterchangeReceipt.where(:ir_date => idr, :org => ir_org, :ir_username => ir_username).each_with_index do |ir,index|
+		irs_result[:data] << ir 
+		irs_result[:sum_copies]  += ir.number_copies 
+		irs_result[:sum_package]  += ir.package 
+		if index != 0 && (index + 1) % 15 == 0
+			result << irs_result  
+			irs_result = {:sum_copies => 0, :sum_package => 0, :data => []} 
+			count += 1
+		else
+			result[count] = irs_result  
+		end
+	end
+	result.each_with_index do |interchange_receipt,irIndex|
+		logger.info "--------第#{irIndex}张表----" 
+		tmp_index = 1 
+		sheet.each_with_index do |row,index|
+			logger.info "第#{index}行,已经查到#{tmp_index}条记录" 
+			tmp_arr = ["B","C","D","E","F","G"].collect {|i| "[#{i}#{tmp_index}]"}
+			row.each_with_index do |column,j|
+			    
+				logger.info "---当前列为第#{j}列,内容是: #{column}----" 
+				#logger.info "OK" if tmp_arr.include?(column)
+				case "'" + row[j].to_s + "'"
+				when "[A1]"
+				#海关名称
+				logger.info "#----海关名称----#{tmp_index}----" 
+				row[j] = interchange_receipt[:data][0].org
+				when "[B" +tmp_index.to_s + "]"
+#序号
+				tmp_index += 1
+				logger.info "#----序号----#{tmp_index}----" 
+				row[j] = tmp_index 
+				when "[C" + tmp_index.to_s + "]"
+#单证种类
+				logger.info "#----单证种类----#{tmp_index}----" 
+				row[j] = interchange_receipt[:data][tmp_index].doc_type
+				when "[D" + tmp_index.to_s + "]"
+#起始归档号
+				logger.info "#-----起始归档号---#{irIndex}----" 
+				row[j] = interchange_receipt[:data][tmp_index].doc_start
+				when "[E" + tmp_index.to_s + "]"
+				#终止归档号
+				logger.info "#-----终止归档号---#{irIndex}----" 
+				row[j] = interchange_receipt[:data][tmp_index].doc_end
+				when "[F" +tmp_index.to_s + "]"
+#报关单份数
+				row[j] = interchange_receipt[:data][tmp_index].number_copies
+				when "[G" + tmp_index.to_s + "]"
+#档案袋包数
+				row[j] = interchange_receipt[:data][tmp_index].package
+				when "[J1]"
+#日期
+				row[j] = Time.now.to_s
+				else
+					logger.info "==#{column}===#{row[j] == column}===========" 
+					logger.info column.to_s.length
+				end
+			end
+		end
+		new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+		Dir.mkdir(new_path) unless Dir.exists?(new_path)
+		new_path = File.join(new_path, "#{excel_name}_#{irIndex}.xls")
+		book.write(new_path)	
+
+		file_name_arr << new_path.sub(File.join(Rails.root,"public"),'')
+    end
+	logger.info "=================" 
+	logger.info file_name_arr
+    return file_name_arr[0]
   end
 
   #生成excel

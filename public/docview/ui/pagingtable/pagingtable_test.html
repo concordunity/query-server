@@ -1,69 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>pagingtable Widget Unit Test</title>
+<meta charset="utf-8">
+<title>pagingtable Widget Unit Test</title>
 </head>
 <body>
-  <div class="well">
+  <div class="container well">
 	<form class="find_doc">
-		doc_id : <input type="text" class="" name="doc_id"/>
-		org: <input type="text" class="" name="org"/>
-		<input type='submit' value="submit"/>
+		<input type="text" class="" name="doc_id"/>
+		<input type="text" class="" name="org"/>
+		<input type='submit' value="submit" class="btn btn-primary" />
 	</form>
-	<button class="btn btn-primary btn-test" >Test</button>
+    <div id="pagingtable-test"></div>
   </div>
-
-  <div class="container-fluid">
-  <div class="row-fluid">
-    <div id="pagingtable-test">  </div>
-  </div>
-  </div>
- <script type='text/javascript' src='../../../steal/steal.js'></script>
- <script type='text/javascript'>
-steal('jquery/dom/route', 'docview/ui/pagingtable').then(function($) {
-
-   $('#pagingtable-test').docview_ui_pagingtable({ 
-		columns : [
-				{"id" : "doc_id", text: 'Doc Id',width:'100px' },
-				{"id" : "org"	, text: 'ORG'},
-				{"id" :  null	, text: 'More',tmpl:'btn_detial.ejs' }
-			],
-		url:'/documents/test',
-		data:{},
-		form:'.find_doc'	
-	});
-	var controller = $('#pagingtable-test').controller();
-/*
-	$(".find_doc").submit(function(ev){
-		ev.preventDefault();
-		var doc_id = $('input[name=doc_id]').val();
-		var org = $('input[name=org]').val();
-		var data = { 'doc_id':doc_id,'org':org };
-		
-		controller.reload({
-			url:'/documents/test',
-			data:data,
-			type:'get'
-		});
-	});
-*/
-	$('.btn-edit').live('click',function(ev){
-		var row = controller.getRowFrom(this);
-		var tr = row.element;
-		var model = row.model;
-		tr.after($.View('detial.ejs',model));
-		tr.hide();
-		var detial = tr.next();
-		
-		detial.find('.btn-cancel').click(function(){
-			tr.show('slow');
-			detial.remove();		
-		});
-	});
-	
- }); 
- </script>
  </body>
+<script src="/steal/steal.js" ></script>
+<script type='text/javascript'>
+	steal(
+		'jquery/dom/route',
+		'docview/ui/pagingtable'
+		).then(function($) {
+			$('#pagingtable-test').docview_ui_pagingtable({ 
+				columns : [
+					{"id" : "doc_id", text: 'Doc Id',width:'100px' },
+					{"id" : "org"	, text: 'ORG'},
+					{"id" :  null	, text: 'More',tmpl:'btn_detial.ejs' }
+				]
+		//	url:'/documents/test',
+		//	data:{},
+		//	form:'.find_doc'	
+		});
+		var controller = $('#pagingtable-test').controller();
+
+		$(".find_doc").submit(function(ev){
+			ev.preventDefault();
+			var doc_id = $('input[name=doc_id]').val();
+			var org = $('input[name=org]').val();
+			var data = { 'doc_id':doc_id,'org':org };
+		
+			controller.reload({
+				url:'/documents/test',
+				data:data,
+				type:'get'
+			});
+		});
+		$('.btn-edit').live('click',function(ev){
+			var row = controller.getRowFrom(this);
+			var tr = row.element;
+			var model = row.model;
+			tr.after($.View('detial.ejs',model));
+			tr.hide();
+			var detial = tr.next();
+		
+			detial.find('.btn-cancel').click(function(){
+				tr.show('slow');
+				detial.remove();		
+			});
+		});
+	}); 	 
+ </script>
 </html>
 

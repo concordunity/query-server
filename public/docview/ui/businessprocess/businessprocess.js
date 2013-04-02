@@ -29,7 +29,7 @@ steal(
 ).then(
     './views/init.ejs'
 ).then(function($) {
-    $.Controller('Docview.Ui.businessprocess', {}, {
+    $.Controller('Docview.Ui.Businessprocess', {}, {
         init : function() {
            //this.element.html(this.view('init'));
 		   this.lastEl = undefined;
@@ -259,6 +259,11 @@ steal(
 					type = 'warn';
 					msg = "开始理单号不能大于结束理单号";
 					break;
+				case 403:
+					type = 'error';
+					msg = "理单份数不对";
+					break;
+
 			}
         	this.options.clientState.attr('alert', {
             	type: type,
@@ -324,6 +329,21 @@ steal(
                     this.lastEl.button('reset');
                 }
         },
+		showAlertMessage:function(msg){
+			this.options.clientState.attr('alert',{ type:'warn',heading:'',message:msg });
+		},
+        "#new-interchange-receipt select[name=doc_type] change" : function(el,ev){
+			ev.preventDefault();
+			var doc_type = $(el).val();
+			
+			if (doc_type > 6) {
+				$("input[name=doc_start]").attr("readOnly",true);
+				$("input[name=doc_start]").val("");
+
+				$("input[name=doc_end]").attr("readOnly",true);
+				$("input[name=doc_end]").val("");
+			}
+		},
 		/**
 			create interchange receipt 
 		*/
@@ -341,7 +361,14 @@ steal(
             var doc_end = el.find("input[name=doc_end]").val();
             var number_copies = el.find("input[name=number_copies]").val();
             var ir_package = el.find("input[name=package]").val();
+			
 
+			if(parseInt(doc_type) <= 6) {	
+				if($.trim(doc_start) == ''){ this.showAlertMessage('开始理单号不能为空'); return; }
+				if($.trim(doc_end) == ''){ this.showAlertMessage('结束理单号不能为空'); return; }
+			}
+			if($.trim(number_copies) == ''){ this.showAlertMessage('份数不能为空'); return; }
+			if($.trim(ir_package) == ''){ this.showAlertMessage('包数不能为空'); return; }
             var interchange_receipt = {
                 org : org,
             //  ir_date : ir_date,
@@ -364,7 +391,18 @@ steal(
 		*/
 		'#new-interchange-receipt .btn-print click':function(el,ev){
 			ev.preventDefault();
-			this.createInterchangeReceiptController.saveToExcel();
+			that = this;
+			$.ajax({
+				url : '/eir_business_process',
+				type : 'post',
+				data : {type: "print"},
+				success : function(data){that.download(data);},
+				error : "" 
+			}); 
+			//this.createInterchangeReceiptController.saveToExcel();
+		},
+		download : function(data){
+			console.log(data);		
 		},
 		/**
 			view interchange receipt in create interchange receipt page 
@@ -530,6 +568,10 @@ steal(
 			//var date = el.find('input[name=date]').val();
 			var reason = el.find('select[name=reason]').val();
 			var explain = el.find('input[name=explain]').val();
+			if(explain == ''){
+				this.options.clientState.attr('alert',{ type:'warn',heading:'',message:'备注信息不能为空' });
+				return;
+			}	
 			var data = { 'type':'create_dishonored_bill','org':org,/* 'date':date,*/'reason':reason, 'explain':explain };
 			btn.button('loading');
 			$.ajax({
@@ -606,7 +648,11 @@ steal(
 			ev.preventDefault();
 			var that = this;
 			var org = el.find('input[name=org]').val();
-			var data = { 'type':'search_dishonored_bill', 'org':org /*, 'date':date*/ };
+			var date = el.find('input[name=date]').val();
+			var data = { 'type':'search_dishonored_bill', 'org':org };
+			if(el.find('input[type=checkbox]').attr('checked')){
+				data.date = date;
+			}
 			$.ajax({
 				url:'/eir_business_process',
 				data:data,

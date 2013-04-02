@@ -1,20 +1,15 @@
-<tr data-index="<%= this.index == undefined ? 1 : this.index%>">
+<tr>
 <td>
-		<input type="text" class="filter_docs" name="single_card_number">
+<input type="text" class="filter_docs" name="single_card_number" required maxlength='18' pattern="\d{9}25\d{7}" />
 </td>
 <td>
-		<input type="text" class="" name="modify_accompanying_documents">
+<input type="text" class="" name="rationale_single_number" required />
 </td>
 <td>
-		<input type="text" class="where_page" name="where_page">
+	<button type="button" title="Trash" class="btn btn-mini btn-danger remove-requisition-details" style="display:none;"><i class="icon-trash icon-white"></i></button>
 </td>
-<td>
-		<input type="text" class="" name="lent_reasons">
-</td>
-<td>
-	<button type="button" class="btn btn-primary remove-requisition-details"><i class="icon-remove icon-white"></i>移除</button>
-	<button type="button" class="btn btn-primary new-requisition-details"><i class="icon-plus icon-white"></i>添加</button>
-	<button type="button" class="btn btn-primary filter-requisition-details"><i class="icon-qrcode icon-white"></i>验证</button>
+<td width='80'>
+	<span><label class='label tips' style="display:none;"  ></label></span>
 </td>
 </tr>
 

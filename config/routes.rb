@@ -1,5 +1,6 @@
 Dms::Application.routes.draw do
 
+  get "/user_select" => "accounts#user_select"
   match "/eir_business_process/:id" => "eir_business_process#delete_interchange_receipt", :via => :delete
   post "/interchange_receipt/list" => "eir_business_process#interchange_receipt_list"
   post "/eir_business_process" => "eir_business_process#business_process"

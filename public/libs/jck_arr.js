@@ -1,0 +1,1 @@
+jckArrayDictionary = [{'dic_num' : '2', 'dic_name' : '不限', 'dic_type' : 'jck'},{'dic_num' : '0', 'dic_name' : '出口', 'dic_type' : 'jck'},{'dic_num' : '1', 'dic_name' : '进口', 'dic_type' : 'jck'}]

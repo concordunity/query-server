@@ -15,6 +15,8 @@ steal(
 			//defaults
             this.options = $.extend({
 				aoColumns:[],
+				page_dom:"<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
+				language_url:"/docview/media/language/ch_ZN.txt",
 				preload:true,
 				disable_ejs:false,
 				tmpl_path:'views/col_',
@@ -96,7 +98,6 @@ steal(
             this.element.html(this.view('init'));
 			//find columns template
             var tableElement = this.element.find('thead tr:eq(0)');
-
 			//render columns ..
             var render = this.thRender(options.columns);
             //add to header
@@ -109,13 +110,13 @@ steal(
 				bServerSide: true,
 				"sAjaxSource" : options.url,
 				"sServerMethod": options.type,
-				"sDom": "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
+				"sDom": options.page_dom, 
 				"sPaginationType" : "bootstrap",
 				"bSort": true, 
 		//		"oSearch": {doc_id : "20121250004811"},
 				"aoColumns": options.aoColumns,	
 				"oLanguage" : {
-                    "sUrl" : "/docview/media/language/ch_ZN.txt"
+                    "sUrl" : options.language_url 
                 },
 				"fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
 					oSettings.jqXHR = $.ajax( {

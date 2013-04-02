@@ -69,11 +69,24 @@
 </table>
 </div>
 	<br />
-	<% var btn_action,role = this.ctx.roles[0];
-	if(action == 'approval' && role.name.indexOf('科长') !== -1)btn_action='two-approval';
-	 %>
+	<% var user = this.ctx.options.clientState.attr('user') %>
 	<%== $.View('//docview/ui/views/gate_leader.ejs',this.ctx) %>
-	<button type="button" class="btn btn-primary btn-accept <%= btn_action %>">通过</button>
+	<%
+	var name_map = {
+		10:model.apply_staff_fullname,
+		11:model.approving_officer_fullname
+		};
+	var btn_text_map = {
+		10:'撤销审批，重新指定一级审批',
+		11:'撤销审批，重新指定二级审批'
+		};
+	%>
+	<%= console.log(name_map,model.status,model) %>
+	<%if(name_map[model.status] == user.fullname && btn_text_map[model.status] ){ %>
+	<button type="button" class="btn btn-danger btn-revocation"><i class="icon-edit icon-white"></i> <%= btn_text_map[model.status] %></button>
+	<%if(!model.approving_officer) %>
+	<button type="button" class="btn btn-danger btn-delete"><i class="icon-trash icon-white" ></i> 删除</button>
+	<%}%>	
 	<button type="button" class="btn btn-cancel">取消</button>
 </form>
 </div>

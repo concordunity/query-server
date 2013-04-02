@@ -34,6 +34,13 @@ class AccountsController < ApplicationController
 	end
   end
 
+  def user_select
+    #r = Role.find_by_name('admin')
+	#@users = User.where(["subjection_org = ? AND id not in (?)", current_user.subjection_org ,r.users.collect(&:id)])
+		kz_user = User.includes(:roles).where(["roles.name like ?","%科长%"])
+		gld_user = User.includes(:roles).where(["roles.name like ?","%关领导%"])
+	respond_with(:kz_users => kz_user, :gld_users => gld_user)
+  end
  
   def filter_proc(source,params) 
  	  column_count = params[:iColumns]
@@ -140,6 +147,7 @@ class AccountsController < ApplicationController
           :fullname 	=> current_user.fullname,
           :email 		=> current_user.email,
 		  :orgs			=> current_user.orgs,
+		  :roles		=> current_user.roles,
 		  :subjection_org => current_user.subjection_org
         }
         if current_user.admin?

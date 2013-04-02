@@ -8,11 +8,13 @@
             <input name="org" type="hidden" />
         </div>
         <div class="span6" >
-            <label>日期</label>
-            <input name="date" type="text" />
+            <label for="dc"> 
+            <input id="dc" name="dc" type="checkbox" style="margin-bottom:5px;" checked="true" onclick="javascript:dd.readOnly = !this.checked;" />
+			指定日期查询</label>
+			<input name="date" type="text" id="dd" />
         </div>
     </div>
-    <button class="btn btn-primary"><i class="icon-search icon-white" ></i> 搜索</button>
+    <button type='submit' class="btn btn-primary"><i class="icon-search icon-white" ></i> 搜索</button>
 	</form>
 	</div>
 	<div class="search-dishonored-bill-list"></div>

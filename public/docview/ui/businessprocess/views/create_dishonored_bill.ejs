@@ -11,15 +11,17 @@
 		<div class="span6" >
 			<fieldset class="control-group" >
 				<% var orgs  = [];
-					for(var i=1;i<orgArrayDictionary.length;i++){
-						orgs.push(orgArrayDictionary[i]);
+					for(var i=0;i<orgArrayDictionary.length;i++){
+						if(orgArrayDictionary[i].dic_num != '2200'){
+							orgs.push(orgArrayDictionary[i]);
+						}
 					}
 				 %>
 				<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgs } )	%>
 			</fieldset>
 			<fieldset class="control-group" >
 				<label>备注</label>
-				<input name="explain" type="text" required placehold="please" />
+				<input name="explain" type="text" required placeholder="请填写备注信息" />
 			</fieldset>
 		<div class="pull-left">
 			<button type="submit" class="btn btn-primary" data-loading-text="Creating .." >创建</button>
@@ -56,7 +58,7 @@
 		</div>
 -->
 	</div>
-	<button class="btn btn-primary"><i class="icon-search icon-white" ></i> 搜索</button>	
+	<button type="submit" class="btn btn-primary"><i class="icon-search icon-white" ></i> 搜索</button>	
 	</form>
     </div>
   </div>

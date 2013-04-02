@@ -1,6 +1,21 @@
 # -*- coding: utf-8 -*-
 namespace :web_link do
 
+ 
+  desc "现在单证借阅审阅登记(添加借阅历史)"
+  task :add_requisition_history_for_web_link => :environment do
+
+  	  if WebLink.where(:name => "aRequisitionRequisitionHistory").length == 0
+	  	  WebLink.create(:name => "aRequisitionRequisitionHistory",:description => "借阅历史",:controller => "requisition",:action => "requisition_history_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionRequisitionHistory").first
+		  a.description = "借阅历史"
+		  a.controller = "requisition" 
+		  a.action = "requisition_history_index"
+		  a.save
+      end
+  end
+
   desc "add 交接单 menu for web link"
   task :add_business_process_for_web_link => :environment do
       if WebLink.where(:name => "aBusinessProcessInterchangeReceiptCreate").length == 0

@@ -28,6 +28,15 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				error : error
 			});
 		},
+		downLoadBusinessProcess : function(params, success, error) {
+        	return $.ajax({
+            	url : '/eir_business_process', 
+				type : 'post',
+				data : params,
+				success : success,
+				error : error
+			});
+		},
 		findOneBusinessProcess : function(params, success, error) {
         	return $.ajax({
             	url : '/eir_business_process', 

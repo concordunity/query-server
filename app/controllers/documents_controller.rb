@@ -88,9 +88,6 @@ class DocumentsController < ApplicationController
           res_message = { :status => 403.1, :message => t('doc.not_authorized') }
         end
       end
-      logger.info "=============1"
-      logger.info res_message == {}
-      logger.info res_message
 
       if res_message == {}
           script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{doc_id}"
@@ -109,8 +106,6 @@ class DocumentsController < ApplicationController
       end
       
       @folder = Folder.find(@document.folder_id)
-      logger.info "=============2"
-      logger.info res_message == {}
       if res_message == {}
 	result << "/docimages/" + doc_id + "/wm_" + doc_id + ".pdf"
 	mds = ModifiedDocument.where(:doc_id => doc_id)
@@ -133,8 +128,6 @@ class DocumentsController < ApplicationController
           if res.match(/The requested document is not found/)
               res_message = { :status => 400, :message => 'The document does not exist' }
           end
-	  logger.info "=============3"
-	  logger.info res_message == {}
 	  if res_message == {}
 	      result << "/docimages_mod/" + folder_id + "_" + doc_id + "/wm_" + doc_id + ".pdf"
 	  else
@@ -439,6 +432,8 @@ class DocumentsController < ApplicationController
 
       script_name = "#{ENV['HOME']}/bin/new_decrypt.sh #{doc_id}"
 
+		logger.info "====1=======" 
+		logger.info script_name 
       res = %x[ #{script_name} ]
 
       if res.match(/No password/)
@@ -456,8 +451,9 @@ class DocumentsController < ApplicationController
         return
       end
 
+		logger.info "====2=======" 
+		logger.info res
       response = JSON.parse(res)
-
       s_doc = ModifiedDocument.find_by_doc_id(doc_id)
       if !s_doc.nil?
         special_doc_info = s_doc
@@ -477,8 +473,7 @@ class DocumentsController < ApplicationController
 =end
       end
 
-      @folder = Folder.find(@document.folder_id)
-      logger.info(@folder.folder_id);
+      @folder = Folder.find(@document.folder_id) unless @document.folder_id.nil?
     else
       raise ActiveRecord::RecordNotFound
     end

@@ -25,7 +25,9 @@
 </tr>
 </tbody>
 </table>	
+<% if (this.business_process[0].ir_status == 0) {%>
 <button class="btn btn-primary">接收</button>
+<% }%>
 <button class="btn btn-info btn-print">打印</button>
 <button class="btn btn-cancel">取消</button>
 </div>

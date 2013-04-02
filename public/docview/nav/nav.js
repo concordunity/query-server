@@ -32,7 +32,7 @@ steal(
 	    var init_options = {
 		search : ["single","multi","all_print","advanced","by_doc_source","search_condition","upload_file"],
 		stats : ["stats_stats","stats_usage","stats_query","create_group"],
-		requisition_docs : [ "application", "approval", "register", "write_off", "lending_statistics" ],
+		requisition_docs : [ "application", "approval", "register", "write_off", "lending_statistics", "requisition_history" ],
 		business_process : ["create_interchange_receipt","search_interchange_receipt","create_dishonored_bill","search_dishonored_bill","statistical_inquiry"],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
 		manage_accounts : ["users","roles","system_upload"]

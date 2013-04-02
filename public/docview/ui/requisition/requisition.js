@@ -11,7 +11,8 @@ steal(
     'docview/bootstrap/bootstrap-popover.js',
     'docview/bootstrap/bootstrap-popinput.js',
 	'docview/ui/dmstable',
-	'docview/ui/daterange'
+	'docview/ui/daterange',
+	'docview/ui/pagingtable'
 ).then(
     'libs/json2.js',
     'libs/org_json.js',
@@ -23,30 +24,42 @@ steal(
     './views/approval.ejs',
     './views/register.ejs',
     './views/write_off.ejs',
+    './views/requisition_history.ejs',
 //    './views/detial_form.ejs',
     './views/lending_statistics.ejs',
     './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.requisition', {}, {
         init : function() {
-
-
+			Docview.Models.User.getUserSelect({},this.proxy("userSelect"),this.proxy("failure"));
+			this.roles = this.options.clientState.attr('user').roles;
+		},
+		userSelect : function(data){
+			this.kz_users = data.kz_users;
+			this.gld_users = data.gld_users;
+			this.initFunction();
+		},
+		initFunction : function(){
 			//this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
 			//this.tableController = this.element.find('.user-list').controller();
-
+		   this.filter_tag = undefined;
+//		   this.kz_users = undefined;
+//		   this.gld_users = undefined;
 		   this.comment_dic = commentsArrayDictionary;
 		   var requisition =  this.options.clientState.attr('access').attr('requisition_docs');
+		   var subjection_org = this.options.clientState.attr('user').subjection_org;
 		   this.element.html(this.view('requisition', requisition));
-
+			
 		   // Hide box until route conditions are met
 		   this.element.hide();
 		   // Hide search types until route conditions are met
 		   this.mainTabOn = false;
-		    this.element.find("div.application").html(this.view("application"));	
+		    this.element.find("div.application").html(this.view("application",{ subjection_org: subjection_org ,kz_users: this.kz_users}));	
 		    this.element.find("div.approval").html(this.view("approval"));	
 		    this.element.find("div.register").html(this.view("register"));	
 		    this.element.find("div.write_off").html(this.view("write_off"));	
 		    this.element.find("div.lending_statistics").html(this.view("lending_statistics"));	
+		    this.element.find("div.requisition_history").html(this.view("requisition_history"));	
 			this.element.find('div.lending-date').docview_ui_daterange({
 				dateOptions : {
                         labelString: "日期"
@@ -67,8 +80,8 @@ steal(
 				aaSorting:[[0,"desc"]],
 				file_name: ""
 			};
-			this.element.find('.application-list').docview_ui_dmstable({table_options : application_table_options});
-			this.applicationController = this.element.find('.application-list').controller();
+			//this.element.find('.application-list').docview_ui_dmstable({table_options : application_table_options});
+			//this.applicationController = this.element.find('.application-list').controller();
 			var approval_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/requisition/views/approval/",
@@ -124,8 +137,8 @@ steal(
 			
 
 			$('.input-date').datepicker();
-			
-
+			$('input[readonly]').tooltip();
+	
 			var lending_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/requisition/views/lending_statistics/",
@@ -141,7 +154,46 @@ steal(
 				file_name: ""
 			};
 			this.element.find('.lending-list').docview_ui_dmstable({table_options : lending_table_options});
-			this.lendingStatisticsController = this.element.find('.lending-list').controller();
+			this.lendingStatisticsController = this.element.find('.lending-list').controller();		
+			/*
+			var requisition_history_table_options = {
+				aaData: [],
+				col_def_path : "//docview/ui/requisition/views/requisition_history/",
+				aoColumns: [
+					{"mDataProp":"created_at", mLabel : '日期'},
+					{"mDataProp":"apply_staff", mLabel : '人员'},
+					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"department_name", mLabel : '科室名称'},
+					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"status", mLabel : '状态'},
+					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+				],
+				aaSorting:[[0,"desc"]],
+				file_name: ""
+			};
+
+			this.element.find('.requisition-history-list').docview_ui_dmstable({table_options : requisition_history_table_options});
+			*/
+			this.element.find('.requisition-history-list').docview_ui_pagingtable({
+				tmpl_path: "/docview/ui/requisition/views/requisition_history/col_",
+				columns:[
+					{ id:'created_at',text:'日期' },
+					{ id:'apply_staff',text:'人员' },
+					{ id:'org',text:'关区' },
+					{ id:'department_name',text:'科室名称' },
+					{ id:'requisition_details',text:'单证号' },
+					{ id:'status',text:'状态' },
+					{ id: null,text:'操作' }
+				],
+				success:function(data){
+					data = data.aaData;
+					for(var i=0;i<data.requisitions.length;i++){
+						data.requisitions[i].requisition_details = data.requisition_details[i];	
+					}
+					return data.requisitions;
+				}
+			});
+			this.requisitionHistoryController = this.element.find('.requisition-history-list').controller();
 /*
 		   //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 		   this.element.find('div.daterange-holder').docview_ui_daterange( {dateOptions : {labelString: "日期"}});
@@ -171,11 +223,21 @@ steal(
 				var category = $.route.attr('category');
 				if (category !== undefined && category === "requisition_docs") {
 		//			this.element.find('div.requisition-list').docview_ui_dmstable();
+					switch(newVal){
+						case 'requisition_history':
+							this.requisitionHistoryController.reload({
+								url:'/requisitions',
+								type:'get',
+								data:{ type:'requisition_history_page' }
+							});
+							break;
+						}
 					if (newVal != 'single') {
 						console.log("I don't know where is this action from");
 							this.reshow();
 							if (newVal == "lending_statistics"){	
 									
+							}else if (newVal == "application"){	
 							}else{
 								Docview.Models.Requisition.findRequisition({type: newVal},this.proxy("requisitionList"),{});
 							}
@@ -195,8 +257,8 @@ steal(
 			var sub_cat = $.route.attr('subcategory');
 		    switch(sub_cat) {
 				case "application":
-					this.applicationController.setModelData(data);	
-					break;
+		//			this.applicationController.setModelData(data);	
+		//			break;
 				case "approval":
 					this.approvalController.setModelData(data);	
 					break;
@@ -208,6 +270,9 @@ steal(
 					break;
 				case "lending_statistics":
 					this.lendingStatisticsController.setModelData(data);	
+					break;
+				case "requisition_history":
+					//this.requisitionHistoryController.setData(data);	
 					break;
 			}	
 						
@@ -224,7 +289,7 @@ steal(
 			if (sub_cat == 'by_doc_source') {
 					this.reloadESH();
 			}	    
-			var to_show_class = ["application","approval","register","write_off","lending_statistics"];
+			var to_show_class = ["application","approval","register","write_off","lending_statistics","requisition_history"];
 			$.each(to_show_class,function(index,value){
 				if (to_show != value) {
 					$("."+value).hide();
@@ -232,111 +297,103 @@ steal(
 			});
 		},
 		"#new-application-btn click" : function(el,ev){
-			console.log("===click===");
-			$("#new-application").html(this.view("//docview/ui/requisition/views/application/new_application.ejs"));
-//			this.element.find('#new-application .requisition_detail_form  .requisition_detail_doc').docview_ui_single({label: {labelString: ""}});
+			console.log(this.kz_users);
+			$("#new-application").html(this.view("//docview/ui/requisition/views/application/new_application.ejs",{kz_users: this.kz_users}));
 		},
 		".new-requisition-details click" : function(el,ev){
-			var index = $(el).closest("tbody").find("tr").length;
-			if (index < 3){
-				$(el).closest("tr").closest("tbody").append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs",{"index":index}));
-			//	this.element.find('#new-application .requisition_detail_form  .requisition_detail_doc').docview_ui_single({label: {labelString: ""}});
-			}
+			var tbody = $('.requisition-details-text-holder tbody');
+			tbody.append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs"));
+			tbody.find('tr:last').hide().show('slow');
+			$('.remove-requisition-details').show('fast');
 		},
 		".remove-requisition-details click" : function(el,ev){
-			var index = $(el).closest("tbody").find("tr").length;
-			console.log("data-index = ",index);
-			if (index > 1){
-				$(el).closest("tr").remove();
+			var table_row_count = $(el).closest("tbody").find("tr").length;
+			if (table_row_count > 1){
+				$(el).closest("tr").hide('slow',function(){ 
+					$(this).remove();
+				 });
+				if(table_row_count == 2){
+					$('.remove-requisition-details').hide('fast');
+				}
 			}
 		},
 		".filter-requisition-details click" : function(el,ev){
 			var doc_id = $(el).closest("tr").find(".filter_docs").val();
-			var org = $("#new-application-form select[name='org']").val();
-			console.log(doc_id,org);
-			this.filterRequisitionDetails(doc_id,org);
+			console.log('filter-requisition-details >> ',doc_id);
+			this.filterRequisitionDetails(doc_id);
 		},
 		".filter_docs blur" : function(el,ev){
-			var doc_id = $(el).val();
-			var org = $("#new-application-form select[name='org']").val();
-			console.log(' ==== blur ====');
-			console.log(doc_id,org);
-			this.filterRequisitionDetails(doc_id,org);
-		},
-		filterRequisitionDetails : function(doc_id,org){
-			var result = this.validateInputOrEmpty(doc_id);
-			that = this;
-			var tag = true;
-			if (result){
-				Docview.Models.Requisition.filterDocs({"org":org,"doc_id":doc_id},
-					//this.proxy("alertTitle"),
-					function(data){
-						tag = data.status;
-						that.alertTitle(data);
-					},
-					this.proxy("failure"));
+			var doc_id = el.val();
+			var showTips = function(type,msg){
+				var hash_type = {1:'info',2:'success',3:'important',4:'important'};
+				var hash_msg = {1:'验证中..',2:'可以提交',3:'输入错误',4:'网络异常,请重试'};
+				var tipsElement = el.closest('tr').find('.tips');
+				$.each(hash_type,function(key,value){
+					tipsElement.removeClass('label-' + value);
+				});
+				tipsElement.addClass('label-' + hash_type[type]);
+				tipsElement.text(msg || hash_msg[type]);
+				tipsElement.show('slow');
+				el.data('validate_state',type);
+			};
+			if(this.validateInputOrEmpty(doc_id) || doc_id.length != 18){
+				showTips(3);//Error
 			}else{
-				tag = false;
+				showTips(1);//ing ..
+				Docview.Models.Requisition.filterDocs({ "doc_id" : doc_id },
+					function(data){//ajax success .
+						showTips(data.status ? 2:3);//,data.message);
+					},
+					function(err){//ajax error
+						showTips(4,err);
+					});
 			}
-			return tag; 
-		},
-		alertTitle : function(data){
-			var message = data.message;
-			var show_message = "";
-			console.log(message);
-			$("#new-application-form div.display-message").html();
-			if(data.status){
-				show_message = "<span class='label label-success' >" + message  + "</span>";
-			} else {
-				show_message = "<span class='label label-important' >" + message + "</span>";
-			}
-			$("#new-application-form div.display-message").html(show_message);
-			setTimeout(function(){
-				$("#new-application-form div.display-message").html();
-			},4000);
 		},
 		"#new-application-form submit" : function(el,ev){
 			ev.preventDefault();
-			var requisition_details = new Array(); 
-			var tel = el.find("input[name='tel']").val();
-			var org = el.find("select[name='org']").val();
+			var requisition_details = []; 
 			var department_name = el.find("input[name='department_name']").val();
-			var tag = true;
-			$.each(el.find("tbody").find("tr"),function(index,item){
-				var single_card_number = $(item).find("input[name='single_card_number']").val();
-				var modify_accompanying_documents = $(item).find("input[name='modify_accompanying_documents']").val();
-				var where_page = $(item).find("input[name='where_page']").val();
-				var lent_reasons = $(item).find("input[name='lent_reasons']").val();
-				console.log("====== submit ===== ");
-				console.log(" doc_id = ",single_card_number);
-				var result = that.validateInputOrEmpty(single_card_number);
-				if (result == false){
-					tag = false;
+			var application_originally  = el.find("input[name=application_originally]").val();
+			var approving_officer = el.find("select[name=approving_officer]").val();
+			var lbl_wait = $('label.lbl-wait');
+			var allow_return = false;
+			el.find('input.filter_docs').each(function(key,item){
+				var $wallper = jQuery($(item).closest('tr'));
+				var validate_state = $(item).data('validate_state');
+				switch(validate_state){
+					case 1:
+						allow_return = true;
+						lbl_wait.text("正在验证单证号码,请稍候提交.").show('slow');
+						return;//ing
+					case 2:
+						requisition_details.push({
+							"single_card_number" 			: $wallper.find("input[name='single_card_number']").val(),
+							"rationale_single_number"		: $wallper.find("input[name=rationale_single_number]").val()
+						});
+						console.log(requisition_details);
+						break;//ok
+					case 3://error
+					case 4://unkonw
+					default://		
+						allow_return = true;
+						lbl_wait.text("您输入的单证号码有误,请修改后提交.").show('slow');
+						return;
 				}
-
-				console.log(" tag = ",tag);
-				var result = that.validateInputOrEmpty(single_card_number);
-				requisition_details.push({"single_card_number" : single_card_number, "modify_accompanying_documents" : modify_accompanying_documents, "where_page" : where_page, "lent_reasons": lent_reasons});
 			});
+			//has a error , return ..
+			if(allow_return) {
+				setTimeout(function(){
+					lbl_wait.hide('slow');
+				},5000);
+				return;	
+			}
 			var requisition = {
-				tel: tel,
-				org: org,
+				application_originally : application_originally,
+				approving_officer:approving_officer ,
 				department_name: department_name,
 				requisition_details: requisition_details
 			};
-			if (tag){
-				var frd_tag = true;
-				$.each(requisition_details,function(i,v){
-					console.log("for requisition_detail ,current doc_id = ",v.single_card_number);
-					var frd_tag = that.filterRequisitionDetails(v.single_card_number,org);
-					if (frd_tag == false){
-						return;
-					}
-				});
-				if (frd_tag){
-					Docview.Models.Requisition.updateRequisition(requisition,this.proxy("addDataRow"),this.proxy("failure"));
-				}
-			}
+			Docview.Models.Requisition.updateRequisition(requisition,this.proxy("addDataRow"),this.proxy("failure"));
 		},
 		".cancel-create click" : function(el,ev){
 			$("#new-application").collapse("hide");
@@ -348,33 +405,27 @@ steal(
 				this.options.clientState.attr('alert', {
                     type: 'info',
                     heading: '提示信息',
-                    message : '成功添加新申请表单 ' + data.message
+                    message : '成功添加新申请表单 '// + data.message
 				});
 				this.reload();
 			}else {
 				this.options.clientState.attr('alert', {
                     type: 'info',
                     heading: '提示信息',
-                    message : '新申请表单添加失败 ' + data.message
+                    message : '新申请表单添加失败 '// + data.message
 				});
 			}
 		},
 		reload : function(){
 			this.reshow();
 			var sub_cat = $.route.attr('subcategory');
-			Docview.Models.Requisition.findRequisition({type: sub_cat},this.proxy("requisitionList"),{});
+			if (sub_cat != "application"){
+				Docview.Models.Requisition.findRequisition({type: sub_cat},this.proxy("requisitionList"),{});
+			}
 		},
 		failure : function(){},
-		validateInputOrEmpty: function(el) {
-		    var docId = $.trim(el);
-			console.log("=====  validateInputOrEmpty:  =====");
-			console.log(docId);
-			if (docId === "") {
-				this.alertTitle({status: false, message: "报关单号不能为空."})
-				return false;
-			}else{
-				return this.validateInput(el);
-			}
+		validateInputOrEmpty: function(val) {
+		    return $.trim(val) == '';
 		},
 		validateInput: function(el) {
 			//this.removeFormErrors(el);
@@ -393,6 +444,51 @@ steal(
 		},
         show : function() {
         },
+		'.history-detial-row click':function(el,ev){
+			ev.preventDefault();
+			var that = this;
+			var controller = this.requisitionHistoryController;
+			var row =  controller.getRowFrom(el);
+			var rowModel = row.model;
+			var rowElement = row.element;
+			var innerForm = this.view('//docview/ui/requisition/views/requisition_history/detial_form',{ ctx: this, model: rowModel });
+			rowElement.hide();
+			rowElement.after(innerForm);
+			innerForm = rowElement.next();
+			var approving_officer = innerForm.find('select[name=approving_officer]');
+			approving_officer.hide();
+			innerForm.find('.btn-revocation').click(function(ev){
+				ev.preventDefault();
+				var data = { id:rowModel.id,from_action:'requisition_history',status:rowModel.status };
+				if(rowModel.approving_officer && (rowModel.status == 10 || rowModel.status == 11) && !$(this).hasClass('approving_officer')){
+					approving_officer.show('slow');
+					$(this).addClass('approving_officer');
+					return;	
+				}
+				switch(rowModel.status){
+					case 10:
+						data.approving_officer = approving_officer.val();
+						break;
+					case 11:
+						data.two_approvers = approving_officer.val();
+						break;
+				}
+				$.ajax({
+					url:'/requisitions/change_status',
+					data: data,
+					type:'POST',
+					error:function(){
+						
+					},
+					success:function(){
+						innerForm.remove();
+						rowElement.show('slow');
+						controller.dataTable._fnAjaxUpdate();
+					}
+				});
+
+			});
+		},
 		'.detial-row click':function(el,ev){
 			ev.preventDefault();
 
@@ -414,6 +510,9 @@ steal(
 					break;
 				case 'lending_statistics':
 					controller = this.lendingStatisticsController;
+					break;
+				case 'requisition_history':
+					controller = this.requisitionHistoryController;
 					break;
 			}
 			
@@ -443,8 +542,8 @@ steal(
 							innerForm.remove();
 							//
 							rowModel.status = data.status;
-							if(data.reject_text)
-								rowModel.termination_instructions = data.reject_text;
+							//if(data.reject_text)
+							//	rowModel.termination_instructions = data.reject_text;
 							rowModel.save();
 							//reload.
 							that.reload();
@@ -455,8 +554,7 @@ steal(
 					});
 			};
 			
-			//
-		
+			/*
 			innerForm.find('.btn-reject').popinput({ 
 				callback:function(text){
 					switch(action){
@@ -474,19 +572,30 @@ steal(
 					postData(data);
 				}
 			});
+			*/
 
-			//innerForm.find('.btn-cancel')
+			var $approval_officer = innerForm.find('select[name=approving_officer]').hide();
 			innerForm.find('.btn-accept').click(function(ev){
 				ev.preventDefault();
+				if($(this).hasClass('two-approval')){
+					$approval_officer.show('slow');
+					$(this).removeClass('two-approval').addClass('two-step').text('提交');
+					return;
+				}
 				switch(action){
 					case 'approval':
-						data.status = 2;//审批通过
+						if($(this).hasClass('two-step')){
+							data.status = 11;
+							data.two_approvers = $approval_officer.val();
+						}else{
+							data.status = 12;//1审批通过
+						}
 						break;
 					case 'register':
-						data.status = 3;//完成登记
+						data.status = 13;//完成登记
 						break;
 					case 'write_off':
-						data.status = 20;//正常完成
+						data.status = 14;//正常完成
 						break;
 				}
 				postData(data);
