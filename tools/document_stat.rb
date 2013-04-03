@@ -2,7 +2,7 @@ class DocumentStat < ActiveRecord::Base
 
 	#generate date with everyday .	
 	def self.test_generate
-		now = Time.now - 30.day 
+		now = Time.now 
 		p now
 		p '======start===='		
 =begin

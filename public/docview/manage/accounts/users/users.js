@@ -62,7 +62,7 @@ steal(
 				{ id:'username', 		text:'用户名'		},
 				{ id:'fullname', 		text:'全名' 		},
 				{ id:'roles', 			text:'角色' 		},
-				{ id:'subjection_org', 	text:'隶属关区' 	},
+				{ id:'subjection_org', 	text:'业务点' 	},
 				{ id:'orgs', 			text:'查阅权限' 	},
 				{ id:'doc_type', 		text:'进出口类别' 	},
 				{ id:null, 				text:'操作'	, style:'nolinkbreak',width:150}
@@ -382,7 +382,7 @@ steal(
             el.find('.cancel-edit').button('loading');
         },
         '.cancel-edit click': function(el, ev) {
-            var editRow = el.closest('tr');
+            var editRow = el.closest("table").closest('tr');
             editRow.prev().show();
             editRow.remove();
         },
@@ -427,6 +427,21 @@ steal(
             form.find('.error > .help-inline').remove();
             form.find('.error').removeClass('error');
         },
+		"form.edit-user-form  select[name=subjection_org] change" : function(el,ev){
+			ev.preventDefault();	
+			var org = $(el).val();
+			$("form.edit-user-form").find("#org-selection input[value=" + org + "]").attr("checked",true);
+
+			var ctrl = $("form.edit-user-form").find('div.edit-org-selection-holder').controller();
+			ctrl.setOrgs(org);
+		},
+		"#new-user-form  select[name=subjection_org] change" : function(el,ev){
+			ev.preventDefault();	
+			var org = $(el).val();
+			$("form.new-user-form").find("#org-selection input[value=" + org + "]").attr("checked",true);
+			var ctrl = $("#new-user-form").find('div.org-selection-holder').controller();
+			ctrl.setOrgs(org);
+		},
 		"#export_data click" : function(){
 	    	this.tableController.saveToExcel({type: "all"});
 		}

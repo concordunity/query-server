@@ -405,6 +405,7 @@ steal(
 		},
 		download : function(data){
 			console.log(data);		
+			window.location.href=data.text;
 		},
 		/**
 			view interchange receipt in create interchange receipt page 

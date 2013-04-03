@@ -106,6 +106,38 @@ steal(
 		}
 	    }
 	},
+	setCheckedValues : function() {
+		console.log("----setCheckedValues-----");
+	    this.wildcard_selected = false;
+	    this.orgs = [];
+	    var that = this;
+	    this.element.find('form :checked').each(function() {
+		var org = $(this).val();
+		
+		if (org === '2200') {
+		    that.wildcard_selected = true;
+		    return false;
+		}
+		that.orgs.push(org);
+            });
+	    var label = '';
+	    if (this.wildcard_selected) {
+		label = this.labelMap['2200'];
+		$('#org-selected').html(this.view('org_label', label));
+	    } else {
+		$('#org-selected').empty();
+
+		if (this.orgs.length == 0) {
+		    label =  this.labelMap['1000'];
+		    $('#org-selected').html(this.view('org_label', label));
+		}
+
+		for (var i=0; i<this.orgs.length; i++) {
+		    label = this.labelMap[this.orgs[i]];
+		    $('#org-selected').append(this.view('org_label', label));
+		}
+	    }
+	},
 
 	'.org-check change' : function(el, ev) {
 	    //console.log("checkbox changed event ");
