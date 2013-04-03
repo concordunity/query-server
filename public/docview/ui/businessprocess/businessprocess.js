@@ -203,7 +203,9 @@ steal(
 									$("#view-interchange-receipt form").submit();
 							}else if( newVal == "search_interchange_receipt"){	
 									$(".search-interchange-receipt form").submit();
-							}else{
+							}else if (newVal == "create_dishonored_bill"){
+
+								$('.search-dishonored form').submit();
 							//	Docview.Models.Requisition.findRequisition({type: newVal},this.proxy(""),{});
 								//this.reload();
 							}

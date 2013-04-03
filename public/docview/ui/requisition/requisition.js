@@ -354,7 +354,7 @@ steal(
 			var requisition_details = []; 
 			var department_name = el.find("input[name='department_name']").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
-			var approving_officer = el.find("select[name=approving_officer]").val();
+			var approving_officer = el.find("select[name=kz_user]").val();
 			var lbl_wait = $('label.lbl-wait');
 			var allow_return = false;
 			el.find('input.filter_docs').each(function(key,item){
@@ -455,24 +455,10 @@ steal(
 			rowElement.hide();
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
-			var approving_officer = innerForm.find('select[name=approving_officer]');
-			approving_officer.hide();
-			innerForm.find('.btn-revocation').click(function(ev){
-				ev.preventDefault();
-				var data = { id:rowModel.id,from_action:'requisition_history',status:rowModel.status };
-				if(rowModel.approving_officer && (rowModel.status == 10 || rowModel.status == 11) && !$(this).hasClass('approving_officer')){
-					approving_officer.show('slow');
-					$(this).addClass('approving_officer');
-					return;	
-				}
-				switch(rowModel.status){
-					case 10:
-						data.approving_officer = approving_officer.val();
-						break;
-					case 11:
-						data.two_approvers = approving_officer.val();
-						break;
-				}
+			var kz_user = innerForm.find('select[name=kz_user]').hide();
+			var gld_user = innerForm.find('select[name=gld_user]').hide();
+			var data = { id:rowModel.id,from_action:'requisition_history',status:rowModel.status };
+			var postData = function(data){
 				$.ajax({
 					url:'/requisitions/change_status',
 					data: data,
@@ -486,7 +472,30 @@ steal(
 						controller.dataTable._fnAjaxUpdate();
 					}
 				});
-
+			};
+			innerForm.find('.btn-delete').click(function(ev){
+				data.status = 20;
+				postData(data);	
+			});
+			innerForm.find('.btn-revocation').click(function(ev){
+				ev.preventDefault();
+				if(!$(this).hasClass('approving_officer')){
+					((rowModel.status == 10 || rowModel.status == 21) ?kz_user:gld_user).show('slow');
+					$(this).addClass('approving_officer');
+					return;	
+				}
+				switch(rowModel.status){
+					case 10:
+					case 21:
+						data.status = ((data.approving_officer = kz_user.val()) == '') ? 21 : 10;
+						break;
+					case 11:
+					case 22:
+						data.status = ((data.two_approvers = gld_user.val()) == '') ? 22 : 11;
+						break;
+				}
+				postData(data);
+				//=============
 			});
 		},
 		'.detial-row click':function(el,ev){
@@ -574,7 +583,7 @@ steal(
 			});
 			*/
 
-			var $approval_officer = innerForm.find('select[name=approving_officer]').hide();
+			var $approval_officer = innerForm.find('select[name=gld_user]').hide();
 			innerForm.find('.btn-accept').click(function(ev){
 				ev.preventDefault();
 				if($(this).hasClass('two-approval')){

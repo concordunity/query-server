@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 namespace :update do
 
+  desc "update for document_stat"
+  task :update_document_stat => :environment do
+	DocumentStat.generate
+  end
+
   desc "update for document_page"
   task :update_folder_id_for_page => :environment do
 	count = 0

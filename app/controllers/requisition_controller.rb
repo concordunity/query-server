@@ -315,11 +315,11 @@ class RequisitionController < ApplicationController
 
     case params[:from_action]
 		when "requisition_history"
-			if params[:status].to_i == 10
+			if [10,21].include?(params[:status].to_i)
 			#撤销审批，重新指定一级审批
 				requisition.approving_officer = params[:approving_officer]
 				requisition.approval_time = "" 
-			elsif params[:status].to_i == 11
+			elsif [11,22].include?(params[:status].to_i)
 			#撤销一级审批，重新指定二级审批
 				requisition.two_approvers = params[:two_approvers] 
 				requisition.two_approver_time = "" 

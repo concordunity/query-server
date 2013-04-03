@@ -70,22 +70,33 @@
 </div>
 	<br />
 	<% var user = this.ctx.options.clientState.attr('user') %>
-	<%== $.View('//docview/ui/views/gate_leader.ejs',this.ctx) %>
+	<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
+	<%== $.View('//docview/ui/views/kz_user.ejs',this.ctx) %>
 	<%
 	var name_map = {
-		10:model.apply_staff_fullname,
-		11:model.approving_officer_fullname
-		};
-	var btn_text_map = {
-		10:'撤销审批，重新指定一级审批',
-		11:'撤销审批，重新指定二级审批'
-		};
+		10:{
+			fullname:model.apply_staff_fullname,
+			text:'撤销审批，重新指定一级审批'
+		},
+		11:{
+			fullname:model.approving_officer_fullname,
+			text:'撤销审批，重新指定二级审批'
+		},
+		21:{
+			fullname:model.apply_staff_fullname,
+			text:'重新指定一级审批'
+		},
+		22:{
+			fullname:model.approving_officer_fullname,
+			text:'重新指定二级审批'
+		}
+	};
 	%>
-	<%= console.log(name_map,model.status,model) %>
-	<%if(name_map[model.status] == user.fullname && btn_text_map[model.status] ){ %>
-	<button type="button" class="btn btn-danger btn-revocation"><i class="icon-edit icon-white"></i> <%= btn_text_map[model.status] %></button>
-	<%if(!model.approving_officer) %>
+	<%if(name_map[model.status] && name_map[model.status].fullname == user.fullname){ %>
+	<button type="button" class="btn btn-danger btn-revocation"><i class="icon-edit icon-white"></i> <%= name_map[model.status].text %></button>
+	<%if(!model.approving_officer){ %>
 	<button type="button" class="btn btn-danger btn-delete"><i class="icon-trash icon-white" ></i> 删除</button>
+	<%}%>	
 	<%}%>	
 	<button type="button" class="btn btn-cancel">取消</button>
 </form>

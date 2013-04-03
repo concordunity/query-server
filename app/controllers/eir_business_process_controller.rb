@@ -57,6 +57,7 @@ class EirBusinessProcessController < ApplicationController
     if !params[:interchange_receipt].nil?
         @ir = InterchangeReceipt.new(params[:interchange_receipt])
         @ir.ir_username = current_user.username
+        @ir.ir_fullname = current_user.fullname
 
 		if @ir.doc_type.to_i > 6
             @ir.org = @ir.org || 2225 
@@ -144,6 +145,104 @@ class EirBusinessProcessController < ApplicationController
   end
 
   def print_excel
+
+  	ir_date = params[:ir_date] || DateTime.now.strftime("%Y-%m-%d")
+	ir_org = params[:ir_org] || current_user.subjection_org
+	ir_username = params[:ir_username] || current_user.username
+	idr = ir_date.to_datetime .. (ir_date.to_datetime + 1)
+	ir_result = {:sum_copies => 0, :sum_package => 0, :data => []} 
+   	excel_name = "交接单"
+	file_name_arr = []
+	result = []
+	count = 0
+	tar_arr = []
+    InterchangeReceipt.where(:ir_date => idr, :org => ir_org, :ir_username => ir_username).each_with_index do |ir,index|
+			
+		ir_result[:data] << ir 
+		ir_result[:sum_copies]  += ir.number_copies 
+		ir_result[:sum_package]  += ir.package 
+
+		if index != 0 && (index + 1) % 15 == 0
+			result << ir_result  
+			ir_result = {:sum_copies => 0, :sum_package => 0, :data => []} 
+			count += 1
+		else
+			result[count] = ir_result  
+		end
+	end
+	logger.info "--------result------" 
+	logger.info result.length
+
+	#book,sheet = get_sheet(filepath, result.length)
+	result.each_with_index do |r,rindex|
+		if r[:data].length != 15
+			(r[:data].length .. 15).each do |row,j|
+				r[:data] << ""
+			end
+		end
+
+		record_index = 1
+		logger.info "--------record_index------" 
+		logger.info record_index 
+		logger.info r[:data]
+		filepath = File.join(Rails.root,"doc","business_process.xls")	
+		book,sheet = open_excel(filepath)
+
+		sheet.each_with_index do |row,index|
+			rdata = r[:data][record_index-1]
+			row.each_with_index do |column,j|
+				case column
+				when "[A1]"
+					#海关名称
+					row[j] = rdata.blank? ? "" :  rdata.org
+				when "[J1]"
+					#日期
+					row[j] = Time.now.to_s
+				when "[K1]"
+					row[j] = r[:sum_copies] 
+				when "[L1]"
+					row[j] = r[:sum_package] 
+				else
+					#序号 单证种类 起始归档号 终止归档号 报关单份数 档案袋包数
+					if column == "[B#{record_index}]"
+						row[j] = record_index 
+					elsif column == "[C#{record_index}]"
+						row[j] =  rdata.blank? ? "" :  rdata.doc_type
+					elsif column == "[D#{record_index}]"
+						row[j] =  rdata.blank? ? "" :  rdata.doc_start
+					elsif column == "[E#{record_index}]"
+						row[j] =  rdata.blank? ? "" :  rdata.doc_end
+					elsif column == "[F#{record_index}]"
+						row[j] =  rdata.blank? ? "" :  rdata.number_copies
+					elsif column == "[G#{record_index}]"
+						row[j] =  rdata.blank? ? "" :  rdata.package
+						record_index += 1
+					end
+				end
+			end
+		end
+		new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+		Dir.mkdir(new_path) unless Dir.exists?(new_path)
+		new_path = File.join(new_path, "#{excel_name}_#{rindex}.xls")
+	    tar_arr << "#{excel_name}_#{rindex}.xls" 
+		file_name_arr << new_path.sub(File.join(Rails.root,"public"),'')
+		book.write(new_path)	
+	end
+	logger.info " ====  最终呈现结果  ======"
+	logger.info file_name_arr 
+	new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+	Dir.mkdir(new_path) unless Dir.exists?(new_path)
+	if tar_arr.length > 1
+	tar_str = "cd #{new_path} && tar cvf #{excel_name}.tar #{tar_arr.join(" ")}"
+	system("#{tar_str}")
+		new_path = File.join(new_path,"#{excel_name}.tar")
+		return new_path.sub(File.join(Rails.root,"public"),'')
+	else
+		return file_name_arr[0]
+	end
+  end
+
+  def print_excel_test
 	logger.info "=====print excel ====="
   	ir_date = params[:ir_date] || DateTime.now.strftime("%Y-%m-%d")
 	ir_org = params[:ir_org] || current_user.subjection_org
@@ -292,15 +391,32 @@ class EirBusinessProcessController < ApplicationController
   end
 
   # open excel and return sheet(打开excel文件，返回sheet)
-  def open_excel url
+  def open_excel(url,index=nil)
     filepath = url
     Spreadsheet.client_encoding = "UTF-8"
     begin
       book = Spreadsheet.open filepath
-      sheet = book.worksheet 0
+      sheet = book.worksheet index || 0
       return [book,sheet]
     rescue
       return nil
     end
+  end
+
+  def get_sheet(url,count)
+	filepath = url
+    Spreadsheet.client_encoding = "UTF-8"
+    begin
+      book = Spreadsheet.open filepath
+	  sheet = []
+	  (0 .. count).each do |i| 
+		book.add_worksheet(book.worksheet 0) 
+		sheet <<  book.worksheet(i || 0) 
+	  end if count > 0
+      return [book,sheet]
+    rescue
+      return nil
+    end
+
   end
 end

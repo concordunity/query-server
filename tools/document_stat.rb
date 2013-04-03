@@ -2,7 +2,8 @@ class DocumentStat < ActiveRecord::Base
 
 	#generate date with everyday .	
 	def self.test_generate
-		now = Time.now
+		now = Time.now - 30.day 
+		p now
 		p '======start===='		
 =begin
 		ds = DocumentStat.find 2694
@@ -13,9 +14,9 @@ class DocumentStat < ActiveRecord::Base
 		#today
 		today = now.to_date
 		#end of date
-		end_of_date = today.prev_day
+		end_of_date = today
 		#begin date
-		begin_date = today - 2.day
+		begin_date = today - 1.day
 		#type of doc type .
 		doc_type_dirs = [ 'JK', 'CK' ]
 		#years of doc type 
@@ -64,7 +65,7 @@ class DocumentStat < ActiveRecord::Base
 						result.push arr
 						arr.each{ |ar|
 							#clear already datas ..
-							DocumentStat.delete_all(:created_date => today) 
+							DocumentStat.delete_all(:created_date => begin_date) 
 							#create a new data ..
 							document_stat = DocumentStat.new(ar)
 							document_stat[:created_date] = begin_date

@@ -72,8 +72,11 @@
 	<% var btn_action,role = this.ctx.roles[0];
 	if(action == 'approval' && role.name.indexOf('科长') !== -1)btn_action='two-approval';
 	 %>
-	<%== $.View('//docview/ui/views/gate_leader.ejs',this.ctx) %>
-	<button type="button" class="btn btn-primary btn-accept <%= btn_action %>">通过</button>
+	<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
+		<%
+		if((btn_action && !model.two_approvers) || (!btn_action && model.status == 11)){%>
+		<button type="button" class="btn btn-primary btn-accept <%= btn_action %>">通过</button>
+		<%}%>
 	<button type="button" class="btn btn-cancel">取消</button>
 </form>
 </div>
