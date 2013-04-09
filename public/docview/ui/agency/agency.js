@@ -16,7 +16,7 @@ steal(
 				columns:[
 					{ id:'name',text:'机构名称' },
 					{ id:null,text:'编辑',width:100 },
-					{ id:null,text:'删除' ,width:100 },
+					{ id:null,text:'删除' ,width:100 }
 				]	
 			}).controller();
         },

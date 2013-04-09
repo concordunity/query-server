@@ -405,7 +405,7 @@ steal(
 			ev.preventDefault();
 			var that = this;
 			var requisition_details = []; 
-			var department_name = el.find("select[name=department]").text();
+			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
 			var approving_officer = el.find("select[name=kz_user]").val();
 			var lbl_wait = el.find('label.lbl-wait');

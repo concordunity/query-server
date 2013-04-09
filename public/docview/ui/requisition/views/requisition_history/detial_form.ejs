@@ -17,6 +17,10 @@
 	<td><%= scene_lent_paper_documentJsonDictionary[model.status.toString()] %></td>
 </tr>
 <tr>
+	<td>存放地点:</td>
+	<td colspan=3><%= orgJsonDictionary[model.storage_sites]  %>  </td> 
+</tr>
+<tr>
 	<td>申请人员:</td>
 	<td><%= model.apply_staff_fullname || '' %></td>
 	<td>申请日期:</td>

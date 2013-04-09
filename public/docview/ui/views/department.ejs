@@ -7,7 +7,7 @@
 	$.get('/agency_select',function(data){
 		$('select[name=department]').html('');
 		$.each(data,function(key,item){
-			var option = '<option value='+ item.id +'>'+ item.name +'</option>';
+			var option = '<option value='+ item.name +'>'+ item.name +'</option>';
 			$('select[name=department]').append(option);
 			console.log(item);
 		});
