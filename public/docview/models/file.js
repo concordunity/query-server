@@ -17,7 +17,46 @@ $.Model('Docview.Models.File',
             dataType : 'json file.models'
         });
     },
-    
+	getAgencyData: function(params, success, error) {
+        return $.ajax({
+            url : '/agency_list',
+            type : 'get',
+            data : params,
+            success : success,
+            error : error,
+			async : false
+        });
+    },
+	deleteAgencyData: function(params, success, error) {
+        return $.ajax({
+            url : '/agency_delete',
+            type : 'delete',
+            data : params,
+            success : success,
+            error : error,
+			async : false
+        });
+    },
+	updateAgencyData: function(params, success, error) {
+        return $.ajax({
+            url : '/agency_update',
+            type : 'post',
+            data : params,
+            success : success,
+            error : error,
+			async : false
+        });
+    },
+	createAgencyData: function(params, success, error) {
+        return $.ajax({
+            url : '/agency_create',
+            type : 'post',
+            data : params,
+            success : success,
+            error : error,
+			async : false
+        });
+    },
     updateDictionary : function(params, success, error) {
         return $.ajax({
             url : '/dictionary_info/update_dictionary',

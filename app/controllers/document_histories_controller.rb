@@ -179,7 +179,7 @@ class DocumentHistoriesController < ApplicationController
     docs_total = docs_records.count
     pages_total = docs_records.sum("pages")
 	#sum modefy document pages
-	pages_total +=  ModifiedDocument.sum("pages");
+	pages_total +=  ModifiedDocument.where(where_clause).sum("pages");
     #query_total = QueryHistory.where("doc_id IS NOT NULL").count
     query_total = queries.count 
 
@@ -356,7 +356,7 @@ class DocumentHistoriesController < ApplicationController
 		
 		(0..(months.length - 2)).each { |i|
         	key = months[i].strftime("%Y/%m")
-        	where_clause = { :created_date => months[i + 1] .. months[i] }
+        	where_clause = { :created_date => (months[i + 1] + 1).to_date .. (months[i] + 1).to_date }
 	
 			logger.info "### CREATED  DATE:#{where_clause} ###"
 			logger.info "### ORG CONDITION:#{org_condition}#{docType_condition} ###"

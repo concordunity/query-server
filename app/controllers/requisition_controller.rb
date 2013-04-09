@@ -22,19 +22,19 @@ class RequisitionController < ApplicationController
 	username =  params[:username]
 	case params[:type]
 	when "application"
-		sql_condition << "apply_staff like '%#{username}%'" unless username.blank? 
+		sql_condition << "apply_staff like binary('%#{username}%')" unless username.blank? 
 		#where_condition[:apply_staff] = username unless username.blank? 
 		where_condition[:created_at] = date_arr 
 	when "approval"
-		sql_condition << "approving_officer like '%#{username}%'" unless username.blank? 
+		sql_condition << "approving_officer like binary('%#{username}%')" unless username.blank? 
 		#where_condition[:approving_officer] = username unless username.blank? 
 		where_condition[:approval_time] = date_arr 
 	when "register"
-		sql_condition << "registration_staff like '%#{username}%'" unless username.blank? 
+		sql_condition << "registration_staff like binary('%#{username}%')" unless username.blank? 
 		#where_condition[:registration_staff] = username unless username.blank? 
 		where_condition[:check_in_time] = date_arr 
 	when "write_off"
-		sql_condition << "write_off_staff like '%#{username}%'" unless username.blank? 
+		sql_condition << "write_off_staff like binary('%#{username}%')" unless username.blank? 
 		#where_condition[:write_off_staff] = username unless username.blank? 
 		where_condition[:write_off_time] = date_arr 
 	end
@@ -49,17 +49,36 @@ class RequisitionController < ApplicationController
 
 
   def filter_docs
+    logger.info "===   filter_docs ===="
     result = {:status => false,:message => ""}
     doc_id = params[:doc_id]
+    logger.info doc_id 
     org = params[:org]
-	ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?) AND org = ?", doc_id[9,3], doc_id[9,2], current_user.subjection_org])
+	ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id[9,3], doc_id[9,2]])
+    logger.info "===  0 ===="
+	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
     @document = Document.find_by_doc_id(doc_id)
+    logger.info "===  1 ===="
 	rd = RequisitionDetail.where(["'status' <> 20 AND 'status' is not null"]).find_by_single_card_number(doc_id)
+
+    logger.info "===  2 ===="
     if @document.blank? && rd.blank? && !ofd.blank?
-        result[:status] = true
+        result[:status] = 200 
         result[:message] = "此单证：" + doc_id + ",可以正常添加。"
     else
-        result[:message] = "此单证：" + doc_id + "，不能添加，请重新填写或者移除。"
+		if !@document.blank?
+			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经电子化了。"
+			result[:status] = 201 
+		elsif !rd.blank?
+			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
+			result[:status] = 202 
+		elsif ofd.blank? 
+			result[:message] = "此单证：" + doc_id + "，不能添加，没有查阅权限。"
+			result[:status] = 203 
+		else
+			result[:message] = "此单证：" + doc_id + "，不能添加，请重新填写或者移除。"
+			result[:status] = 204 
+		end
     end
     render json: result
   end
@@ -73,8 +92,6 @@ class RequisitionController < ApplicationController
 			department_name = params[:department_name]
 			org = params[:org]
 			
-			tag = filter_requisition(params)
-			if tag
 				requisition = Requisition.create do |r|
 					r.tel = tel 
 					r.department_name = department_name 
@@ -84,13 +101,10 @@ class RequisitionController < ApplicationController
 					r.application_originally = params[:application_originally]
 					r.approving_officer = params[:approving_officer]
 					r.status = 10
+					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end
 				logger.info "=== second ====" 
 				create_requisition_details(params,requisition)	
-			else
-				status = 500
-				raise
-			end
 		rescue => e
 			logger.info "===error====" 
 			logger.info e
@@ -277,6 +291,7 @@ class RequisitionController < ApplicationController
 		params[:requisition_details].collect do |index,requisition_details|
 			logger.info requisition_details 
 			single_card_number = requisition_details[:single_card_number]
+			if filter_requisition(requisition_details)
 			modify_accompanying_documents = requisition_details[:modify_accompanying_documents]
 			where_page = requisition_details[:where_page]
 			lent_reasons = requisition_details[:lent_reasons]
@@ -290,23 +305,45 @@ class RequisitionController < ApplicationController
 				rd.lent_reasons = lent_reasons
 				rd.requisition_id = requisition.id
 			end 
-		end end
+			else
+				raise
+			end
+		end 
+	end
 	return result
   end
 
   def filter_requisition(params)
-		tag = true
-		params[:requisition_details].collect do |index,requisition_details|
 
-			doc_id = requisition_details[:single_card_number]
-			org = params[:org]
-			ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?) AND org = ?", doc_id[9,3], doc_id[9,2], current_user.subjection_org])
-			@document = Document.find_by_doc_id(doc_id)
-			rd = RequisitionDetail.where(["'status' <> 20 AND 'status' is not null"]).find_by_single_card_number(doc_id)
-			unless (@document.blank? && rd.blank? && !ofd.blank?)
-				tag = false
-			end
+    logger.info "===   filter_docs ===="
+    result = {:status => false,:message => ""}
+    doc_id = params[:doc_id] || params[:single_card_number]
+    org = params[:org]
+	ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id[9,3], doc_id[9,2]])
+	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
+    @document = Document.find_by_doc_id(doc_id)
+	rd = RequisitionDetail.where(["'status' <> 20 AND 'status' is not null"]).find_by_single_card_number(doc_id)
+
+    if @document.blank? && rd.blank? && !ofd.blank?
+        result[:status] = 200 
+        result[:message] = "此单证：" + doc_id + ",可以正常添加。"
+    else
+		if !@document.blank?
+			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经电子化了。"
+			result[:status] = 201 
+		elsif !rd.blank?
+			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
+			result[:status] = 202 
+		elsif ofd.blank? 
+			result[:message] = "此单证：" + doc_id + "，不能添加，没有查阅权限。"
+			result[:status] = 203 
+		else
+			result[:message] = "此单证：" + doc_id + "，不能添加，请重新填写或者移除。"
+			result[:status] = 204 
 		end
+    end
+
+	tag = true if result[:status] == 200
 	return tag
   end
 
@@ -363,21 +400,36 @@ class RequisitionController < ApplicationController
 	@requisitions = Requisition.where({:apply_staff => current_user.username}).where(["'status' is not null"])
     requisition_details = get_details(@requisitions) 
 	return {:requisitions => @requisitions, :requisition_details => requisition_details}
- end
+  end
 
-  #审批
+  def application_nanhui
+	
+	@requisitions = Requisition.where({:apply_staff => current_user.username}).where(["'status' is not null"])
+    requisition_details = get_details(@requisitions) 
+	return {:requisitions => @requisitions, :requisition_details => requisition_details}
+  end
+
+ #审批
   def approval
-	get_requisition([10,11])
+	#get_requisition([10,11])
+	approval_page
+  end
+
+  def approval_guan
+	#get_requisition([10,11])
+	approval_guan_page
   end
 
   #登记
   def register
-	get_requisition(12)
+	#get_requisition(12)
+	register_page
   end
 
   #核销
   def write_off
-	get_requisition(13)
+	#get_requisition(13)
+	write_off_page
   end
 
   #借阅历史
@@ -387,9 +439,12 @@ class RequisitionController < ApplicationController
 
   #审批:大表单
   def approval_page
-	get_requisition_page([10,11])
+	get_requisition_page(10)
   end
 
+  def approval_guan_page
+	get_requisition_page(11)
+  end
   #登记:大表单
   def register_page
 	get_requisition_page(12)
@@ -418,45 +473,43 @@ class RequisitionController < ApplicationController
 #排序的字段
 	  mDataPro = params["mDataProp_" + iSortCol_0]
 	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
-	  condition_arr = [] 
+	  conditions_arr = [] 
 	  if sSearch.blank?
-		condition_arr << "true"
+		conditions_arr << "true"
 	  else
 		#字典表：关区 
-        dis_org = DictionaryInfo.where(["dic_type='org' AND dic_name like ? ","%#{sSearch}%"])
+        dis_org = DictionaryInfo.where(["dic_type='org' AND dic_name like binary(?) ","%#{sSearch}%"])
 		#字典表：借阅状态
-        dis_slpd = DictionaryInfo.where(["dic_type='scene_lent_paper_document' AND dic_name like ? ","%#{sSearch}%"])
+        dis_slpd = DictionaryInfo.where(["dic_type='scene_lent_paper_document' AND dic_name like binary(?) ","%#{sSearch}%"])
 		#检索详单信息表
-		rd_ids = RequisitionDetail.where(["single_card_number like ?","%#{sSearch}%"]).collect(&:id)
+		dis_ids = RequisitionDetail.where(["single_card_number like (?)","%#{sSearch}%"])
 		#生气检索条件
 		condition_dic = dis_org.collect(&:dic_num)
 		condition_slpd = dis_slpd.collect(&:dic_num)
-		condition_rds = rd_ids.uniq unless dis_ids
-
-		condition_arr = [] 
+	    condition_rd = dis_ids.collect(&:requisition_id)
         (0 ... column_count.to_i - 1).each do |cc|
 	        #logger.info "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
 			case params["mDataProp_" + cc.to_s]
 			when "subjection_org"
-				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in '(#{dis_org.join(",")})'" unless dis_org.blank?  
+				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_dic.join(",")})" unless dis_org.blank?  
 			when "requisition_details"
-				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in '(#{rd_ids.join(",")})'" unless rd_ids.blank?
+				conditions_arr << "id in (#{condition_rd.join(",")})" unless dis_ids.blank?
 			when "status"
-				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in '(#{dis_slpd.join(",")})'" unless dis_slpd.blank?
+				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_slpd.join(",")})" unless dis_slpd.blank?
 			else
-				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
+				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like binary('%#{sSearch}%')"
 			end
 		end
 	  end
       logger.info "================" 
-      logger.info condition_arr 
+      logger.info conditions_arr 
       logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
 	  orders = "#{mDataPro} #{sSortDir_0}" if mDataPro != "requisition_details"	
 
       current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
       logger.info "=======0=#{orders}"	
 
-	  condition = {:orders =>orders,:where=>condition_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
+	  condition = {:orders =>orders,:where=>conditions_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
 
       logger.info "=======1=#{condition[:orders]}"	
 	  result = source.where(condition[:where]).reorder(condition[:orders]).paginate(:page => condition[:page], :per_page => condition[:per_page] )
@@ -484,7 +537,9 @@ class RequisitionController < ApplicationController
 	else
 		condition_status = {:status => type}
 		if type == 10
-			condition = ["('status' is not null AND status <> 20) AND (approving_officer = ? or two_approvers = ?)",current_user.username, current_user.username]
+			condition = ["('status' is not null AND status <> 20) AND (approving_officer = ?)",current_user.username]
+		elsif type == 11
+			condition = ["('status' is not null AND status <> 20) AND (two_approvers = ?)",current_user.username]
 		else 
 			condition = ["('status' is not null AND status <> 20)"]
 		end

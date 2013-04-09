@@ -32,10 +32,10 @@ steal(
 	    var init_options = {
 		search : ["single","multi","all_print","advanced","by_doc_source","search_condition","upload_file"],
 		stats : ["stats_stats","stats_usage","stats_query","create_group"],
-		requisition_docs : [ "application", "approval", "register", "write_off", "lending_statistics", "requisition_history" ],
+		requisition_docs : [ "application","application_nanhui" , "approval", "approval_guan", "register", "write_off", "lending_statistics", "requisition_history" ],
 		business_process : ["create_interchange_receipt","search_interchange_receipt","create_dishonored_bill","search_dishonored_bill","statistical_inquiry"],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
-		manage_accounts : ["users","roles","system_upload"]
+		manage_accounts : ["users","roles","system_upload",'business_agency_maintain']
 	    };
 		var that = this;
 	    var init_option_result = {};
@@ -118,53 +118,61 @@ steal(
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             // Find corresponding nav icon and select it
-	    this.element.find('ul.main-nav li').removeClass('active');
-	    if (this.lastActiveA != undefined) {
-		this.lastActiveA.closest('li').addClass('active');
-	    }
+			 this.element.find('ul.main-nav li').removeClass('active');
+			 if (this.lastActiveA != undefined) {
+				 this.lastActiveA.closest('li').addClass('active');
+			 }
             //$('a[href="#' + oldVal + '"]').closest('li').removeClass('active');
             //$('a[href="#' + newVal + '"]').closest('li').addClass('active');
 
             if (newVal != 'manage_accounts') {
-		$('#sys-setting').hide();
-		$("#system-upload").hide();
-	    } else {
-		var subcategory = $.route.attr('subcategory');
-		//console.log("cat and sub",newVal,subcategory);
+				$('#sys-setting').hide();
+				$("#system-upload").hide();
+				$("#manage-business-agency-maintain").hide();
+			} else {
+				var subcategory = $.route.attr('subcategory');
+				//console.log("cat and sub",newVal,subcategory);
 
-		if (subcategory === 'sys-setting') {
-		    $('#sys-setting').show();
-		    $('#sys-setting').docview_ui_syssetting('loadData');
-		} else {
-		    $('#sys-setting').hide();
-		}
-		if (subcategory === 'system_upload') {
-			$("#system-upload").show();
-		} else {
-			$("#system-upload").hide();
-		}
-	    }
+				if (subcategory === 'business_agency_maintain') {
+					alert("======");
+					$("#manage-business-agency-maintain").show();
+					$('#sys-setting').docview_ui_agency('loadData');
+				} else {
+					$("#manage-business-agency-maintain").hide();
+				}
+				if (subcategory === 'sys-setting') {
+					$('#sys-setting').show();
+					$('#sys-setting').docview_ui_syssetting('loadData');
+				} else {
+					$('#sys-setting').hide();
+				}
+				if (subcategory === 'system_upload') {
+					$("#system-upload").show();
+				} else {
+					$("#system-upload").hide();
+				}
+			}
 
 
-	    if (newVal != 'stats') {
-		$('#stats-export').hide();
-		$('#group-docs').hide();
-	    } else {
-		var subcategory = $.route.attr('subcategory');
-		if (subcategory === 'stats_export') {
-		    $('#stats-export').show();
-		} else {
-		    $('#stats-export').hide();
-		}
-		if (subcategory === 'create_group') {
-		    $('#group-docs').show();
-		} else {
-		    $('#group-docs').hide();
-		}
-	    }
+			if (newVal != 'stats') {
+				$('#stats-export').hide();
+				$('#group-docs').hide();
+			} else {
+				var subcategory = $.route.attr('subcategory');
+				if (subcategory === 'stats_export') {
+					$('#stats-export').show();
+				} else {
+					$('#stats-export').hide();
+				}
+				if (subcategory === 'create_group') {
+					$('#group-docs').show();
+				} else {
+					$('#group-docs').hide();
+				}
+			}
 
-            if (newVal === "search") {
-                /*
+			if (newVal === "search") {
+				/*
                 // Save the search so when we come back it's shown immediately.
                 if (this.options.clientState.attr('id') !== "") {
                     $.route.attr('id', this.options.clientState.attr('id'));                
@@ -172,8 +180,8 @@ steal(
                 if (this.options.clientState.attr('page') !== "") {
                     $.route.attr('page', this.options.clientState.attr('page'));
                 }*/
-            }
-        },
+			}
+		},
         '{$.route} id change': function(el, ev, attr, how, newVal, oldVal) {
             if (newVal !== undefined) {
                 this.options.clientState.attr('id', newVal);

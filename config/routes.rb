@@ -1,5 +1,11 @@
 Dms::Application.routes.draw do
 
+  get "/agency_select" => "business_agency_maintain#get_select"
+  get "/agency_list" => "business_agency_maintain#index"
+  post "/agency_create" => "business_agency_maintain#create"
+  post "/agency_update" => "business_agency_maintain#update_data"
+  delete "/agency_delete" => "business_agency_maintain#destroy"
+
   get "/user_select" => "accounts#user_select"
   match "/eir_business_process/:id" => "eir_business_process#delete_interchange_receipt", :via => :delete
   post "/interchange_receipt/list" => "eir_business_process#interchange_receipt_list"

@@ -174,74 +174,48 @@ steal(
 			$('input[readonly]').tooltip({ placement: 'right'  });
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
-			console.log(newVal);
             if (newVal === "business_process") {	
 				this.mainTabOn = true;
-				this.reload();
+				this.element.show();
 			} else {
 				this.element.hide();
+				$([
+						"create_interchange_receipt",
+						"search_interchange_receipt",
+						"create_dishonored_bill",
+						"search_dishonored_bill",
+						"statistical_inquiry" 
+				]).each(function(key,value){
+					$('.' + value).hide();	
+				});
+				this.mainTabOn = false;
 			}
-			// we need to reset filters
-			//this.clearFilters();
 		},
 		'{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
-			console.log(newVal);
-			if (newVal == undefined) {
-				return;
-			}
-			if (this.mainTabOn) {
-				if (oldVal !== undefined) {
-					this.element.find('.' + oldVal).hide();
-				}
-			    
-				var category = $.route.attr('category');
-				if (category !== undefined && category === "business_process") {
-		//			this.element.find('div.requisition-list').docview_ui_dmstable();
-					if (newVal != 'single') {
-							this.reshow();
-							if (newVal == "create_interchange_receipt"){
-									$("#view-interchange-receipt form").submit();
-							}else if( newVal == "search_interchange_receipt"){	
-									$(".search-interchange-receipt form").submit();
-							}else if (newVal == "create_dishonored_bill"){
+			if (!this.mainTabOn)return;
+			var category = $.route.attr('category');
+			var subcategory = $.route.attr('subcategory');
+			newVal = subcategory;
+			oldVal && this.element.find('.' + oldVal).hide();
 
-								$('.search-dishonored form').submit();
-							//	Docview.Models.Requisition.findRequisition({type: newVal},this.proxy(""),{});
-								//this.reload();
-							}
-							$.route.attr('id', -1);
-							if (newVal != 'single') {
-									$('#document-details').hide();
-							} 
-					} 
-					//this.element.find('.' + newVal).show();
-					this.element.find('li.nav-pills').removeClass('active');
-					this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
-				}
-			}
-        },
-		reshow : function() {
-			this.element.show();
-			var sub_cat = $.route.attr('subcategory');
-			var to_show = sub_cat;
-
-			if (!sub_cat) {
-					to_show = this.element.find("form")[0].className;
-			}
-			this.element.find('.' + to_show).show();
-			var to_show_class = ["create_interchange_receipt", "search_interchange_receipt","create_dishonored_bill","search_dishonored_bill","statistical_inquiry"];
-			$.each(to_show_class,function(index,value){
-				if (to_show != value) {
-					$("."+value).hide();
-				}
-			});
-		},
-        reload : function(){
-            this.reshow();
-            var sub_cat = $.route.attr('subcategory');
-            var org = $("." + sub_cat  + " input[name=subjection_org]").val();
-            var ir_date = $("." + sub_cat + " input[name=interchange-receipt-date]").val();
-            Docview.Models.BusinessProcess.findBusinessProcess({type: sub_cat,list: {org: org, ir_date: ir_date}},this.proxy("businessProcessList"),{});
+			$('.' + oldVal).hide();
+			$('.' + newVal).show('fast');
+			//$('ul.nav-pills li').removeClass('active');
+			//$('li a[href="#'+newVal+'"]').closest('li').addClass('active');
+			switch(newVal){
+				case 'create_interchange_receipt':
+					$("#view-interchange-receipt form").submit();
+				break;
+				case 'search_interchange_receipt':
+					$(".search-interchange-receipt form").submit();
+				break;
+				case 'search_dishonored_bill':
+					$('.search-dishonored form').submit();
+				break;
+				case 'create_dishonored_bill':
+					$('.search-dishonored form').submit();
+				break;
+			}    
         },
         addDataRow : function(data){
 			var msg = "提交时发生错误,请重新尝试";
@@ -250,7 +224,11 @@ steal(
 				case 200: 
 					type =  'success';
 					msg = "成功添加新交接单" ;
-					this.reload();
+					var ir_date = $("#view-interchange-receipt input[name=date]");
+					var date = ir_date.val();
+					ir_date.val($.date(new Date).format('yyyy-MM-dd'));
+					$("#view-interchange-receipt form").submit();
+					ir_date.val(date);
 					$.scrollTo($('.create-interchange-receipt-list')[0],1200);
 					break;
 				case 400:
@@ -286,10 +264,13 @@ steal(
             }
         },
         irDestroyed: function(data) {
-		
             this.lastEl.button('reset');    
             this.lastEl.closest('tr').remove();
-			this.reload();
+			var ir_date = $("#view-interchange-receipt input[name=date]");
+			var date = ir_date.val();
+			ir_date.val($.date(new Date).format('yyyy-MM-dd'));
+			$("#view-interchange-receipt form").submit();
+			ir_date.val(date);
         },
         irDestroyFailed : function(jqXHR, textStatus, errorThrown) {
                 var t = 'error';

@@ -53,7 +53,9 @@
                 },
                 requisition_docs: {
 					application : false,
+					application_nanhui : false,
 					approval: false,
+					approval_guan: false,
 					register : false,
 					write_off :false,
 					lending_statistics : false,
@@ -78,6 +80,7 @@
                     users: false,
                     system_upload: false,
                     syssetting: false,
+                    business_agency_maintains: false,
                     roles: false
                 }
             },

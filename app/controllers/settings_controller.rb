@@ -11,7 +11,7 @@ class SettingsController < ApplicationController
 	  username = params[:username] == "" ? ["true"] : ["user_name like ?","%" + params[:username] + "%"]
 	  rolename = params[:rolename].blank? ? ["true"] : ["role_name like ?","%" + params[:rolename] + "%"]
 	  org = params[:org].blank? ? ["true"] : {:org => params[:org]}
-	  doc_id = params[:doc_id].blank? ? ["true"] : {:doc_id => params[:doc_id]}
+	  doc_id = (params[:doc_id].blank? || params[:doc_id] == 'undefined') ? ["true"] : {:doc_id => params[:doc_id]}
       daterange = {:created_at => params[:from_date].to_date .. (params[:to_date].to_date + 1.day)} if (!params[:from_date].blank? && !params[:to_date].blank?)
 	  result = []
 	  r = Role.find_by_name('admin')
@@ -22,7 +22,7 @@ class SettingsController < ApplicationController
 	    logger.info username 
 	    logger.info rolename 
 	    logger.info daterange.length 
-		result = SysLog.where(no_admin).where(username).where(rolename).where(daterange).all#.paginate(:per_page => 10, :page => params[:page])	
+		result = SysLog.where(no_admin).where(username).where(rolename).where(daterange)#.paginate(:per_page => 10, :page => params[:page])	
 	    logger.info "system ======end"
 	  elsif url == "query" 
 		result = QueryHistory.where(no_admin).where(username).where(rolename).where(daterange).where(doc_id).where(org)	
@@ -31,11 +31,13 @@ class SettingsController < ApplicationController
 	  elsif url == "doctype"
 		result = QueryDoctypeLog.where(no_admin).where(username).where(rolename).where(daterange).where(doc_id).where(org)	
 	  end
+	  aadata = filter_proc(result) 
       rescue => e
 	    logger.info "error======"
 		logger.info e
 	  end
-      render :json => {:results => result, :url => url}, :status => 200
+      render :json => aadata 
+      #render :json => {:results => result, :url => url}, :status => 200
   end
 
   #接收格式：｛:action => '', :describe => ""｝
@@ -104,4 +106,44 @@ class SettingsController < ApplicationController
 
     render json: {:status => 200}
   end
+
+  def filter_proc(source) 
+	#字段数量
+ 	  column_count = params[:iColumns]
+#
+#排序的下标
+	  iSortCol_0 = params[:iSortCol_0]	  
+#排序的方式
+	  sSortDir_0 = params[:sSortDir_0]	  
+#搜索内容
+	  sSearch = params[:sSearch]
+#排序的字段
+	  mDataPro = params["mDataProp_" + iSortCol_0]
+	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
+	  condition_arr = [] 
+	  if sSearch.blank?
+		condition_arr << "true"
+	  else
+
+		condition_arr = [] 
+        (0 ... column_count.to_i - 1).each do |cc|
+			conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
+		end
+	  end
+      logger.info "================" 
+      logger.info condition_arr 
+      logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
+	  orders = "#{mDataPro} #{sSortDir_0}" 
+
+      current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
+      logger.info "=======0=#{orders}"	
+
+	  condition = {:orders =>orders,:where=>condition_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
+
+      logger.info "=======1=#{condition[:orders]}"	
+	  result = source.where(condition[:where]).reorder(condition[:orders]).paginate(:page => condition[:page], :per_page => condition[:per_page] )
+
+	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: result}
+  end
+
 end

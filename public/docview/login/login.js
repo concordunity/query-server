@@ -19,6 +19,7 @@ steal(
     'docview/manage/docs',
     'docview/ui/details',
     'docview/ui/syssetting',
+    'docview/ui/agency',
     'docview/ui/export_query',
     'docview/stats/group',
     'docview/stats/search',
@@ -190,9 +191,17 @@ steal(
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('application', true);
 					this.setNavIfEmpty('requisition_docs', 'application');
 					break;
+				case ("application_nanhui_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('application_nanhui', true);
+					this.setNavIfEmpty('requisition_docs', 'application_nanhui');
+					break;
 				case ("approval_index"):
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('approval', true);
 					this.setNavIfEmpty('requisition_docs', 'approval');
+					break;
+				case ("approval_guan_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('approval_guan', true);
+					this.setNavIfEmpty('requisition_docs', 'approval_guan');
 					break;
 				case ("register_index"):
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('register', true);
@@ -286,6 +295,10 @@ steal(
                     this.options.clientState.attr('access').attr('manage_accounts').attr('roles', true);
                     this.setNavIfEmpty('manage_accounts', 'roles');
                     break;                    
+                case ("business_agency_maintain_index"):
+                    this.options.clientState.attr('access').attr('manage_accounts').attr('business_agency_maintain', true);
+                    this.setNavIfEmpty('manage_accounts', 'business_agency_maintain');
+                    break;  
                 case ("system_upload"):
                     this.options.clientState.attr('access').attr('manage_accounts').attr('system_upload', true);
                     this.setNavIfEmpty('manage_accounts', 'system_upload');
@@ -338,6 +351,7 @@ steal(
 			$('#requisition-docs').docview_ui_requisition({clientState: this.options.clientState});
 			$('#business-process').docview_ui_businessprocess({clientState: this.options.clientState});
             $('#sys-setting').docview_ui_syssetting({clientState: this.options.clientState});
+            $('#manage-business-agency-maintain').docview_ui_agency({clientState: this.options.clientState});
             // $('#search-results').docview_search_results({clientState: this.options.clientState});
             // $('#breadcrumbs').docview_breadcrumbs({clientState: this.options.clientState});
             $('#document-details').docview_ui_details({clientState: this.options.clientState});

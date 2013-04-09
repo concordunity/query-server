@@ -35,6 +35,15 @@ steal(
             // Hide box until route conditions are met
             this.element.hide();
         },
+        '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
+			var category = $.route.attr('category');
+			var subcategory = $.route.attr('subcategory');
+			var log = '导航事件:=>一级导航:' + category + ';二级导航:' + subcategory;
+			if(oldVal && newVal){
+				log += ';（' + oldVal +' => ' + newVal +')';
+			}
+			//console.log(log);
+		},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             switch (newVal) {
                 case "search":
@@ -43,8 +52,6 @@ steal(
                 case "business_process":
                 case "manage_accounts":
                 case "stats":
-					console.log("newVal = ",newVal);
-					console.log("======");
                     this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
 
                     this.element.find('li').removeClass('active');
@@ -74,7 +81,6 @@ steal(
 						if (subcategory === 'system_upload') {
 								$('#system-upload').show();
 						}	
-						console.log("subcategory.newVal = ",subcategory);
 						this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
 						$.route.attr('subcategory', subcategory);
 					}
@@ -117,7 +123,13 @@ steal(
 	    } else {
 		$('#sys-setting').hide();
 	    }
+			if (subcategory === 'business_agency_maintain') {
+				$('#manage-business-agency-maintain').show();
+				$('#manage-business-agency-maintain').docview_ui_agency('loadData');
 
+			} else {
+				$('#manage-business-agency-maintain').hide();
+			}
 	    if (subcategory === 'system_upload') {
 		$('#system-upload').show();
 	    } else {

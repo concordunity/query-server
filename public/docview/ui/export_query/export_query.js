@@ -39,18 +39,32 @@ steal(
 		    col_width: [0,0,0]
 	    };
 		
-	    this.element.find('.export_results').docview_ui_dmstable({ table_options: table_options });
+	    //this.element.find('.export_results').docview_ui_dmstable({ table_options: table_options });
+	    this.element.find('.export_results').docview_ui_pagingtable({
+			tmpl_path:'/docview/ui/export_query/views/col_',
+			columns:[
+				{ id:'doc_id' ,text:'单证号' },
+				{ id:'edc_date',text:'借出日期' }
+			]	
+		});
 	    this.tableController = this.element.find('.export_results').controller();
         },
 
 	'form.stats_export submit' : function(el, ev) {
 	    ev.preventDefault();
 	    if (this.tableController != undefined) {
-		this.tableController.clearData();
+		//this.tableController.clearData();
 	    }
 	    $.createMask();
-	    Docview.Models.File.findPendingDocuments({org_applied : el.find('select[name="org_applied"]').val()}, this.proxy('handleData'),
-						     this.proxy('handleError'));
+	    //Docview.Models.File.findPendingDocuments({org_applied : el.find('select[name="org_applied"]').val()}, this.proxy('handleData'),this.proxy('handleError'));
+		var data = {org_applied : el.find('select[name="org_applied"]').val()};
+		this.tableController.reload({
+			url:'/documents/pending_modified',
+			type:'POST',
+			data: data
+		});
+		$.closeMask();
+		log('system',{current_action:'stats.stats_stats',describe:'查询出口删改单'});
 	},
 	handleData : function (data) {
 		this.tableController.setModelData(data.results);

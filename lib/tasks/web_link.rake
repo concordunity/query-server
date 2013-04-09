@@ -1,7 +1,110 @@
 # -*- coding: utf-8 -*-
 namespace :web_link do
 
- 
+  desc "系统管理-机构维护"
+  task :add_business_agency_maintain_for_web_link => :environment do
+
+	
+  	  if WebLink.where(:name => "aSystemBusinessAgencyMaintain").length == 0
+	  	  WebLink.create(:name => "aSystemBusinessAgencyMaintain",:description => "机构维护",:controller => "setting",:action => "business_agency_maintain_index")
+      else
+	      a = WebLink.where(:name => "aSystemBusinessAgencyMaintain").first
+		  a.description = "机构维护"
+		  a.controller = "setting" 
+		  a.action = "business_agency_maintain_index"
+		  a.save
+      end
+  end
+
+  desc "现在单证借阅审阅登记(添加及更新)"
+  task :update_requisition_for_web_link => :environment do
+
+	
+  	  if WebLink.where(:name => "aRequisitionApplication").length == 0
+	  	  WebLink.create(:name => "aRequisitionApplication",:description => "申请(本关)",:controller => "requisition",:action => "application_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionApplication").first
+		  a.description = "申请(本关)"
+		  a.controller = "requisition" 
+		  a.action = "application_index"
+		  a.save
+      end
+
+	  if WebLink.where(:name => "aRequisitionApplicationNanHui").length == 0
+		  WebLink.create(:name => "aRequisitionApplicationNanHui",:description => "申请(南汇)",:controller => "requisition",:action => "application_nanhui_index")
+	  else
+		  a = WebLink.where(:name => "aRequisitionApplicationNanHui").first
+		  a.description = "申请(南汇)"
+		  a.controller = "requisition"
+		  a.action = "application_nanhui_index"
+		  a.save
+	  end
+
+  	  if WebLink.where(:name => "aRequisitionApproval").length == 0
+	  	  WebLink.create(:name => "aRequisitionApproval",:description => "科长审批",:controller => "requisition",:action => "approval_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionApproval").first
+		  a.description = "科长审批"
+		  a.controller = "requisition" 
+		  a.action = "approval_index"
+		  a.save
+      end
+
+
+  	  if WebLink.where(:name => "aRequisitionApprovalGuan").length == 0
+	  	  WebLink.create(:name => "aRequisitionApprovalGuan",:description => "关长审批",:controller => "requisition",:action => "approval_guan_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionApprovalGuan").first
+		  a.description = "关长审批"
+		  a.controller = "requisition" 
+		  a.action = "approval_guan_index"
+		  a.save
+      end
+
+
+  	  if WebLink.where(:name => "aRequisitionRegister").length == 0
+	  	  WebLink.create(:name => "aRequisitionRegister",:description => "电子化登记",:controller => "requisition",:action => "register_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionRegister").first
+		  a.description = "电子化登记"
+		  a.controller = "requisition" 
+		  a.action = "register_index"
+		  a.save
+      end
+
+
+  	  if WebLink.where(:name => "aRequisitionWriteOff").length == 0
+	  	  WebLink.create(:name => "aRequisitionWriteOff",:description => "单证核销",:controller => "requisition",:action => "write_off_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionWriteOff").first
+		  a.description = "单证核销"
+		  a.controller = "requisition" 
+		  a.action = "write_off_index"
+		  a.save
+      end
+
+  	  if WebLink.where(:name => "aRequisitionLendingStatistics").length == 0
+	  	  WebLink.create(:name => "aRequisitionLendingStatistics",:description => "数据统计",:controller => "requisition",:action => "lending_statistics_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionLendingStatistics").first
+		  a.description = "数据统计"
+		  a.controller = "requisition" 
+		  a.action = "lending_statistics_index"
+		  a.save
+      end  
+
+  	  if WebLink.where(:name => "aRequisitionRequisitionHistory").length == 0
+	  	  WebLink.create(:name => "aRequisitionRequisitionHistory",:description => "流转状态",:controller => "requisition",:action => "requisition_history_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionRequisitionHistory").first
+		  a.description = "流转状态"
+		  a.controller = "requisition" 
+		  a.action = "requisition_history_index"
+		  a.save
+      end
+
+  end
+
   desc "现在单证借阅审阅登记(添加借阅历史)"
   task :add_requisition_history_for_web_link => :environment do
 

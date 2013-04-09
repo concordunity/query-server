@@ -31,7 +31,7 @@ steal(
 				}
 			},this.options);
 			this.ejs_files = {};
-			console.log("BEGIN TEST EJS TEMPLETE URL")	
+			//console.log("BEGIN TEST EJS TEMPLETE URL")	
 			//colums options [{ id:'ID', text:'Text', width:'10px'  }]
 			$.each(this.options.columns,function(key,value){
 				//make aoColumns ..	

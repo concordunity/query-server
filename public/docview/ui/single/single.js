@@ -17,34 +17,31 @@ steal(
 	}, 
 	getId : function() {
             return this.id;
-        },
-	validateInputOrEmpty: function(el) {
-	    var docId = $.trim(el.find('.query').val());
-	    if (docId =="") {
-		this.id = '';
-		return true;
-	    }
-
-	    return this.validateInput(el);
 	},
-	validateInput: function(el) {
+	validateInputOrEmpty: function(el) {
+	    var docId = $.trim(el.find('input.query[name=query]').val());
 	    this.removeFormErrors(el);
-	    var docId = $.trim(el.find('.query').val());
-	    if (this.verifyDocId(docId)) {
-		this.id = docId;
-		return true;
-	    }
-
-	    this.displayInputError(el, "query", "报关单号必须是18位数字。");
+	    if(this.verifyDocId(docId)){
+			this.id = docId;
+			return true;
+		}else{
+			this.id = '';
+			this.displayInputError(el, "query", "报关单号必须是18位数字。");
+		}
+		return false;
+	},
+	//即将过时的函数
+	validateInput: function(el) {
+		return this.validateInputOrEmpty(el);
 	},
 	// Verifies individual document ids
-        verifyDocId: function(id) {
-            return /^\d{18}$/.test(id);
-        },
+	verifyDocId: function(id) {
+		return /^\d{18}$/.test(id);
+    },
 	removeFormErrors: function(form) {
             form.find('.error .help-inline').remove();
             form.find('.error').removeClass('error');
-        },
+    },
 	displayInputError: function(form, name, message) {
             var inputField = form.find('input[name="' + name + '"]');
             inputField.closest('.control-group').addClass('error');

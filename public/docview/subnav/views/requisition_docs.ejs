@@ -1,19 +1,25 @@
 <% if (this.application) { %>
-    <li><a href="#application">申请</a></li>
+    <li><a href="#application">申请(本关)</a></li>
+<% } %>
+<% if (this.application_nanhui) { %>
+    <li><a href="#application_nanhui">申请(南汇)</a></li>
 <% } %>
 <% if (this.approval) { %>
-    <li><a href="#approval">移出审批</a></li>
+    <li><a href="#approval">科长审批</a></li>
+<% } %>
+<% if (this.approval_guan) { %>
+    <li><a href="#approval_guan">关长审批</a></li>
 <% } %>
 <% if (this.register) { %>
-    <li><a href="#register">单证流转前登记</a></li>
+    <li><a href="#register">电子化登记</a></li>
 <% } %>
 
 <% if (this.write_off) { %>
-    <li><a href="#write_off">单证签收后核销功能</a></li>
+    <li><a href="#write_off">单证核销</a></li>
 <% } %>
 <% if (this.lending_statistics) { %>
-    <li><a href="#lending_statistics">借出统计</a></li>
+    <li><a href="#lending_statistics">数据统计</a></li>
 <% } %>
 <% if (this.requisition_history) { %>
-    <li><a href="#requisition_history">借阅历史</a></li>
+    <li><a href="#requisition_history">流转状态</a></li>
 <% } %>

@@ -8,14 +8,17 @@ class DocumentStat < ActiveRecord::Base
 	end
 	#generate date with everyday .	
 	def self.generate(now = Time.now)
-		
+		puts "==== GENRATE START ==== #{now}"
 		result = []
 		#today
 		today = now.to_date
 		#end of date
-		end_of_date = today.prev_day
+		end_of_date = today
 		#begin date
-		begin_date = today - 2.day
+		begin_date = today.prev_day
+		#clear already datas ..
+		puts "clear already data at #{begin_date}"
+		DocumentStat.delete_all(:created_date => begin_date) 
 		#type of doc type .
 		doc_type_dirs = [ 'JK', 'CK' ]
 		#years of doc type 
@@ -29,7 +32,7 @@ class DocumentStat < ActiveRecord::Base
 			doc_type_dirs.each{ |dir|#JK
 				doc_type_years.each{ |year|#3Y
 					
-					doc_type = "#{dir}#{year}Y"
+					doc_type = "#{dir}#{year}Y"[0,4] #fix a bug .
 					#condition
 					condition = { :created_at => begin_date .. end_of_date, :org => org, :doc_type => doc_type }
 					#puts condition
@@ -41,7 +44,9 @@ class DocumentStat < ActiveRecord::Base
 					query_stats = queries.count
 					docs_stats = documents.count
 					pages_stats = documents.sum(:pages)
-					
+					#
+					modified =   ModifiedDocument.where( condition )
+					#
 					keys = Set.new	
 					keys.merge(docs_stats.keys)
 					keys.merge(pages_stats.keys)
@@ -50,7 +55,7 @@ class DocumentStat < ActiveRecord::Base
 					arr =  keys.collect { |key| {
 						:org		=> key,
 						:docs		=> docs_stats.has_key?(key)  ? docs_stats[key]  : '',
-						:pages		=> pages_stats.has_key?(key) ? pages_stats[key] : '',
+						:pages		=> pages_stats.has_key?(key) ? pages_stats[key].to_i + modified.where(:org => key).sum(:pages) : '',
 						:queries	=> query_stats.has_key?(key) ? query_stats[key] : ''
 						#:percent_q	=> query_stats.has_key?(key) ? (query_total == 0 ?
 						#			0
@@ -63,8 +68,6 @@ class DocumentStat < ActiveRecord::Base
 					if arr.length > 0
 						result.push arr
 						arr.each{ |ar|
-							#clear already datas ..
-							DocumentStat.delete_all(:created_date => today) 
 							#create a new data ..
 							document_stat = DocumentStat.new(ar)
 							document_stat[:created_date] = begin_date
@@ -77,7 +80,9 @@ class DocumentStat < ActiveRecord::Base
 					########   END  #########	
 				}
 			}		
+
 		}
+		puts "==== GENRATE STOP ==== #{result.count}"
 		return { today.strftime("%Y-%m") => result }
 	end
 end

@@ -1,11 +1,9 @@
-<% var status_mapping = { 
-	1:'已经接收',
-	0:'等待接收'
-}; %>
+<tr>
+<% var status_mapping = { 1:'已经接收', 0:'等待接收' }; %>
 <td colspan=4 style="border:2px solid #cccc00" >
 <div class=''>
 <div>
-关区：<%= orgJsonDictionary[this.business_process[0].org] %>   处理提交关员：<%= (this.business_process[0].ir_fullname == undefined) ? this.business_process[0].ir_username : this.business_process[0].ir_fullname %>   交接单	当前状态：<%= status_mapping[this.business_process[0].ir_status]%>
+关区：<%= orgJsonDictionary[this.business_process[0].org] %>   处理提交关员：<%= (this.business_process[0].ir_fullname == undefined) ? this.business_process[0].ir_username : this.business_process[0].ir_fullname %>   交接单	当前状态：<%= status_mapping[parseInt[this.business_process[0].ir_status]]%>
 </div>
 <table class="table">
 <thead>
@@ -41,3 +39,4 @@
 <button class="btn btn-cancel">取消</button>
 </div>
 </td>
+</tr>

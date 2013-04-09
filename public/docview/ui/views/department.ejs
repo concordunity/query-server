@@ -1,0 +1,16 @@
+<fieldset class="control-group" >
+<label><%= $.i18n._('label.application.department_name') %></label>
+<select name='department' ></select>
+</fieldset>
+<%
+(function($){
+	$.get('/agency_select',function(data){
+		$('select[name=department]').html('');
+		$.each(data,function(key,item){
+			var option = '<option value='+ item.id +'>'+ item.name +'</option>';
+			$('select[name=department]').append(option);
+			console.log(item);
+		});
+	});
+})(jQuery);
+%>

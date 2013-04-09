@@ -21,7 +21,14 @@ class Ability
           can :query, Document
           can :query, ModifiedDocument
         end
-
+=begin		
+		if (w.action == "business_agency_maintain_index")
+			can :update, BusinessAgencyMaintain
+			can :destroy, BusinessAgencyMaintain
+			can :create, BusinessAgencyMaintain
+			can :index, BusinessAgencyMaintain
+		end
+=end
         if (w.action == 'print' || w.action == 'testify')
           can :print, Document
           can :print_doc, Document

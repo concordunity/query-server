@@ -34,7 +34,17 @@ steal(
 	            ],
                 file_name: ""
             };
-            this.element.find('#log_show_tables').docview_ui_dmstable({table_options : table_options});
+            //this.element.find('#log_show_tables').docview_ui_dmstable({table_options : table_options});
+            this.element.find('#log_show_tables').docview_ui_pagingtable({
+				tmpl_path: "/docview/ui/syslog/views/col_",
+				columns:[
+					{ "id":"role_name", text: "角色" },
+					{ "id":"email", text: "全名" },
+					{ "id":"action", text: "动作" },
+					{ "id":"created_at", text: "创建日期" },
+					{ "id":"describe", text: "描述" }
+				]
+			});
             this.tableController = this.element.find('#log_show_tables').controller();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
@@ -74,7 +84,16 @@ steal(
                 var from_date = dates.from;
                 var to_date = dates.to;
 				var formdata = {url: url, doc_id: gid, org: org, rolename: rolename, username: username, from_date: from_date, to_date: to_date};
-				Docview.Models.History.findLog(formdata,this.proxy("setData"),{});
+
+				this.tableController.reload({
+					url:'/find_log',
+					type:'POST',
+					data:formdata,
+					success:function(data){
+						console.log(data);
+					}
+				});
+				//Docview.Models.History.findLog(formdata,this.proxy("setData"),{});
 			},
 			/**
 				//负责在系统日志模式下禁用 报关单号和理单关区

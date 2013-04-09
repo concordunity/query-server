@@ -27,12 +27,14 @@
 <div class="span2">
     <h4>单证借阅</h4>
     <ul style="list-style-type:none;">
-    <li><input name='aRequisitionApplication' type='checkbox' />申请</li>
-    <li><input name='aRequisitionApproval' type='checkbox' />移出审批</li>
-    <li><input name='aRequisitionRegister' type='checkbox' />单证流转前登记</li>
-    <li><input name='aRequisitionWriteOff' type='checkbox' />单证签收后核销功能</li>
-    <li><input name='aRequisitionLendingStatistics' type='checkbox' />借出统计</li>
-    <li><input name='aRequisitionRequisitionHistory' type='checkbox' />借阅历史</li>
+    <li><input name='aRequisitionApplication' type='checkbox' />申请(本关)</li>
+    <li><input name='aRequisitionApplicationNanHui' type='checkbox' />申请(南汇)</li>
+    <li><input name='aRequisitionApproval' type='checkbox' />科长审批</li>
+    <li><input name='aRequisitionApprovalGuan' type='checkbox' />关长审批</li>
+    <li><input name='aRequisitionRegister' type='checkbox' />电子化登记</li>
+    <li><input name='aRequisitionWriteOff' type='checkbox' />单证核销</li>
+    <li><input name='aRequisitionLendingStatistics' type='checkbox' />数据统计</li>
+    <li><input name='aRequisitionRequisitionHistory' type='checkbox' />流转状态</li>
     </ul>
 </div>
 
@@ -64,6 +66,7 @@
   <li><input name='aManageUsers' type='checkbox' />用户管理</li>
   <li><input name='aManageRoles' type='checkbox' />权限管理</li>
   <li><input name='aSystemUpload' type='checkbox' />用户信息及权限上传</li>
+  <li><input name='aSystemBusinessAgencyMaintain' type='checkbox' />机构维护</li>
   <li><input name='aSysSetting' type='checkbox' />系统参数设置</li>
 </ul>
 

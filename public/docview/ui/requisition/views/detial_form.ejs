@@ -17,6 +17,10 @@
 	<td><%= scene_lent_paper_documentJsonDictionary[model.status.toString()] %></td>
 </tr>
 <tr>
+	<td>存放地点:</td>
+	<td colspan=3><%= orgJsonDictionary[model.storage_sites]  %>  </td> 
+</tr>
+<tr>
 	<td>申请人员:</td>
 	<td><%= model.apply_staff_fullname || '' %></td>
 	<td>申请日期:</td>
@@ -69,14 +73,13 @@
 </table>
 </div>
 	<br />
-	<% var btn_action,role = this.ctx.roles[0];
-	if(action == 'approval' && role.name.indexOf('科长') !== -1)btn_action='two-approval';
-	 %>
 	<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
-		<%
-		if((btn_action && !model.two_approvers) || (!btn_action && model.status == 11)){%>
-		<button type="button" class="btn btn-primary btn-accept <%= btn_action %>">通过</button>
-		<%}%>
+	<button type="button" class="btn btn-primary btn-accept" ><%= (action.indexOf('approval') == -1) ? "完成" : "通过" %></button>
+	<%
+	if(action.indexOf('approval') != -1){
+		%><button type="button" class="btn btn-danger btn-reject">退回</button><%	
+	}
+	%>
 	<button type="button" class="btn btn-cancel">取消</button>
 </form>
 </div>
