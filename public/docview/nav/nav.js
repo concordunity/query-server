@@ -35,7 +35,7 @@ steal(
 		requisition_docs : [ "application","application_nanhui" , "approval", "approval_guan", "register", "write_off", "lending_statistics", "requisition_history" ],
 		business_process : ["create_interchange_receipt","search_interchange_receipt","create_dishonored_bill","search_dishonored_bill","statistical_inquiry"],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
-		manage_accounts : ["users","roles","system_upload",'business_agency_maintain']
+		manage_accounts : ["users","roles","system_upload"]
 	    };
 		var that = this;
 	    var init_option_result = {};
@@ -128,17 +128,17 @@ steal(
             if (newVal != 'manage_accounts') {
 				$('#sys-setting').hide();
 				$("#system-upload").hide();
-				$("#manage-business-agency-maintain").hide();
+				//$("#manage-business-agency-maintain").hide();
 			} else {
 				var subcategory = $.route.attr('subcategory');
 				//console.log("cat and sub",newVal,subcategory);
 
 				if (subcategory === 'business_agency_maintain') {
-					alert("======");
-					$("#manage-business-agency-maintain").show();
-					$('#sys-setting').docview_ui_agency('loadData');
+				//	alert("======");
+				//	$("#manage-business-agency-maintain").show();
+				//	$('#sys-setting').docview_ui_agency('loadData');
 				} else {
-					$("#manage-business-agency-maintain").hide();
+				//	$("#manage-business-agency-maintain").hide();
 				}
 				if (subcategory === 'sys-setting') {
 					$('#sys-setting').show();

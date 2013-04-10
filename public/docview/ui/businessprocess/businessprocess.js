@@ -177,8 +177,6 @@ steal(
             if (newVal === "business_process") {	
 				this.mainTabOn = true;
 				this.element.show();
-			} else {
-				this.element.hide();
 				$([
 						"create_interchange_receipt",
 						"search_interchange_receipt",
@@ -188,6 +186,10 @@ steal(
 				]).each(function(key,value){
 					$('.' + value).hide();	
 				});
+				var subcategory = $.route.attr('subcategory');
+				this.element.find('.' + subcategory).show('fast');
+			} else {
+				this.element.hide();
 				this.mainTabOn = false;
 			}
 		},

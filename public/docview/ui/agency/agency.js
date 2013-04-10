@@ -3,6 +3,7 @@ steal(
     'jquery/view/ejs',
     'jquery/controller/view',
     'libs/jquery.alert.js',
+    'libs/jquery.placeholder.js',
     'docview/bootstrap/bootstrap.css'
 ).then(
     './views/init.ejs'
@@ -11,15 +12,36 @@ steal(
         init : function() {
 			this.subjection_org = this.options.clientState.attr('user').subjection_org;
 			this.element.html(this.view('init',this));
+			this.element.hide();
 			this.tableController = this.element.find('.agency-list').docview_ui_pagingtable({
 				tmpl_path:'/docview/ui/agency/views/col_',
 				columns:[
 					{ id:'name',text:'机构名称' },
-					{ id:null,text:'编辑',width:100 },
-					{ id:null,text:'删除' ,width:100 }
+					{ id:null,text:'操作', style:'nolinebreak'}
 				]	
 			}).controller();
         },
+		'{$.route} category change':function(){
+			console.log("category",arguments);	
+			var category = $.route.attr('category');
+			if(category == 'manage_accounts' ){
+				this.mainTabOn = true;
+				this.element.show();
+			}else{
+				this.mainTabOn = false;
+				this.element.hide();
+			}
+		},
+		'{$.route} subcategory change':function(){
+			if(!this.mainTabOn) return;
+			var subcategory = $.route.attr('subcategory');
+			if(subcategory == 'business_agency_maintain'){
+				this.element.show();
+				this.loadData();
+			}else{
+				this.element.hide();
+			}
+		},
 		loadData : function(){
 			this.tableController.reload({
 				url:'/agency_list',
@@ -81,7 +103,7 @@ steal(
 			detial_form.find('.btn-cancel').click(function(ev){
 				ev.preventDefault();
 				detial_form.remove();
-				row.element.show();
+				row.element.show('slow');
 			});
 		},
 		'.btn-delete click':function(el,ev){

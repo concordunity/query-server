@@ -20,11 +20,7 @@
             </fieldset>
         </div>
 	 <div class="span6">
-	 <fieldset>
-	 <label>审批人员</label>
-	 <%== $.View('//docview/ui/views/kz_user.ejs',this) %>
-	 </fieldset>
-        </div>
+	 </div>
 
     </div>
 <hr />
@@ -42,6 +38,7 @@
         </div>
 
         <div class="pull-left">
+			<%== $.View('//docview/ui/views/kz_user.ejs',this) %>
             <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
 			<div style="display: inline-block;" ><label class='label label-info lbl-wait' style="display:none;" >Waiting ..</label></div>
         </div>

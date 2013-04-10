@@ -87,6 +87,8 @@ class RequisitionController < ApplicationController
 #	{"tel"=>"15101151137", "department_name"=>"研发", "requisition_details"=>{"0"=>{"single_card_number"=>"222520121250004811", "modify_accompanying_documents"=>"aa", "where_page"=>"1", "lent_reasons"=>"不知道"}, "1"=>{"single_card_number"=>"222520121250004812", "modify_accompanying_documents"=>"bb", "where_page"=>"2", "lent_reasons"=>"有问题呗"}}}
 	logger.info "=== first ====" 
 	status = 200
+	tag = true
+	Requisition.transaction do
 		begin
 			tel = params[:tel]
 			department_name = params[:department_name]
@@ -104,12 +106,19 @@ class RequisitionController < ApplicationController
 					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end
 				logger.info "=== second ====" 
-				create_requisition_details(params,requisition)	
+				tag = create_requisition_details(params,requisition)	
+				if tag == false
+					status = 500
+					raise ActiveRecord::Rollback
+				end
 		rescue => e
 			logger.info "===error====" 
 			logger.info e
+			tag = false 
 			status = 500
+			raise ActiveRecord::Rollback
 		end
+	end
 	logger.info "=== last ====" 
 	render json: {:message => "ok",:status => status}, :status => 200
   end
@@ -303,9 +312,11 @@ class RequisitionController < ApplicationController
 				rd.modify_accompanying_documents = modify_accompanying_documents
 				rd.where_page = where_page
 				rd.lent_reasons = lent_reasons
+				rd.is_check = true 
 				rd.requisition_id = requisition.id
 			end 
 			else
+				result = false 
 				raise
 			end
 		end 
@@ -365,18 +376,20 @@ class RequisitionController < ApplicationController
 				requisition.status = 20 
 			end
         when "approval"
-			if requisition.status == 10
-				requisition.approving_officer_fullname = current_user.fullname
-				requisition.approval_time = Time.now
-				requisition.two_approvers = params[:two_approvers] 
-			elsif requisition.status == 11
-				requisition.two_approvers_fullname = current_user.fullname
-				requisition.two_approver_time = Time.now
-			end
+			requisition.approving_officer_fullname = current_user.fullname
+			requisition.approval_time = Time.now
+			requisition.two_approvers = params[:two_approvers] 
+		when "approval_guan"
+			requisition.two_approvers_fullname = current_user.fullname
+			requisition.two_approver_time = Time.now
         when "register"
             requisition.registration_staff = current_user.username
             requisition.registration_staff_fullname = current_user.fullname
             requisition.check_in_time = Time.now
+			RequisitionDetail.where(:id => params[:ids].keys).each do |rd|
+				rd.is_check = params[:ids][rd.id.to_s]
+				rd.save
+			end
         when "write_off"
             requisition.write_off_staff = current_user.username
             requisition.write_off_staff_fullname = current_user.fullname

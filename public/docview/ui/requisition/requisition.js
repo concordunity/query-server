@@ -76,7 +76,7 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
-					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"org", mLabel : '业务点 '},
 					//{"mDataProp":"single_card_number", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
@@ -92,7 +92,7 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"apply_staff", mLabel : '申请人员'},
-					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
@@ -116,7 +116,7 @@ steal(
 				columns:[
 					{ id:'created_at' , text:'申请日期' },
 					{ id:'apply_staff' , text:'申请人员' },
-					{ id:'org' , text:'关区' },
+					{ id:'org' , text:'业务点' },
 					{ id:'department_name' , text:'科室名称' },
 					{ id:'requisition_details' , text:'单证号' },
 					{ id:'status' , text:'状态' },
@@ -132,7 +132,7 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"approving_officer", mLabel : '审批人员'},
-					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
@@ -149,7 +149,7 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
 					{"mDataProp":"registration_staff", mLabel : '核销人员'},
-					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":"status", mLabel : '状态'},
@@ -171,7 +171,7 @@ steal(
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '日期'},
 					{"mDataProp":"apply_staff", mLabel : '人员'},
-					{"mDataProp":"org", mLabel : '关区'},
+					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
 					{"mDataProp":"requisition_details", mLabel : '单证号'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
@@ -204,8 +204,8 @@ steal(
 				tmpl_path: "/docview/ui/requisition/views/requisition_history/col_",
 				columns:[
 					{ id:'created_at',text:'日期' },
-					{ id:'apply_staff',text:'人员' },
-					{ id:'org',text:'关区' },
+					{ id:'apply_staff',text:'申请人员' },
+					{ id:'org',text:'业务点' },
 					{ id:'department_name',text:'科室名称' },
 					{ id:'requisition_details',text:'单证号' },
 					{ id:'status',text:'状态' },
@@ -220,6 +220,7 @@ steal(
 				}
 			});
 			this.requisitionHistoryController = this.element.find('.requisition-history-list').controller();
+			this.element.find('select[name=kz_user]').hide();
 /*
 		   //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 		   this.element.find('div.daterange-holder').docview_ui_daterange( {dateOptions : {labelString: "日期"}});
@@ -235,6 +236,9 @@ steal(
 				$.each(["application",'application_nanhui',"approval",'approval_guan',"register","write_off","lending_statistics","requisition_history"],function(key,value){
 					$('.' + value ).hide();
 				});
+				var subcategory = $.route.attr('subcategory');
+				this.element.find('.' + subcategory).show('fast');
+
 			} else {
 				this.mainTabOn = false;
 				this.element.hide();
@@ -246,6 +250,7 @@ steal(
 			var category = $.route.attr('category');
 			var subcategory = $.route.attr('subcategory');
 			newVal = subcategory;
+			console.log(newVal,oldVal);
 			this.element.find('.' + newVal).show('fast');
 			var table = this.element.find('.approval-guan-list');
 			switch(newVal){
@@ -404,6 +409,12 @@ steal(
 		"#new-application-form submit" : function(el,ev){
 			ev.preventDefault();
 			var that = this;
+			var btn = el.find('button[type=submit]');
+			if(!btn.hasClass('two-step')){
+				btn.addClass('two-step');
+				el.find('select[name=kz_user]').show('slow');
+				return;
+			}
 			var requisition_details = []; 
 			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
@@ -628,6 +639,11 @@ steal(
 						data.status = 14;//正常完成
 						break;
 				}
+				data.ids = {};	
+				innerForm.find('input[type=checkbox]').each(function(key,item){
+					data.ids[item.value] = item.checked;
+				});
+				//console.log(data);
 				postData(data);
 			});
 

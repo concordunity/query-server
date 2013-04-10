@@ -124,11 +124,11 @@ steal(
 		$('#sys-setting').hide();
 	    }
 			if (subcategory === 'business_agency_maintain') {
-				$('#manage-business-agency-maintain').show();
-				$('#manage-business-agency-maintain').docview_ui_agency('loadData');
+				//$('#manage-business-agency-maintain').show();
+				//$('#manage-business-agency-maintain').docview_ui_agency('loadData');
 
 			} else {
-				$('#manage-business-agency-maintain').hide();
+				//$('#manage-business-agency-maintain').hide();
 			}
 	    if (subcategory === 'system_upload') {
 		$('#system-upload').show();
