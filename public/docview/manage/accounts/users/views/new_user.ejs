@@ -1,6 +1,6 @@
 <p>&nbsp;</p>
 <div class="well">
-<form class="form" id="new-user-form">
+<form class="form new-user-form" id="new-user-form">
 <legend>创建新用户</legend>
     <div class="row-fluid">
         <div class="span6">
@@ -13,15 +13,6 @@
                 <input name="fullname" type="text" />
             </fieldset>
             
-           <fieldset>
-            <label><%= $.i18n._('label.user.role') %></label>
-            <select name="roles">
-                <% var roles = cntl.getRoles();
-                   for (var i = 0; i < roles.length; i++) { %>
-                    <option value=<%== roles[i].id %>><%== roles[i].name %></option>
-                <% } %>
-            </select>
-            </fieldset>
 
            <fieldset>
             <label><%= $.i18n._('label.user.doc_type') %></label>
@@ -50,6 +41,12 @@
             </fieldset>
             <fieldset class="control-group">
             	<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'subjection_org', orgsDic : orgArrayDictionary ,type: "users"} ) %>
+			</fieldset>
+
+
+            <fieldset class="control-group">
+            <label><%= $.i18n._('label.user.role') %></label>
+			<div class="role-selection-holder"></div>
 			</fieldset>
 
             <fieldset class="control-group">

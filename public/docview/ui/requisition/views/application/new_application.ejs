@@ -1,7 +1,7 @@
-<p>&nbsp;</p>
-<div class="well">
-<form class="form" id="new-application-form">
+<div class="<%= this.action %>" >
+<div class="well create-application">
 <legend>创建申请表单</legend>
+<form class="form" id="new-application-form">
     <div class="row-fluid">
         <div class="span6">
             <fieldset class="control-group">
@@ -36,12 +36,20 @@
 				</div>
             </fieldset>	
         </div>
-
         <div class="pull-left">
-			<%== $.View('//docview/ui/views/kz_user.ejs',this) %>
-            <button type="submit" class="btn btn-primary" data-loading-text="Creating..." autocomplete="off"><%= $.i18n._('btn.create') %></button>
+            <button type="submit" class="btn btn-primary" ><%= $.i18n._('btn.create') %></button>
 			<div style="display: inline-block;" ><label class='label label-info lbl-wait' style="display:none;" >Waiting ..</label></div>
+			<br />
         </div>
     </div>
 </form>
+</div>
+<div class="well select-approval hide" >
+<form class="">
+	<legend class="">请为此借阅单证选择审批人员</legend>
+	<%== $.View('//docview/ui/views/kz_user.ejs',this) %>
+	<button type="submit" class="btn btn-primary" >提交</button>
+	<button type="button" class="btn btn-cancel-select-approval" >暂不指定</button>
+</form>
+</div>
 </div>

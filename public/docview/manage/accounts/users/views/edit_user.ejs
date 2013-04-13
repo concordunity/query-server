@@ -10,23 +10,6 @@
 	    	<label><%= $.i18n._('label.user.fullname') %></label>
     		<input name="fullname" type="text" value="<%= user.fullname %>"/>
 		</fieldset>
-		<fieldset class="control-group">
-	    <label><%= $.i18n._('label.user.role') %></label>
-    	<select name="roles">
-        <%	var roles = cntl.getRoles(); 
-         	var found = false;
-			for (var i = 0; i < roles.length; i++) { 
-                var is_selected = "";
-                if (found == false && user.roles[0].id == roles[i].id) {
-                    is_selected = " selected";
-                    found = true;
-                }
-		%>
-		<option value=<%== roles[i].id %><%= is_selected %>><%== roles[i].name %></option>
-        <% } %>
-    	</select>
-		</fieldset>
-
  		<fieldset class="control-group">
 			<label  class="control-label">业务点</label>
 			<div class="controls">
@@ -48,6 +31,12 @@
 				</select>
 			</div>
 		</fieldset>
+		<fieldset class="control-group">
+	    <label><%= $.i18n._('label.user.role') %></label>
+		<div class='edit-role-selection-holder'></div>
+		</fieldset>
+
+
     	<label><%= $.i18n._('label.user.organization') %></label>
 		<div class="edit-org-selection-holder"></div>
 	</td>

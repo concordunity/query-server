@@ -45,8 +45,7 @@ steal('jquery/model', 'jquery/lang/json').then(function($) {
 				type : 'post',
 				data : params,
 				success : success,
-				error : error,
-				dataType : 'json requisition.models'
+				error : error
 			});
 		},
 

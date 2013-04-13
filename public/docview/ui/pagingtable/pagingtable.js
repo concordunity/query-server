@@ -15,6 +15,8 @@ steal(
 			//defaults
             this.options = $.extend({
 				aoColumns:[],
+				sort: [ [0,"asc"] ],
+				search:{},
 				page_dom:"<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
 				language_url:"/docview/media/language/ch_ZN.txt",
 				preload:true,
@@ -112,8 +114,9 @@ steal(
 				"sServerMethod": options.type,
 				"sDom": options.page_dom, 
 				"sPaginationType" : "bootstrap",
-				"bSort": true, 
-		//		"oSearch": {doc_id : "20121250004811"},
+				"bSort": (options.sort.length > 0), 
+				"aaSorting": options.sort,
+				"oSearch": options.search,
 				"aoColumns": options.aoColumns,	
 				"oLanguage" : {
                     "sUrl" : options.language_url 

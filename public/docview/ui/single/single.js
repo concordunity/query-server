@@ -21,7 +21,7 @@ steal(
 	validateInputOrEmpty: function(el) {
 	    var docId = $.trim(el.find('input.query[name=query]').val());
 	    this.removeFormErrors(el);
-	    if(this.verifyDocId(docId)){
+	    if(docId == '' || this.verifyDocId(docId)){
 			this.id = docId;
 			return true;
 		}else{

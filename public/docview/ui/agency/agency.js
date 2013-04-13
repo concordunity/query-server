@@ -22,7 +22,6 @@ steal(
 			}).controller();
         },
 		'{$.route} category change':function(){
-			console.log("category",arguments);	
 			var category = $.route.attr('category');
 			if(category == 'manage_accounts' ){
 				this.mainTabOn = true;

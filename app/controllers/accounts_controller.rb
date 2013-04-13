@@ -47,7 +47,7 @@ class AccountsController < ApplicationController
 	  iSortCol_0 = params[:iSortCol_0]	  
 	  sSortDir_0 = params[:sSortDir_0]	  
 	  sSearch = params[:sSearch]
-	  mDataPro = params["mDataProp_" + iSortCol_0]
+	  mDataPro = params["mDataProp_" + iSortCol_0 || 0]
 	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
 	  condition_arr = [] 
 	  if sSearch.blank?
@@ -109,7 +109,7 @@ class AccountsController < ApplicationController
     end
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        @user.role_ids = [params[:role].to_i]
+        @user.role_ids = params[:role]
         @user.locked_at = nil
         @user.failed_attempts = 0
         @user.save
@@ -189,7 +189,7 @@ class AccountsController < ApplicationController
       @user.doc_type = params[:doc_type]
     end
 
-    @user.role_ids = [params[:role].to_i]
+    @user.role_ids = params[:role]
 
     if @user.email.blank?
       if !username.index('@customs.gov.cn').nil?

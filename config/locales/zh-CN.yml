@@ -21,6 +21,13 @@ zh-CN:
     court_doc: "出证"
     all_print: "批量打印"
     dh_report: "操作历史"
+  requisition_docs:
+    approval: "科长审批" 
+    approval_guan: "关长审批" 
+    register: "电子化登记" 
+    write_off: "单证核销" 
+    requisition_history: "流转状态" 
+    lending_statistics: "数据统计" 
   stats:
     stats_query: "查阅历史"
     create_group: "单证组管理"

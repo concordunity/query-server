@@ -1,38 +1,12 @@
 
 <form class="well form-horizontal lending_statistics">
-<h1 class="legend-h1">借出统计</h1>
+<h1 class="legend-h1">数据统计</h1>
 <div class="row-fluid">
 
 <div class="span6">
     <fieldset>
-	 	<div class="control-group">
-    		<label class="control-label" ><%= $.i18n._('label.application.org') %></label>
-			<div class="controls" >
-    		<select name="org">
-			<% $.each(orgJsonDictionary,function(i,v){ %>
-        			<option value='<%= i %>'><%= v %></option>
-			<% }); %>
-    		</select>
-			</div>
-		</div>
+		<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'org', orgsDic : orgArrayDictionary } ) %>
 		<div class="lending-date" ></div>
-		<div class="control-group" >
-			<label class="control-label" >关员类型:</label>
-			<div class="controls" >
-			<select name="org_user_type" >
-				<option value="application" >申请人员</option>
-				<option value="approval"    >审批人员</option>
-				<option value="register"    >登记人员</option>
-				<option value="write_off"   >核销人员</option>
-			</select>
-			</div>
-		</div>
-		<div class="control-group" >
-			<label class="control-label" >关员工号:</label>
-			<div class="controls" >
-				<input type="text" class="" name="org_user" />	
-			</div>
-		</div>
     </fieldset>  
   <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i>查询 </button>
 </div>

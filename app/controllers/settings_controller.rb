@@ -14,8 +14,7 @@ class SettingsController < ApplicationController
 	  doc_id = (params[:doc_id].blank? || params[:doc_id] == 'undefined') ? ["true"] : {:doc_id => params[:doc_id]}
       daterange = {:created_at => params[:from_date].to_date .. (params[:to_date].to_date + 1.day)} if (!params[:from_date].blank? && !params[:to_date].blank?)
 	  result = []
-	  r = Role.find_by_name('admin')
-	  no_admin = ["role_id <> ?", r.id] 
+	  no_admin = ["user_id not in (?)",[1,2,5]] 
       begin 
 	  if url == "system"
 	    logger.info "system ======start"

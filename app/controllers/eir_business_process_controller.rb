@@ -54,15 +54,19 @@ class EirBusinessProcessController < ApplicationController
   #生成交接单
   def create_interchange_receipt
     status = 200
-    if !params[:interchange_receipt].nil?
-        @ir = InterchangeReceipt.new(params[:interchange_receipt])
+	InterchangeReceipt.transaction do 
+	params[:datas].collect { |key,interchange_receipt|
+    if !interchange_receipt.nil?
+		logger.info "======#{interchange_receipt}"
+        @ir = InterchangeReceipt.new(interchange_receipt)
         @ir.ir_username = current_user.username
         @ir.ir_fullname = current_user.fullname
+		@ir.org = current_user.subjection_org 
+		@ir.ir_status = 0
+		@ir.ir_date = DateTime.now.to_s
 
 		if @ir.doc_type.to_i > 6
-            @ir.org = @ir.org || 2225 
-            @ir.ir_date = DateTime.now.to_s
-			@ir.ir_status = 0
+			@ir.number_copies =  @ir.package 
 			@ir.save
 		else
 
@@ -73,16 +77,10 @@ class EirBusinessProcessController < ApplicationController
 			ir_all = InterchangeReceipt.where(:org => @ir.org)
 			count = ir_all.count - ir_some.count
 
-            @ir.org = @ir.org || 2225 
-            @ir.ir_date = DateTime.now.to_s
-			@ir.ir_status = 0
 			number_copies = @ir.doc_end.to_i - @ir.doc_start.to_i + 1
             if count == 0 
-				if @ir.number_copies.to_i == number_copies
-					@ir.save
-				else
-					status = 403
-				end
+				@ir.number_copies = number_copies
+				@ir.save
             else
                 status = 400
             end
@@ -90,8 +88,16 @@ class EirBusinessProcessController < ApplicationController
             status = 401
         end
 		end
+		if status != 200
+			raise ActiveRecord::Rollback
+		end
     end
-    return {:interchange_receipt => @ir,:status => status}		
+	} 
+		if params[:datas].nil?
+			status = 403
+		end
+    end
+    return {:status => status}		
   end
   #接收交接单
   def search_interchange_receipt

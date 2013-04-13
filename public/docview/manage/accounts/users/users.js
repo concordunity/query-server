@@ -7,6 +7,7 @@ steal(
     'docview/models', 
     'docview/ui/dmstable',  
     'docview/ui/orgui',
+    'docview/ui/checkrole',
     'docview/ui/dictionary',
     'docview/bootstrap/bootstrap.css'
 )
@@ -202,19 +203,22 @@ steal(
 		console.log('------new-user----');
 	    //console.log(this.orgsDic);
 		$('#new-user').html(this.view('new_user', {cntl : this}));
-	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
+	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui({orgs: this.orgsDic, form: "new-user-form"});
+	    $('#new-user').find('div.role-selection-holder').docview_ui_checkrole({form: "new-user-form"});
+	    $('#new-user').find('div.role-selection-holder').docview_ui_checkrole("setRoles");
 	},
 	'#new-user-form submit': function(el, ev) {
 		ev.preventDefault();
         var username = el.find('input[name="username"]').val();
         var fullname = el.find('input[name="fullname"]').val();
 		var doc_type = el.find('select[name="doc_type"]').val();
-        var roles = el.find('select[name="roles"]').val();
         var email = el.find('input[name="email"]').val();
 		var subjection_org = el.find('select[name=subjection_org]').val();
         var orgController = el.find('div.org-selection-holder').controller();
+        var roleController = el.find('div.role-selection-holder').controller();
 		var password = el.find('input[name="password"]').val();
        	var confirmation = el.find('input[name="password-confirm"]').val();
+        var roles = roleController.getRoles(); 
 		// Clear any previous error messages in the form
         this.removeFormErrors(el);
         // Scan for empty fields (jsmvc can actually do this in the model layer I believe)
@@ -324,15 +328,25 @@ steal(
 		var row = this.tableController.getRowFrom(el);
 		var userRow = row.element;
 		var userInfo = row.model;  
-		//console.log(userInfo);        
+		console.log(userInfo);        
 	    var editHtml = this.view('edit_user',  {cntl : this, user: userInfo });
 	    userRow.after(editHtml);
 	    //userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
 
-	    console.log('===init orgDic ====',this.orgsDic);
-	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui({orgs: this.orgsDic});
+	    //console.log('===init orgDic ====',this.orgsDic);
+	    userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui({orgs: this.orgsDic, form: "edit-user-form"});
 	    var ctrl =userRow.next().find('div.edit-org-selection-holder').controller();
 	    ctrl.setOrgs(userInfo.orgs);
+
+	    userRow.next().find('div.edit-role-selection-holder').docview_ui_checkrole({form: "edit-user-form"});
+	    var ctrl_role =userRow.next().find('div.edit-role-selection-holder').controller();
+		console.log("===userInfo====",userInfo.roles);
+		var roles = [];
+		for(var i=0;i<userInfo.roles.length;i++){
+			roles.push(userInfo.roles[i].id);	
+		}
+		console.log("===roleInfo====",roles.join(","));
+	    ctrl_role.setRoles(roles.join(","));
 
         },
         '.edit-user-form submit': function(el, ev) {
@@ -345,10 +359,13 @@ steal(
 			var confirmation = el.find('input[name="password-confirm"]').val();
 			var fullname = el.find('input[name="fullname"]').val();
 			var orgController = el.find('div.edit-org-selection-holder').controller();
+			var roleController = el.find('div.edit-role-selection-holder').controller();
 			var subjection_org = el.find('select[name=subjection_org]').val();
 			var doc_type = el.find('select[name="doc_type"]').val();
 			var roles = el.find('select[name="roles"]').val();
 
+
+			console.log('getRoles = ',roleController.getRoles());
             if (password !== confirmation) {
                 this.displayFormError(el,
 				      "password-confirm",
@@ -365,7 +382,7 @@ steal(
 			console.log(user);
 			Docview.Models.User.update(
 							user.id,
-							{ role : roles,
+							{ role : roleController.getRoles(),
 					user : {
 		      orgs : orgController.getOrgs(),
 			 subjection_org:subjection_org,

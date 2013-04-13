@@ -26,7 +26,7 @@ steal(
                 aaData: [],
 				col_def_path : "//docview/ui/syslog/views/",
                 aoColumns: [
-						{"mDataProp":"role_name", mLabel : '角色'},
+			//			{"mDataProp":"role_name", mLabel : '角色'},
 						{"mDataProp":"email", mLabel : '全名'},
 						{"mDataProp":"action", mLabel : '动作'},
 						{"mDataProp":"created_at", mLabel : '创建日期'},
@@ -38,7 +38,7 @@ steal(
             this.element.find('#log_show_tables').docview_ui_pagingtable({
 				tmpl_path: "/docview/ui/syslog/views/col_",
 				columns:[
-					{ "id":"role_name", text: "角色" },
+			//		{ "id":"role_name", text: "角色" },
 					{ "id":"email", text: "全名" },
 					{ "id":"action", text: "动作" },
 					{ "id":"created_at", text: "创建日期" },
@@ -72,7 +72,7 @@ steal(
                 var doc_id = ctrl.getId();
 				var url = el.find("select[name=log_type]").val();
                 var username = el.find('input[name="username"]').val();
-                var rolename = el.find('input[name="rolename"]').val();
+                //var rolename = el.find('input[name="rolename"]').val();
                 var gid = el.find('select[name="gid"]').val();
                 var doc_type = el.find('select[name="doc_type"]').val();
                 var org = el.find('select[name="org"]').val();
@@ -83,7 +83,7 @@ steal(
                 }
                 var from_date = dates.from;
                 var to_date = dates.to;
-				var formdata = {url: url, doc_id: gid, org: org, rolename: rolename, username: username, from_date: from_date, to_date: to_date};
+				var formdata = {url: url, doc_id: gid, org: org,  username: username, from_date: from_date, to_date: to_date};
 
 				this.tableController.reload({
 					url:'/find_log',

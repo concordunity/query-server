@@ -5,39 +5,55 @@
 		<li><a href="#view-interchange-receipt" data-toggle="tab" >查看交接单</a><li>
 	</ul>
 	<div class="tab-content" >
-		<div id="new-interchange-receipt" class="tab-pane active well" >
+		<div id="new-interchange-receipt" class="tab-pane active well" style="width:55%;margin-left:20%;" >
 		<form class='form' id='new-create-interchange-receipt'>
-			<div class="row-fluid" >
-				<div class="span6">
-					<fieldset class="control-group" >
-						<label class="control-label" >开始理单号</label>
-						<input type='text' required name='doc_start' placeholder='' />
-					</fieldset>	
-					<fieldset class="control-group" >
-						<label class="control-label" >单证种类</label>
-						<select class='' name='doc_type' >
-							<% $.each(business_processJsonDictionary,function(index,value){ %>
-								<option value='<%= index %>' class=''><%= value%></option>
-							<% });%>
-						</select>
-					</fieldset>	
-				</div>
-				<div class="span6">
-					<fieldset class="control-group" >
-						<label class="control-label" >结束理单号</label>
-						<input type='text' required name='doc_end' placeholder='' />
-					</fieldset>	
-						
-					<fieldset class="control-group" >
-						<label class="control-label" >数量</label>
-						<div class="control" >
-							<span>份数:</span><input type='text' required class='small-num' style="width:50px;" name='number_copies' />
-							<span>包数:</span><input type='text' required class='small-num' style="width:50px;" name='package' />
-						</div>
-					</fieldset>	
-				</div>
-			</div>
-			<button type="submit" class="btn btn-primary btn-new"><i class="icon-plus icon-white"></i> 添加</button>
+					<table class="table table-condensed" >
+						<thead>
+							<th>单证种类</th>
+							<th>开始理单号</th>
+							<th>结束理单号</th>
+							<th>包数</th>
+							<th width='25'></th>
+						</thead>
+						<tbody>
+						<% 
+						var doc_type_map = {'jk':'进口','ck':'出口'};
+						var doc_year_map = {3:'三',5:'五',11:'十一'};
+						var i=1;
+						%>
+						<%
+						$.each(doc_type_map,function(type_name,type_text){
+							$.each(doc_year_map,function(year_name,year_text){
+								%>
+								<tr class="control-group doc-type-<%= i++ %>">
+								<td><label><%= type_text + year_text %>年</label></td>
+								<td><input type='text' id="<%= type_name + year_name + 'y' %>_begin"	name="begin"	class="input-large doc-group" /></td>
+								<td><input type='text' id="<%= type_name + year_name + 'y' %>_end"		name="end"		class="input-large doc-group" /></td>
+								<td><input type='text' id="<%= type_name + year_name + 'y' %>_package"	name="package"	class="input-mini  doc-group" maxlength='3' /></td>
+								<td class="verify-tips" ><span><i></i></span></td>
+								</tr>
+								<%	
+							});	
+						});
+						%>
+							<tr class="doc-type-7">
+								<td>其他单证<br/>（删改单）</td>
+								<td><hr /></td>
+								<td><hr /></td>
+								<td><input type='text' name='package' class='input-mini' maxlength=3 /></td>
+								<td></td>
+							</tr>
+							<tr class="doc-type-8">
+								<td>退票再送</td>
+								<td><hr /></td>
+								<td><hr /></td>
+								<td><input type='text' name='package' class='input-mini' maxlength=3 /></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+					<hr />
+			<button type="submit" class="btn btn-primary btn-new"><i class="icon-plus icon-white"></i> 提交</button>
 			<button type="submit" class="btn btn-info btn-print" type="button" ><i class="icon-print icon-white"></i> 打印</button>
 		</form>
 		</div>

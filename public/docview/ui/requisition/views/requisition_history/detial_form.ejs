@@ -1,5 +1,5 @@
 <tr >
-<td colspan='7' style="border:2px solid #cccc00;"   >
+<td colspan='8' style="border:2px solid #cccc00;"   >
 <div style="margin: 30px 100px 30px 100px;" class="well">	
 <form onsubmit="return false;">
 <legend>详细信息</legend>
@@ -59,7 +59,7 @@
 <table class="table " >
 		<caption><legend>抽单信息</legend></caption>
 		<tr>
-			<th>单证号码</th>
+			<th>报关单号</th>
 			<th>理单号码</th>
 		</tr>
 	<tbody>
@@ -73,35 +73,6 @@
 </table>
 </div>
 	<br />
-	<% var user = this.ctx.options.clientState.attr('user') %>
-	<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
-	<%== $.View('//docview/ui/views/kz_user.ejs',this.ctx) %>
-	<%
-	var name_map = {
-		10:{
-			fullname:model.apply_staff_fullname,
-			text:'撤销审批，重新指定一级审批'
-		},
-		11:{
-			fullname:model.approving_officer_fullname,
-			text:'撤销审批，重新指定二级审批'
-		},
-		21:{
-			fullname:model.apply_staff_fullname,
-			text:'重新指定一级审批'
-		},
-		22:{
-			fullname:model.approving_officer_fullname,
-			text:'重新指定二级审批'
-		}
-	};
-	%>
-	<%if(name_map[model.status] && name_map[model.status].fullname == user.fullname){ %>
-	<button type="button" class="btn btn-danger btn-revocation"><i class="icon-edit icon-white"></i> <%= name_map[model.status].text %></button>
-	<%if(!model.approving_officer){ %>
-	<button type="button" class="btn btn-danger btn-delete"><i class="icon-trash icon-white" ></i> 删除</button>
-	<%}%>	
-	<%}%>	
 	<button type="button" class="btn btn-cancel">取消</button>
 </form>
 </div>

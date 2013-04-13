@@ -329,6 +329,44 @@ steal(
 				$("input[name=doc_end]").val("");
 			}
 		},
+		'input.doc-group blur':function(el,ev){
+			var tr = el.closest('tr');
+			var begin	= tr.find('input[name=begin]');
+			var end		= tr.find('input[name=end]');
+			var package = tr.find('input[name=package]');
+			var span	= tr.find('.verify-tips span');
+			var icon	= tr.find('.verify-tips i');
+			var doc_start = $.trim(begin.val()),doc_end = $.trim(end.val()),doc_package = $.trim(package.val());
+				
+			var showTips = function(flag){
+				if(flag !== undefined && span.hasClass('label')){
+					if(span.hasClass('label-success') && flag)return;
+					if(span.hasClass('label-important') && !flag) return;
+				}
+				span.hide('fast',function(){
+					span.removeClass('label').removeClass('label-success').removeClass('label-important');
+					icon.removeClass('icon-ok').removeClass('icon-remove');
+					if(flag == undefined)return;
+					span.addClass('label').addClass('label-' + (flag ? 'success':'important'));
+					icon.addClass('icon-' + (flag ? 'ok' : 'remove')).addClass('icon-white');
+					span.show('slow');
+				});
+			}; 
+
+			if(doc_start || doc_end || doc_package){
+				if(doc_start && doc_end && doc_package){
+					if(/\d+/.test(doc_start) && /\d+/.test(doc_end) && /\d+/.test(doc_package)){
+						if(parseInt(doc_start) < parseInt(doc_end)){
+							showTips(true);	
+							return;
+						}
+					}
+				}
+				showTips(false);	
+			}else{
+				showTips();	
+			}
+		},
 		/**
 			create interchange receipt 
 		*/
@@ -339,36 +377,22 @@ steal(
             var sub_cat = $.route.attr('subcategory');
 
             var org = this.subjection_org;
-
-            //var ir_date = $(".interchange-receipt input[name=interchange-receipt-date]").val();   
-            var doc_type = el.find("select[name=doc_type]").val();
-            var doc_start = el.find("input[name=doc_start]").val();
-            var doc_end = el.find("input[name=doc_end]").val();
-            var number_copies = el.find("input[name=number_copies]").val();
-            var ir_package = el.find("input[name=package]").val();
+			var data = [ ];
+			for(var i=1;i<=8;i++){
+				var tr = el.find('tr.doc-type-' + i );
 			
-
-			if(parseInt(doc_type) <= 6) {	
-				if($.trim(doc_start) == ''){ this.showAlertMessage('开始理单号不能为空'); return; }
-				if($.trim(doc_end) == ''){ this.showAlertMessage('结束理单号不能为空'); return; }
+				var begin	= tr.find('input[name=begin]');
+				var end		= tr.find('input[name=end]');
+				var package = tr.find('input[name=package]');
+				
+				var doc_type = i,doc_start = begin.val(),doc_end = end.val(),doc_package = package.val();
+				if((doc_start && doc_end && doc_package) || ((i==7 || i==8) && doc_package)){
+					data.push({ 'doc_type': doc_type ,'doc_start':doc_start, 'doc_end': doc_end, 'package': doc_package });
+				}
 			}
-			if($.trim(number_copies) == ''){ this.showAlertMessage('份数不能为空'); return; }
-			if($.trim(ir_package) == ''){ this.showAlertMessage('包数不能为空'); return; }
-            var interchange_receipt = {
-                org : org,
-            //  ir_date : ir_date,
-                doc_type : doc_type,
-                doc_start : doc_start,
-                doc_end : doc_end,
-                number_copies : number_copies,
-                package : ir_package
-            };
-            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,interchange_receipt: interchange_receipt},this.proxy("addDataRow"),function(err){
-                that.options.clientState.attr('alert', {
-                    type: 'info',
-                    heading: '提示信息',
-                    message : '新申请表单添加失败 '
-                });
+			console.log(data);
+            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,datas : data},this.proxy("addDataRow"),function(err){
+				$.alertMessage(that,{msg:'新申请表单添加失败 '});
 			});
         },
 		/**

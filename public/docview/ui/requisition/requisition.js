@@ -69,15 +69,15 @@ steal(
                         labelString: "日期"
                     }
 			});
-
+			/*
 			var application_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/requisition/views/application/",
 				aoColumns: [
 					{"mDataProp":"created_at", mLabel : '申请日期'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"requisition_details", mLabel : '报关单号'},
 					{"mDataProp":"org", mLabel : '业务点 '},
-					//{"mDataProp":"single_card_number", mLabel : '单证号'},
+					//{"mDataProp":"single_card_number", mLabel : '报关单号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
@@ -94,7 +94,7 @@ steal(
 					{"mDataProp":"apply_staff", mLabel : '申请人员'},
 					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"requisition_details", mLabel : '报关单号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
@@ -103,9 +103,9 @@ steal(
 			};
 			//this.element.find('.approval-list').docview_ui_dmstable({table_options : approval_table_options});
 			//this.approvalController = this.element.find('.approval-list').controller();
-
+			*/
 			this.tableController =  this.element.find('.approval-guan-list').docview_ui_pagingtable({
-				tmpl_path: "/docview/ui/requisition/views/approval/col_",
+				tmpl_path: "/docview/ui/requisition/views/col_",
 				success:function(data){
 					data = data.aaData;
 					for(var i=0;i<data.requisitions.length;i++){
@@ -118,13 +118,15 @@ steal(
 					{ id:'apply_staff' , text:'申请人员' },
 					{ id:'org' , text:'业务点' },
 					{ id:'department_name' , text:'科室名称' },
-					{ id:'requisition_details' , text:'单证号' },
+					{ id:'requisition_details' , text:'报关单号' },
+					{ id:'storage_sites' , text:'存放地点' },
 					{ id:'status' , text:'状态' },
 					{ id:null , text:'操作' }
-				]
+				],
+				sort:[[0,"desc"]]
 			}).controller();	
 
-			
+		/*	
 			
 			var register_table_options = {
 				aaData: [],
@@ -134,7 +136,7 @@ steal(
 					{"mDataProp":"approving_officer", mLabel : '审批人员'},
 					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"requisition_details", mLabel : '报关单号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
@@ -151,7 +153,7 @@ steal(
 					{"mDataProp":"registration_staff", mLabel : '核销人员'},
 					{"mDataProp":"org", mLabel : '业务点'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"requisition_details", mLabel : '报关单号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
@@ -161,7 +163,7 @@ steal(
 			//this.element.find('.write-off-list').docview_ui_dmstable({table_options : write_off_table_options});
 			//this.writeOffController = this.element.find('.write-off-list').controller();
 			
-
+*/
 			$('.input-date').datepicker();
 			$('input[readonly]').tooltip();
 	
@@ -169,12 +171,10 @@ steal(
 				aaData: [],
 				col_def_path : "//docview/ui/requisition/views/lending_statistics/",
 				aoColumns: [
-					{"mDataProp":"created_at", mLabel : '日期'},
-					{"mDataProp":"apply_staff", mLabel : '人员'},
 					{"mDataProp":"org", mLabel : '业务点'},
-					{"mDataProp":"department_name", mLabel : '科室名称'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'},
-					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
+					{"mDataProp":"count", mLabel : '申请单数量'},
+					{"mDataProp":"rd_count", mLabel : '报关单数量'},
+					{"mDataProp":"rd_count_false", mLabel : '未果数量'}
 				],
 				aaSorting:[[0,"desc"]],
 				file_name: ""
@@ -190,7 +190,7 @@ steal(
 					{"mDataProp":"apply_staff", mLabel : '人员'},
 					{"mDataProp":"org", mLabel : '关区'},
 					{"mDataProp":"department_name", mLabel : '科室名称'},
-					{"mDataProp":"requisition_details", mLabel : '单证号'},
+					{"mDataProp":"requisition_details", mLabel : '报关单号'},
 					{"mDataProp":"status", mLabel : '状态'},
 					{"mDataProp":null, mLabel : '操作', sClass: 'nolinebreak' }
 				],
@@ -200,6 +200,7 @@ steal(
 
 			this.element.find('.requisition-history-list').docview_ui_dmstable({table_options : requisition_history_table_options});
 			*/
+			/*
 			this.element.find('.requisition-history-list').docview_ui_pagingtable({
 				tmpl_path: "/docview/ui/requisition/views/requisition_history/col_",
 				columns:[
@@ -207,7 +208,7 @@ steal(
 					{ id:'apply_staff',text:'申请人员' },
 					{ id:'org',text:'业务点' },
 					{ id:'department_name',text:'科室名称' },
-					{ id:'requisition_details',text:'单证号' },
+					{ id:'requisition_details',text:'报关单号' },
 					{ id:'status',text:'状态' },
 					{ id: null,text:'操作' }
 				],
@@ -220,7 +221,7 @@ steal(
 				}
 			});
 			this.requisitionHistoryController = this.element.find('.requisition-history-list').controller();
-			this.element.find('select[name=kz_user]').hide();
+			*/
 /*
 		   //$('.input-date').datepicker($.datepicker.regional['zh-CN']);
 		   this.element.find('div.daterange-holder').docview_ui_daterange( {dateOptions : {labelString: "日期"}});
@@ -250,24 +251,15 @@ steal(
 			var category = $.route.attr('category');
 			var subcategory = $.route.attr('subcategory');
 			newVal = subcategory;
-			console.log(newVal,oldVal);
+			//console.log(newVal,oldVal);
 			this.element.find('.' + newVal).show('fast');
 			var table = this.element.find('.approval-guan-list');
 			switch(newVal){
-				case 'requisition_history':
-				this.requisitionHistoryController.reload({
-					url:'/requisitions',
-					type:'get',
-					data:{ type:'requisition_history_page' }
-				});
-				break;
-				case 'application_nanhui':
-
-				break;
 				case 'approval':
 				case 'approval_guan':
 				case 'register':
 				case 'write_off':
+				case 'requisition_history':
 				this.element.find('.' + newVal).append(table);
 				var controller =  table.controller();
 				controller.reload({
@@ -406,19 +398,22 @@ steal(
 					showTips(0);
 				});
 		},
-		"#new-application-form submit" : function(el,ev){
+		".create-application form submit" : function(el,ev){
 			ev.preventDefault();
 			var that = this;
+			var action = $.route.attr('subcategory');
 			var btn = el.find('button[type=submit]');
+			/*
 			if(!btn.hasClass('two-step')){
 				btn.addClass('two-step');
 				el.find('select[name=kz_user]').show('slow');
 				return;
 			}
+			*/
 			var requisition_details = []; 
 			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
-			var approving_officer = el.find("select[name=kz_user]").val();
+			var approving_officer = '';// el.find("select[name=kz_user]").val();
 			var lbl_wait = el.find('label.lbl-wait');
 			var allow_return = false;
 			el.find('input.filter_docs').each(function(key,item){
@@ -427,9 +422,15 @@ steal(
 				switch(validate_state){
 					case 1:
 						allow_return = true;
-						lbl_wait.text("正在验证单证号码,请稍候提交.").show('slow');
+						lbl_wait.text("正在验证报关单号码,请稍候提交.").show('slow');
 						return;//ing
 					case 200:
+						if(!$.trim($wallper.find("input[name=rationale_single_number]").val())){
+							$wallper.find("input[name=rationale_single_number]").focus();
+							lbl_wait.text("理单号不能为空.").show('slow');
+							allow_return = true;
+							return;
+						}
 						requisition_details.push({
 							"single_card_number" 			: $wallper.find("input[name='single_card_number']").val(),
 							"rationale_single_number"		: $wallper.find("input[name=rationale_single_number]").val()
@@ -437,7 +438,7 @@ steal(
 						break;//ok
 					default://		
 						allow_return = true;
-						lbl_wait.text("您输入的单证号码有误,请修改后提交.").show('slow');
+						lbl_wait.text("您输入的报关单号码有误,请修改后提交.").show('slow');
 						return;
 				}
 			});
@@ -449,7 +450,7 @@ steal(
 				return;	
 			}
 			var requisition = {
-				type: $.route.attr('subcategory'),
+				type: action,
 				application_originally : application_originally,
 				approving_officer:approving_officer ,
 				department_name: department_name,
@@ -457,9 +458,11 @@ steal(
 			};
 			Docview.Models.Requisition.updateRequisition(requisition,function(data){
 				if (data.status === 200) {
-					$.alertMessage(that,{msg:'成功添加新申请表单 ',title:'提示信息',type:'success'})
+					el.closest('.create-application').hide('fast');
+					$('.' + action + ' .select-approval').show('slow').find('form').data('lastID',data.requisition.id);
+					$.alertMessage(that,{msg:'成功添加新申请表单 ',title:'提示信息',type:'success'});
 				}else {
-					$.alertMessage(that,{msg:'申请单添加失败',title:'提示信息',type:'error'})
+					$.alertMessage(that,{msg:'申请单添加失败',title:'提示信息',type:'error'});
 				}
 			},this.proxy("failure"));
 		},
@@ -467,58 +470,33 @@ steal(
 			//error
 			console.log('error:',err);
 		},
-		'.history-detial-row click':function(el,ev){
+		'.btn-cancel-select-approval click':function(el,ev){
+			ev.preventDefault();
+			var action = $.route.attr('subcategory');
+			$('.' + action + ' .create-application').show('slow');
+			$('.' + action + ' .select-approval').hide('fast');
+		},
+		'.select-approval form submit':function(el,ev){
 			ev.preventDefault();
 			var that = this;
-			var controller = this.requisitionHistoryController;
-			var row =  controller.getRowFrom(el);
-			var rowModel = row.model;
-			var rowElement = row.element;
-			var innerForm = this.view('//docview/ui/requisition/views/requisition_history/detial_form',{ ctx: this, model: rowModel });
-			rowElement.hide();
-			rowElement.after(innerForm);
-			innerForm = rowElement.next();
-			var kz_user = innerForm.find('select[name=kz_user]').hide();
-			var gld_user = innerForm.find('select[name=gld_user]').hide();
-			var data = { id:rowModel.id,from_action:'requisition_history',status:rowModel.status };
-			var postData = function(data){
-				$.ajax({
-					url:'/requisitions/change_status',
-					data: data,
-					type:'POST',
-					error:function(){
-						
-					},
-					success:function(){
-						innerForm.remove();
-						rowElement.show('slow');
-						controller.dataTable._fnAjaxUpdate();
-					}
-				});
-			};
-			innerForm.find('.btn-delete').click(function(ev){
-				data.status = 20;
-				postData(data);	
-			});
-			innerForm.find('.btn-revocation').click(function(ev){
-				ev.preventDefault();
-				if(!$(this).hasClass('approving_officer')){
-					((rowModel.status == 10 || rowModel.status == 21) ?kz_user:gld_user).show('slow');
-					$(this).addClass('approving_officer');
-					return;	
+			var id = el.data('lastID');
+			var action = $.route.attr('subcategory');
+			var approval = el.find("select[name=kz_user]").val();
+			var status = 10;
+			if(approval == ''){
+				status = 21;	
+			}
+			var data = { id: id , from_action: action , approving_officer : approval ,status: status };
+			$.ajax({
+				url:'/requisitions/change_status',
+				data: data,
+				type:'post',
+				error:function(){
+				},
+				success:function(){
+					$('.btn-cancel-select-approval').click();
+					$.alertMessage(that,{msg:'成功指定审批人员',title:'提示信息',type:'success',time:5000})
 				}
-				switch(rowModel.status){
-					case 10:
-					case 21:
-						data.status = ((data.approving_officer = kz_user.val()) == '') ? 21 : 10;
-						break;
-					case 11:
-					case 22:
-						data.status = ((data.two_approvers = gld_user.val()) == '') ? 22 : 11;
-						break;
-				}
-				postData(data);
-				//=============
 			});
 		},
 		'.detial-row click':function(el,ev){
@@ -527,46 +505,25 @@ steal(
 			var that = this;
 			var controller = this.tableController;
 			var action = $.route.attr('subcategory');
-			/*
-			switch(action){
-				case 'application':
-					controller = this.applicationController;
-					break;
-				case 'approval':
-					controller = this.approvalController;
-					break;
-				case 'register':
-					controller = this.registerController;
-					break;
-				case 'write_off':
-					controller = this.writeOffController;
-					break;
-				case 'lending_statistics':
-					controller = this.lendingStatisticsController;
-					break;
-				case 'requisition_history':
-					controller = this.requisitionHistoryController;
-					break;
-			}
 			
-			var rowModelData = controller.getRowModelDataFor(el);
-			var rowElement = rowModelData.tr;
-			var rowModel =  rowModelData.model;
-			rowElement.model(rowModel);
-			*/
 			var row = controller.getRowFrom(el);
 			var rowElement = row.element;
 			var rowModel = row.model;
+			//hide this row
 			rowElement.hide();
 
-//			rowElement.after(this.view('detial_form',{ ctx: this, model: rowModel ,action: action}));
 			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action});
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
+
+			var kz_user = innerForm.find('select[name=kz_user]');
+			var gld_user = innerForm.find('select[name=gld_user]');
+
 			var data = {
 				id:rowModel.id,//数据ID
 				from_action:action,
-				status: rowModel.status//状态	
+				status: rowModel.status,//状态
+				ids:{}
 			};
 			
 			var postData = function(data){
@@ -595,39 +552,32 @@ steal(
 						error:that.proxy('failure')
 					});
 			};
-			
-			/*
-			innerForm.find('.btn-reject').popinput({ 
-				callback:function(text){
-					switch(action){
-						case 'approval':
-							data.status = 11;//审批不通过
-							break;
-						case 'register':
-							data.status = 12;//登记不通过
-							break;
-						case 'write_off':
-							data.status = 13;//核销不通过
-							break;
-					}
-					data.reject_text = text;//拒绝理由
-					postData(data);
+			//拒绝
+			innerForm.find('.btn-reject').click(function(ev){
+				ev.preventDefault();
+				switch(action){
+					case 'approval':
+						data.status = 31;//
+						break;
+					case 'approval_guan':
+						data.status = 32;
+						break;
 				}
+				postData(data);
 			});
-			*/
-
-			var $approval_officer = innerForm.find('select[name=gld_user]').hide();
+			//同意
 			innerForm.find('.btn-accept').click(function(ev){
 				ev.preventDefault();
-				if(action =='approval' && !$(this).hasClass('two-step')){
+				/*if(action =='approval' && !$(this).hasClass('two-step')){
 					$approval_officer.show('slow');
 					$(this).addClass('two-step').text('提交');
 					return;
 				}
+				*/
 				switch(action){
 					case 'approval':
 						data.status = 11;
-						data.two_approvers = $approval_officer.val();
+						data.two_approvers = gld_user.val();
 						break;
 					case 'approval_guan':
 						data.status = 12;//1审批通过
@@ -639,20 +589,39 @@ steal(
 						data.status = 14;//正常完成
 						break;
 				}
-				data.ids = {};	
 				innerForm.find('input[type=checkbox]').each(function(key,item){
 					data.ids[item.value] = item.checked;
 				});
-				//console.log(data);
 				postData(data);
 			});
-
-			innerForm.find('.btn-reject').click(function(ev){
+			//撤销
+			innerForm.find('.btn-revocation').click(function(ev){
 				ev.preventDefault();
-				data.status = action == 'approval' ? 31 : 32;
+				/*
+				if(!$(this).hasClass('approving_officer')){
+					((rowModel.status == 10 || rowModel.status == 21) ?kz_user:gld_user).show('slow');
+					$(this).addClass('approving_officer');
+					return;	
+				}
+				*/
+				switch(rowModel.status){
+					case 10:
+					case 21:
+						data.status = ((data.approving_officer = kz_user.val()) == '') ? 21 : 10;
+						break;
+					case 11:
+					case 22:
+						data.status = ((data.two_approvers = gld_user.val()) == '') ? 22 : 11;
+						break;
+				}
 				postData(data);
 			});
-
+			//删除
+			innerForm.find('.btn-delete').click(function(ev){
+				data.status = 20;
+				postData(data);	
+			});
+			//打印
 			innerForm.find('.btn-print').click(function(ev){
 				ev.preventDefault();
 				Docview.Models.Requisition.printRequisition(data,function(url){
@@ -660,11 +629,11 @@ steal(
 					window.location.href=url;
 				},that.proxy('failure'));		
 			});
-		},
-		'.btn-cancel click':function(el,ev){
-			var innerForm  = el.closest('tr');
-			innerForm.prev().show('slow');
-			innerForm.remove();
+			innerForm.find('.btn-cancel').click(function(ev){
+				ev.preventDefault();
+				$(this).closest('tr').prev().show('slow');
+				$(this).closest('tr').remove();
+			});
 		},
 		'form.lending_statistics submit':function(el,ev){
 			ev.preventDefault();
@@ -683,6 +652,7 @@ steal(
 			};
 			var that = this;
 			Docview.Models.Requisition.lendingStatisticsList(data,function(list){
+				console.log('  =---  success lending ----');
 				that.lendingStatisticsController.setModelData(list);	
 			},that.proxy('failure'));		
 		},

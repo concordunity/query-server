@@ -158,7 +158,8 @@ class DocumentHistoriesController < ApplicationController
 
 
     where_clause = {}
-    queries = QueryHistory.where("doc_id IS NOT NULL")
+	no_admin = ["user_id not in (?)",[1,2,5]]
+    queries = QueryHistory.where(no_admin).where("doc_id IS NOT NULL")
     if !params[:from_date].blank? && !params[:to_date].blank?
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
     end

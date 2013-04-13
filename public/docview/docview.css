@@ -228,3 +228,11 @@ input.where_page {width: 40px;}
 #new-requisition div.well {width: 50%;margin-left: 20%;}
 input.small-num {width: 15px;}
 .navbar .nav > li.nav > a {padding: 0px 5px;}
+
+
+.legend {
+	display:block;
+	font-size:24px;
+	border-bottom: 1px solid #e5e5e5;
+	line-height:36px;
+}

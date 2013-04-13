@@ -1,9 +1,9 @@
 <div class="row-fluid">
 <div class="span6" id="org-selected"></div>
-<div class="span6">&nbsp;&nbsp;<button type="button" class="btn btn-info btn-small" data-toggle="collapse" data-target="#org-selection">更改关区 &gt;&gt;</button></div>
+<div class="span6">&nbsp;&nbsp;<button type="button" class="btn btn-info btn-small" data-toggle="collapse" data-target="#<%= this.form %>-org-selection">更改关区 &gt;&gt;</button></div>
 </div>
 
-<div id="org-selection" class="collapse">
+<div id="<%= this.form%>-org-selection" class="collapse">
 <form>
 <label class="checkbox">
   <input type='checkbox' name='org'  class="org-check" value='2200'>所有关区

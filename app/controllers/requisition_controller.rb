@@ -14,6 +14,32 @@ class RequisitionController < ApplicationController
 
   #统计
   def lending_statistics_list
+	date_arr = params[:start_date].to_date.to_datetime .. params[:end_date].to_date.next.to_datetime
+	org_condition = params[:org].to_s == "2200" ? [""] : {:org =>params[:org]}
+	@r = Requisition.where(:created_at => date_arr).where(org_condition).group("org").count
+	result = []	
+	@r.collect do |org, count|
+		record = ActiveSupport::OrderedHash.new	
+		r  = Requisition.joins(:requisition_details).where(:requisitions => {:org => org,:created_at => date_arr})
+		rd_count = r.count
+		rd  = r.where(:requisition_details => {:is_check => false})
+		rd_count_false = rd.count	
+		record[:org] = org
+		record[:count] = count
+		record[:rd_count] = rd_count
+		record[:rd_count_false] = rd_count_false
+		result << record
+	end
+	p "==========" 
+	p result
+#	rrs = {:requisitions => result}
+	rrs =  result
+    render :json => rrs , :status => 200
+  end
+
+  #统计
+  def lending_statistics_list_old
+
 
 	where_condition = {}
 	sql_condition = ["'status' is not null AND status <> 20"] 
@@ -94,7 +120,7 @@ class RequisitionController < ApplicationController
 			department_name = params[:department_name]
 			org = params[:org]
 			
-				requisition = Requisition.create do |r|
+				@requisition = Requisition.create do |r|
 					r.tel = tel 
 					r.department_name = department_name 
 					r.org = current_user.subjection_org
@@ -102,11 +128,11 @@ class RequisitionController < ApplicationController
 					r.apply_staff_fullname = current_user.fullname
 					r.application_originally = params[:application_originally]
 					r.approving_officer = params[:approving_officer]
-					r.status = 10
+					r.status = 21 
 					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end
 				logger.info "=== second ====" 
-				tag = create_requisition_details(params,requisition)	
+				tag = create_requisition_details(params,@requisition)	
 				if tag == false
 					status = 500
 					raise ActiveRecord::Rollback
@@ -120,7 +146,7 @@ class RequisitionController < ApplicationController
 		end
 	end
 	logger.info "=== last ====" 
-	render json: {:message => "ok",:status => status}, :status => 200
+	render json: {:message => "ok",:status => status, :requisition => @requisition}, :status => 200
   end
 
   def print_one
@@ -163,6 +189,53 @@ class RequisitionController < ApplicationController
   end
 
   def print
+	rd = Requisition.find params[:id]
+	rdd = rd.requisition_details
+	column_names = Requisition.column_names
+
+	dic_info = {}
+	
+	DictionaryInfo.where("dic_type = 'org' or dic_type = 'scene_lent_paper_document'").collect { |o| dic_info[o.dic_num] = o.dic_name  } 
+	filepath = File.join(Rails.root,"doc","requisition-new.xls")	
+    Spreadsheet.client_encoding = "UTF-8"
+	book = Spreadsheet.open filepath
+	sheet = book.worksheet 0
+	format = (sheet.row(4).formats[0]) || (Spreadsheet::Format.new :color => :blue,:weight => :bold,:size => 22)
+	sheet.each_with_index do |row,i|
+		row.each_with_index do |column,j|
+			cell = row[j].to_s.strip
+			if column_names.include? cell
+				row[j] = rd[cell]
+				#dic info
+				if ['org', 'status', 'storage_sites' ].include? cell
+					row[j] = dic_info[rd[cell].to_i]
+				end
+				#to date
+				if [ 'created_at', 'approval_time','two_approver_time', 'check_in_time','write_off_time' ].include? cell
+					row[j] = rd[cell].strftime("%Y-%m-%d") if !rd[cell].nil?
+				end
+			end
+			#logger.debug "-->#{cell}<-- #{rd[cell]}"
+		end
+	end
+
+	offset = 13
+	rdd.each_with_index do |detail,i|
+	sheet.insert_row((i +  offset) , [ ">", detail["single_card_number"] ,detail["rationale_single_number"], detail["is_check"] ? '正常':'异常' ])
+	4.times {|time| sheet.row(i+offset).set_format(time,format) }
+	end
+
+    new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+    Dir.mkdir(new_path) unless Dir.exists?(new_path)
+    new_path = File.join(new_path,"现场单证借阅申请单.xls")
+	book.write(new_path)	
+
+    file_name = new_path.sub(File.join(Rails.root,"public"),'')
+
+	render :text => file_name
+  end
+
+  def print_old
 	rd = Requisition.find params[:id]
 	rdd = rd.requisition_details
 	filepath = File.join(Rails.root,"doc","requisition.xls")	
@@ -394,6 +467,8 @@ class RequisitionController < ApplicationController
             requisition.write_off_staff = current_user.username
             requisition.write_off_staff_fullname = current_user.fullname
             requisition.write_off_time = Time.now
+        when "application"
+			 requisition.approving_officer = current_user.username
 		else
 			logger.info "Unkonw from action: #{params[:from_action]}"
 		end
@@ -447,7 +522,7 @@ class RequisitionController < ApplicationController
 
   #借阅历史
   def requisition_history
-	get_requisition
+	get_requisition_page
   end
 
   #审批:大表单
@@ -484,7 +559,7 @@ class RequisitionController < ApplicationController
 #搜索内容
 	  sSearch = params[:sSearch]
 #排序的字段
-	  mDataPro = params["mDataProp_" + iSortCol_0]
+	  mDataPro = params["mDataProp_" + iSortCol_0 || 0]
 	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
 	  conditions_arr = [] 
 	  if sSearch.blank?

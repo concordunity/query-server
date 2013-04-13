@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>checkrole Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+	<input type='text' value='' class='role-value'/>
+	<input type='button' value='test初始化值' class='test-role'/>
+	<input type='button' value='test提交时的值' class='test-result'/>
+    <div id="checkrole-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/checkrole','docview/models').then(function($) {
+
+   $('#checkrole-test').docview_ui_checkrole();
+	controller = $('#checkrole-test').controller();
+   $(".test-result").click(function(){
+		var ids = controller.getRoles();	
+		$(".role-value").val(ids);
+	   });
+   $(".test-role").click(function(){
+	    var ids = $(".role-value").val();
+		controller.setRoles(ids);	
+	   });
+ }); 
+ </script>
+        </body>
+</html>
+

@@ -12,11 +12,12 @@ steal(
         init : function() {
 	    //var orgs = this.options.orgs;
 	    var orgs = orgArrayDictionary; 
-	    console.log('==org_arr.js==');
-	    console.log(orgArrayDictionary);
+		this.form = this.options.form;
+	    //console.log('==org_arr.js==');
+	    //console.log(orgArrayDictionary);
 	    //console.log('==org==');
 	    //console.log(orgs);
-            this.element.html(this.view('init',{orgsDic : orgs}));
+            this.element.html(this.view('init',{orgsDic : orgs, form: this.form}));
 
 	    this.resetState();
 	    var strjson = '{"';
@@ -36,7 +37,7 @@ steal(
 		}
 	    } 
 	    strjson = strjson + '"}';
-	    console.log("orgs json is:",strjson);
+	    //console.log("orgs json is:",strjson);
 	    this.labelMap =  eval('(' + strjson + ')');  
 /*
 	    this.labelMap = {
@@ -91,18 +92,18 @@ steal(
 	    var label = '';
 	    if (this.wildcard_selected) {
 		label = this.labelMap['2200'];
-		$('#org-selected').html(this.view('org_label', label));
+		$("form." + this.form + " " +  '#org-selected').html(this.view('org_label', label));
 	    } else {
-		$('#org-selected').empty();
+		$("form." + this.form + " " + '#org-selected').empty();
 
 		if (this.orgs.length == 0) {
 		    label =  this.labelMap['1000'];
-		    $('#org-selected').html(this.view('org_label', label));
+		    $("form." + this.form + " " + '#org-selected').html(this.view('org_label', label));
 		}
 
 		for (var i=0; i<this.orgs.length; i++) {
 		    label = this.labelMap[this.orgs[i]];
-		    $('#org-selected').append(this.view('org_label', label));
+		    $("form." + this.form + " " +  '#org-selected').append(this.view('org_label', label));
 		}
 	    }
 	},
@@ -123,18 +124,18 @@ steal(
 	    var label = '';
 	    if (this.wildcard_selected) {
 		label = this.labelMap['2200'];
-		$('#org-selected').html(this.view('org_label', label));
+		$("form." + this.form + " " +  '#org-selected').html(this.view('org_label', label));
 	    } else {
-		$('#org-selected').empty();
+		$("form." + this.form + " " +  '#org-selected').empty();
 
 		if (this.orgs.length == 0) {
 		    label =  this.labelMap['1000'];
-		    $('#org-selected').html(this.view('org_label', label));
+		    $("form." + this.form + " " +  '#org-selected').html(this.view('org_label', label));
 		}
 
 		for (var i=0; i<this.orgs.length; i++) {
 		    label = this.labelMap[this.orgs[i]];
-		    $('#org-selected').append(this.view('org_label', label));
+		    $("form." + this.form + " " +  '#org-selected').append(this.view('org_label', label));
 		}
 	    }
 	},
