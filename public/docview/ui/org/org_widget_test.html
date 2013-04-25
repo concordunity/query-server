@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>org_widget Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="org_widget-test">  </div>
+	<input type="button" value="Button" />
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/org_widget').then(function($) {
+
+   $('#org_widget-test').docview_ui_org_widget({ default_text:'所有关区', default_value:2200,out:[ 2233 ],org_list:[ { 'name':'TEST','value':2 } ],select:2,label_text:'ORG' });
+   var controller = $('#org_widget-test').controller();
+
+   $('input[type=button]').click(function(){
+		console.log(controller.val());   
+	});
+
+ }); 
+ </script>
+        </body>
+</html>
+

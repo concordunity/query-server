@@ -9,7 +9,8 @@ steal(
     'docview/models',
     'docview/ui/select_page',
     'docview/ui/dictionary',
-    'docview/ui/queryform'
+    'docview/ui/queryform',
+	'docview/ui/org'
 ).then(function($) {
     $.Controller('Docview.Ui.Export_query', {}, {
         init : function() {
@@ -22,7 +23,7 @@ steal(
 		orgAppliedLabel : "关区",
 		buttonLabel: "查看"
 	    };
-	    this.element.find('div.well').docview_ui_queryform({formParams: formParams});
+	    //this.element.find('div.well').docview_ui_queryform({formParams: formParams});
 	    this.tableController = undefined;
 	   // $("#select-pages").docview_ui_select_page();
 	   // this.selectPageController = $("#select-pages").controller();
@@ -48,6 +49,9 @@ steal(
 			]	
 		});
 	    this.tableController = this.element.find('.export_results').controller();
+		var user = this.options.clientState.attr('user');
+		var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
+		this.element.find('.org_applied').docview_ui_org({ name:'org_applied', include:orgs , default_text:null });
         },
 
 	'form.stats_export submit' : function(el, ev) {

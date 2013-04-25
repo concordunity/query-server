@@ -80,7 +80,7 @@
                     users: false,
                     system_upload: false,
                     syssetting: false,
-                    business_agency_maintains: false,
+                    business_agency_maintain: false,
                     roles: false
                 }
             },

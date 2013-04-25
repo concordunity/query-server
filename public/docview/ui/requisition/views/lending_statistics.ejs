@@ -5,7 +5,10 @@
 
 <div class="span6">
     <fieldset>
-		<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'org', orgsDic : orgArrayDictionary } ) %>
+		<div class="control-group" >
+			<label class="control-label" >业务点</label>
+			<div class="controls org"></div>
+		</div>
 		<div class="lending-date" ></div>
     </fieldset>  
   <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i>查询 </button>

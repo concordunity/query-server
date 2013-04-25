@@ -4,18 +4,19 @@ class BusinessAgencyMaintainController < ApplicationController
   respond_to :html, :json
   def index
 
-	@bam = BusinessAgencyMaintain.order("name")
+	@bam = BusinessAgencyMaintain.where(:org => current_user.subjection_org).order("name")
 	render json: filter_proc(@bam)
   end
 
   def get_select
-	@bam = BusinessAgencyMaintain.order("name")
+	@bam = BusinessAgencyMaintain.where(:org => current_user.subjection_org).order("name")
 	render json: @bam
   end
 
   def create
 	@bam = BusinessAgencyMaintain.new(params[:agency])
 	@bam.org = current_user.subjection_org
+	@bam.org_name = DictionaryInfo.find_by_dic_type_and_dic_num("org",current_user.subjection_org).dic_name
 		if @bam.save
 			render json: {:message => 'ok'}, :status => 200		
 		else

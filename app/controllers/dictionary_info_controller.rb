@@ -122,9 +122,11 @@ class DictionaryInfoController < ApplicationController
   def get_dictionary
 	dic_type = params[:dic_type]
 	if dic_type.nil?
-	    dis = DictionaryInfo.all
+	    #dis = DictionaryInfo.all
+		dis = DictionaryInfo.reorder("convert(dic_name using gb2312) asc")
 	else
-	    dis = DictionaryInfo.where(:dic_type => dic_type)
+		dis = DictionaryInfo.where(:dic_type => dic_type).reorder("convert(dic_name using gb2312) asc")
+	    #dis = DictionaryInfo.where(:dic_type => dic_type)
 	end
 	render json: dis, status: 200
   end

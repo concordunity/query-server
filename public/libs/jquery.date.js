@@ -73,7 +73,14 @@
 		My Date Picker
 	*/
 	$.fn.my_datepicker = function(options){
+		options = $.extend({
+			offset_month:0
+		},options);
 		this.datepicker();
-		this.val($.date(new Date).format('yyyy-MM-dd'));
+		var date = new Date;
+		if(options.offset_month){
+			date.setMonth( date.getMonth() + options.offset_month );	
+		}
+		this.val($.date(date).format('yyyy-MM-dd'));
 	};
 })(jQuery);

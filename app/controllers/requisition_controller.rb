@@ -15,14 +15,14 @@ class RequisitionController < ApplicationController
   #统计
   def lending_statistics_list
 	date_arr = params[:start_date].to_date.to_datetime .. params[:end_date].to_date.next.to_datetime
-	org_condition = params[:org].to_s == "2200" ? [""] : {:org =>params[:org]}
+	org_condition = params[:org] == "" ? ["true"] : {:org =>params[:org]}
 	@r = Requisition.where(:created_at => date_arr).where(org_condition).group("org").count
 	result = []	
 	@r.collect do |org, count|
 		record = ActiveSupport::OrderedHash.new	
 		r  = Requisition.joins(:requisition_details).where(:requisitions => {:org => org,:created_at => date_arr})
 		rd_count = r.count
-		rd  = r.where(:requisition_details => {:is_check => false})
+		rd  = r.where(:requisition_details => {:is_check => true})
 		rd_count_false = rd.count	
 		record[:org] = org
 		record[:count] = count
@@ -85,7 +85,7 @@ class RequisitionController < ApplicationController
 	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
     @document = Document.find_by_doc_id(doc_id)
     logger.info "===  1 ===="
-	rd = RequisitionDetail.where(["'status' <> 20 AND 'status' is not null"]).find_by_single_card_number(doc_id)
+	rd = RequisitionDetail.where(["'status' not in(20,31,32) AND 'status' is not null"]).find_by_single_card_number(doc_id)
 
     logger.info "===  2 ===="
     if @document.blank? && rd.blank? && !ofd.blank?
@@ -96,8 +96,13 @@ class RequisitionController < ApplicationController
 			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经电子化了。"
 			result[:status] = 201 
 		elsif !rd.blank?
-			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
-			result[:status] = 202 
+			if [20,31,32].include?(rd.requisition.status)
+				result[:status] = 200 
+				result[:message] = "此单证：" + doc_id + ",可以正常添加。"
+			else
+				result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
+				result[:status] = 202 
+			end
 		elsif ofd.blank? 
 			result[:message] = "此单证：" + doc_id + "，不能添加，没有查阅权限。"
 			result[:status] = 203 
@@ -128,6 +133,8 @@ class RequisitionController < ApplicationController
 					r.apply_staff_fullname = current_user.fullname
 					r.application_originally = params[:application_originally]
 					r.approving_officer = params[:approving_officer]
+					diname = DictionaryInfo.find_by_dic_type_and_dic_num("org",current_user.subjection_org).dic_name
+					r.serial_number = diname + Time.now.strftime("%Y%m%d")+ format("%05d",rand(10000))
 					r.status = 21 
 					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end
@@ -200,6 +207,9 @@ class RequisitionController < ApplicationController
     Spreadsheet.client_encoding = "UTF-8"
 	book = Spreadsheet.open filepath
 	sheet = book.worksheet 0
+
+	offset = 0
+	counter = 0
 	format = (sheet.row(4).formats[0]) || (Spreadsheet::Format.new :color => :blue,:weight => :bold,:size => 22)
 	sheet.each_with_index do |row,i|
 		row.each_with_index do |column,j|
@@ -215,13 +225,15 @@ class RequisitionController < ApplicationController
 					row[j] = rd[cell].strftime("%Y-%m-%d") if !rd[cell].nil?
 				end
 			end
-			#logger.debug "-->#{cell}<-- #{rd[cell]}"
+			if cell == "##START##"
+				offset = counter
+			end
 		end
+		counter = counter + 1
 	end
 
-	offset = 13
 	rdd.each_with_index do |detail,i|
-	sheet.insert_row((i +  offset) , [ ">", detail["single_card_number"] ,detail["rationale_single_number"], detail["is_check"] ? '正常':'异常' ])
+	sheet.insert_row((i +  offset) , [ i + 1, detail["single_card_number"] ,detail["rationale_single_number"], detail["is_check"].to_s == "false"  ? '正常':'异常' ])
 	4.times {|time| sheet.row(i+offset).set_format(time,format) }
 	end
 
@@ -385,7 +397,7 @@ class RequisitionController < ApplicationController
 				rd.modify_accompanying_documents = modify_accompanying_documents
 				rd.where_page = where_page
 				rd.lent_reasons = lent_reasons
-				rd.is_check = true 
+				rd.is_check = false 
 				rd.requisition_id = requisition.id
 			end 
 			else
@@ -460,7 +472,7 @@ class RequisitionController < ApplicationController
             requisition.registration_staff_fullname = current_user.fullname
             requisition.check_in_time = Time.now
 			RequisitionDetail.where(:id => params[:ids].keys).each do |rd|
-				rd.is_check = params[:ids][rd.id.to_s]
+				rd.is_check = params[:ids][rd.id.to_s] == "true" 
 				rd.save
 			end
         when "write_off"
@@ -468,7 +480,9 @@ class RequisitionController < ApplicationController
             requisition.write_off_staff_fullname = current_user.fullname
             requisition.write_off_time = Time.now
         when "application"
-			 requisition.approving_officer = current_user.username
+			 requisition.approving_officer = params[:approving_officer] 
+		when "application_nanhui"
+			 requisition.approving_officer = params[:approving_officer] 
 		else
 			logger.info "Unkonw from action: #{params[:from_action]}"
 		end

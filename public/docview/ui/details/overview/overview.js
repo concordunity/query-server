@@ -59,7 +59,10 @@ steal(
 	    var thumb_paths = docInfo.getThumbnailPaths();
 	    var comment_list = docInfo.getCommentList(docIndex, docInfo, thumb_paths); 
 	    //console.log(comment_list);
-	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : thumb_paths, print: printString, comment_list: comment_list} ));
+		var is_print = this.options.clientState.attr('access').attr('manage_docs').attr('print');
+		var is_test = this.options.clientState.attr('access').attr('manage_docs').attr('testify');
+		console.log('===is print ?====',is_print);
+	    $('.image-list').html(this.view("list", { doc_index : docIndex, images : thumb_paths, print: printString, comment_list: comment_list, is_print: is_print, is_test: is_test} ));
 	    this.element.find('a.thumbnail img').error(this.proxy('reloadImage'));
 	},
 

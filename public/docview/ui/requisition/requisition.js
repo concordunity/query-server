@@ -12,7 +12,8 @@ steal(
     'docview/bootstrap/bootstrap-popinput.js',
 	'docview/ui/dmstable',
 	'docview/ui/daterange',
-	'docview/ui/pagingtable'
+	'docview/ui/pagingtable',
+	'docview/ui/org'
 ).then(
     'libs/json2.js',
     'libs/org_json.js',
@@ -69,6 +70,9 @@ steal(
                         labelString: "日期"
                     }
 			});
+		   var user = this.options.clientState.attr('user');
+		   var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
+		   this.element.find('.org').docview_ui_org({ name:'org', include:orgs , default_text:orgs.length > 0 ? null: '不限' });
 			/*
 			var application_table_options = {
 				aaData: [],
@@ -301,7 +305,7 @@ steal(
 			$("#new-application").html(this.view("//docview/ui/requisition/views/application/new_application.ejs",{kz_users: this.kz_users}));
 		},
 		".new-requisition-details click" : function(el,ev){
-			var tbody = $('.requisition-details-text-holder tbody');
+			var tbody = el.closest('#new-application-form').find('.requisition-details-text-holder tbody');
 			tbody.append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs"));
 			tbody.find('tr:last').hide().show('slow');
 			$('.remove-requisition-details').show('fast');
@@ -343,6 +347,26 @@ steal(
 				4:{
 					cls:'warning',
 					text:'必须数字'
+				},
+			    10:{
+					cls:'warning',
+					text:'报关单号前二位必须是22'
+				},
+			    11:{
+					cls:'warning',
+					text:'报关单号第5~8位代表年份，其值是小于或者等于今年'
+				},
+			    12:{
+					cls:'warning',
+					text:'报关单号第10,11位组合的值大于50时，第9位必须是0'
+				},
+			    13:{
+					cls:'warning',
+					text:'报关单号第10,11位组合的值大于50时，此时的值减50必须等于第3，4位组成的值'
+				},
+			    14:{
+					cls:'warning',
+					text:'报关单号第10,11位组合的值小于等于50时，第9位必须是1'
 				},
 				200:{
 					cls:'success',
@@ -388,7 +412,26 @@ steal(
 				showTips(4);
 				return;	
 			}
-
+			if(doc_id.substr(0,2) != '22'){
+				showTips(10);
+				return;	
+			}
+			if(parseInt(doc_id.substr(4,4)) > (new Date()).getFullYear()){
+				showTips(11);
+				return;	
+			}
+			if(parseInt(doc_id.substr(9,2)) > 50 && parseInt(doc_id.substr(8,1)) != 0){
+				showTips(12);
+				return;	
+			}
+			if(parseInt(doc_id.substr(9,2)) > 50 && parseInt(doc_id.substr(2,2)) != (parseInt(doc_id.substr(9,2)) - 50)){
+				showTips(13);
+				return;	
+			}
+			if(parseInt(doc_id.substr(9,2)) <= 50 && doc_id.substr(8,1) != "1"){
+				showTips(14);
+				return;	
+			}
 			showTips(1);//ing ..
 			Docview.Models.Requisition.filterDocs({ "doc_id" : doc_id },
 				function(data){//ajax success .
@@ -416,6 +459,10 @@ steal(
 			var approving_officer = '';// el.find("select[name=kz_user]").val();
 			var lbl_wait = el.find('label.lbl-wait');
 			var allow_return = false;
+			if(!application_originally){
+				$.alertMessage(that,{msg:'抽单原由不能为空 ',title:'提示信息',type:'error'});
+				return;
+			}
 			el.find('input.filter_docs').each(function(key,item){
 				var $wallper = jQuery($(item).closest('tr'));
 				var validate_state = $(item).data('validate_state');
@@ -458,9 +505,13 @@ steal(
 			};
 			Docview.Models.Requisition.updateRequisition(requisition,function(data){
 				if (data.status === 200) {
-					el.closest('.create-application').hide('fast');
+					//el.closest('.create-application').hide('fast');
 					$('.' + action + ' .select-approval').show('slow').find('form').data('lastID',data.requisition.id);
 					$.alertMessage(that,{msg:'成功添加新申请表单 ',title:'提示信息',type:'success'});
+					el[0].reset();
+					while((el.find(".requisition_detail_form tr:eq(2)").remove()).size() > 0){
+					}
+					el.find('.tips').hide();
 				}else {
 					$.alertMessage(that,{msg:'申请单添加失败',title:'提示信息',type:'error'});
 				}
@@ -473,7 +524,7 @@ steal(
 		'.btn-cancel-select-approval click':function(el,ev){
 			ev.preventDefault();
 			var action = $.route.attr('subcategory');
-			$('.' + action + ' .create-application').show('slow');
+			//$('.' + action + ' .create-application').show('slow');
 			$('.' + action + ' .select-approval').hide('fast');
 		},
 		'.select-approval form submit':function(el,ev){
@@ -652,7 +703,6 @@ steal(
 			};
 			var that = this;
 			Docview.Models.Requisition.lendingStatisticsList(data,function(list){
-				console.log('  =---  success lending ----');
 				that.lendingStatisticsController.setModelData(list);	
 			},that.proxy('failure'));		
 		},

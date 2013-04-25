@@ -17,7 +17,8 @@ steal(
 	'docview/ui/paging',
 	'docview/ui/dictionary',
 	'libs/org_arr.js',
-	'docview/ui/dmstable'
+	'docview/ui/dmstable',
+	'docview/ui/org'
 ).then(
 	'docview/bootstrap/bootstrap.css',
 	'docview/ui/search_some_condition/views/search_some_condition.css' 
@@ -36,6 +37,16 @@ steal(
 			this.element.html(this.view('init',{orgsDic: orgsDic}));
 			this.element.hide();
 			$('#search_pages').docview_ui_paging();
+			var user = this.options.clientState.attr('user');
+			var orgs = user.orgs;
+			if(orgs == '2200'){
+				orgs = [];
+			}else{
+				orgs = orgs.split(',');
+			}
+			this.element.find('.zero_org_applied').docview_ui_org({ name:'zero_org_applied', include: orgs,default_text:orgs.length > 0 ? null: '不限' });
+			this.element.find('.normal_org_applied').docview_ui_org({ name:'normal_org_applied', include: orgs,default_text:orgs.length > 0 ? null: '不限' });
+			this.element.find('.import_org_applied').docview_ui_org({ name:'import_org_applied', include: orgs,default_text:orgs.length > 0 ? null: '不限'});
 		},
 		'{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
 			if (newVal !== "search") {

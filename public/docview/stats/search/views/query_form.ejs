@@ -24,10 +24,10 @@
 
 <div class="span6">
 <fieldset>
-
-   <% this.orgsDic = orgArrayDictionary;%>
-   <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
-
+	<div class="control-group" >
+	<label class="control-label">理单关区</label>
+	<div class="controls org"></div>
+	</div>
    <div class="control-group daterange-holder">
    </div>
 

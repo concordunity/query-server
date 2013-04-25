@@ -1,6 +1,7 @@
 class DocumentStat < ActiveRecord::Base
 	def self.generate_batch
-		now = "2013-03-01".to_date
+		#now = "2013-03-01".to_date
+		now = DateTime.now.to_date
 		((now - 6.month) .. now).each{|date|
 			puts date	
 			DocumentStat.generate(date)

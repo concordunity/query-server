@@ -49,13 +49,17 @@ steal(
 		   this.element.find("div.search_dishonored_bill").html(this.view("search_dishonored_bill"));
 		   this.element.find("div.statistical_inquiry").html(this.view("statistical_inquiry"));
 		   this.element.find("input[name=date]").my_datepicker();
+		   this.element.find("input[name=begin_date]").my_datepicker({ offset_month:-1 });
+		   this.element.find("input[name=end_date]").my_datepicker();
 		   this.element.find("input[name=interchange-receipt-date]").my_datepicker();
 		   this.element.find('div.lending-date').docview_ui_daterange({
 				dateOptions : {
                         labelString: "日期"
                     }
 			});
-
+		   var orgs = this.options.clientState.attr('user').orgs;
+		   this.element.find('.new-dishonored .org').docview_ui_org({ name:'org', default_text:null });
+		   this.element.find('.statistical_inquiry .org').docview_ui_org({ name:'org', default_text: orgs == '2200' ? '不限':null });
 			$("div.search_interchange_receipt .show-detail").hide();
 			var create_interchange_receipt_table_options = {
 				aaData: [],
@@ -163,7 +167,15 @@ steal(
 				aaSorting:[[0,"desc"]],
 				file_name: ""
 			};
-			this.element.find('.statistical-inquiry-list').docview_ui_dmstable({table_options : statistical_inquiry_table_options});
+			this.element.find('.statistical-inquiry-list').docview_ui_pagingtable({
+				tmpl_path:'/docview/ui/businessprocess/views/statistical_inquiry/col_',
+				columns:[
+					{ id:'org',text:'关区' },
+					{ id:'doc_type',text:'单证种类' },
+					{ id:'package',text:'包' },
+					{ id:'folder',text:'册' }
+				]
+			});
 			this.statisticalInquiryController = this.element.find('.statistical-inquiry-list').controller();
 			
 
@@ -244,6 +256,14 @@ steal(
 				case 403:
 					type = 'error';
 					msg = "理单份数不对";
+					break;
+				case 406:
+					type = 'error';
+					msg = "创建失败,交接单已经被接收";
+					break;
+				case 407:
+					type = 'error';
+					msg = "创建失败,同一关区，同一天内，同一种类只能填写一次，如需修改，请先删除再进行添加";
 					break;
 
 			}
@@ -378,7 +398,7 @@ steal(
 
             var org = this.subjection_org;
 			var data = [ ];
-			for(var i=1;i<=8;i++){
+			for(var i=1;i<=9;i++){
 				var tr = el.find('tr.doc-type-' + i );
 			
 				var begin	= tr.find('input[name=begin]');
@@ -386,12 +406,20 @@ steal(
 				var package = tr.find('input[name=package]');
 				
 				var doc_type = i,doc_start = begin.val(),doc_end = end.val(),doc_package = package.val();
-				if((doc_start && doc_end && doc_package) || ((i==7 || i==8) && doc_package)){
+				if((doc_start && doc_end && doc_package) || ((i==7 || i==8 || i==9) && doc_package)){
 					data.push({ 'doc_type': doc_type ,'doc_start':doc_start, 'doc_end': doc_end, 'package': doc_package });
 				}
 			}
-			console.log(data);
-            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,datas : data},this.proxy("addDataRow"),function(err){
+			if(data.length < 1)return;
+            Docview.Models.BusinessProcess.createBusinessProcess({type: sub_cat,datas : data},function(data){
+				
+				that.addDataRow(data);
+				if(data.status == 200){
+					el[0].reset();
+					el.find("input").focus();
+				}
+			
+			},function(err){
 				$.alertMessage(that,{msg:'新申请表单添加失败 '});
 			});
         },
@@ -675,6 +703,25 @@ steal(
 					that.searchDishonoredBillController.setModelData(data);
 				}	
 			});
+		},
+		'.statistical_inquiry form submit':function(el,ev){
+			ev.preventDefault();
+			var org = el.find('select[name=org]').val();
+			var query_type = el.find('select[name=query_type]').val();
+			var begin_date = el.find('input[name=begin_date]').val();
+			var end_date = el.find('input[name=end_date]').val();
+			
+			var data = { type:'statistical_inquiry', 'org':org,'query_type':query_type,'begin_date':begin_date,'end_date':end_date  };
+
+
+			console.log(data);
+			this.statisticalInquiryController.reload({
+				url:'/eir_business_process',
+				type:'post',
+				data:data
+			});
+
+
 		}
 });
 });

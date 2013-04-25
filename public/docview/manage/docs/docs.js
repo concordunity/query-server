@@ -8,7 +8,8 @@ steal(
     'docview/ui/multi',
     'docview/docgroup/dgselect',
     'docview/ui/single',
-    'docview/bootstrap/bootstrap.css'
+    'docview/bootstrap/bootstrap.css',
+	'docview/ui/org'
 )
 // View templates
 .then(
@@ -40,23 +41,29 @@ steal(
 	    //this.orgsDic = dicController.getDictionary("org");
 	    this.orgsDic = orgArrayDictionary; 
 	    //manage_docs.orgsDic = this.orgsDic;
-            this.element.html(this.view('init', this.options.clientState.attr('access').attr('manage_docs')));
+		this.element.html(this.view('init', this.options.clientState.attr('access').attr('manage_docs')));
 	    this.error_context = '';
             // Hide box until route conditions are met
             this.element.hide();
 	    // attach controller.
 	    this.element.find('.inquire').hide();
-            this.element.find('.checkout').hide();
-            this.element.find('.print_doc').hide();
-            this.element.find('.court_doc').hide();
-            this.element.find('.dh_report').hide();
-            this.element.find('.all_print').hide();
+		this.element.find('.checkout').hide();
+		this.element.find('.print_doc').hide();
+		this.element.find('.court_doc').hide();
+		this.element.find('.dh_report').hide();
+		this.element.find('.all_print').hide();
 	    $('#downloadFrame').hide();
 
 	    $('#manage-docs-container div form div.multi_holder').docview_ui_multi();
 	    $('#manage-docs-container div form div.print_holder').docview_ui_multi();
 	    $('#manage-docs-container div form div.single_holder').docview_ui_single({label: {labelString: "报关单号"}});
 	    $('#manage-docs-container div form div.single_sou_holder').docview_ui_single({no_help : true,label: {labelString: "报关单号"}});
+
+		
+		var user = this.options.clientState.attr('user');
+		var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
+		this.element.find('.org').docview_ui_org({ name:'org', include:orgs , default_text: orgs.length > 0 ? null: '不限' });
+
 
 	    this.element.find('.dg_select_holder').docview_docgroup_dgselect({clientState: this.options.clientState});
 	    this.element.find('#docs_history').docview_ui_history({clientState: this.options.clientState,
@@ -85,16 +92,16 @@ steal(
 	    var doc_id = ctrl.getId();
 	    var gid = el.find('select[name="gid"]').val();
 	    var username = el.find('input[name="username"]').val();
-            var org = el.find('select[name="org"]').val();
+		var org = el.find('select[name="org"]').val();
 
 	    var cntl = this.element.find('div.daterange-holder').controller();
 	    var dates = cntl.getInputs(el);
-            if (dates === "") {
-		return;
+		if (dates === "") {
+			return;
 	    }
 	    var from_date = dates.from;
 	    var to_date = dates.to;
-		
+		console.log( org );	
 	    this.element.find('#docs_history').docview_ui_history('queryDocHistory', {
 		doc_id : doc_id,
 		username : username,

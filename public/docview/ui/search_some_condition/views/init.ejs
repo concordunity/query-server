@@ -9,8 +9,7 @@
 						<div class="search-content">说明：重点查验企业是指查验率大于一定值的企业</div>
 					</div>
 				</td>
-				<td><%== $.View("//docview/ui/views/org.ejs",{ label: '', name : 'zero_org_applied', orgsDic : orgsDic})%>
-				</td>
+				<td class="zero_org_applied" ></td>
 				<td>
 					<div>
 						<button type="button" class="find-zero-rate btn btn-primary"  data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button>
@@ -24,8 +23,7 @@
 						<div class="search-content">说明：价格偏低记录是指价格低于统计价格高低参数实际下限的报关单记录</div>
 					</div>
 				</td>
-				<td><%== $.View("//docview/ui/views/org.ejs",{ label: '', name : 'normal_org_applied',orgsDic : orgsDic})%>
-				</td>
+				<td class="normal_org_applied"></td>
 				<td>
 					<div><button type="button" class="normal-import-record btn btn-primary"  data-loading-text="Search...." autocomplete="off" ><%= $.i18n._('btn.search')  %></button></div>
 				</td>
@@ -37,8 +35,7 @@
 						<div class="search-content">说明：通关时间超长报关单是指剔除递单、缴税时间后，通关作业时间大于15天的报关单</div>
 					</div>
 				</td>
-				<td><%== $.View("//docview/ui/views/org.ejs",{ label: '', name : 'import_org_applied',orgsDic : orgsDic})%>
-				</td>
+				<td class="import_org_applied"></td>
 				<td>
 					<div><button type="button" class="import-most-time btn btn-primary"  data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
 				</td>

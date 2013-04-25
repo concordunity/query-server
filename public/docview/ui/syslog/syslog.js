@@ -20,7 +20,9 @@ steal(
 			this.element.find("div.daterange-holder").docview_ui_daterange({
 				dateOptions:{labelString:"日期"}
 			});		
-
+			var user = this.options.clientState.attr('user');
+			var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
+			this.element.find('.org').docview_ui_org({ name:'org', include:orgs , default_text:orgs.length > 0 ? null: '不限' });
 
             var table_options = {
                 aaData: [],
@@ -73,7 +75,7 @@ steal(
 				var url = el.find("select[name=log_type]").val();
                 var username = el.find('input[name="username"]').val();
                 //var rolename = el.find('input[name="rolename"]').val();
-                var gid = el.find('select[name="gid"]').val();
+                var gid = el.find('input[name="query"]').val();
                 var doc_type = el.find('select[name="doc_type"]').val();
                 var org = el.find('select[name="org"]').val();
                 var cntrl = this.element.find('div.daterange-holder').controller();

@@ -16,6 +16,7 @@ steal(
 			this.tableController = this.element.find('.agency-list').docview_ui_pagingtable({
 				tmpl_path:'/docview/ui/agency/views/col_',
 				columns:[
+					{ id:'org',text:'业务点' },
 					{ id:'name',text:'机构名称' },
 					{ id:null,text:'操作', style:'nolinebreak'}
 				]	
@@ -62,7 +63,7 @@ steal(
 			$.ajax({
 				url:'/agency_create',
 				type:'post',
-				data:{ agency:{ name: name } },
+				data:{ agency:{ name: name ,org_name: orgJsonDictionary[that.subjection_org]} },
 				error:function(err){
 					console.log(err);
 				},
@@ -85,7 +86,7 @@ steal(
 
 			$.ajax({
 				url:'/agency_update',
-				data:{ agency:{ org:org,name:name ,id: id} },
+				data:{ agency:{ org:org,name:name ,id: id, org_name: orgJsonDictionary[that.subjection_org]} },
 				type:'post',
 				success:function(){
 					that.loadData();

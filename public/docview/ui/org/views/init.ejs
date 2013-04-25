@@ -1,0 +1,17 @@
+<%
+	if( this.label_text ){
+	%>
+		<label for="<%= this.name %>"><%= this.label_text %></label>
+	<%
+	}
+%>
+<select name="<%= this.name %>" >
+	<%
+		for(var i=0;i< this.org_list.length;i++){
+			var org = this.org_list[ i ];
+			%>
+				<option value=<%= org.value %> ><%= org.name %></option>
+			<%
+		}
+	%>
+</select>

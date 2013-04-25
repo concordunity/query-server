@@ -357,7 +357,7 @@ class DocumentHistoriesController < ApplicationController
 		
 		(0..(months.length - 2)).each { |i|
         	key = months[i].strftime("%Y/%m")
-        	where_clause = { :created_date => (months[i + 1] + 1).to_date .. (months[i] + 1).to_date }
+        	where_clause = { :created_date => (months[i + 1] + 1).to_date .. (months[i] ).to_date }
 	
 			logger.info "### CREATED  DATE:#{where_clause} ###"
 			logger.info "### ORG CONDITION:#{org_condition}#{docType_condition} ###"

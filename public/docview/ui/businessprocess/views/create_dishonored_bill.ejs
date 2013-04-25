@@ -10,14 +10,8 @@
 	<div class="row-fluid" >
 		<div class="span6" >
 			<fieldset class="control-group" >
-				<% var orgs  = [];
-					for(var i=0;i<orgArrayDictionary.length;i++){
-						if(orgArrayDictionary[i].dic_num != '2200'){
-							orgs.push(orgArrayDictionary[i]);
-						}
-					}
-				 %>
-				<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'org' , orgsDic: orgs } )	%>
+				<label>业务点</label>
+				<div class="org controls"></div>
 			</fieldset>
 			<fieldset class="control-group" >
 				<label>备注</label>

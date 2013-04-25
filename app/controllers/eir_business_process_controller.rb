@@ -55,8 +55,16 @@ class EirBusinessProcessController < ApplicationController
   def create_interchange_receipt
     status = 200
 	InterchangeReceipt.transaction do 
+	dt_s = DateTime.now
+	dt_e = DateTime.now + 1
+	dta = (dt_s.to_date ..dt_e.to_date)
+	@irs = InterchangeReceipt.where(:org => current_user.subjection_org,:ir_username => current_user.username, :ir_status => 1, :created_at => dta)
+	if @irs.blank? 
 	params[:datas].collect { |key,interchange_receipt|
+
     if !interchange_receipt.nil?
+		is_irs = InterchangeReceipt.where(:org => current_user.subjection_org, :created_at => dta, :doc_type => interchange_receipt[:doc_type].to_i)	
+		if is_irs.blank?
 		logger.info "======#{interchange_receipt}"
         @ir = InterchangeReceipt.new(interchange_receipt)
         @ir.ir_username = current_user.username
@@ -66,15 +74,15 @@ class EirBusinessProcessController < ApplicationController
 		@ir.ir_date = DateTime.now.to_s
 
 		if @ir.doc_type.to_i > 6
-			@ir.number_copies =  @ir.package 
+#			@ir.number_copies =  @ir.package 
 			@ir.save
 		else
 
         if @ir.doc_start.to_i <= @ir.doc_end.to_i && @ir.doc_start.to_i > 0
-			ir_some = InterchangeReceipt.where(["org = ? and ( (doc_start < ? and doc_end < ? ) or (doc_start > ?  and doc_end > ?))", 
-												@ir.org, @ir.doc_start.to_i,@ir.doc_start.to_i, @ir.doc_end.to_i,@ir.doc_end.to_i])
+			ir_some = InterchangeReceipt.where(["year(created_at) = ? and org = ? and ( (doc_start < ? and doc_end < ? ) or (doc_start > ?  and doc_end > ?)) and doc_type < 7", 
+												DateTime.now.year,@ir.org, @ir.doc_start.to_i,@ir.doc_start.to_i, @ir.doc_end.to_i,@ir.doc_end.to_i])
 			
-			ir_all = InterchangeReceipt.where(:org => @ir.org)
+			ir_all = InterchangeReceipt.where(:org => @ir.org).where(["year(created_at) = ? and doc_type < 7",DateTime.now.year])
 			count = ir_all.count - ir_some.count
 
 			number_copies = @ir.doc_end.to_i - @ir.doc_start.to_i + 1
@@ -88,14 +96,20 @@ class EirBusinessProcessController < ApplicationController
             status = 401
         end
 		end
+		else
+            status = 407
+		end
 		if status != 200
 			raise ActiveRecord::Rollback
 		end
     end
 	} 
-		if params[:datas].nil?
-			status = 403
-		end
+	else
+		status = 406
+	end
+	if params[:datas].nil?
+		status = 403
+	end
     end
     return {:status => status}		
   end
@@ -131,7 +145,17 @@ class EirBusinessProcessController < ApplicationController
 
   #统计查询
   def statistical_inquiry
+	#InterchangeReceipt.joins(:dishonored_bills).where(:dishonored_bills => { :org => params[:org] } , :interchange_receipts => { :org => params[:org]  }  )
+	bd = params[:begin_date]
+	ed = params[:end_date]
+	if params[:query_type] == "interchange_receipt"
+		data = InterchangeReceipt.find_by_sql("select org,doc_type,sum(number_copies),sum(package) from interchange_receipts where (created_at between #{params[:begin_date]} and #{params[:end_date]} ) and #{ [2200,""].include?(params[:org]) ? "true" : params[:org]} group by org,doc_type")
+	else
+		data = DishonoredBill.where("select *,count(*) as num from dishonored_bills where (created_at between #{params[:begin_date]} and #{params[:end_date]} ) and #{ [2200,""].include?(params[:org]) ? "true" : params[:org]} group by org")
+	end
 
+	result = filter_proc(data)
+	return {:result => result,:message => "ok"}
   end
 
   #更改状态
@@ -159,62 +183,43 @@ class EirBusinessProcessController < ApplicationController
 	ir_result = {:sum_copies => 0, :sum_package => 0, :data => []} 
    	excel_name = "交接单"
 	file_name_arr = []
-	result = []
 	count = 0
 	tar_arr = []
-    InterchangeReceipt.where(:ir_date => idr, :org => ir_org, :ir_username => ir_username).each_with_index do |ir,index|
-			
+	ir_result[:org]  = DictionaryInfo.where(:dic_type => "org", :dic_num => ir_org).first.dic_name 
+	ir_result[:ir_date]  = InterchangeReceipt.where(:ir_date => idr, :org => ir_org, :ir_username => ir_username, :ir_status => 1).order("created_at desc").first.ir_date.strftime("%Y-%m-%d")
+	9.times {|i|
+		ir = InterchangeReceipt.where(:ir_date => idr, :org => ir_org, :ir_username => ir_username,:doc_type => (i + 1)).first
 		ir_result[:data] << ir 
-		ir_result[:sum_copies]  += ir.number_copies 
-		ir_result[:sum_package]  += ir.package 
-
-		if index != 0 && (index + 1) % 15 == 0
-			result << ir_result  
-			ir_result = {:sum_copies => 0, :sum_package => 0, :data => []} 
-			count += 1
-		else
-			result[count] = ir_result  
+		unless ir.blank?
+			ir_result[:sum_copies]  += ir.number_copies 
+			ir_result[:sum_package]  += ir.package 
 		end
-	end
-	logger.info "--------result------" 
-	logger.info result.length
-
+	}
+	logger.info "===============" 
+	logger.info  ir_result
 	#book,sheet = get_sheet(filepath, result.length)
-	result.each_with_index do |r,rindex|
-		if r[:data].length != 15
-			(r[:data].length .. 15).each do |row,j|
-				r[:data] << ""
-			end
-		end
-
-		record_index = 1
-		logger.info "--------record_index------" 
-		logger.info record_index 
-		logger.info r[:data]
+	record_index = 1 
 		filepath = File.join(Rails.root,"doc","business_process.xls")	
 		book,sheet = open_excel(filepath)
-
 		sheet.each_with_index do |row,index|
-			rdata = r[:data][record_index-1]
 			row.each_with_index do |column,j|
 				case column
 				when "[A1]"
 					#海关名称
-					row[j] = rdata.blank? ? "" :  rdata.org
+					row[j] = ir_result[:org] 
 				when "[J1]"
 					#日期
-					row[j] = Time.now.to_s
+					row[j] = ir_result[:ir_date] 
 				when "[K1]"
-					row[j] = r[:sum_copies] 
+					row[j] = ir_result[:sum_copies] 
 				when "[L1]"
-					row[j] = r[:sum_package] 
+					row[j] = ir_result[:sum_package] 
 				else
 					#序号 单证种类 起始归档号 终止归档号 报关单份数 档案袋包数
-					if column == "[B#{record_index}]"
-						row[j] = record_index 
-					elsif column == "[C#{record_index}]"
-						row[j] =  rdata.blank? ? "" :  rdata.doc_type
-					elsif column == "[D#{record_index}]"
+					rdata = ir_result[:data][record_index-1]
+					if column == "[D#{record_index}]"
+						logger.info "====D" 
+						logger.info rdata
 						row[j] =  rdata.blank? ? "" :  rdata.doc_start
 					elsif column == "[E#{record_index}]"
 						row[j] =  rdata.blank? ? "" :  rdata.doc_end
@@ -229,23 +234,11 @@ class EirBusinessProcessController < ApplicationController
 		end
 		new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
 		Dir.mkdir(new_path) unless Dir.exists?(new_path)
-		new_path = File.join(new_path, "#{excel_name}_#{rindex}.xls")
-	    tar_arr << "#{excel_name}_#{rindex}.xls" 
-		file_name_arr << new_path.sub(File.join(Rails.root,"public"),'')
+		new_path = File.join(new_path, "#{excel_name}.xls")
+		file_name = new_path.sub(File.join(Rails.root,"public"),'')
 		book.write(new_path)	
-	end
-	logger.info " ====  最终呈现结果  ======"
-	logger.info file_name_arr 
-	new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
-	Dir.mkdir(new_path) unless Dir.exists?(new_path)
-	if tar_arr.length > 1
-	tar_str = "cd #{new_path} && tar cvf #{excel_name}.tar #{tar_arr.join(" ")}"
-	system("#{tar_str}")
-		new_path = File.join(new_path,"#{excel_name}.tar")
-		return new_path.sub(File.join(Rails.root,"public"),'')
-	else
-		return file_name_arr[0]
-	end
+		logger.info " ====  最终呈现结果  ======"
+		return file_name
   end
 
   def print_excel_test
@@ -425,4 +418,75 @@ class EirBusinessProcessController < ApplicationController
     end
 
   end
+
+  def filter_proc(source) 
+	#字段数量
+ 	  column_count = params[:iColumns]
+#
+#排序的下标
+	  iSortCol_0 = params[:iSortCol_0]	  
+#排序的方式
+	  sSortDir_0 = params[:sSortDir_0]	  
+#搜索内容
+	  sSearch = params[:sSearch]
+#排序的字段
+	  mDataPro = params["mDataProp_" + iSortCol_0 || 0]
+	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
+	  conditions_arr = [] 
+	  if sSearch.blank?
+		conditions_arr << "true"
+	  else
+		#字典表：关区 
+        dis_org = DictionaryInfo.where(["dic_type='org' AND dic_name like binary(?) ","%#{sSearch}%"])
+		#字典表：单证种类
+        dis_slpd = DictionaryInfo.where(["dic_type='business_process' AND dic_name like binary(?) ","%#{sSearch}%"])
+	    #检索详单信息表
+		dis_ids = RequisitionDetail.where(["single_card_number like (?)","%#{sSearch}%"])
+		#生气检索条件
+		condition_dic = dis_org.collect(&:dic_num)
+		condition_slpd = dis_slpd.collect(&:dic_num)
+	    condition_rd = dis_ids.collect(&:requisition_id)
+        (0 ... column_count.to_i - 1).each do |cc|
+	        #logger.info "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
+			if params[:query_type] == "interchange_receipt"
+				case params["mDataProp_" + cc.to_s]
+				when "org"
+					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_dic.join(",")})" unless dis_org.blank?  
+				when "doc_type"
+					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_slpd.join(",")})" unless dis_slpd.blank?  
+				else
+					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like binary('%#{sSearch}%')"
+				end
+			else
+				case params["mDataProp_" + cc.to_s]
+				when "org"
+					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_dic.join(",")})" unless dis_org.blank?  
+				end
+
+			end
+		end
+	  end
+      logger.info "================" 
+      logger.info conditions_arr 
+      logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
+	  if params[:query_type] == "interchange_receipt"
+		orders = "#{mDataPro} #{sSortDir_0}" if mDataPro != "package" || mDataPro != "folder"	
+	  else
+		orders = "#{mDataPro} #{sSortDir_0}"  if mDataPro != "package" || mDataPro != "folder" || mDataPro != "doc_type"	
+	  end
+      current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
+      logger.info "=======0=#{orders}"	
+
+	  condition = {:orders =>orders,:where=>conditions_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
+
+      logger.info "=======1=#{condition[:orders]}"	
+	  result = source.where(condition[:where]).reorder(condition[:orders]).paginate(:page => condition[:page], :per_page => condition[:per_page] )
+
+	  aaData = {:bussiness_process=> result}
+
+	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: aaData}
+  end
+
+
+
 end

@@ -22,9 +22,10 @@
 	</div>
 
        <div class="single_sou_holder"></div>
-
-<% this.orgsDic = orgArrayDictionary;%>
- <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
+	<div class="control-group" >
+		<label class="control-label" >理单关区</label>
+		<div class="org controls" ></div>
+	</div>
 </fieldset>
 
     <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看</button>
