@@ -168,12 +168,13 @@ steal(
 				file_name: ""
 			};
 			this.element.find('.statistical-inquiry-list').docview_ui_pagingtable({
+				server_side: false,
 				tmpl_path:'/docview/ui/businessprocess/views/statistical_inquiry/col_',
 				columns:[
 					{ id:'org',text:'关区' },
 					{ id:'doc_type',text:'单证种类' },
 					{ id:'package',text:'包' },
-					{ id:'folder',text:'册' }
+					{ id:'number_copies',text:'册' }
 				]
 			});
 			this.statisticalInquiryController = this.element.find('.statistical-inquiry-list').controller();
@@ -700,6 +701,7 @@ steal(
 
 				},
 				success:function(data){
+					console.log("search dishonored-bill ",data);
 					that.searchDishonoredBillController.setModelData(data);
 				}	
 			});
@@ -712,9 +714,7 @@ steal(
 			var end_date = el.find('input[name=end_date]').val();
 			
 			var data = { type:'statistical_inquiry', 'org':org,'query_type':query_type,'begin_date':begin_date,'end_date':end_date  };
-
-
-			console.log(data);
+			that = this;
 			this.statisticalInquiryController.reload({
 				url:'/eir_business_process',
 				type:'post',

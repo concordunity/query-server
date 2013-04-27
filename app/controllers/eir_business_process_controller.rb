@@ -145,6 +145,46 @@ class EirBusinessProcessController < ApplicationController
 
   #统计查询
   def statistical_inquiry
+	 result = [] 
+	 condition = {}
+	 condition[:org] = params[:org].blank? ? ["true"] : "org = '#{params[:org]}'" 	
+	 condition[:created_at] = "(created_at between '#{params[:begin_date]}' and '#{(Date.parse(params[:end_date])+1).to_s}')"
+	 if params[:query_type] == "interchange_receipt"
+		@irs = InterchangeReceipt.where(condition[:org]).where(condition[:created_at]).order("org")
+		ir_orgs = @irs.group("org").collect(&:org)
+		ir_orgs.each do |org|
+			irs = @irs.where(:org => org).group("doc_type")
+			irs_package = irs.sum("package")
+			irs_number_copies = irs.sum("number_copies")
+			irs.collect(&:doc_type).each {|k|
+				tmp_result = {}
+				tmp_result[:org] = org
+				tmp_result[:doc_type] = k 
+				tmp_result[:package] = irs_package[k] || ""
+				tmp_result[:number_copies] = irs_number_copies[k] || ""
+				result << tmp_result
+			}
+		end
+	 else
+		@dbs = DishonoredBill.where(condition[:org]).where(condition[:created_at]).order("org")
+		ir_orgs = @dbs.group("org").collect(&:org)
+		ir_orgs.each do |org|
+			irs = @dbs.where(:org => org)
+			tmp_result = {}
+			tmp_result[:org] = org
+			tmp_result[:doc_type] = "" 
+			tmp_result[:package] = irs.count
+			tmp_result[:number_copies] = "" 
+			result << tmp_result
+		end
+
+	 end
+	 logger.info "-------1-------------" 
+	 logger.info result
+      return {:aaData => result}
+  end
+
+  def statistical_inquiry_backup
  	  column_count = params[:iColumns]
 	  iSortCol_0 = params[:iSortCol_0]	  
 	  sSortDir_0 = params[:sSortDir_0]	  
