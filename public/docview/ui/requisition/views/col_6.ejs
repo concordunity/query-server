@@ -1,1 +1,11 @@
-<%= orgJsonDictionary[this.storage_sites] %>
+
+<% if( this.requisition_details.length > 1 ){%>
+	<span class="label"><%= this.requisition_details[0].single_card_number%>&nbsp;,......</span>
+
+<% }else if(this.requisition_details.length == 1) { %>
+	<% if (this.requisition_details[0] != undefined){%>
+		<span class="label"><%= this.requisition_details[0].single_card_number%></span>
+	<% } %>
+<% } %>
+
+

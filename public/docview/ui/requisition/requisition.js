@@ -118,6 +118,7 @@ steal(
 					return data.requisitions;
 				},
 				columns:[
+					{ id:'serial_number' , text:'流水号' },
 					{ id:'created_at' , text:'申请日期' },
 					{ id:'apply_staff' , text:'申请人员' },
 					{ id:'org' , text:'业务点' },
@@ -305,10 +306,11 @@ steal(
 			$("#new-application").html(this.view("//docview/ui/requisition/views/application/new_application.ejs",{kz_users: this.kz_users}));
 		},
 		".new-requisition-details click" : function(el,ev){
-			var tbody = el.closest('#new-application-form').find('.requisition-details-text-holder tbody');
+			var element = el.closest('#new-application-form');
+			var tbody = element.find('.requisition-details-text-holder tbody');
 			tbody.append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs"));
 			tbody.find('tr:last').hide().show('slow');
-			$('.remove-requisition-details').show('fast');
+			element.find('.remove-requisition-details').show('fast');
 		},
 		".remove-requisition-details click" : function(el,ev){
 			var table_row_count = $(el).closest("tbody").find("tr").length;
@@ -368,6 +370,14 @@ steal(
 					cls:'warning',
 					text:'报关单号第10,11位组合的值小于等于50时，第9位必须是1'
 				},
+			    15:{
+					cls:'warning',
+					text:'报关单号第10,11位组合的值小于等于50时，第3,4位组成的值必须等于第10，11位组成的值'
+				},
+				20: {
+					cls:'warning',
+					text:"报关单号错误"
+				},
 				200:{
 					cls:'success',
 					text:'可以添加'
@@ -401,35 +411,48 @@ steal(
 				el.data('validate_state',type);
 			};
 			if(!$.trim(doc_id)){
-				showTips(2);
+				//showTips(2);
+				showTips(20);
 				return;
 			}
 			if(doc_id.length != 18){
-				showTips(3);
+				//showTips(3);
+				showTips(20);
 				return;
 			}
 			if(!/^\d{18}$/.test(doc_id)){
-				showTips(4);
+				//showTips(4);
+				showTips(20);
 				return;	
 			}
 			if(doc_id.substr(0,2) != '22'){
-				showTips(10);
+				//showTips(10);
+				showTips(20);
 				return;	
 			}
 			if(parseInt(doc_id.substr(4,4)) > (new Date()).getFullYear()){
-				showTips(11);
+				//showTips(11);
+				showTips(20);
 				return;	
 			}
 			if(parseInt(doc_id.substr(9,2)) > 50 && parseInt(doc_id.substr(8,1)) != 0){
-				showTips(12);
+				//showTips(12);
+				showTips(20);
 				return;	
 			}
 			if(parseInt(doc_id.substr(9,2)) > 50 && parseInt(doc_id.substr(2,2)) != (parseInt(doc_id.substr(9,2)) - 50)){
-				showTips(13);
+				//showTips(13);
+				showTips(20);
 				return;	
 			}
 			if(parseInt(doc_id.substr(9,2)) <= 50 && doc_id.substr(8,1) != "1"){
-				showTips(14);
+				//showTips(14);
+				showTips(20);
+				return;	
+			}
+			if(parseInt(doc_id.substr(9,2)) <= 50 && parseInt(doc_id.substr(2,2)) != parseInt(doc_id.substr(9,2))){
+				//showTips(15);
+				showTips(20);
 				return;	
 			}
 			showTips(1);//ing ..
@@ -456,7 +479,7 @@ steal(
 			var requisition_details = []; 
 			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
-			var approving_officer = '';// el.find("select[name=kz_user]").val();
+			var approving_officer = el.find("select[name=kz_user]").val();
 			var lbl_wait = el.find('label.lbl-wait');
 			var allow_return = false;
 			if(!application_originally){
@@ -506,7 +529,7 @@ steal(
 			Docview.Models.Requisition.updateRequisition(requisition,function(data){
 				if (data.status === 200) {
 					//el.closest('.create-application').hide('fast');
-					$('.' + action + ' .select-approval').show('slow').find('form').data('lastID',data.requisition.id);
+					//$('.' + action + ' .select-approval').show('slow').find('form').data('lastID',data.requisition.id);
 					$.alertMessage(that,{msg:'成功添加新申请表单 ',title:'提示信息',type:'success'});
 					el[0].reset();
 					while((el.find(".requisition_detail_form tr:eq(2)").remove()).size() > 0){

@@ -133,8 +133,10 @@ class RequisitionController < ApplicationController
 					r.apply_staff_fullname = current_user.fullname
 					r.application_originally = params[:application_originally]
 					r.approving_officer = params[:approving_officer]
-					diname = DictionaryInfo.find_by_dic_type_and_dic_num("org",current_user.subjection_org).dic_name
-					r.serial_number = diname + Time.now.strftime("%Y%m%d")+ format("%05d",rand(10000))
+					#diname = DictionaryInfo.find_by_dic_type_and_dic_num("org",current_user.subjection_org).dic_name
+					#r.serial_number = diname + Time.now.strftime("%Y%m%d")+ format("%05d",rand(10000))
+					rs = Requisition.where(:org => current_user.subjection_org).where(["year(created_at) = ?",DateTime.now.year]).count
+					r.serial_number = current_user.subjection_org + Time.now.strftime("%Y")+ format("%05d",rs)
 					r.status = 21 
 					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end

@@ -19,7 +19,7 @@
     $.each(val, function(i, value) {
 %>
 <tr> <td><%== key %></td>
- <td><%== value.org %></td>
+ <td><%== orgJsonDictionary[value.org]  %></td>
  <td><%== value.num_docs %></td>
  <td><%== value.num_pages %></td>
  <td><%== value.num_queries %></td>

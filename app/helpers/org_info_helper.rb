@@ -1,0 +1,2 @@
+module OrgInfoHelper
+end

@@ -20,6 +20,10 @@
             </fieldset>
         </div>
 	 <div class="span6">
+		<fieldset>
+			<label>审批人员</label>
+			<%== $.View('//docview/ui/views/kz_user.ejs',this) %>
+           </fieldset>
 	 </div>
 
     </div>
@@ -37,19 +41,11 @@
             </fieldset>	
         </div>
         <div class="pull-left">
-            <button type="submit" class="btn btn-primary" ><%= $.i18n._('btn.create') %></button>
+            <button type="submit" class="btn btn-primary" >提交申请</button>
 			<div style="display: inline-block;" ><label class='label label-info lbl-wait' style="display:none;" >Waiting ..</label></div>
 			<br />
         </div>
     </div>
-</form>
-</div>
-<div class="well select-approval hide" >
-<form class="">
-	<legend class="">请为此借阅单证选择审批人员</legend>
-	<%== $.View('//docview/ui/views/kz_user.ejs',this) %>
-	<button type="submit" class="btn btn-primary" >提交</button>
-	<button type="button" class="btn btn-cancel-select-approval" >暂不指定</button>
 </form>
 </div>
 </div>

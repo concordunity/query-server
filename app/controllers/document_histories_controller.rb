@@ -198,6 +198,8 @@ class DocumentHistoriesController < ApplicationController
         query_stats_by = search_condition_role(function_params)
       elsif cat == '4'
         query_stats_by = search_condition_month2(function_params)
+      elsif cat == '5'
+        query_stats_by = search_condition_orginfo(function_params)
       end
 	  results[:doc_count] = doc_count
       results[:query_stats] = query_stats_by
@@ -237,6 +239,44 @@ class DocumentHistoriesController < ApplicationController
       }
       return query_stats_by
     end
+    #申报关区部分
+    def search_condition_orginfo(function_params)
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+      query_stats_by = {}
+      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org")
+      docs_stats = document_org.count
+      docs_stats_T = Document.order("org").group("org").count
+      pages_stats = document_org.sum("pages")
+
+      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org").count
+
+	  OrgInfo.order("org").group("org").each do |org|
+		ois = OrgInfo.where(:org => org.org)
+		sois = ois.collect(&:subjection_org)
+		dois = ois.collect(&:dictionary_info_id)
+		num_queries = 0
+        num_docs = 0
+        num_pages = 0
+		v = 0 
+		sois.each do |k|
+			v += docs_stats_T[k] if docs_stats_T.has_key?(k)	
+			num_queries += query_stats[k] if query_stats.has_key?(k)
+			if docs_stats.has_key?(k)
+				num_docs += docs_stats[k] 
+				num_pages += pages_stats[k]
+			end
+		end
+		query_stats_by[org.org] = { :num_docs => num_docs,
+				:num_pages => num_pages,
+				:num_queries => num_queries,
+				:percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v),
+				:percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total),
+		}
+	  end
+      return query_stats_by
+    end
+
+
     #用户部分
     def search_condition_user(function_params)
       queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params

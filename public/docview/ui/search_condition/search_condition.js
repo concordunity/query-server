@@ -46,7 +46,7 @@ steal(
         },
 	".docview_ui_search_condition select[name='groupby'] change" : function(el,ev){
 	    var el_value = $(el).attr("value");
-	    if (el_value == 0 || el_value == 1) {
+	    if (el_value == 0 || el_value == 1 || el_value == 5) {
 	        this.setOrgVisible(false);
 	    } else {
 	        this.setOrgVisible(true);
@@ -115,6 +115,7 @@ steal(
 
         },
         show_stats :function (data) {
+			console.log("=======   show stats");
             var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
             if (this.element.find('select[name="groupby"]').val() == '4') {
 

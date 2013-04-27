@@ -145,17 +145,47 @@ class EirBusinessProcessController < ApplicationController
 
   #统计查询
   def statistical_inquiry
-	#InterchangeReceipt.joins(:dishonored_bills).where(:dishonored_bills => { :org => params[:org] } , :interchange_receipts => { :org => params[:org]  }  )
-	bd = params[:begin_date]
-	ed = params[:end_date]
-	if params[:query_type] == "interchange_receipt"
-		data = InterchangeReceipt.find_by_sql("select org,doc_type,sum(number_copies),sum(package) from interchange_receipts where (created_at between #{params[:begin_date]} and #{params[:end_date]} ) and #{ [2200,""].include?(params[:org]) ? "true" : params[:org]} group by org,doc_type")
-	else
-		data = DishonoredBill.where("select *,count(*) as num from dishonored_bills where (created_at between #{params[:begin_date]} and #{params[:end_date]} ) and #{ [2200,""].include?(params[:org]) ? "true" : params[:org]} group by org")
-	end
+ 	  column_count = params[:iColumns]
+	  iSortCol_0 = params[:iSortCol_0]	  
+	  sSortDir_0 = params[:sSortDir_0]	  
+	  sSearch = params[:sSearch]
+	  mDataPro = params["mDataProp_" + iSortCol_0 || 0]
+	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
+	  conditions_arr = [] 
+	  if sSearch.blank?
+		conditions_arr << "true"
+	  else
+        dis_org = DictionaryInfo.where(["dic_type='org' AND dic_name like binary(?) ","%#{sSearch}%"])
+		condition_dic = dis_org.collect(&:dic_num)
+	    if dis_org.blank?  
+			conditions_arr << "false" 
+		else
+			conditions_arr << "#{ params["mDataProp_0"]} in (#{condition_dic.join(",")})" 
+		end
+	  end
+	  if mDataPro == "org"
+		orders = "#{mDataPro} #{sSortDir_0}" 
+	  else
+		orders = "id" 
+	  end
+      current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
+	  condition = {:orders =>orders,:where=>conditions_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
 
-	result = filter_proc(data)
-	return {:result => result,:message => "ok"}
+      logger.info "======conditions_arr = #{conditions_arr}==========" 
+      logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
+      logger.info "=======0=#{orders}"	
+      logger.info "=======1=#{condition[:orders]}"	
+	  bd = params[:begin_date]
+	  ed = params[:end_date]
+	  if params[:query_type] == "interchange_receipt"
+		data = InterchangeReceipt.find_by_sql("select org,doc_type,sum(number_copies),sum(package) from interchange_receipts where (created_at between #{params[:begin_date]} and #{params[:end_date]} ) and #{ [2200,""].include?(params[:org]) ? "true" : params[:org]} and (#{condition[:where]}) group by org,doc_type order by #{condition[:orders]}")
+	  else
+		data = DishonoredBill.where("select *,count(*) as num from dishonored_bills where (created_at between #{params[:begin_date]} and #{params[:end_date]} ) and #{ [2200,""].include?(params[:org]) ? "true" : params[:org]} and ( #{condition[:where]} )group by org order by #{condition[:orders]}")
+	  end
+
+	  #result = data.paginate(:page => condition[:page], :per_page => condition[:per_page] )
+	  aaData = {:bussiness_process=> result}
+	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: aaData ,:message => "ok"}
   end
 
   #更改状态
@@ -438,45 +468,21 @@ class EirBusinessProcessController < ApplicationController
 	  else
 		#字典表：关区 
         dis_org = DictionaryInfo.where(["dic_type='org' AND dic_name like binary(?) ","%#{sSearch}%"])
-		#字典表：单证种类
-        dis_slpd = DictionaryInfo.where(["dic_type='business_process' AND dic_name like binary(?) ","%#{sSearch}%"])
-	    #检索详单信息表
-		dis_ids = RequisitionDetail.where(["single_card_number like (?)","%#{sSearch}%"])
-		#生气检索条件
 		condition_dic = dis_org.collect(&:dic_num)
-		condition_slpd = dis_slpd.collect(&:dic_num)
-	    condition_rd = dis_ids.collect(&:requisition_id)
         (0 ... column_count.to_i - 1).each do |cc|
-	        #logger.info "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
-			if params[:query_type] == "interchange_receipt"
-				case params["mDataProp_" + cc.to_s]
-				when "org"
-					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_dic.join(",")})" unless dis_org.blank?  
-				when "doc_type"
-					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_slpd.join(",")})" unless dis_slpd.blank?  
-				else
-					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like binary('%#{sSearch}%')"
-				end
-			else
 				case params["mDataProp_" + cc.to_s]
 				when "org"
 					conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_dic.join(",")})" unless dis_org.blank?  
 				end
-
 			end
-		end
 	  end
       logger.info "================" 
       logger.info conditions_arr 
       logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
-	  if params[:query_type] == "interchange_receipt"
-		orders = "#{mDataPro} #{sSortDir_0}" if mDataPro != "package" || mDataPro != "folder"	
-	  else
-		orders = "#{mDataPro} #{sSortDir_0}"  if mDataPro != "package" || mDataPro != "folder" || mDataPro != "doc_type"	
-	  end
+	  orders = "#{mDataPro} #{sSortDir_0}" if mDataPro == "org"
       current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
-      logger.info "=======0=#{orders}"	
 
+      logger.info "=======0=#{orders}"	
 	  condition = {:orders =>orders,:where=>conditions_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
 
       logger.info "=======1=#{condition[:orders]}"	
@@ -486,7 +492,4 @@ class EirBusinessProcessController < ApplicationController
 
 	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: aaData}
   end
-
-
-
 end

@@ -291,6 +291,7 @@ steal(
 		data.query_p =  ((query_length / data.docs_total) * 100).toFixed(2) + '%' ;
 		//data.pages_total = parseInt(query_length % 10 == 0 ? query_length / 10 : (query_length /10) + 1);
 		*/
+		console.log(data,this.element.find('select[name="groupby"]').val() ,this.element.find('select[name="groupby"]').val() == '4');
 		 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
                 if (this.element.find('select[name="groupby"]').val() == '4') {
 		
@@ -298,10 +299,11 @@ steal(
                     this.element.find('div.stats_stats').html(this.view('stats_ty_month_init'));
                     this.element.find('div.stats_total_list').html(this.view('stats_by_month', data));
                     this.search_result = data;
+					console.log("====== org");
                 //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
                 } else {
 		    		//console.info(data);
-                    this.element.find('div.stats_stats').html(this.view('stats_total', data));
+					this.element.find('div.stats_stats').html(this.view('stats_total', data));
 		    		
 					$('.stats_total').html('档案总数为：<b>' 
 							+ $.thousands(data.docs_total) 

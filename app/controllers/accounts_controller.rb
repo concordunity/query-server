@@ -37,8 +37,8 @@ class AccountsController < ApplicationController
   def user_select
     #r = Role.find_by_name('admin')
 	#@users = User.where(["subjection_org = ? AND id not in (?)", current_user.subjection_org ,r.users.collect(&:id)])
-		kz_user = User.includes(:roles).where(["subjection_org = ? and roles.name like ?",current_user.subjection_org,"%科长%"])
-		gld_user = User.includes(:roles).where(["subjection_org = ? and roles.name like ?",current_user.subjection_org,"%关领导%"])
+		kz_user = User.includes(:roles).where(["subjection_org = ? and roles.name = ?",current_user.subjection_org,"单证借阅科长审批"])
+		gld_user = User.includes(:roles).where(["subjection_org = ? and roles.name = ?",current_user.subjection_org,"单证借阅关长审批"])
 	respond_with(:kz_users => kz_user, :gld_users => gld_user)
   end
  

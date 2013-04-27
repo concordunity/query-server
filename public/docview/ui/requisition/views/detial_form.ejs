@@ -1,5 +1,5 @@
 <tr class="detial_form" >
-<td colspan='8' style="border:2px solid #cccc00;"   >
+<td colspan='9' style="border:2px solid #cccc00;"   >
 <div style="margin: 30px 100px 30px 100px;" class="well">	
 <form onsubmit="return false;">
 <legend>详细信息(流水号：<%= model.serial_number%>)</legend>
@@ -17,7 +17,7 @@
 	<td><%= scene_lent_paper_documentJsonDictionary[model.status.toString()] %></td>
 </tr>
 <tr>
-	<td>存放地点:</td>
+	<td>存档地点:</td>
 	<td><span class='label'><%= orgJsonDictionary[model.storage_sites]  %></span></td> 
 	<td>借阅单证数量:</td>
 	<%
@@ -37,21 +37,21 @@
 	<td><%= $.date(model.created_at).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
-	<td>审批人员:</td>
+	<td>审批科长:</td>
 	<td><%= model.approving_officer_fullname || ''  %></td>
-	<td>审批时间:</td>
+	<td>科长审批时间:</td>
 	<td><%= $.date(model.approval_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
-	<td>二级审批人员:</td>
+	<td>审批关长:</td>
 	<td><%= model.two_approvers_fullname || ''  %></td>
-	<td>二级审批时间:</td>
+	<td>关长审批时间:</td>
 	<td><%= $.date(model.two_approver_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
-	<td>登记人员:</td>
+	<td>档案管理人员:</td>
 	<td><%= model.registration_staff_fullname || '' %></td>
-	<td>登记时间:</td>
+	<td>档案管理时间:</td>
 	<td><%= $.date(model.check_in_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 
@@ -71,7 +71,7 @@
 		<tr>
 			<th>报关单号</th>
 			<th>理单号码</th>
-			<th>查无此单</th>
+			<% if(($.inArray(model.status,[13,14]) != -1)){ %><th>查无此单</th><% } %>
 		</tr>
 	<tbody>
 	<% 
@@ -120,20 +120,25 @@
 	};
 	%>
 	<% var user = this.ctx.options.clientState.attr('user') %>
+	
 
+	<br />
+	<br />
 	<!-- Accept -->
 	<%
-	if($.inArray(action,['approval_guan','register','write_off']) != -1){
+	if($.inArray(action,['approval','approval_guan','register','write_off']) != -1){
 	%>
+		<%
+		if(action == 'approval' && model.status == 10){
+		%>
+			<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
+			<br />
+			<br />
+		<%
+		}
+		%>
 		<button type="button" class="btn btn-primary btn-accept" ><%= (action.indexOf('approval') == -1) ? "完成" : "通过" %></button>
 	<%	
-	}
-	%>
-	<%
-	if(action == 'approval'){
-		%>
-		<button type="button" class="btn btn-primary" data-toggle="collapse" data-target=".gld-select" >通过 <i class="icon-chevron-down icon-white"></i></button>
-		<%	
 	}
 	%>
 	<!-- Accept end -->
@@ -141,15 +146,22 @@
 	<!-- Reject -->
 	<%
 	if(action.indexOf('approval') != -1){
-		%><button type="button" class="btn btn-danger btn-reject">退回</button><%	
+		%><button type="button" class="btn btn-danger btn-reject">退回</button><%
 	}
 	%>
 	<!-- Reject end -->
 
 	<!-- Revoaction -->
 	<%if(action == 'requisition_history' &&  name_map[model.status] && name_map[model.status].fullname == user.fullname){ %>
-		<button type="button" class="btn btn-danger" data-toggle="collapse" 
-			data-target=".<%= (model.status == 10 || model.status == 21) ? 'kz':'gld'  %>-select" ><i class="icon-edit icon-white"></i> <%= name_map[model.status].text %></button>
+		<%if( $.inArray(model.status,[10,21]) != -1 ){%>
+			<%== $.View('//docview/ui/views/kz_user.ejs',this.ctx) %>	
+		<%}%>
+		<%if( $.inArray(model.status,[11,22]) != -1 ){%>
+			<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>	
+		<%}%>
+		<br />
+		<br />
+		<button type="button" class="btn btn-danger btn-revocation" ><i class="icon-edit icon-white"></i> <%= name_map[model.status].text %></button>
 		<%if(!model.approving_officer){ %>
 			<button type="button" class="btn btn-danger btn-delete"><i class="icon-trash icon-white" ></i> 删除</button>
 		<%}%>	
@@ -159,17 +171,6 @@
 	<button type="button" class="btn btn-info btn-print"><i class="icon-print icon-white"></i> 打印</button>
 	<button type="button" class="btn btn-cancel">取消</button>
 	<br />
-	<hr />
-	<div class="kz-select collapse " >
-		<b>请指定一级审批人员</b>
-		<%== $.View('//docview/ui/views/kz_user.ejs',this.ctx) %>	
-		<button class="btn btn-primary btn-<%= (action == 'approval') ? 'accept':'revocation ' %>">提交</button>
-	</div>
-	<div class="gld-select collapse " >
-		<b>请指定二级审批人员</b>
-		<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
-		<button class="btn btn-primary btn-<%= (action == 'approval') ? 'accept':'revocation ' %>">提交</button>
-	</div>
 </form>
 </div>
 </td>

@@ -1,5 +1,11 @@
 Dms::Application.routes.draw do
 
+  get "org_info/index"
+  get "/org_info" => "OrgInfo#index"
+  post "/org_info/create" => "OrgInfo#create"
+  put "/org_info/update" => "OrgInfo#update"
+  delete "/org_info/delete" => "OrgInfo#destroy"
+
   get "/agency_select" => "business_agency_maintain#get_select"
   get "/agency_list" => "business_agency_maintain#index"
   post "/agency_create" => "business_agency_maintain#create"

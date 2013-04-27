@@ -14,7 +14,8 @@
 	  <div class="controls control-group">
           <select name="groupby" >
              <option value="0">不分类</option>
-             <option value="1">理单关区</option>
+             <option value="5">关区</option>
+             <option value="1">业务点</option>
              <option value="2">用户</option>
 			 <% if (false){ %>
              <option value="3">用户角色</option>
@@ -31,7 +32,7 @@
           </div>
 	  </div>
     <div class="daterange-holder-2"> </div>
-     <%== $.View('//docview/ui/views/org.ejs', { label: '理单关区', name : 'org', orgsDic : this.orgsDic} ) %>
+     <%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'org', orgsDic : this.orgsDic} ) %>
         <div id="frm_docType_years_select"></div>
     </fieldset>  
   <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>

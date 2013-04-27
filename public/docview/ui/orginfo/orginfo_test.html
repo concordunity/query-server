@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>orginfo Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="orginfo-test">  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/orginfo').then(
+	"libs/org_json.js",
+	"libs/org_arr.js"
+).then(function($) {
+   console.log("====="); 
+   $('#orginfo-test').docview_ui_orginfo();
+
+ }); 
+ </script>
+        </body>
+</html>
+

@@ -1,0 +1,18 @@
+<div class="well">
+<form name="orginfo"> 
+	<div class="row-fluid" >
+		<div class="span6" >
+            <fieldset class="control-group">
+			<label>关区名称</label>
+			<input type="text" name="org" />
+            </fieldset>
+			<%== $.View('//docview/ui/views/org.ejs',{name: "subjection_org",orgsDic: orgArrayDictionary ,label: "业务点"}) %>
+		</div>
+		<div class="span6" >
+		
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary">创建</button>
+</form>
+</div>
+<div class="orginfo-list" ></div>

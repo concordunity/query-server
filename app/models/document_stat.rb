@@ -1,8 +1,8 @@
 class DocumentStat < ActiveRecord::Base
 	def self.generate_batch
-		#now = "2013-03-01".to_date
+		begin_date = "2013-01-01".to_date
 		now = DateTime.now.to_date
-		((now - 6.month) .. now).each{|date|
+		(begin_date .. now).each{|date|
 			puts date	
 			DocumentStat.generate(date)
 		}
@@ -39,14 +39,14 @@ class DocumentStat < ActiveRecord::Base
 					#puts condition
 					########  BEGIN #########
 					#document stats
-					documents = Document.where(condition).order(:org).group(:org)
+					documents = Document.where(condition).where("DATEDIFF(created_at,edc_date) < 60").order(:org).group(:org)
 					#queries ..
 					queries = QueryHistory.where("doc_id IS NOT NULL").where(condition).order(:org).group(:org)
 					query_stats = queries.count
 					docs_stats = documents.count
 					pages_stats = documents.sum(:pages)
 					#
-					modified =   ModifiedDocument.where( condition )
+					modified =   ModifiedDocument.where( condition )#.where("DATEDIFF(created_at,edc_date) < 60")
 					#
 					keys = Set.new	
 					keys.merge(docs_stats.keys)

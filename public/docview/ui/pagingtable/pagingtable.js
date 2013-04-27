@@ -17,11 +17,15 @@ steal(
 				aoColumns:[],
 				sort: [ [0,"asc"] ],
 				search:{},
+				col_offset:0,
 				page_dom:"<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>",
 				language_url:"/docview/media/language/ch_ZN.txt",
 				preload:true,
+				loading:true,
+				server_side:true,
 				disable_ejs:false,
 				tmpl_path:'views/col_',
+				tmpl_name:false,
 				data:{},
 				type:'GET',
 				dataType:'json',
@@ -45,13 +49,19 @@ steal(
 				});
 				//disable ejs 
 				if(!that.options.disable_ejs){
-					(function(ejs_names){
-						var i=0;
+					(function(arr){
+						var i= 0, ejs_names = [];
+						for(var j=0;j<arr.length;j++){
+							if(arr[j] !== undefined && arr[j] !== null){
+								ejs_names.push( (j == 0 ? '':that.options.tmpl_path) +  arr[j] + '.ejs' );
+							}
+						}
 						(function(){
 							var callee = arguments.callee;
 							//if ejs_name is unavalivble go to next .
-							(!ejs_names[i]) && ((++i) < ejs_names.length) && callee();
-							var ejs = (i == 0) ? ejs_names[i] : that.options.tmpl_path + ejs_names[i] + '.ejs';
+							//(!ejs_names[i]) && ((++i) < ejs_names.length) && callee();
+							
+							var ejs = ejs_names[i];
 							$.ajax({
 								url: ejs,
 								error:function(){
@@ -61,8 +71,10 @@ steal(
 									that.ejs_files[key] = ejs;
 								}
 							});
+						
 						})();
-					})([ value.tmpl, (key + 1) ,value.id ]);
+						
+					})([value.tmpl,that.options.tmpl_name ? value.id : key+1,!that.options.tmpl_name ? value.id:key+1 ]);
 				}//ejs test end
 			});
 			//console.log(this.options);
@@ -108,13 +120,13 @@ steal(
 			//preload data ... 
 			this.dataTable = this.element.find('table').dataTable({
 				bJQueryUI: false,
-				bProcessing: true,
-				bServerSide: true,
+				bProcessing: options.loading,
+				bServerSide: options.server_side,
 				"sAjaxSource" : options.url,
 				"sServerMethod": options.type,
 				"sDom": options.page_dom, 
 				"sPaginationType" : "bootstrap",
-				"bSort": (options.sort.length > 0), 
+				"bSort": true, 
 				"aaSorting": options.sort,
 				"oSearch": options.search,
 				"aoColumns": options.aoColumns,	
