@@ -636,8 +636,10 @@ class RequisitionController < ApplicationController
 	end
 	if type.nil?
 		condition_status = ["('status' is not null AND status <> 20)"]
-		condition = ["apply_staff = ? or approving_officer = ? or two_approvers = ? or registration_staff = ? or write_off_staff = ?",
-					current_user.username,current_user.username,current_user.username,current_user.username,current_user.username ]
+		condition = ["apply_staff = ? or approving_officer_fullname = ? or two_approvers_fullname = ? or registration_staff_fullname = ? or write_off_staff_fullname = ?",
+					current_user.fullname,current_user.fullname,current_user.fullname,current_user.fullname,current_user.fullname]
+		#condition = ["apply_staff = ? or approving_officer = ? or two_approvers = ? or registration_staff = ? or write_off_staff = ?",
+#					current_user.username,current_user.username,current_user.username,current_user.username,current_user.username ]
 	else
 		condition_status = {:status => type}
 		if type == 10
