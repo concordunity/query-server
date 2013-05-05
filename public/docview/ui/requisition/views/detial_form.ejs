@@ -144,7 +144,7 @@
 	if($.inArray(action,['approval','approval_guan','register','write_off']) != -1){
 	%>
 		<%
-		if(action == 'approval' && (model.status == 10 || model.status == 21)){
+		if(action == 'approval' && model.status == 10 ){
 		%>
 			<b>审批关长:</b>
 			<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
