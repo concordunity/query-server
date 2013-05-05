@@ -114,6 +114,14 @@ steal(
 					data = data.aaData;
 					for(var i=0;i<data.requisitions.length;i++){
 						data.requisitions[i].requisition_details = data.requisition_details[i];	
+						var n = 0;	
+						var m = 0;	
+						for(var j=0;j<data.requisition_details[i].length;j++){
+							!data.requisition_details[i][j].is_check && n++ 
+							data.requisition_details[i][j].is_check && m++ 
+						}
+						data.requisitions[i].found_num = n;
+						data.requisitions[i].not_found_num = m;
 					}
 					return data.requisitions;
 				},
@@ -125,6 +133,7 @@ steal(
 					{ id:'department_name' , text:'科室名称' },
 					{ id:'requisition_details' , text:'报关单号' },
 					{ id:'storage_sites' , text:'存放地点' },
+					{ id:'found_num', text:'借阅有/无' },
 					{ id:'status' , text:'状态' },
 					{ id:null , text:'操作' }
 				],
@@ -611,8 +620,8 @@ steal(
 							//
 							rowModel.status = data.status;
 							console.log(data);
-							//if(data.reject_text)
-							//	rowModel.termination_instructions = data.reject_text;
+							if(data.reject_text)
+								rowModel.termination_instructions = data.reject_text;
 							
 							that.tableController.reload({
 								url:'/requisitions',
@@ -620,7 +629,7 @@ steal(
 								type:'get'
 							});
 							//reload.
-							//controller.setModelData(rowModel);
+							that.tableController.setModelData(rowModel);
 							log("system" ,{ current_action: "requisition_docs." +  data.from_action , describe: scene_lent_paper_documentJsonDictionary[ data.status ] } );
 						},
 						error:that.proxy('failure')
@@ -631,12 +640,16 @@ steal(
 				ev.preventDefault();
 				switch(action){
 					case 'approval':
+						data.reject_text = $("#requisition-docs input[name=reject_text]").val();
 						data.status = 31;//
 						break;
 					case 'approval_guan':
+						data.reject_text = $("#requisition-docs input[name=reject_text]").val();
 						data.status = 32;
 						break;
 				}
+				console.log('-------------');
+				console.log(data);
 				postData(data);
 			});
 			//同意
@@ -698,16 +711,40 @@ steal(
 			//打印
 			innerForm.find('.btn-print').click(function(ev){
 				ev.preventDefault();
+				//javascript:window.print();
+				//javascript:printpreview();
+				that.printPage("print_detial_form");
+				/*
 				Docview.Models.Requisition.printRequisition(data,function(url){
                     url = window.location.protocol + '//' + window.location.hostname  + '/' + url;
 					window.location.href=url;
 				},that.proxy('failure'));		
+				*/
 			});
 			innerForm.find('.btn-cancel').click(function(ev){
 				ev.preventDefault();
 				$(this).closest('tr').prev().show('slow');
 				$(this).closest('tr').remove();
 			});
+		},
+		printPage : function(id){
+			var needHTML = document.getElementById(id).innerHTML;
+			//alert(needHTML);
+			var OpenWindow = window.open("print.htm", "abc", "height=600, width=750, top=0, left=0,toolbar=no,menubar=no, scrollbars=no, resizable=no, location=no, status=no");
+			OpenWindow.document.write("<html>");
+			OpenWindow.document.write("<head>");
+			OpenWindow.document.write("<link href='/docview/bootstrap/bootstrap.css' rel='stylesheet' type='text/css' />");
+			OpenWindow.document.write("<link href='/docview/docview.css' rel='stylesheet' type='text/css' />");
+			OpenWindow.document.write("<link href='/docview/subnav/subnav.css' rel='stylesheet' type='text/css' />");
+			OpenWindow.document.write("<title>打印</title>");
+			OpenWindow.document.write("</head>");
+			OpenWindow.document.write("<body>");
+			OpenWindow.document.write(needHTML);
+			OpenWindow.document.write("</body>");
+			OpenWindow.document.write("</html>");
+			OpenWindow.document.close();
+			OpenWindow.document.location.reload();
+			OpenWindow.print();
 		},
 		'form.lending_statistics submit':function(el,ev){
 			ev.preventDefault();

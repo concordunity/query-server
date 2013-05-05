@@ -90,9 +90,13 @@ steal(
 	"form[name='upfile_form'] submit" : function(el,ev){
 		//ev.preventDefault();
 		var hasOK = false,error;
-		$([ $("#upload_file").val(),
+		$([ $("#upload_file_0").val(),
 			$("#upload_file_1").val(), 
-			$("#upload_file_2").val()]
+			$("#upload_file_2").val(), 
+			$("#upload_file_3").val(), 
+			$("#upload_file_4").val(), 
+			$("#upload_file_5").val(), 
+			$("#upload_file_6").val()]
 		).each(function(i,file){
 			//file name sign.
 			if(!!file){

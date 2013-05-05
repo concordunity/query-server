@@ -17,6 +17,7 @@ steal(
 	'docview/ui/paging',
 	'docview/ui/dictionary',
 	'libs/org_arr.js',
+	'docview/ui/pagingtable',
 	'docview/ui/dmstable',
 	'docview/ui/org'
 ).then(
@@ -47,6 +48,7 @@ steal(
 			this.element.find('.zero_org_applied').docview_ui_org({ name:'zero_org_applied', include: orgs,default_text:orgs.length > 0 ? null: '不限' });
 			this.element.find('.normal_org_applied').docview_ui_org({ name:'normal_org_applied', include: orgs,default_text:orgs.length > 0 ? null: '不限' });
 			this.element.find('.import_org_applied').docview_ui_org({ name:'import_org_applied', include: orgs,default_text:orgs.length > 0 ? null: '不限'});
+			this.element.find('.select_org').docview_ui_org({ name:'select_org', include: orgs,default_text:orgs.length > 0 ? null: '不限'});
 		},
 		'{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
 			if (newVal !== "search") {
@@ -86,6 +88,55 @@ steal(
 		    }
 		    log("system",{current_action: "search.search_condition", describe: message});
 		    return;
+		},
+		".high-risk click" : function(el,ev){
+			ev.preventDefault();	
+			this.createView();
+			$.createMask();
+			this.options.clientState.attr('searchMode', 'high-risk');
+			$("#search_results").hide();
+			that = this;
+			this.highRiskTableController.reload({
+				url:'/search_condition',
+				type:'get',
+				data: {"search_condition":$(el).attr("data-value") , "org_applied":$(el).closest("tr").find("select[name='select_org']").val()},
+				error: function(){
+					$.closeMask();		
+				},
+				success: function(){
+						var select_value = $(el).closest("tr").find("select[name='select_org']").val();
+						that.getMessage("high_risk_" + $(el).attr("data-value"),select_value);
+						$.closeMask();		
+				}
+			});
+			$("#search_results").show();
+			$("#second_results").hide();
+		},
+        createView : function() {
+		   this.element.find('#search_results').html("");
+		   this.highRiskTableController = this.element.find('#search_results').docview_ui_pagingtable({
+			   tmpl_path: "/docview/ui/search_some_condition/views/high_risk/col_",
+			   columns:[
+					{id: "hr_date", text: "日期" },
+					{id: "business_point", text: "业务点" },
+					{id: "number_customs", text: "海关编号" },
+					{id: "commodity_number", text: "商品项号" },
+					{id: "product_number", text: "商品编号" },
+					{id: "unit_price", text: "单价" },
+					{id: "spatial_index_impact", text: "空间指数影响度" },
+					{id: "actual_reference_price", text: "实际参考价格" }
+			   ]
+			   }).controller();
+			//	this.loadData();
+        },
+		loadData : function(){
+			console.log(" this is reload.....");
+			this.tableController.reload({
+				url:"/org_info",
+				type:"get",
+				data:{},
+				success:function(data){}
+				});	
 		},
 		".find-zero-rate click" : function(el,ev){
 			ev.preventDefault();	

@@ -3,6 +3,9 @@ class SearchConditionController < ApplicationController
 
   def search_condition
     #record_num = 20
+	logger.info "-------------"
+	logger.info  params[:search_condition].to_i
+	if  params[:search_condition].to_i < 3
     conditons = params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["org_applied = ?",params[:org_applied]]
     if params[:search_condition] == "normal_import_price_less_record"
       result = NormalImportPriceLessRecord.where(:exists_in_system => true).where(conditons)
@@ -24,6 +27,11 @@ class SearchConditionController < ApplicationController
       format.html # index.html.erb
       format.json { render json: @result }
     end
+	else
+        conditions = params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["subjection_org = ?",params[:org_applied]]
+		result = HighRisk.where(:table_type =>  params[:search_condition].to_i).where(conditions)
+		render json: filter_proc(result) 
+	end
   end
 
   def get_son_table 
@@ -59,4 +67,38 @@ class SearchConditionController < ApplicationController
 	end
 	return result_arr
   end  
+
+  def filter_proc(source) 
+	#字段数量
+ 	  column_count = params[:iColumns]
+#
+#排序的下标
+	  iSortCol_0 = params[:iSortCol_0]	  
+#排序的方式
+	  sSortDir_0 = params[:sSortDir_0]	  
+#搜索内容
+	  sSearch = params[:sSearch]
+#排序的字段
+	  mDataPro = params["mDataProp_" + iSortCol_0]
+	  logger.info "we are searching for #{sSearch}, then we may sort columns by #{mDataPro} #{sSortDir_0}"
+	  condition_arr = [] 
+	  if sSearch.blank?
+		condition_arr << "true"
+	  else
+        (0 ... column_count.to_i - 1).each do |cc|
+				condition_arr << "#{ params["mDataProp_" + cc.to_s]} like '%#{sSearch}%'"
+		end
+	  end
+      logger.info "================" 
+      logger.info condition_arr 
+      logger.info "=======1=#{mDataPro} #{sSortDir_0}"	
+	  orders = "#{mDataPro} #{sSortDir_0}"
+      logger.info "=======0=#{orders}"	
+      current_page = (params[:iDisplayStart].to_i / params[:iDisplayLength].to_i rescue 0) + 1
+	  condition = {:orders =>orders,:where=>condition_arr.join(" OR "),:page=> current_page,:per_page => params[:iDisplayLength],:sEcho => params[:sEcho].to_i }
+      logger.info "=======1=#{condition[:orders]}"	
+	  result = source.where(condition[:where]).reorder(condition[:orders]).paginate(:page => condition[:page], :per_page => condition[:per_page] )
+	  return { sEcho: params[:sEcho].to_i, iTotalRecords: source.count, iTotalDisplayRecords: result.count, aaData: result}
+  end
+
 end

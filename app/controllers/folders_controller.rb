@@ -45,7 +45,7 @@ class FoldersController < ApplicationController
 
     unless folder_id.blank?
         @folder_old = Folder.find(folder_id)
-	@folder.id = @folder_old.id unless @folder_old.nil? 
+		@folder.id = @folder_old.id unless @folder_old.nil? 
     end
 
 

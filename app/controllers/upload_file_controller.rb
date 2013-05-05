@@ -149,6 +149,69 @@ class UploadFileController < ApplicationController
   end
 
   def import_excel
+	result = {:message => []}
+	params[:url_time_path] = Time.now.to_i.to_s	
+	params[:doc_ids] = []
+	#Document.order("doc_id").find_each {|d| params[:doc_ids]<< d.doc_id }
+	dialog_path = File.join(Rails.root,"public","docview","export_data",current_user.username)
+	dialog_path_end = File.join(Rails.root,"public","docview","export_data",current_user.username+".end")
+    system("touch #{dialog_path}")
+
+    status = {1 => "上传失败,请选择一个文件上传。", 2 => "导入失败,请查检上传文档格式是否正确", 3 => "导入成功",
+				:upload_file_0 => "月查获率为0的重点查验企业", 
+				:upload_file_1 => '一般贸易进口价格偏低报关单记录文档', 
+				:upload_file_2 => "进口通关时间超长报关单文档",
+				:upload_file_3 => "一般贸易进口价格影响度较大报关单",
+				:upload_file_4 => "一般贸易出口价格影响度较大报关单",
+				:upload_file_5 => "料件内销进口价格影响度较大报关单",
+				:upload_file_6 => "料件加贸进口价格影响度较大报关单" }
+
+    message = [] 
+	function_table = {:upload_file_0 => "zero_find_check_info",
+					  :upload_file_1 => "normal_import_price_less_record",
+					  :upload_file_2 => "import_most_time_org_doc_info",
+					  :upload_file_3 => "upload_file_3",
+					  :upload_file_4 => "upload_file_4",
+					  :upload_file_5 => "upload_file_5",
+					  :upload_file_6 => "upload_file_6" }
+
+	begin
+		tag = false
+		7.times do |i|
+			tag = true unless params[("upload_file_" + i.to_s).to_sym].nil?
+		end
+		logger.info "=========开始======="
+		if tag 
+			7.times do |i|
+				tmp_name = ("upload_file_" + i.to_s)
+				unless params[tmp_name.to_sym].nil?
+					logger.info "========当前文件#{tmp_name}========"
+					logger.info "tmp_result = send(#{function_table[tmp_name.to_sym]},params[#{tmp_name.to_sym}])" 
+					tmp_result = send(function_table[tmp_name.to_sym].to_s,params[tmp_name.to_sym]) 
+					logger.info tmp_result
+					if tmp_result[:status]
+						logger.info "  ----success-----"
+						message << ("#{status[tmp_name.to_sym]}#{status[3]}")
+					else
+						logger.info "  ----error-----"
+						message << (status[tmp_name.to_sym] + status[2])
+					end
+				end
+			end
+		else
+			message << status[1] 
+		end
+		logger.info "========结束========"
+	rescue => e
+		message << status[2] 
+	end
+    write_to_file(dialog_path,message.join(" "))
+	system("touch #{dialog_path_end}")
+    logger.info message.join(" ")
+    render :nothing => true 
+  end
+
+  def import_excel_old
 	logger.info "===========进入import_excel方法体内====="
     result = {}
     result[:message] = []
@@ -218,6 +281,68 @@ class UploadFileController < ApplicationController
     #render json: {:status => 200,:message => result}
   end
 
+  def get_doc_ids(doc_id)
+	return Document.find_by_doc_id(doc_id)
+  end
+
+  def upload_file_3(data)
+	update_date_upload(data,3)
+  end
+  def upload_file_4(data)
+	update_date_upload(data,4)
+  end
+  def upload_file_5(data)
+	update_date_upload(data,5)
+  end
+  def upload_file_6(data)
+	update_date_upload(data,6)
+  end
+
+  def update_date_upload(upload_file_name,num)
+	logger.info "============"
+	 result = {}
+    resutl_format_data = return_format_data(upload_file_name)
+    if resutl_format_data[:status] == true
+      tmp_arr = []
+
+      begin 
+      HighRisk.transaction do
+        resutl_format_data[:data].each do |row|
+          HighRisk.new do |hr|
+			hr.hr_date = row[0]
+			hr.business_point = row[1]
+			hr.subjection_org = row[2][0,4]#业务点
+			hr.number_customs = row[2]
+			hr.org = row[2][0,4]#关区号
+			hr.commodity_number = row[3]
+			hr.product_number = row[4]
+			hr.unit_price = row[5]
+			hr.spatial_index_impact = row[6]
+			hr.actual_reference_price = row[7]
+			hr.exists_in_system = false#是否存在
+			hr.table_type = num
+			if get_doc_ids(hr.number_customs.to_s)
+              hr.exists_in_system = true
+            end
+            tmp_arr << hr 
+          end
+        end
+		logger.info "=====destroy======="
+		HighRisk.delete_all(:table_type => num)
+		logger.info "====import========"
+		HighRisk.import tmp_arr
+		result[:status] = true 
+      end
+      rescue => e
+        logger.info e
+		result[:status] = false
+      end
+    else
+      result[:status] = false
+    end
+    return result	
+  end
+
   def zero_find_check_info(upload_file_name)
     result = {}
     resutl_format_data = return_format_data(upload_file_name)
@@ -241,7 +366,7 @@ class UploadFileController < ApplicationController
             zfci.date_value = row[9]
             zfci.org_applied=row[5][0,4]
             zfci.exists_in_system = false
-            if doc_ids.include?(zfci.declarations_number.to_s)
+            if get_doc_ids(zfci.declarations_number.to_s)
               zfci.exists_in_system = true
             end
             #zfci.save
@@ -256,10 +381,11 @@ class UploadFileController < ApplicationController
         #TemporaryZero.destroy_all
 		result[:status] = true 
         result[:message] = "成功导入‘查获率为0的重点查验企业’表"
+		logger.info result
       end
       rescue => e
         logger.info e
-	result[:status] = false
+		result[:status] = false
         result[:message] = "'查获率为0的重点查验企业'表，导入失败，请检查下文档格式"
       end
     else
@@ -267,6 +393,7 @@ class UploadFileController < ApplicationController
       result[:message] = "'查获率为0的重点查验企业'表，导入失败，请检查下文档格式"
     end
 
+	logger.info result
     return result	
   end
 
@@ -294,7 +421,7 @@ class UploadFileController < ApplicationController
 
             niplr.org_applied=row[1][0,4]
             niplr.exists_in_system = false
-            if doc_ids.include?(niplr.declarations_number.to_s)
+            if get_doc_ids(niplr.declarations_number.to_s)
               niplr.exists_in_system = true
             end
 
@@ -345,7 +472,7 @@ class UploadFileController < ApplicationController
 		      imtodi.declaration_customs = row[6]
 		      imtodi.org_applied=row[0][0,4]
 		      imtodi.exists_in_system = false
-		      if doc_ids.include?(imtodi.declarations_number.to_s)
+			  if get_doc_ids(imtodi.declarations_number.to_s)
 		          imtodi.exists_in_system = true
 		      end
 		      #imtodi.save

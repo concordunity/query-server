@@ -1,5 +1,6 @@
 <select name='kz_user' class='' style="margin-bottom:0px;" >
 <option value=""></option>
+<option value="">暂不指定</option>
 <% for(var i=0;i<this.kz_users.length;i++){%>
 		<option value="<%= this.kz_users[i].username%>"><%= this.kz_users[i].fullname%>(<%= this.kz_users[i].username %>)</option>
 <%}%>

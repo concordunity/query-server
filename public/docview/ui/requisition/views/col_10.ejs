@@ -1,0 +1,20 @@
+<button id="approval" class="btn btn-mini detial-row"><i class="icon-search icon-blue"></i>
+
+<%
+	var action = $.route.attr('subcategory');
+	switch(action){
+		case 'approval':
+		case 'approval_guan':
+			%>审批<%
+			break;
+		case 'register':
+			%>登记<%
+			break;
+		default:
+			%>详细信息<%
+			break;
+	}
+%>
+
+
+</button>

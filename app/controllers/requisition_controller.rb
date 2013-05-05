@@ -137,7 +137,7 @@ class RequisitionController < ApplicationController
 					#r.serial_number = diname + Time.now.strftime("%Y%m%d")+ format("%05d",rand(10000))
 					rs = Requisition.where(:org => current_user.subjection_org).where(["year(created_at) = ?",DateTime.now.year]).count
 					r.serial_number = current_user.subjection_org + Time.now.strftime("%Y")+ format("%05d",rs)
-					r.status = 21 
+					r.status = params[:approving_officer].blank? ? 21 : 10 
 					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end
 				logger.info "=== second ====" 
@@ -637,7 +637,7 @@ class RequisitionController < ApplicationController
 	if type.nil?
 		condition_status = ["('status' is not null AND status <> 20)"]
 		condition = ["apply_staff = ? or approving_officer_fullname = ? or two_approvers_fullname = ? or registration_staff_fullname = ? or write_off_staff_fullname = ?",
-					current_user.fullname,current_user.fullname,current_user.fullname,current_user.fullname,current_user.fullname]
+					current_user.username,current_user.fullname,current_user.fullname,current_user.fullname,current_user.fullname]
 		#condition = ["apply_staff = ? or approving_officer = ? or two_approvers = ? or registration_staff = ? or write_off_staff = ?",
 #					current_user.username,current_user.username,current_user.username,current_user.username,current_user.username ]
 	else

@@ -641,6 +641,15 @@ class DocumentsController < ApplicationController
 
     respond_to do |format|
       if @document.save
+		  dsn = @document.serial_number
+		  if !dsn.nil? && dsn[0,1].upcase == "B"  
+		      rd = RequisitionDetail.find_by_single_card_number(@document.doc_id)  
+			  if rd
+			      rd.status = 1
+				  rd.save
+			  end
+		  end
+		
         format.html { redirect_to @document, notice: 'Document was successfully created.' }
         format.json { render json: @document, status: :created, location: @document }
       else
