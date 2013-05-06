@@ -29,7 +29,7 @@ class SearchConditionController < ApplicationController
     end
 	else
         conditions = params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["subjection_org = ?",params[:org_applied]]
-		result = HighRisk.where(:table_type =>  params[:search_condition].to_i).where(conditions)
+		result = HighRisk.where(:table_type =>  params[:search_condition].to_i,:exists_in_system => true).where(conditions)
 		render json: filter_proc(result) 
 	end
   end
