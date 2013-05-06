@@ -130,6 +130,7 @@ steal(
 				"aaSorting": options.sort,
 				"oSearch": options.search,
 				"aoColumns": options.aoColumns,	
+				//"aLengthMenu": [10, 25, 50, 100,500,1000],
 				"oLanguage" : {
                     "sUrl" : options.language_url 
                 },

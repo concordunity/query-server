@@ -103,9 +103,10 @@ steal(
 				error: function(){
 					$.closeMask();		
 				},
-				success: function(){
+				success: function(data){
 						var select_value = $(el).closest("tr").find("select[name='select_org']").val();
 						that.getMessage("high_risk_" + $(el).attr("data-value"),select_value);
+						$('#search_pages').docview_ui_paging('showPages',data.aaData); 
 						$.closeMask();		
 				}
 			});
@@ -119,12 +120,13 @@ steal(
 			   columns:[
 					{id: "hr_date", text: "日期" },
 					{id: "business_point", text: "业务点" },
-					{id: "number_customs", text: "海关编号" },
+					{id: "number_customs", text: "报关单编号" },
 					{id: "commodity_number", text: "商品项号" },
 					{id: "product_number", text: "商品编号" },
 					{id: "unit_price", text: "单价" },
 					{id: "spatial_index_impact", text: "空间指数影响度" },
-					{id: "actual_reference_price", text: "实际参考价格" }
+					{id: "actual_reference_price", text: "实际参考价格" },
+					{id: null, text: "操作" }
 			   ]
 			   }).controller();
 			//	this.loadData();
@@ -137,6 +139,10 @@ steal(
 				data:{},
 				success:function(data){}
 				});	
+		},
+		"button click":function(el,ev){
+			var text = el.closest('tr').find('.search-option').text();	
+			$('#showTitle').addClass('alert alert-info').text(text);
 		},
 		".find-zero-rate click" : function(el,ev){
 			ev.preventDefault();	
@@ -256,7 +262,7 @@ steal(
 			//unmask , loading success .
 			$.closeMask();
 			//scroll to view ..	
-			Scroller.scrollTo('search_results',800);
+			Scroller.scrollTo('showTitle',800);
 		},
 		normal_import_record : function(data){
 		/*
@@ -332,7 +338,7 @@ steal(
 			$('#search_pages').docview_ui_paging('showPages',data); 
 			this.setTagVal("normal_import_price_less_record");
 			 
-			Scroller.scrollTo('search_results',800);
+			Scroller.scrollTo('showTitle',800);
 			$.closeMask();
 		},
 		import_most_time : function(data){
@@ -406,7 +412,7 @@ steal(
 
 				$('#search_pages').docview_ui_paging('showPages',data); 
 				this.setTagVal("import_most_time_org_doc_info"); 
-				Scroller.scrollTo('search_results',800);
+				Scroller.scrollTo('showTitle',800);
 				$.closeMask();
 			},
 			'li a.docview-paging click' : function(el,ev) { 
@@ -436,32 +442,43 @@ steal(
 			'td a click': function(el, ev) {
 				ev.preventDefault();
 				var son_table = $(el).attr("class");
+				var that = this;
 				//console.log(son_table);
 				var document = el.closest('tr').model();
-				if(son_table == "son_table"){
-					that = this;
-					this.options.clientState.attr('searchMode', 'high-risk');
-					Docview.Models.Monitoring.getSearchData({"urlValue":"/get_son_table","typeValue":"get"},{"operating_name":document.operating_name,"org_applied": $("select[name='zero_org_applied']").val()},
-					//this.proxy("setSonTable"),
-					function(data){
-					    var sv =  $("select[name='zero_org_applied']").val();	
-					    var message = "查阅公司为"+ document.operating_name + ",搜索关区";	
-					    if (sv == ""){
-						message = message + "不限"; 	
-					    }else {
-
-						message = message + sv; 	
-					    } 
-					    log("system",{current_action: "search.search_condition", describe: message});
-					    that.setSonTable(data);
-					},
-					{});
-
-				}else{
-					console.log(document.declarations_number);
-					$.route.attrs({category: 'document', id: document.declarations_number}, true);
-					$('#document-details').docview_ui_details('queryDoc', document.declarations_number);
-					$('#search-box').hide();
+				switch(son_table){
+					case "son_table":
+						this.options.clientState.attr('searchMode', 'high-risk');
+						Docview.Models.Monitoring.getSearchData({"urlValue":"/get_son_table","typeValue":"get"},
+						{"operating_name":document.operating_name,"org_applied": $("select[name='zero_org_applied']").val()},
+						//this.proxy("setSonTable"),
+						function(data){
+							var sv =  $("select[name='zero_org_applied']").val();	
+							var message = "查阅公司为"+ document.operating_name + ",搜索关区";	
+							if (sv == ""){
+								message = message + "不限"; 	
+							}else {
+								message = message + sv; 	
+							} 
+							log("system",{current_action: "search.search_condition", describe: message});
+							that.setSonTable(data);
+						},
+						{});
+						break;
+					case "high_risk_btn":
+						var row = this.highRiskTableController.getRowFrom(el);
+						document = row.model;
+						//console.log(document);
+						document.declarations_number = document.number_customs;
+					//break;
+					default:
+						console.log(document.declarations_number);
+						$.route.attrs({category: 'document', id: document.declarations_number}, true);
+						$('#document-details').docview_ui_details('queryDoc', document.declarations_number);
+						$("#search-some-conditions").hide();
+						//$('#search-box').hide();
+						//$("#search_results").hide();
+						//$("#second_results").hide();	    
+						break;
 				}
 			},
 			setSonTable : function(data){
