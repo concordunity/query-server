@@ -1,0 +1,18 @@
+ <!-- Modal -->
+ <div id="check_user" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-header">
+	    <h3 id="myModalLabel">发现账户更改</h3>
+		</div>
+		<div class="modal-body">
+			<p>喔 ! , 您使用 <b><%= this.old_user.fullname %></b> 登陆了系统 , 但是我们发现浏览器正在使用另一账户 <b><%= this.new_user.fullname %></b> 访问数据,为了保证您的系统安全性,我们需要确认您的身份,您可以: </p>
+			<ul>
+				<li><b>注销</b>并使用您之前的账户登陆</li>
+				<li><b>重新登陆</b>并保留最后一次的登陆账户</li>
+			</ul>
+			<div class="alert alert-info" >出现该提示是由于您在当前浏览器中登陆了多个账户引起的,如果您对该提示产生疑问,请您联系系统管理人员.</div>
+		</div>
+		<div class="modal-footer">
+		<button class="btn btn-logout" data-dismiss="modal" aria-hidden="true">注销</button>
+		<button class="btn btn-primary btn-reload">重新登陆</button>
+	</div>
+</div>

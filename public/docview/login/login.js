@@ -23,6 +23,7 @@ steal(
     'docview/ui/export_query',
     'docview/stats/group',
     'docview/stats/search',
+    'docview/ui/check_user',
     'docview/ui/upload_user',
     './login.css'
 ).then(
@@ -150,6 +151,7 @@ steal(
 	storeAccessList: function(permissions) {
 	    // Store user info first
 	    this.options.clientState.attr('user', permissions );
+		window.user = permissions;
 	    $('#user-info-display').html("当前登录用户 : " + permissions.fullname);
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {
@@ -369,6 +371,7 @@ steal(
 				message: this.options.clientState.attr('user').attr('fullname') + login_info
 			});
 	    	$("#alerts").docview_ui_index({clientState: this.options.clientState, userInfo :  user_info });
+			$('#check_user').docview_ui_check_user();
             
             // TODO: Reload the route so the right thing shows up.
         }

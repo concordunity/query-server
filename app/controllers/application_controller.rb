@@ -188,7 +188,7 @@ class ApplicationController < ActionController::Base
   def check_user!
     session_expiry
     if authenticate_user!
-      return true;
+      return true
     end
 
     unless user_signed_in?

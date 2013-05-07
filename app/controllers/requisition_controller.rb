@@ -136,7 +136,7 @@ class RequisitionController < ApplicationController
 					#diname = DictionaryInfo.find_by_dic_type_and_dic_num("org",current_user.subjection_org).dic_name
 					#r.serial_number = diname + Time.now.strftime("%Y%m%d")+ format("%05d",rand(10000))
 					rs = Requisition.where(:org => current_user.subjection_org).where(["year(created_at) = ?",DateTime.now.year]).count
-					r.serial_number = current_user.subjection_org + Time.now.strftime("%Y")+ format("%05d",rs)
+					r.serial_number = current_user.subjection_org + Time.now.strftime("%Y")+ format("%05d",rs+1)
 					r.status = params[:approving_officer].blank? ? 21 : 10 
 					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
 				end
@@ -635,6 +635,7 @@ class RequisitionController < ApplicationController
 		condition_org = {:org => orgs}	
 	end
 	if type.nil?
+		condition_org =  ["'org' is not null"]	
 		condition_status = ["('status' is not null AND status <> 20)"]
 		condition = ["apply_staff = ? or approving_officer_fullname = ? or two_approvers_fullname = ? or registration_staff_fullname = ? or write_off_staff_fullname = ?",
 					current_user.username,current_user.fullname,current_user.fullname,current_user.fullname,current_user.fullname]
@@ -642,6 +643,7 @@ class RequisitionController < ApplicationController
 #					current_user.username,current_user.username,current_user.username,current_user.username,current_user.username ]
 	else
 		condition_status = {:status => type}
+		condition_org = ["'org' is not null"] if type == 13	
 		if type == 10
 			condition = ["('status' is not null AND status <> 20) AND (approving_officer = ?)",current_user.username]
 		elsif type == 11

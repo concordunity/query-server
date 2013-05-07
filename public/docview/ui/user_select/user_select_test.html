@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>user_select Widget Unit Test</title>
+</head>
+<body>
+
+  <div class="container-fluid">
+  <div class="row-fluid">
+    <div id="user_select-test" data-type="gld_users" >  </div>
+  </div>
+  </div>
+ <script type='text/javascript' src='../../../steal/steal.js'></script>
+ <script type='text/javascript'>
+steal('jquery/dom/route', 'docview/ui/user_select').then(function($) {
+
+   $('#user_select-test').docview_ui_user_select();
+
+ }); 
+ </script>
+        </body>
+</html>
+

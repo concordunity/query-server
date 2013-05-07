@@ -3,6 +3,10 @@ class AccountsController < ApplicationController
 
   respond_to  :json
   
+  def get_user_info
+	render json: current_user
+  end
+
   def index 
     r = Role.find_by_name('admin')
     @users = User.where(["id not in (?)", r.users.collect(&:id)]).order(:updated_at)

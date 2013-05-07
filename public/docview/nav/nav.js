@@ -103,17 +103,17 @@ steal(
             }
         },
         '.logout a click': function(el, ev) {
+	    if (!confirm("您确定要退出登录吗？")) {
             ev.preventDefault();
-	    if (confirm("您确定要退出登录吗？")) {
 		//log("system",{current_action: "system.logout", describe: "成功退出系统。"});
-		Docview.Models.User.logout(
-                    function() {
-			window.location = "/docview/docview.html";
-                    },
-                    function() {
+		//Docview.Models.User.logout(
+          //          function() {
+			//window.location = "/docview/docview.html";
+              //      },
+                //    function() {
 			//console.log('Error');
-                    }
-		);
+         //           }
+		//);
 	    }
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {

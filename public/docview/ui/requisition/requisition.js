@@ -13,6 +13,7 @@ steal(
 	'docview/ui/dmstable',
 	'docview/ui/daterange',
 	'docview/ui/pagingtable',
+	'docview/ui/user_select',
 	'docview/ui/org'
 ).then(
     'libs/json2.js',
@@ -33,19 +34,11 @@ steal(
     './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.requisition', {}, {
-        init : function() {
-			Docview.Models.User.getUserSelect({},this.proxy("userSelect"),this.proxy("failure"));
-			this.roles = this.options.clientState.attr('user').roles;
-		},
-		userSelect : function(data){
-			this.kz_users = data.kz_users;
-			this.gld_users = data.gld_users;
-			this.initFunction();
-		},
-		initFunction : function(){
+		init : function(){
 			//this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
 			//this.tableController = this.element.find('.user-list').controller();
 		   this.filter_tag = undefined;
+			this.roles = this.options.clientState.attr('user').roles;
 //		   this.kz_users = undefined;
 //		   this.gld_users = undefined;
 		   this.comment_dic = commentsArrayDictionary;
@@ -73,6 +66,7 @@ steal(
 		   var user = this.options.clientState.attr('user');
 		   var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
 		   this.element.find('.org').docview_ui_org({ name:'org', include:orgs , default_text:orgs.length > 0 ? null: '不限' });
+		   this.element.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' },{username:'',fullname:'暂不指定'} ] });
 			/*
 			var application_table_options = {
 				aaData: [],
@@ -137,7 +131,7 @@ steal(
 					{ id:'status' , text:'状态' },
 					{ id:null , text:'操作' }
 				],
-				sort:[[0,"desc"]]
+				sort:[[1,"desc"]]
 			}).controller();	
 
 		/*	
@@ -488,7 +482,11 @@ steal(
 			var requisition_details = []; 
 			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
-			var approving_officer = el.find("select[name=kz_user]").val();
+			var kz_user = el.find('select[name=kz_users]');
+			if(!kz_user.find('option:eq(0)').text() && !kz_user.val()){
+				$.alertMessage(that,{msg:'请确认审批人员'});
+				return;
+			}
 			var lbl_wait = el.find('label.lbl-wait');
 			var allow_return = false;
 			if(!application_originally){
@@ -504,12 +502,14 @@ steal(
 						lbl_wait.text("正在验证报关单号码,请稍候提交.").show('slow');
 						return;//ing
 					case 200:
+						/*
 						if(!$.trim($wallper.find("input[name=rationale_single_number]").val())){
 							$wallper.find("input[name=rationale_single_number]").focus();
 							lbl_wait.text("理单号不能为空.").show('slow');
 							allow_return = true;
 							return;
 						}
+						*/
 						requisition_details.push({
 							"single_card_number" 			: $wallper.find("input[name='single_card_number']").val(),
 							"rationale_single_number"		: $wallper.find("input[name=rationale_single_number]").val()
@@ -531,7 +531,7 @@ steal(
 			var requisition = {
 				type: action,
 				application_originally : application_originally,
-				approving_officer:approving_officer ,
+				approving_officer: kz_user.val(),
 				department_name: department_name,
 				requisition_details: requisition_details
 			};
@@ -544,6 +544,7 @@ steal(
 					while((el.find(".requisition_detail_form tr:eq(2)").remove()).size() > 0){
 					}
 					el.find('.tips').hide();
+					//$('.user_select').docview_ui_user_select();
 				}else {
 					$.alertMessage(that,{msg:'申请单添加失败',title:'提示信息',type:'error'});
 				}
@@ -598,9 +599,9 @@ steal(
 			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action});
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
-
-			var kz_user = innerForm.find('select[name=kz_user]');
-			var gld_user = innerForm.find('select[name=gld_user]');
+			innerForm.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' },{username:'',fullname:'暂不指定'} ] });
+			if(action == 'approval')
+				innerForm.find('.gld_user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' } ] });
 
 			var data = {
 				id:rowModel.id,//数据ID
@@ -619,7 +620,6 @@ steal(
 							innerForm.remove();
 							//
 							rowModel.status = data.status;
-							console.log(data);
 							if(data.reject_text)
 								rowModel.termination_instructions = data.reject_text;
 							
@@ -629,28 +629,32 @@ steal(
 								type:'get'
 							});
 							//reload.
-							that.tableController.setModelData(rowModel);
+							//that.tableController.setModelData(rowModel);
 							log("system" ,{ current_action: "requisition_docs." +  data.from_action , describe: scene_lent_paper_documentJsonDictionary[ data.status ] } );
+							console.log(data);
 						},
 						error:that.proxy('failure')
 					});
 			};
 			//拒绝
-			innerForm.find('.btn-reject').click(function(ev){
-				ev.preventDefault();
-				switch(action){
-					case 'approval':
-						data.reject_text = $("#requisition-docs input[name=reject_text]").val();
-						data.status = 31;//
-						break;
-					case 'approval_guan':
-						data.reject_text = $("#requisition-docs input[name=reject_text]").val();
-						data.status = 32;
-						break;
+			innerForm.find('.btn-reject').popinput({
+				callback:function(text){
+					//console.log(arguments);
+					//ev.preventDefault();
+					data.reject_text = text;//$("#requisition-docs input[name=reject_text]").val();
+					switch(action){
+						case 'approval':
+							data.status = 31;//
+							break;
+						case 'approval_guan':
+							data.status = 32;
+							break;
+						case 'write_off':
+							data.status = 33;
+							break;
+					}
+					postData(data);
 				}
-				console.log('-------------');
-				console.log(data);
-				postData(data);
 			});
 			//同意
 			innerForm.find('.btn-accept').click(function(ev){
@@ -663,7 +667,12 @@ steal(
 				*/
 				switch(action){
 					case 'approval':
-						data.status = 11;
+						var gld_user = innerForm.find('select[name=gld_users]');
+						if(!gld_user.find('option:eq(0)').text() && !gld_user.val()){
+							$.alertMessage(that,{msg:'请确认审批人员'});
+							return;
+						}
+						data.status = ((data.two_approvers = gld_user.val()) == '') ? 22 : 11;
 						data.two_approvers = gld_user.val();
 						break;
 					case 'approval_guan':
@@ -694,10 +703,20 @@ steal(
 				switch(rowModel.status){
 					case 10:
 					case 21:
+						var kz_user = innerForm.find('select[name=kz_users]');
+						if(!kz_user.find('option:eq(0)').text() && !kz_user.val()){
+							$.alertMessage(that,{msg:'请确认审批人员'});
+							return;
+						}
 						data.status = ((data.approving_officer = kz_user.val()) == '') ? 21 : 10;
 						break;
 					case 11:
 					case 22:
+						var gld_user = innerForm.find('select[name=gld_users]');
+						if(!gld_user.find('option:eq(0)').text() && !gld_user.val()){
+							$.alertMessage(that,{msg:'请确认审批人员'});
+							return;
+						}
 						data.status = ((data.two_approvers = gld_user.val()) == '') ? 22 : 11;
 						break;
 				}
@@ -730,7 +749,8 @@ steal(
 		printPage : function(id){
 			var needHTML = document.getElementById(id).innerHTML;
 			//alert(needHTML);
-			var OpenWindow = window.open("print.htm", "abc", "height=600, width=750, top=0, left=0,toolbar=no,menubar=no, scrollbars=no, resizable=no, location=no, status=no");
+			var OpenWindow = window.open("print.htm", "print", "");
+			//var OpenWindow = window.open("print.htm", "abc", "height=600, width=750, top=0, left=0,toolbar=no,menubar=no, scrollbars=no, resizable=no, location=no, status=no");
 			OpenWindow.document.write("<html>");
 			OpenWindow.document.write("<head>");
 			OpenWindow.document.write("<link href='/docview/bootstrap/bootstrap.css' rel='stylesheet' type='text/css' />");
@@ -739,7 +759,14 @@ steal(
 			OpenWindow.document.write("<title>打印</title>");
 			OpenWindow.document.write("</head>");
 			OpenWindow.document.write("<body>");
+			OpenWindow.document.write("<div>");
+		   var subjection_org = this.options.clientState.attr('user').subjection_org;
+			OpenWindow.document.write("<h1>"+ orgJsonDictionary[subjection_org] +"电子化申请单</h1>");
+			OpenWindow.document.write("<hr />");
+			OpenWindow.document.write("</div>");
+			OpenWindow.document.write("<div>");
 			OpenWindow.document.write(needHTML);
+			OpenWindow.document.write("</div>");
 			OpenWindow.document.write("</body>");
 			OpenWindow.document.write("</html>");
 			OpenWindow.document.close();
@@ -765,6 +792,12 @@ steal(
 			Docview.Models.Requisition.lendingStatisticsList(data,function(list){
 				that.lendingStatisticsController.setModelData(list);	
 			},that.proxy('failure'));		
+		},
+		'.require_select focus':function(el,ev){
+			var firstOption = el.find('option:eq(0)');
+			if(!firstOption.text()  && !firstOption.val() ){
+				firstOption.remove();   
+			}
 		},
 		failure:function(jqXHR, textStatus, errorThrown){
 			var type,msg;

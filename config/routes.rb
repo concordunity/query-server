@@ -1,5 +1,6 @@
 Dms::Application.routes.draw do
 
+  get "/get_user_info" => "accounts#get_user_info"
   get "org_info/index"
   get "/org_info" => "OrgInfo#index"
   post "/org_info/create" => "OrgInfo#create"

@@ -20,7 +20,7 @@
 </tr>
 <tr>
 	<td>存档地点:</td>
-	<td><span class='label'><%= orgJsonDictionary[model.storage_sites]  %></span></td> 
+	<td><span class=''><%= orgJsonDictionary[model.storage_sites]  %></span></td> 
 	<td>借阅单证数量:</td>
 	<%
 		var n = 0;
@@ -34,19 +34,19 @@
 </tr>
 <tr>
 	<td>申请人员:</td>
-	<td><%= model.apply_staff_fullname || '' %></td>
+	<td><%= model.apply_staff_fullname == null ? '': model.apply_staff + "(" + model.apply_staff_fullname +")" %></td>
 	<td>申请时间:</td>
 	<td><%= $.date(model.created_at).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
 	<td>审批科长:</td>
-	<td><%= model.approving_officer_fullname || ''  %></td>
+	<td><%= model.approving_officer_fullname == null ? '': model.approving_officer + "("+ model.approving_officer_fullname  +")"  %></td>
 	<td>科长审批时间:</td>
 	<td><%= $.date(model.approval_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
 	<td>审批关长:</td>
-	<td><%= model.two_approvers_fullname || ''  %></td>
+	<td><%= model.two_approvers_fullname == null ? '': model.two_approvers + "("+ model.two_approvers_fullname  +")"  %></td>
 	<td>关长审批时间:</td>
 	<td><%= $.date(model.two_approver_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
@@ -61,14 +61,14 @@
 
 <tr>
 	<td>档案管理人员:</td>
-	<td><%= model.registration_staff_fullname || '' %></td>
-	<td>档案管理时间:</td>
+	<td><%= model.registration_staff_fullname == null ? '': model.registration_staff + "("+ model.registration_staff_fullname  +")" %></td>
+	<td>档案登记时间:</td>
 	<td><%= $.date(model.check_in_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 
 <tr>
 	<td>核销人员:</td>
-	<td><%= model.write_off_staff_fullname || '' %></td>
+	<td><%= model.write_off_staff_fullname == null ? '': model.write_off_staff + "("+ model.write_off_staff_fullname  +")" %></td>
 	<td>核销时间:</td>
 	<td><%= $.date(model.write_off_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
@@ -83,29 +83,29 @@
 			<th>报关单号</th>
 			<th>理单号码</th>
 			<th>状态</th>
-			<% if(($.inArray(model.status,[13,14]) != -1)){ %><th>查无此单</th><% } %>
+			<% if(($.inArray(model.status,[13,14]) != -1 || action == 'register')){ %><th>查无此单</th><% } %>
 		</tr>
 	<tbody>
 	<% 
 		var t = 0;
 		for(var j = 0; j < model.requisition_details.length; j++) { %>
-		<tr>
-			<td><span class="label"><%= model.requisition_details[j].single_card_number%></span></td>
-			<td><span class="label"><%= model.requisition_details[j].rationale_single_number%> </span></td>
-			<td><span class="label"><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>
-			<%
-				if(action == 'register'){
-					%><td><input type="checkbox" value='<%= model.requisition_details[j].id %>' /></td><%	
-				}else if($.inArray(model.status,[13,14]) != -1){
+		<tr class='<%= !!!model.requisition_details[j].is_check ? "" : "noprint" %>'>
+			<td><span class=""><%= model.requisition_details[j].single_card_number%></span></td>
+			<td><span class=""><%= model.requisition_details[j].rationale_single_number%> </span></td>
+			<td><span class=""><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>
+			<td> 
+			<% if(action == 'register'){ %>
+				<input type="checkbox" value='<%= model.requisition_details[j].id %>' />
+			<%	}else if($.inArray(model.status,[13,14]) != -1){
 					var is_checked = model.requisition_details[j].is_check;
 					is_checked && t++;
 					%>
-					<td><input type="checkbox" value='<%= model.requisition_details[j].id %>' <%= is_checked ? 'checked' : ''  %> disabled='disabled'  /></td>
+					<input type="checkbox" value='<%= model.requisition_details[j].id %>' <%= is_checked ? 'checked' : ''  %> disabled='disabled'  />
 				<%}else{ %>
-					<td></td>
+					
 			<%	} 
 			%>
-			
+			</td>
 		</tr>
 	<% } %>
 	</tbody>
@@ -138,7 +138,6 @@
 	
 
 	<br />
-	<br />
 	<!-- Accept -->
 	<%
 	if($.inArray(action,['approval','approval_guan','register','write_off']) != -1){
@@ -147,9 +146,7 @@
 		if(action == 'approval' && model.status == 10 ){
 		%>
 			<b>审批关长:</b>
-			<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>
-			退回理由：<input type='text' name='reject_text' />
-			<br />
+			<div class="gld_user_select require_select" data-type='gld_users' ></div>
 			<br />
 		<%
 		}
@@ -162,23 +159,22 @@
 
 	<!-- Reject -->
 	<%
-	if(action.indexOf('approval') != -1){
-		%><button type="button" class="btn btn-danger btn-reject">退回</button><%
+	if(action.indexOf('approval') != -1 || action == 'write_off') {
+		%><button type="button" class="btn btn-danger btn-reject" rel="popover" data-placement="right" data-content="请输入退回理由" data-original-title="退回" >退回</button>	
+		<%
 	}
 	%>
 	<!-- Reject end -->
-
 	<!-- Revoaction -->
 	<%if(action == 'requisition_history' &&  name_map[model.status] && name_map[model.status].fullname == user.fullname){ %>
 		<%if( $.inArray(model.status,[10,21]) != -1 ){%>
 			<b>审批科长:</b>
-			<%== $.View('//docview/ui/views/kz_user.ejs',this.ctx) %>	
+			<div class="user_select require_select" data-type='kz_users' ></div>
 		<%}%>
 		<%if( $.inArray(model.status,[11,22]) != -1 ){%>
 			<b>审批关长:</b>
-			<%== $.View('//docview/ui/views/gld_user.ejs',this.ctx) %>	
+			<div class="user_select require_select" data-type='gld_users' ></div>
 		<%}%>
-		<br />
 		<br />
 		<button type="button" class="btn btn-danger btn-revocation" ><i class="icon-edit icon-white"></i> <%= name_map[model.status].text %></button>
 		<%if(!model.approving_officer){ %>

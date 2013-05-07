@@ -356,15 +356,16 @@ class UploadFileController < ApplicationController
           ZeroFindCheckInfo.new do |zfci|
             zfci.business_units_number = row[0]
             zfci.operating_name = row[1]
-            zfci.number_import_export_declarations = row[2]
-            zfci.number_import_export_inspection = row[3]
-            zfci.import_export_inspection_rate = row[4]
-            zfci.declarations_number = row[5]
-            zfci.import_export = row[6]
-            zfci.examination_handling_results = row[7]
-            zfci.declaration_customs = row[8]
-            zfci.date_value = row[9]
-            zfci.org_applied=row[5][0,4]
+			zfci.count_number = row[2]
+            zfci.number_import_export_declarations = row[3]
+            zfci.number_import_export_inspection = row[4]
+            zfci.import_export_inspection_rate = row[5]
+            zfci.declarations_number = row[6]
+            zfci.import_export = row[7]
+            zfci.examination_handling_results = row[8]
+            zfci.declaration_customs = row[9]
+            zfci.date_value = row[10]
+            zfci.org_applied=row[6][0,4]
             zfci.exists_in_system = false
             if get_doc_ids(zfci.declarations_number.to_s)
               zfci.exists_in_system = true
