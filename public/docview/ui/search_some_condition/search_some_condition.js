@@ -125,7 +125,7 @@ steal(
 					{id: "product_number", text: "商品编号" },
 					{id: "unit_price", text: "单价" },
 					{id: "spatial_index_impact", text: "空间指数影响度" },
-					{id: "actual_reference_price", text: "实际参考价格" },
+					{id: "actual_reference_price", text: "全国均价" },
 					{id: null, text: "操作" }
 			   ]
 			   }).controller();
