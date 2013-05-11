@@ -188,11 +188,13 @@ class DocumentHistoriesController < ApplicationController
 
       cat = params[:groupby]
       results[:groupby] = cat
-      function_params = [queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition]
+      function_params = [queries,docs_total,pages_total,query_total,where_clause,["true"],docType_condition,condition]
+      #function_params = [queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition]
 
       if cat == '1'
         query_stats_by = search_condition_org(function_params)
       elsif cat == '2'
+	    function_params[5] = org_condition
         query_stats_by = search_condition_user(function_params)
       elsif cat == '3'
         query_stats_by = search_condition_role(function_params)
@@ -233,8 +235,8 @@ class DocumentHistoriesController < ApplicationController
         query_stats_by[k] = { :num_docs => num_docs,
           :num_pages => num_pages,
           :num_queries => num_queries,
-          :percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v),
-          :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total),
+          :percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v,:precision => 2),
+          :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
         }
       }
       return query_stats_by
@@ -269,8 +271,8 @@ class DocumentHistoriesController < ApplicationController
 		query_stats_by[org.org] = { :num_docs => num_docs,
 				:num_pages => num_pages,
 				:num_queries => num_queries,
-				:percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v),
-				:percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total),
+				:percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v,:precision => 2),
+				:percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
 		}
 	  end
       return query_stats_by
@@ -281,7 +283,6 @@ class DocumentHistoriesController < ApplicationController
     def search_condition_user(function_params)
       queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
       query_stats_by = {}
-
 
       query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("user_id").group("user_id").count
       umap = {}
@@ -294,8 +295,8 @@ class DocumentHistoriesController < ApplicationController
         if umap.has_key?(k)
           query_stats_by[umap[k]] = {
             :num_queries => v,
-            :percentage_q =>  number_to_percentage( v * doc_total_tmp), 
-            :percentage_qq => number_to_percentage( v * query_total_tmp),
+            :percentage_q =>  number_to_percentage( v * doc_total_tmp,:precision => 2), 
+            :percentage_qq => number_to_percentage( v * query_total_tmp,:precision => 2),
           }
         end
       }
@@ -329,8 +330,8 @@ class DocumentHistoriesController < ApplicationController
           if rmap.has_key?(k)
             query_stats_by[rmap[k]] = {
               :num_queries => v,
-              :percentage_q => number_to_percentage( v * docs_total_tmp),
-              :percentage_qq => number_to_percentage( v * query_total_tmp)
+              :percentage_q => number_to_percentage( v * docs_total_tmp,:precision => 2),
+              :percentage_qq => number_to_percentage( v * query_total_tmp,:precision => 2)
             }
           end
         }
@@ -372,7 +373,7 @@ class DocumentHistoriesController < ApplicationController
               :num_docs => doc_stats_t.has_key?(k) ? doc_stats_t[k] : '',
               :num_pages => page_stats_t.has_key?(k) ? page_stats_t[k] : '',
               :num_queries => query_stats_t.has_key?(k) ? query_stats_t[k] : '',
-              :percentage_qq => query_stats_t.has_key?(k) ?  (query_total == 0 ? 0 : number_to_percentage(query_stats_t[k] * 100.0 / query_total)) : ''
+              :percentage_qq => query_stats_t.has_key?(k) ?  (query_total == 0 ? 0 : number_to_percentage(query_stats_t[k] * 100.0 / query_total,:precision => 2)) : ''
             }
           }
         }
@@ -406,16 +407,18 @@ class DocumentHistoriesController < ApplicationController
           	query_stats_by[key] = document_stats.collect { |obj|
 			
 			docs = obj[:docs].to_i * 1.00 		
-			queries = obj[:queries].to_i
-			percent = 0
-			percent = queries / docs if docs > 0
-			percent = "%.2f" % (percent	 * 100)
+			single_queries = obj[:queries].to_f
+			logger.info single_queries.to_s + "=====" + docs_total.to_s
+			percent_q = docs_total == 0 ? 0 : (single_queries / docs_total)  
+			percent_qq= query_total == 0 ? 0 : (single_queries / query_total) 
 
             { :org			=> obj[:org],
               :num_docs 	=> obj[:docs],
               :num_pages 	=> obj[:pages],
               :num_queries	=> obj[:queries],
-              :percentage_qq=> percent.to_s + " %"
+			  :percentage_q => number_to_percentage(percent_q * 100 ,:precision => 2),
+			  :percentage_qq=> number_to_percentage(percent_qq* 100 ,:precision => 2)
+			  #:percentage_qq=> percent_qq.to_s + " %"
             }
           }
         }

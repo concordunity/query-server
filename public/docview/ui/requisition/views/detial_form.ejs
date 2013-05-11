@@ -34,19 +34,19 @@
 </tr>
 <tr>
 	<td>申请人员:</td>
-	<td><%= model.apply_staff_fullname == null ? '': model.apply_staff + "(" + model.apply_staff_fullname +")" %></td>
+	<td><%= $.display_user(model.apply_staff,model.apply_staff_fullname) %></td>
 	<td>申请时间:</td>
 	<td><%= $.date(model.created_at).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
 	<td>审批科长:</td>
-	<td><%= model.approving_officer_fullname == null ? '': model.approving_officer + "("+ model.approving_officer_fullname  +")"  %></td>
+	<td><%= $.display_user(model.approving_officer,model.approving_officer_fullname)  %></td>
 	<td>科长审批时间:</td>
 	<td><%= $.date(model.approval_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 <tr>
 	<td>审批关长:</td>
-	<td><%= model.two_approvers_fullname == null ? '': model.two_approvers + "("+ model.two_approvers_fullname  +")"  %></td>
+	<td><%= $.display_user(model.two_approvers,model.two_approvers_fullname)  %></td>
 	<td>关长审批时间:</td>
 	<td><%= $.date(model.two_approver_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
@@ -61,14 +61,14 @@
 
 <tr>
 	<td>档案管理人员:</td>
-	<td><%= model.registration_staff_fullname == null ? '': model.registration_staff + "("+ model.registration_staff_fullname  +")" %></td>
+	<td><%= $.display_user(model.registration_staff,model.registration_staff_fullname) %></td>
 	<td>档案登记时间:</td>
 	<td><%= $.date(model.check_in_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
 
 <tr>
 	<td>核销人员:</td>
-	<td><%= model.write_off_staff_fullname == null ? '': model.write_off_staff + "("+ model.write_off_staff_fullname  +")" %></td>
+	<td><%= $.display_user(model.write_off_staff, model.write_off_staff_fullname) %></td>
 	<td>核销时间:</td>
 	<td><%= $.date(model.write_off_time).format("yyyy-MM-dd hh:mm:ss") %></td>
 </tr>
@@ -89,7 +89,7 @@
 	<% 
 		var t = 0;
 		for(var j = 0; j < model.requisition_details.length; j++) { %>
-		<tr class='<%= !!!model.requisition_details[j].is_check ? "" : "noprint" %>'>
+		<tr class='<%= model.requisition_details[j].is_check ? "" : "print_requisition_details  noprint" %>'>
 			<td><span class=""><%= model.requisition_details[j].single_card_number%></span></td>
 			<td><span class=""><%= model.requisition_details[j].rationale_single_number%> </span></td>
 			<td><span class=""><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>
@@ -118,25 +118,29 @@
 	var name_map = {
 		10:{
 			fullname:model.apply_staff_fullname,
-			text:'撤销审批，重新指定一级审批'
+			text:'撤销审批，重新指定审批科长'
 		},
 		11:{
 			fullname:model.approving_officer_fullname,
-			text:'撤销审批，重新指定二级审批'
+			text:'撤销审批，重新指定审批关长'
 		},
 		21:{
 			fullname:model.apply_staff_fullname,
-			text:'重新指定一级审批'
+			text:'重新指定审批科长'
 		},
 		22:{
 			fullname:model.approving_officer_fullname,
-			text:'重新指定二级审批'
+			text:'重新指定审批关长'
 		}
 	};
 	%>
 	<% var user = this.ctx.options.clientState.attr('user') %>
 	
 
+	<% if (this.tag) {%>
+	全部打印<input type='checkbox' class='print_all'/>
+		<% }%>
+	<br />
 	<br />
 	<!-- Accept -->
 	<%
@@ -182,7 +186,6 @@
 		<%}%>	
 	<%}%>	
 	<!-- Revocation end -->
-
 	<button type="button" class="btn btn-info btn-print"><i class="icon-print icon-white"></i> 打印</button>
 	<button type="button" class="btn btn-cancel">取消</button>
 	<br />

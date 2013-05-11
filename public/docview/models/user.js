@@ -129,8 +129,8 @@ $.Model('Docview.Models.User',
     logout : function(success, error) {
         return $.ajax({
             url : '/users/logout',
+			data:{ hash: +new Date  },
             type : 'GET',
-          //  dataType : 'json',
             success : success,
             error : error
         });

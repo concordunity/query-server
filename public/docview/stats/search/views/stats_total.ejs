@@ -11,7 +11,6 @@
 <tr>
  <th><%== theading %></th>
  <th>查阅量</th>
- <th>查阅率</th>
  <th>查阅量占比</th>
 </tr>
  </thead>
@@ -23,7 +22,6 @@
 %>
 <tr> <td><%== k %></td>
  <td><%== v.num_queries %></td>
- <td><%== v.percentage_q %></td>
  <td><%== v.percentage_qq %></td>
 </tr>
 <% }); %>
@@ -57,7 +55,7 @@ if (groupby == '1' || groupby == '4' || groupby == '5') {
  <th>档案总数(指定时间段内)</th>
  <th>总页数</th>
  <th>查阅量</th>
-<% if (groupby == '1') { %>
+ <% if (groupby == '1' || groupby == '4' || groupby == '5') { %>
  <th>查阅率</th>
 <% } %>
 
@@ -80,7 +78,7 @@ if (groupby == '1' || groupby == '4' || groupby == '5') {
 <% } %>
  <td><%== value.num_pages %></td>
  <td><%== value.num_queries %></td>
-<% if (groupby == '1') { %>
+ <% if (groupby == '1' || groupby == '4' || groupby == '5') { %>
  <td><%== value.percentage_q %></td>
 <% } %>
  <td><%== value.percentage_qq %></td>

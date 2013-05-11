@@ -66,7 +66,7 @@ steal(
 		   var user = this.options.clientState.attr('user');
 		   var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
 		   this.element.find('.org').docview_ui_org({ name:'org', include:orgs , default_text:orgs.length > 0 ? null: '不限' });
-		   this.element.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' },{username:'',fullname:'暂不指定'} ] });
+		   this.element.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' } ] });
 			/*
 			var application_table_options = {
 				aaData: [],
@@ -594,12 +594,13 @@ steal(
 			var rowElement = row.element;
 			var rowModel = row.model;
 			//hide this row
+			var tag = this.options.clientState.attr('access') .attr('requisition_docs').attr('register');
 			rowElement.hide();
 
-			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action});
+			var innerForm = this.view('//docview/ui/requisition/views/detial_form',{ ctx: this, model: rowModel ,action: action, tag: tag });
 			rowElement.after(innerForm);
 			innerForm = rowElement.next();
-			innerForm.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' },{username:'',fullname:'暂不指定'} ] });
+			innerForm.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' } ] });
 			if(action == 'approval')
 				innerForm.find('.gld_user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' } ] });
 
@@ -665,6 +666,9 @@ steal(
 					return;
 				}
 				*/
+				innerForm.find('input[type=checkbox]').each(function(key,item){
+					data.ids[item.value] = item.checked;
+				});
 				switch(action){
 					case 'approval':
 						var gld_user = innerForm.find('select[name=gld_users]');
@@ -680,14 +684,13 @@ steal(
 						break;
 					case 'register':
 						data.status = 13;//完成登记
+						innerForm.find('input[type=checkbox]:checked').size() == innerForm.find('input[type=checkbox]').size()  && (data.status = 34); 
 						break;
 					case 'write_off':
 						data.status = 14;//正常完成
 						break;
 				}
-				innerForm.find('input[type=checkbox]').each(function(key,item){
-					data.ids[item.value] = item.checked;
-				});
+				console.log(data);
 				postData(data);
 			});
 			//撤销
@@ -732,6 +735,11 @@ steal(
 				ev.preventDefault();
 				//javascript:window.print();
 				//javascript:printpreview();
+				if (innerForm.find("input.print_all[type=checkbox]:checked").size() == 1){
+					innerForm.find("tr.print_requisition_details").removeClass("noprint");
+				} else {
+					innerForm.find("tr.print_requisition_details").addClass("noprint");
+				}
 				that.printPage("print_detial_form");
 				/*
 				Docview.Models.Requisition.printRequisition(data,function(url){
@@ -761,7 +769,7 @@ steal(
 			OpenWindow.document.write("<body>");
 			OpenWindow.document.write("<div>");
 		   var subjection_org = this.options.clientState.attr('user').subjection_org;
-			OpenWindow.document.write("<h1>"+ orgJsonDictionary[subjection_org] +"电子化申请单</h1>");
+			OpenWindow.document.write("<h1 style='text-align: center;'>"+ orgJsonDictionary[subjection_org] +"电子化申请单</h1>");
 			OpenWindow.document.write("<hr />");
 			OpenWindow.document.write("</div>");
 			OpenWindow.document.write("<div>");

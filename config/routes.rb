@@ -98,8 +98,7 @@ Dms::Application.routes.draw do
   #resources :document_histories
   post "/exportChart" => "monitoring_data#exportToPNG"
 
-  #  devise_for :users #, :controllers => { :sessions => "test/sessions",
-  #  :registration => "test/registrations" },
+  #devise_for :users , :controllers => { :sessions => "test/sessions", :registration => "test/registrations" },:path_names => { :sign_in => 'login', :sign_out => 'logout' }
 
   match "/print/printpdf" => "documents#print_doc"
   post "/documents/pending_modified" => "documents#stats_export"

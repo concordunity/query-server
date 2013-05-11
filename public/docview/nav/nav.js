@@ -103,18 +103,21 @@ steal(
             }
         },
         '.logout a click': function(el, ev) {
-	    if (!confirm("您确定要退出登录吗？")) {
-            ev.preventDefault();
-		//log("system",{current_action: "system.logout", describe: "成功退出系统。"});
-		//Docview.Models.User.logout(
-          //          function() {
-			//window.location = "/docview/docview.html";
-              //      },
-                //    function() {
-			//console.log('Error');
-         //           }
-		//);
-	    }
+			if (confirm("您确定要退出登录吗？")) {
+				Docview.Models.User.logout(
+					function() {
+						log("system",{current_action: "system.logout", describe: "成功退出系统。"});
+						console.log('logout');
+						window.location = "/";
+                    },
+					function() {
+						window.location = "/";
+						console.log('out of date ?');
+                    }
+				);
+			}else{
+				ev.preventDefault();
+			}
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             // Find corresponding nav icon and select it

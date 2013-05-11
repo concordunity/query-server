@@ -17,18 +17,18 @@
 			'heading':options.title,
 			'message':options.msg
 		});
-		if($.scrollTo){
-			$.scrollTo('alerts',options.scroll_time);
-		}
+		$("#alerts .close").hide();	
+		$("html,body").animate({ scrollTop:0 },options.scroll_time,function(){
+			setTimeout(function(){
+				$('#alerts').hide('fast',function(){
+					//$(this).html('').show();	
+					if($.scrollTo && options.scroll){
+						$.scrollTo($(options.scroll)[0],options.scroll_time);
+					}
+					});
+			},options.time);
+		});
 		$('#alerts').show('slow');
-		setTimeout(function(){
-			$('#alerts').hide('fast',function(){
-				$(this).html('').show();	
-			});
-			if($.scrollTo && options.scroll){
-				$.scrollTo($(options.scroll)[0],options.scroll_time);
-			}
-		},options.time);
 		return context;
 	};
 })(jQuery);

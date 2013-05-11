@@ -29,6 +29,7 @@ steal(
 ).then(
     'jquery/jquery.js',
     'libs/jquery.log.js',
+    'libs/jquery.display.user.js',
     'docview/ui/upload',
     'docview/ui/index',
     'docview/ui/search_some_condition'
@@ -62,23 +63,27 @@ steal(
 	},
 	'#login-form submit': function(el, ev) {
     	ev.preventDefault();
+		var that = this;
+		//window.location.href = '/users/logout'
         var username = el.find('input[name="username"]').val();
        	var password = el.find('input[name="password"]').val();
         if (username !== "" && password !== "") {
         	// Lock the login button
 			this.username = username;
 			el.find('.btn-primary').button('loading');
-			Docview.Models.User.login(
-				{ 
+			var login = (function(){
+				Docview.Models.User.login({ 
 					commit: 'Sign in', 
 					user : { 
 							username : username, 
 							password : password 
 						} 
-				},
-				this.proxy('getAccessList'),
-				this.proxy('loginError')
-			);
+					},
+					that.proxy('getAccessList'),
+					that.proxy('loginError')
+				);
+			});
+			Docview.Models.User.logout(login,login);
 		}
 	},
 	checkIfUserLoggedIn : function () {

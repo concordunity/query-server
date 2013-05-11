@@ -5,10 +5,13 @@ class Test::SessionsController < Devise::SessionsController
 
   respond_to :json
   def new
+    logger.info "I have new into system"
+#	destroy
     super
   end
   
   def create
+    logger.info "I have login into system"
     resource = warden.authenticate!(auth_options)
 
     print resource.inspect
@@ -44,6 +47,7 @@ class Test::SessionsController < Devise::SessionsController
   #end
 
   def destroy
+    logger.info "I have sign_out system"
     sign_out(resource_name)   
     super
     current_user = nil
