@@ -237,6 +237,11 @@ input.small-num {width: 15px;}
 	line-height:36px;
 }
 @media print{
-	.noprint{visibility:hidden}
+	
+/*
+	.noprint{display: none;}
+*/
+	.noprint{visibility:hidden;}
 }
+.print-requisition-page .noprint{display: none;}
 

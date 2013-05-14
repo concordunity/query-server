@@ -47,9 +47,11 @@ class Test::SessionsController < Devise::SessionsController
   #end
 
   def destroy
-    logger.info "I have sign_out system"
+    logger.info "========logger.info==========I have sign_out system"
+    p "======= p =========== I have sign_out system"
     sign_out(resource_name)   
     super
+	reset_session
     current_user = nil
   end
   protected

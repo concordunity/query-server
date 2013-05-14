@@ -740,7 +740,8 @@ steal(
 				} else {
 					innerForm.find("tr.print_requisition_details").addClass("noprint");
 				}
-				that.printPage("print_detial_form");
+				var print_form = "print_detial_form_"+ rowModel.id;//数据ID
+				that.printPage(print_form);
 				/*
 				Docview.Models.Requisition.printRequisition(data,function(url){
                     url = window.location.protocol + '//' + window.location.hostname  + '/' + url;
@@ -761,9 +762,10 @@ steal(
 			//var OpenWindow = window.open("print.htm", "abc", "height=600, width=750, top=0, left=0,toolbar=no,menubar=no, scrollbars=no, resizable=no, location=no, status=no");
 			OpenWindow.document.write("<html>");
 			OpenWindow.document.write("<head>");
-			OpenWindow.document.write("<link href='/docview/bootstrap/bootstrap.css' rel='stylesheet' type='text/css' />");
 			OpenWindow.document.write("<link href='/docview/docview.css' rel='stylesheet' type='text/css' />");
+			OpenWindow.document.write("<link href='/docview/docview.css' rel='stylesheet' type='text/css' media='print' />");
 			OpenWindow.document.write("<link href='/docview/subnav/subnav.css' rel='stylesheet' type='text/css' />");
+			OpenWindow.document.write("<link href='/docview/bootstrap/bootstrap.css' rel='stylesheet' type='text/css' />");
 			OpenWindow.document.write("<title>打印</title>");
 			OpenWindow.document.write("</head>");
 			OpenWindow.document.write("<body>");
@@ -772,7 +774,7 @@ steal(
 			OpenWindow.document.write("<h1 style='text-align: center;'>"+ orgJsonDictionary[subjection_org] +"电子化申请单</h1>");
 			OpenWindow.document.write("<hr />");
 			OpenWindow.document.write("</div>");
-			OpenWindow.document.write("<div>");
+			OpenWindow.document.write("<div class='print-requisition-page'>");
 			OpenWindow.document.write(needHTML);
 			OpenWindow.document.write("</div>");
 			OpenWindow.document.write("</body>");

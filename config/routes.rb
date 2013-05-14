@@ -99,13 +99,14 @@ Dms::Application.routes.draw do
   post "/exportChart" => "monitoring_data#exportToPNG"
 
   #devise_for :users , :controllers => { :sessions => "test/sessions", :registration => "test/registrations" },:path_names => { :sign_in => 'login', :sign_out => 'logout' }
+  devise_for :users , :controllers => { :sessions => "test/sessions"},:path_names => { :sign_in => 'login', :sign_out => 'logout' }
 
   match "/print/printpdf" => "documents#print_doc"
   post "/documents/pending_modified" => "documents#stats_export"
   post "/monitoring/query" => "monitoring_data#get_json"
   post "/monitoring/query_util" => "monitoring_data#get_util"
 
-  devise_for :users, :path_names => { :sign_in => 'login', :sign_out => 'logout' }
+  #devise_for :users, :path_names => { :sign_in => 'login', :sign_out => 'logout' }
 
   resources :query_histories
 

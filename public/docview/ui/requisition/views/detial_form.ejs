@@ -3,7 +3,7 @@
 <!--startprint-->
 <div style="margin: 30px 100px 30px 100px;" class="well">	
 <form onsubmit="return false;">
-<span id='print_detial_form' >
+<span id='print_detial_form_<%= model.id%>' >
 <legend>详细信息(流水号：<%= model.serial_number%>)</legend>
 <table class="table table-condensed table-striped text-decoration-right"   >
 <tr>
@@ -89,7 +89,7 @@
 	<% 
 		var t = 0;
 		for(var j = 0; j < model.requisition_details.length; j++) { %>
-		<tr class='<%= model.requisition_details[j].is_check ? "" : "print_requisition_details  noprint" %>'>
+		<tr class='<%= model.requisition_details[j].is_check == 'true' ? "" : "print_requisition_details  noprint" %>'>
 			<td><span class=""><%= model.requisition_details[j].single_card_number%></span></td>
 			<td><span class=""><%= model.requisition_details[j].rationale_single_number%> </span></td>
 			<td><span class=""><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>
