@@ -89,7 +89,10 @@
 	<% 
 		var t = 0;
 		for(var j = 0; j < model.requisition_details.length; j++) { %>
-		<tr class='<%= model.requisition_details[j].is_check == 'true' ? "" : "print_requisition_details  noprint" %>'>
+			<% console.log( model.requisition_details[j].is_check)%>
+			<% console.log( model.requisition_details[j].is_check == 'true')%>
+			<% console.log( !!!model.requisition_details[j].is_check)%>
+		<tr class='<%= !!!model.requisition_details[j].is_check  ? "" : "print_requisition_details  noprint" %>'>
 			<td><span class=""><%= model.requisition_details[j].single_card_number%></span></td>
 			<td><span class=""><%= model.requisition_details[j].rationale_single_number%> </span></td>
 			<td><span class=""><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>

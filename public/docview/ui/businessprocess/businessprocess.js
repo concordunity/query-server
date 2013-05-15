@@ -268,11 +268,8 @@ steal(
 					break;
 
 			}
-        	this.options.clientState.attr('alert', {
-            	type: type,
-                heading: '交接单录入',
-                message : msg 
-            });
+        	//this.options.clientState.attr('alert', { type: type, heading: '交接单录入', message : msg });
+			$.alertMessage(this,{msg:msg,title:'提示信息',type:type});
         //    $("#new-application").collapse("hide");
         },
         businessProcessList : function(data){

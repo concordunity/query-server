@@ -66,7 +66,7 @@ steal(
 		   var user = this.options.clientState.attr('user');
 		   var orgs = (user.orgs == '2200') ? [ ] : user.orgs.split(',');
 		   this.element.find('.org').docview_ui_org({ name:'org', include:orgs , default_text:orgs.length > 0 ? null: '不限' });
-		   this.element.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' } ] });
+		   this.element.find('.user_select').docview_ui_user_select({ users:[ { username:'',fullname:'' },{ username:'',fullname:'暂不指定' } ] });
 			/*
 			var application_table_options = {
 				aaData: [],
@@ -684,7 +684,10 @@ steal(
 						break;
 					case 'register':
 						data.status = 13;//完成登记
-						innerForm.find('input[type=checkbox]:checked').size() == innerForm.find('input[type=checkbox]').size()  && (data.status = 34); 
+						var print_form = "#print_detial_form_"+ rowModel.id;//数据ID
+						$(print_form).find('input[type=checkbox]:checked').size() == $(print_form).find('input[type=checkbox]').size()  && (data.status = 34);
+						//console.log($(print_form).find('input[type=checkbox]:checked').size() ,"== ?",$(print_form).find('input[type=checkbox]').size());
+						//innerForm.find('input[type=checkbox]:checked').size() == innerForm.find('input[type=checkbox]').size()  && (data.status = 34); 
 						break;
 					case 'write_off':
 						data.status = 14;//正常完成

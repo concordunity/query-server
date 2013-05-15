@@ -106,7 +106,7 @@ steal(
 			if (confirm("您确定要退出登录吗？")) {
 				Docview.Models.User.logout(
 					function() {
-						log("system",{current_action: "system.logout", describe: "成功退出系统。"});
+				//		log("system",{current_action: "system.logout", describe: "成功退出系统。"});
 						console.log('logout');
 						window.location = "/";
                     },
