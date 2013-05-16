@@ -304,14 +304,18 @@ steal(
                 } else {
 		    		//console.info(data);
 					this.element.find('div.stats_stats').html(this.view('stats_total', data));
-		    		
+					var tmp_count = (data.docs_total-data.doc_count)*1.0;	
 					$('.stats_total').html('档案总数为：<b>' 
 							+ $.thousands(data.docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.pages_total) 
 							+ ' </b>页，存量数为：<b>'
 							+ $.thousands(data.doc_count)
-							+ ' </b>份 '
+							+ ' </b>份,查阅量为： '
+							+ $.thousands(data.query_total)
+							+ ' </b>份,查阅率为： '
+							+ (tmp_count == 0 ? 0 : data.query_total*100.0/tmp_count).toFixed(2)
+							+ '% '
 							).show('slow')
 							.addClass('alert alert-info')
 							.css({

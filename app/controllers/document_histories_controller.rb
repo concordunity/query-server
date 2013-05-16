@@ -159,7 +159,6 @@ class DocumentHistoriesController < ApplicationController
 
     where_clause = {}
 	no_admin = ["user_id not in (?)",[1,2,5]]
-    queries = QueryHistory.where(no_admin).where("doc_id IS NOT NULL")
     if !params[:from_date].blank? && !params[:to_date].blank?
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
     end
@@ -175,7 +174,9 @@ class DocumentHistoriesController < ApplicationController
     # first check the time range.
     doc_count = 0
 	doc_count = Document.where(["datediff(created_at,edc_date) > 60"]).where(org_condition).where( where_clause ).order("edc_date").count
-    
+    queries = QueryHistory.where(no_admin).where("doc_id IS NOT NULL")
+	#queries.where(where_clause).where(docType_condition)
+
 	docs_records = Document.where(where_clause).where(docType_condition)
     docs_total = docs_records.count
     pages_total = docs_records.sum("pages")
@@ -183,8 +184,9 @@ class DocumentHistoriesController < ApplicationController
 	pages_total +=  ModifiedDocument.where(where_clause).sum("pages");
     #query_total = QueryHistory.where("doc_id IS NOT NULL").count
     query_total = queries.count 
+    select_query_total = queries.where(where_clause).where(docType_condition).count
 
-    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
+    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => select_query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
 
       cat = params[:groupby]
       results[:groupby] = cat
@@ -409,7 +411,7 @@ class DocumentHistoriesController < ApplicationController
 			docs = obj[:docs].to_i * 1.00 		
 			single_queries = obj[:queries].to_f
 			logger.info single_queries.to_s + "=====" + docs_total.to_s
-			percent_q = docs_total == 0 ? 0 : (single_queries / docs_total)  
+			percent_q = docs == 0 ? 0 : (single_queries / docs)  
 			percent_qq= query_total == 0 ? 0 : (single_queries / query_total) 
 
             { :org			=> obj[:org],

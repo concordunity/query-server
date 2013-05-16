@@ -32,8 +32,14 @@ steal(
 
             var requisition = false;
             var requisitionActions = this.options.clientState.attr('access').attr('requisition_docs');
-            if (requisitionActions.attr('application') || requisitionActions.attr('approval') || requisitionActions.attr('register') || requisitionActions.attr('write_off') || requisitionActions.attr("lending_statistics")) {
+            if (requisitionActions.attr('application') || requisitionActions.attr('approval')  || requisitionActions.attr('approval_guan') || requisitionActions.attr('register') || requisitionActions.attr('write_off') || requisitionActions.attr("lending_statistics")) {
                 requisition = true;
+            }
+
+            var business_process = false;
+            var business_processActions = this.options.clientState.attr('access').attr('business_process');
+            if (business_processActions.attr('create_interchange_receipt') || business_processActions.attr('search_interchange_receipt') || business_processActions.attr('create_dishonored_bill') || business_processActions.attr('search_dishonored_bill') || business_processActions.attr('statistical_inquiry') ){ 
+                business_process = true;
             }
 
             var manage_docs = false;
@@ -54,6 +60,7 @@ steal(
                 search: search,
                 stats: stats,
                 requisition_docs: requisition,
+                business_process: business_process,
                 manage_docs: manage_docs,
                 manage_accounts: manage_accounts,
 		message: message

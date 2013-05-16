@@ -73,11 +73,10 @@ class RequisitionController < ApplicationController
     #respond_with(result)
   end
 
-
-  def filter_docs
-    logger.info "===   filter_docs ===="
+  def filter_info(params)
+	logger.info "===   filter_docs ===="
     result = {:status => false,:message => ""}
-    doc_id = params[:doc_id]
+    doc_id = params[:doc_id] || params[:single_card_number]
     logger.info doc_id 
     org = params[:org]
 	ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id[9,3], doc_id[9,2]])
@@ -85,24 +84,23 @@ class RequisitionController < ApplicationController
 	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
     @document = Document.find_by_doc_id(doc_id)
     logger.info "===  1 ===="
-	rd = RequisitionDetail.where(["'status' not in(20,31,32) AND 'status' is not null"]).find_by_single_card_number(doc_id)
+	rd = RequisitionDetail.where(["status not in(20,31,32,33) AND status is not null"]).where(:single_card_number => doc_id)
 
     logger.info "===  2 ===="
     if @document.blank? && rd.blank? && !ofd.blank?
+		logger.info "===  系统无此单证 ===="
         result[:status] = 200 
         result[:message] = "此单证：" + doc_id + ",可以正常添加。"
     else
+		logger.info "===  系统存在此单证 ===="
 		if !@document.blank?
 			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经电子化了。"
 			result[:status] = 201 
 		elsif !rd.blank?
-			if [20,31,32].include?(rd.requisition.status)
-				result[:status] = 200 
-				result[:message] = "此单证：" + doc_id + ",可以正常添加。"
-			else
-				result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
-				result[:status] = 202 
-			end
+			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
+			result[:status] = 202 
+		#	result[:status] = 200 
+		#	result[:message] = "此单证：" + doc_id + ",可以正常添加。"
 		elsif ofd.blank? 
 			result[:message] = "此单证：" + doc_id + "，不能添加，没有查阅权限。"
 			result[:status] = 203 
@@ -111,6 +109,19 @@ class RequisitionController < ApplicationController
 			result[:status] = 204 
 		end
     end
+	logger.info result[:message] 
+	return result
+  end
+
+  def filter_requisition(params)
+	result = filter_info(params)
+	tag = true if result[:status] == 200
+	return tag
+  end
+
+  def filter_docs
+    logger.info "===   filter_docs ===="
+    result = filter_info(params) 
     render json: result
   end
 
@@ -388,20 +399,20 @@ class RequisitionController < ApplicationController
 			logger.info requisition_details 
 			single_card_number = requisition_details[:single_card_number]
 			if filter_requisition(requisition_details)
-			modify_accompanying_documents = requisition_details[:modify_accompanying_documents]
-			where_page = requisition_details[:where_page]
-			lent_reasons = requisition_details[:lent_reasons]
-			rationale_single_number =  requisition_details[:rationale_single_number]	
-			logger.info "===  four ====" 
-			RequisitionDetail.create do |rd|
-				rd.single_card_number = single_card_number
-				rd.rationale_single_number = rationale_single_number 
-				rd.modify_accompanying_documents = modify_accompanying_documents
-				rd.where_page = where_page
-				rd.lent_reasons = lent_reasons
-				rd.is_check = false 
-				rd.requisition_id = requisition.id
-			end 
+				modify_accompanying_documents = requisition_details[:modify_accompanying_documents]
+				where_page = requisition_details[:where_page]
+				lent_reasons = requisition_details[:lent_reasons]
+				rationale_single_number =  requisition_details[:rationale_single_number]	
+				logger.info "===  four ====" 
+				RequisitionDetail.create do |rd|
+					rd.single_card_number = single_card_number
+					rd.rationale_single_number = rationale_single_number 
+					rd.modify_accompanying_documents = modify_accompanying_documents
+					rd.where_page = where_page
+					rd.lent_reasons = lent_reasons
+					rd.is_check = false 
+					rd.requisition_id = requisition.id
+				end 
 			else
 				result = false 
 				raise
@@ -411,39 +422,6 @@ class RequisitionController < ApplicationController
 	return result
   end
 
-  def filter_requisition(params)
-
-    logger.info "===   filter_docs ===="
-    result = {:status => false,:message => ""}
-    doc_id = params[:doc_id] || params[:single_card_number]
-    org = params[:org]
-	ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id[9,3], doc_id[9,2]])
-	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
-    @document = Document.find_by_doc_id(doc_id)
-	rd = RequisitionDetail.where(["'status' <> 20 AND 'status' is not null"]).find_by_single_card_number(doc_id)
-
-    if @document.blank? && rd.blank? && !ofd.blank?
-        result[:status] = 200 
-        result[:message] = "此单证：" + doc_id + ",可以正常添加。"
-    else
-		if !@document.blank?
-			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经电子化了。"
-			result[:status] = 201 
-		elsif !rd.blank?
-			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经申请过了。"
-			result[:status] = 202 
-		elsif ofd.blank? 
-			result[:message] = "此单证：" + doc_id + "，不能添加，没有查阅权限。"
-			result[:status] = 203 
-		else
-			result[:message] = "此单证：" + doc_id + "，不能添加，请重新填写或者移除。"
-			result[:status] = 204 
-		end
-    end
-
-	tag = true if result[:status] == 200
-	return tag
-  end
 
   def change_status
     requisition =  Requisition.where({ :id => params[:id] }).first
@@ -490,6 +468,10 @@ class RequisitionController < ApplicationController
 		end
 
     requisition.status = params[:status]
+	requisition.requisition_details.each do |rd|
+		rd.status = requisition.status
+		rd.save
+	end
     if params[:reject_text]
         requisition.termination_instructions = params[:reject_text]
     end
@@ -600,6 +582,8 @@ class RequisitionController < ApplicationController
 				conditions_arr << "id in (#{condition_rd.join(",")})" unless dis_ids.blank?
 			when "status"
 				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} in (#{condition_slpd.join(",")})" unless dis_slpd.blank?
+			when "found_num"
+
 			else
 				conditions_arr << "#{ params["mDataProp_" + cc.to_s]} like binary('%#{sSearch}%')"
 			end
@@ -648,6 +632,9 @@ class RequisitionController < ApplicationController
 			condition = ["('status' is not null AND status <> 20) AND (approving_officer = ?)",current_user.username]
 		elsif type == 11
 			condition = ["('status' is not null AND status <> 20) AND (two_approvers = ?)",current_user.username]
+		elsif type == 12
+			condition = ["('status' is not null AND status <> 20) AND (storage_sites = ?)",current_user.subjection_org]
+			condition_org = ["true"] 
 		else 
 			condition = ["('status' is not null AND status <> 20)"]
 		end
