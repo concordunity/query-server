@@ -158,9 +158,11 @@ class DocumentHistoriesController < ApplicationController
 
 
     where_clause = {}
+    where_clause_edc = {}
 	no_admin = ["user_id not in (?)",[1,2,5]]
     if !params[:from_date].blank? && !params[:to_date].blank?
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
+      where_clause_edc = { :created_date => params[:from_date].to_date .. params[:to_date].to_date.next }
     end
 
     condition = {:doc_type => get_doc_type,:org => params[:condition_value][:org]||""}
@@ -173,7 +175,10 @@ class DocumentHistoriesController < ApplicationController
 
     # first check the time range.
     doc_count = 0
-	doc_count = Document.where(["datediff(created_at,edc_date) > 60"]).where(org_condition).where( where_clause ).order("edc_date").count
+	doc_edc = Document.where(["datediff(created_at,edc_date) > 60"]).where(org_condition).where( where_clause ).order("edc_date")
+	doc_edc_page = doc_edc.sum("pages")
+
+	doc_count = doc_edc.count
     queries = QueryHistory.where(no_admin).where("doc_id IS NOT NULL")
 	#queries.where(where_clause).where(docType_condition)
 
@@ -185,7 +190,9 @@ class DocumentHistoriesController < ApplicationController
     #query_total = QueryHistory.where("doc_id IS NOT NULL").count
     query_total = queries.count 
     select_query_total = queries.where(where_clause).where(docType_condition).count
-
+    doc_edc_query_total = 0#queries.where(where_clause).where(docType_condition).where(:doc_id => (doc_edc.collect(&:doc_id))).count
+	ds = DocumentStat.where(docType_condition).where(where_clause_edc)
+	ds_query_total = select_query_total - ds.sum("queries")
     results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => select_query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
 
       cat = params[:groupby]
@@ -205,8 +212,14 @@ class DocumentHistoriesController < ApplicationController
       elsif cat == '5'
         query_stats_by = search_condition_orginfo(function_params)
       end
+#存量总数
 	  results[:doc_count] = doc_count
       results[:query_stats] = query_stats_by
+#存量的总页数
+	  results[:doc_edc_page] = doc_edc_page 
+#存量的查阅量
+	  results[:doc_edc_query] = ds_query_total 
+	  results[:doc_edc_stats] = (doc_count == 0 ? 0 : (ds_query_total * 100 / (1.0 * doc_count)))
       render json: results
     end
     #申报关区部分

@@ -23,6 +23,7 @@ Dms::Application.routes.draw do
   get "/documents/test" => "documents#index_paging"
   get "/requisition_print" =>  "requisition#print"
   get "/filter_docs" => "requisition#filter_docs"
+  get "/filter_org" => "requisition#filter_org"
   post "/requisitions" => "requisition#create_requisition"
   post "/lending_statistics_list" => "requisition#lending_statistics_list"
   get "/requisitions" => "requisition#requisitions"

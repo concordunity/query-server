@@ -31,7 +31,8 @@ steal(
     './views/requisition_history.ejs',
 //    './views/detial_form.ejs',
     './views/lending_statistics.ejs',
-    './views/init.ejs'
+    './views/init.ejs',
+	'libs/jquery.single_card_number.js'
 ).then(function($) {
     $.Controller('Docview.Ui.requisition', {}, {
 		init : function(){
@@ -174,6 +175,15 @@ steal(
 */
 			$('.input-date').datepicker();
 			$('input[readonly]').tooltip();
+
+
+			$.extend($.parse_code_map,{
+				'200':	'可以添加',
+				'201':	'已电子化',
+				'202':	'已申请',
+				'203':	'无权限',
+				'204':	'网络错误'
+			});
 	
 			var lending_table_options = {
 				aaData: [],
@@ -312,13 +322,13 @@ steal(
 			var element = el.closest('#new-application-form');
 			var tbody = element.find('.requisition-details-text-holder tbody');
 			tbody.append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs"));
-			tbody.find('tr:last').hide().show('slow');
-			element.find('.remove-requisition-details').show('fast');
+			tbody.find('tr:last').hide().show('');
+			element.find('.remove-requisition-details').show('');
 		},
 		".remove-requisition-details click" : function(el,ev){
 			var table_row_count = $(el).closest("tbody").find("tr").length;
 			if (table_row_count > 1){
-				$(el).closest("tr").hide('slow',function(){ 
+				$(el).closest("tr").hide('fast',function(){ 
 					$(this).remove();
 				 });
 				if(table_row_count == 2){
@@ -330,142 +340,66 @@ steal(
 			var doc_id = $(el).closest("tr").find(".filter_docs").val();
 			this.filterRequisitionDetails(doc_id);
 		},
-		".filter_docs blur" : function(el,ev){
-			var doc_id = el.val();
-			var msg_map = {
-				0:{
-					cls:'important',
-					text:'网络错误'
-				},
-				1:{
-					cls:'info',
-					text:'验证中..'
-				},
-				2:{
-					cls:'warning',
-					text:'不能为空'
-				},
-				3:{
-					cls:'warning',
-					text:'长度错误'
-				},
-				4:{
-					cls:'warning',
-					text:'必须数字'
-				},
-			    10:{
-					cls:'warning',
-					text:'报关单号前二位必须是22'
-				},
-			    11:{
-					cls:'warning',
-					text:'报关单号第5~8位代表年份，其值是小于或者等于今年'
-				},
-			    12:{
-					cls:'warning',
-					text:'报关单号第10,11位组合的值大于50时，第9位必须是0'
-				},
-			    13:{
-					cls:'warning',
-					text:'报关单号第10,11位组合的值大于50时，此时的值减50必须等于第3，4位组成的值'
-				},
-			    14:{
-					cls:'warning',
-					text:'报关单号第10,11位组合的值小于等于50时，第9位必须是1'
-				},
-			    15:{
-					cls:'warning',
-					text:'报关单号第10,11位组合的值小于等于50时，第3,4位组成的值必须等于第10，11位组成的值'
-				},
-				20: {
-					cls:'warning',
-					text:"报关单号错误"
-				},
-				200:{
-					cls:'success',
-					text:'可以添加'
-				},
-				201:{
-					cls:'warning',
-					text:'已电子化'
-				},
-				202:{
-					cls:'warning',
-					text:'已申请'
-				},
-				203:{
-					cls:'important',
-					text:'没有权限'
-				},
-				204:{
-					cls:'important',
-					text:'未知错误'
-				}
-			};
-			var showTips = function(type){
+		'.filter_docs blur':function(el,ev){
+			
+		},
+		'.filter_docs keyup':function(el,ev){
+			el.asyncVerifyCode(function(code){  
 				var tipsElement = el.closest('tr').find('.tips');
-				$.each(msg_map,function(key,value){
-					tipsElement.removeClass('label-' + value.cls);
-				});
-				var msg = msg_map[type];
-				tipsElement.addClass('label-' + msg.cls );
-				tipsElement.text(msg.text);
-				tipsElement.show('slow');
-				el.data('validate_state',type);
-			};
-			if(!$.trim(doc_id)){
-				//showTips(2);
-				showTips(20);
-				return;
+				tipsElement.removeClass('label-success label-warning label-important');
+				tipsElement.show();
+				tipsElement.text($.parse_code_map[code]);
+				if(code == 0){
+					var hit = false;
+					$('.filter_docs').each(function(key,item){
+						if(item != el[0] &&  item.value == el.val()){
+							hit = true;
+							return;
+						}
+					});
+					if(hit){
+						tipsElement.text('重复记录');
+						tipsElement.addClass('label-warning');
+						return;
+					}
+					Docview.Models.Requisition.filterDocs({ "doc_id" : el.val() },
+					//
+					function(data){
+						code = data.status || 204;
+						el.data('validate_state',code);
+						tipsElement.text($.parse_code_map[code]);
+						tipsElement.addClass('label-' + ( code == 200 ? 'success' :'important'));
+					},
+					function(err){
+						code = -1;	
+						tipsElement.text($.parse_code_map[code]);
+						tipsElement.addClass('label-important');
+					});
+				}
+			});	
+		},
+		'.requisition_detail_form keydown':function(el,ev){
+			if(ev.keyCode == 13){
+				ev.preventDefault();
+			}	
+		},
+		'.filter_docs keydown':function(el,ev){
+			if(ev.keyCode == 13){
+				el.closest('tr').find('input[name=rationale_single_number]').focus();	
+				ev.preventDefault();
 			}
-			if(doc_id.length != 18){
-				//showTips(3);
-				showTips(20);
-				return;
+		},
+		'input[name=rationale_single_number] keydown':function(el,ev){
+			if(ev.keyCode == 13){
+				var next = el.closest('tr').next();	
+				if(next.length && next.find('.filter_docs').focus()){
+					//
+				}else{
+					el.closest('.create-application').find('.new-requisition-details').click();
+					next = el.closest('tr').next();	
+					next.find('.filter_docs').focus();
+				}
 			}
-			if(!/^\d{18}$/.test(doc_id)){
-				//showTips(4);
-				showTips(20);
-				return;	
-			}
-			if(doc_id.substr(0,2) != '22'){
-				//showTips(10);
-				showTips(20);
-				return;	
-			}
-			if(parseInt(doc_id.substr(4,4)) > (new Date()).getFullYear()){
-				//showTips(11);
-				showTips(20);
-				return;	
-			}
-			if(parseInt(doc_id.substr(9,2)) > 50 && parseInt(doc_id.substr(8,1)) != 0){
-				//showTips(12);
-				showTips(20);
-				return;	
-			}
-			if(parseInt(doc_id.substr(9,2)) > 50 && parseInt(doc_id.substr(2,2)) != (parseInt(doc_id.substr(9,2)) - 50)){
-				//showTips(13);
-				showTips(20);
-				return;	
-			}
-			if(parseInt(doc_id.substr(9,2)) <= 50 && doc_id.substr(8,1) != "1"){
-				//showTips(14);
-				showTips(20);
-				return;	
-			}
-			if(parseInt(doc_id.substr(9,2)) <= 50 && parseInt(doc_id.substr(2,2)) != parseInt(doc_id.substr(9,2))){
-				//showTips(15);
-				showTips(20);
-				return;	
-			}
-			showTips(1);//ing ..
-			Docview.Models.Requisition.filterDocs({ "doc_id" : doc_id },
-				function(data){//ajax success .
-					showTips(data.status || 204);
-				},
-				function(err){//ajax error
-					showTips(0);
-				});
 		},
 		".create-application form submit" : function(el,ev){
 			ev.preventDefault();
@@ -487,8 +421,6 @@ steal(
 				$.alertMessage(that,{msg:'请确认审批人员'});
 				return;
 			}
-			var lbl_wait = el.find('label.lbl-wait');
-			var allow_return = false;
 			if(!application_originally){
 				$.alertMessage(that,{msg:'抽单原由不能为空 ',title:'提示信息',type:'error'});
 				return;
@@ -496,37 +428,16 @@ steal(
 			el.find('input.filter_docs').each(function(key,item){
 				var $wallper = jQuery($(item).closest('tr'));
 				var validate_state = $(item).data('validate_state');
-				switch(validate_state){
-					case 1:
-						allow_return = true;
-						lbl_wait.text("正在验证报关单号码,请稍候提交.").show('slow');
-						return;//ing
-					case 200:
-						/*
-						if(!$.trim($wallper.find("input[name=rationale_single_number]").val())){
-							$wallper.find("input[name=rationale_single_number]").focus();
-							lbl_wait.text("理单号不能为空.").show('slow');
-							allow_return = true;
-							return;
-						}
-						*/
-						requisition_details.push({
-							"single_card_number" 			: $wallper.find("input[name='single_card_number']").val(),
-							"rationale_single_number"		: $wallper.find("input[name=rationale_single_number]").val()
-						});
-						break;//ok
-					default://		
-						allow_return = true;
-						lbl_wait.text("您输入的报关单号码有误,请修改后提交.").show('slow');
-						return;
+				if(validate_state == 200){	
+					requisition_details.push({
+						"single_card_number" 			: $wallper.find("input[name='single_card_number']").val(),
+						"rationale_single_number"		: $wallper.find("input[name=rationale_single_number]").val()
+					});
 				}
 			});
-			//has a error , return ..
-			if(allow_return) {
-				setTimeout(function(){
-					lbl_wait.hide('slow');
-				},5000);
-				return;	
+			if(requisition_details.length == 0){
+				$.alertMessage(that,{msg:'请输入抽单信息',title:'提示信息',type:'error'});
+				return;
 			}
 			var requisition = {
 				type: action,
@@ -537,12 +448,9 @@ steal(
 			};
 			Docview.Models.Requisition.updateRequisition(requisition,function(data){
 				if (data.status === 200) {
-					//el.closest('.create-application').hide('fast');
-					//$('.' + action + ' .select-approval').show('slow').find('form').data('lastID',data.requisition.id);
 					$.alertMessage(that,{msg:'成功添加新申请表单 ',title:'提示信息',type:'success'});
 					el[0].reset();
-					while((el.find(".requisition_detail_form tr:eq(2)").remove()).size() > 0){
-					}
+					while((el.find(".requisition_detail_form tr:eq(2)").remove()).size() > 0){ }
 					el.find('.tips').hide();
 					//$('.user_select').docview_ui_user_select();
 				}else {

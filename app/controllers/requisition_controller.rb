@@ -72,6 +72,12 @@ class RequisitionController < ApplicationController
     render :json => result, :status => 200
     #respond_with(result)
   end
+  def filter_org
+	doc_id = params[:doc_id]
+	a = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id, doc_id[0,2]])
+	a = a.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
+	render json: a
+  end
 
   def filter_info(params)
 	logger.info "===   filter_docs ===="

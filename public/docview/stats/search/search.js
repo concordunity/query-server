@@ -309,13 +309,20 @@ steal(
 							+ $.thousands(data.docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.pages_total) 
-							+ ' </b>页，存量数为：<b>'
-							+ $.thousands(data.doc_count)
-							+ ' </b>份,查阅量为： '
+							+ ' </b>页，查阅量为：<b> '
 							+ $.thousands(data.query_total)
-							+ ' </b>份,查阅率为： '
+							+ ' </b>份,查阅率为：<b> '
 							+ (tmp_count == 0 ? 0 : data.query_total*100.0/tmp_count).toFixed(2)
-							+ '% '
+
+							+ '</b>% ,<br />其中存量数为：<b>'
+							+ $.thousands(data.doc_count)
+							+ ' </b>份，总计页数为：<b>'
+							+ $.thousands(data.doc_edc_page)
+							+ ' </b>份,查阅量为：<b> '
+							+ $.thousands(data.doc_edc_query)
+							+ ' </b>份,查阅率为：<b> '
+							+ (data.doc_edc_stats).toFixed(2)
+							+ " %</b>"
 							).show('slow')
 							.addClass('alert alert-info')
 							.css({
