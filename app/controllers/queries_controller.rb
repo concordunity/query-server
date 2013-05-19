@@ -39,11 +39,18 @@ class QueriesController < ApplicationController
       return
     end
     qh = QueryHistory.create(:user_id=> u.id,
+							   :action => "API查阅",
+							   :describe => "通过API进行了单证查阅",
                                :doc_id => doc_id,
                                :org => d.org,
                                :doc_type => d.doc_type,
+							   :role_id => u.roles[0].id,
+							   :bulkids => "",
                                :ip => request.remote_ip,
                                :email => params[:username] + ' from ' + params[:source],
+							   :user_name => u.display_name,
+							   :role_name => u.roles[0].name,
+							   :doc_flag => d.doc_flag, 
                                :print => false)
     ret.pages = d.pages
     ret.status = 0

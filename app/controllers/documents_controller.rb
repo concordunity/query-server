@@ -638,9 +638,14 @@ class DocumentsController < ApplicationController
     if @document.phase.nil?
       @document.phase = 0
     end
-
+	
     respond_to do |format|
       if @document.save
+		  a = Document.find_by_sql("select * from documents where id=#{@document.id} and datediff(created_at,edc_date) >=60")
+		  if a.length > 0 
+			@document.doc_flag = 1
+			@document.save
+		  end
 		  dsn = @document.serial_number
 		  if !dsn.nil? && dsn[0,1].upcase == "B"  
 		      rd = RequisitionDetail.find_by_single_card_number(@document.doc_id)  

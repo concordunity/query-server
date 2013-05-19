@@ -99,6 +99,7 @@ class ApplicationController < ActionController::Base
 		qh.status = params[:status] || true
 		qh.user_name = current_user.display_name
 		qh.role_name = current_user.roles[0].name
+		qh.doc_flag = doc.doc_flag
 	end unless doc.nil?
 
 	if params[:filters]
