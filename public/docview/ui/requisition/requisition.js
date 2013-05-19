@@ -346,9 +346,30 @@ steal(
 		'.filter_docs keyup':function(el,ev){
 			el.asyncVerifyCode(function(code){  
 				var tipsElement = el.closest('tr').find('.tips');
-				tipsElement.removeClass('label-success label-warning label-important');
+				tipsElement.removeClass('label-success label-info label-warning label-important');
 				tipsElement.show();
 				tipsElement.text($.parse_code_map[code]);
+				var label_map = {
+					'1':'important',
+					'-1':'info',	
+					'-2':'warning',	
+					'-3':'warning',	
+					'-4':'warning',	
+					'-5':'info',	
+					'-6':'warning',	
+					'-7':'info',	
+					'-8':'warning',	
+					'-9':'warning',	
+					'-10':'info',	
+					'-11':'info',	
+					'-12':'warning',	
+					'-13':'warning',	
+					'-14':'warning',	
+					'-15':'warning',	
+					'-16':'warning',	
+					'-17':'warning'	
+				};
+				tipsElement.addClass('label-' + label_map[code]);
 				if(code == 0){
 					var hit = false;
 					$('.filter_docs').each(function(key,item){

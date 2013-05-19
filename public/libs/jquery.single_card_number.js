@@ -82,7 +82,6 @@
 			callback($this.data('lastResult'));		
 			return;
 		}
-		$this.data('lastResult',resultCode);
 		callback(resultCode);
 	};
 	
