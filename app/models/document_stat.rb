@@ -1,9 +1,7 @@
 class DocumentStat < ActiveRecord::Base
 	def self.generate_batch
-		begin_date = "2013-02-25".to_date
-		#begin_date = "2012-03-01".to_date
-		#now = DateTime.now.to_date
-		now = "2013-02-25".to_date
+		begin_date = "2012-03-01".to_date
+		now = DateTime.now.to_date
 		(begin_date .. now).each{|date|
 			puts date	
 			DocumentStat.generate(date)
