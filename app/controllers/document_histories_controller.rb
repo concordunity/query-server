@@ -155,16 +155,13 @@ class DocumentHistoriesController < ApplicationController
   #   "condition_value"=>{"frm_org"=>"2225", "frm_docType"=>"CK", "frm_years"=>"3"}}
   def dh_report#_condition
 
-
-
     where_clause = {}
     where_clause_edc = {}
 	no_admin = ["user_id not in (?)",[1,2,5]]
     if !params[:from_date].blank? && !params[:to_date].blank?
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
-      where_clause_edc = { :created_date => params[:from_date].to_date .. params[:to_date].to_date.next }
+      where_clause_edc = { :created_date => params[:from_date].to_date .. params[:to_date].to_date}
     end
-
     condition = {:doc_type => get_doc_type,:org => params[:condition_value][:org]||""}
     query_stats = {}
     query_stats_by = {}
@@ -172,32 +169,62 @@ class DocumentHistoriesController < ApplicationController
 
     org_condition = ((condition[:org].nil? || condition[:org] == "") ? ["true"] : {:org => condition[:org]})
     docType_condition = ((condition[:doc_type].nil? || condition[:doc_type] == "") ? ["true"] : {:doc_type => condition[:doc_type]})
-
+#符合条件的总档案记录
+	documents = Document.where(org_condition).where( where_clause )
     # first check the time range.
     doc_count = 0
-	doc_edc = Document.where(["datediff(created_at,edc_date) > 60"]).where(org_condition).where( where_clause ).order("edc_date")
+#符合条件的存量记录
+	doc_edc = documents.where(:doc_flag => 1)
+#符合条件的存量的总页数
 	doc_edc_page = doc_edc.sum("pages")
-
+#符合条件的存量总档案数
 	doc_count = doc_edc.count
-    queries = QueryHistory.where(no_admin).where("doc_id IS NOT NULL")
-	#queries.where(where_clause).where(docType_condition)
 
-	docs_records = Document.where(where_clause).where(docType_condition)
+
+
+#符合条件的增量总记录
+	docs_records = documents.where(:doc_flag => 0)
+#符合条件的增量总档案量
     docs_total = docs_records.count
+#符合条件的增量总页数
     pages_total = docs_records.sum("pages")
 	#sum modefy document pages
 	pages_total +=  ModifiedDocument.where(where_clause).sum("pages");
-    #query_total = QueryHistory.where("doc_id IS NOT NULL").count
+
+
+#总查阅记录
+    queries = QueryHistory.where(no_admin).where("doc_id IS NOT NULL")
+#总查阅量
     query_total = queries.count 
-    select_query_total = queries.where(where_clause).where(docType_condition).count
-    doc_edc_query_total = 0#queries.where(where_clause).where(docType_condition).where(:doc_id => (doc_edc.collect(&:doc_id))).count
-	ds = DocumentStat.where(docType_condition).where(where_clause_edc)
-	ds_query_total = select_query_total - ds.sum("queries")
-    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => select_query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (query_total * 100 / (1.0 * docs_total))) }
+#符合条件的总查阅记录
+	search_queries = queries.where(where_clause).where(docType_condition)
+#符合条件的总增量的查阅量
+    select_query_total = search_queries.where(:doc_flag => 0).count 
+#符合条件的总存量的查阅量
+	save_query_total = search_queries.where(:doc_flag => 1).count 
+
+
+#符合条件的总档案数量
+	document_count = documents.count
+#总档案页数
+	document_page_count = pages_total+doc_edc_page
+
+
+# docs_total => 符合条件的增量总档案量
+# pages_total => 符合条件的增量总页数
+# query_total => 符合条件的增量总查阅量
+# query_p => 符合条件的增量查阅率 
+
+#doc_count =>  符合条件的存量总档案数
+#doc_edc_page =>  符合条件的存量的总页数
+#doc_edc_query => 符合条件的总存量的查阅量
+#doc_edc_stats => 符合条件的存量查阅率
+
+    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => select_query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (select_query_total * 100 / (1.0 * docs_total)),:precision => 2) ,:doc_count => doc_count, :doc_edc_page => doc_edc_page, :doc_edc_query => save_query_total, :doc_edc_stats => number_to_percentage(doc_count == 0 ? 0 : (save_query_total * 100 / (1.0 * doc_count)),:precision => 2)}
 
       cat = params[:groupby]
       results[:groupby] = cat
-      function_params = [queries,docs_total,pages_total,query_total,where_clause,["true"],docType_condition,condition]
+      function_params = [queries,document_count,document_page_count,query_total,where_clause,["true"],docType_condition,condition]
       #function_params = [queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition]
 
       if cat == '1'
@@ -212,14 +239,7 @@ class DocumentHistoriesController < ApplicationController
       elsif cat == '5'
         query_stats_by = search_condition_orginfo(function_params)
       end
-#存量总数
-	  results[:doc_count] = doc_count
       results[:query_stats] = query_stats_by
-#存量的总页数
-	  results[:doc_edc_page] = doc_edc_page 
-#存量的查阅量
-	  results[:doc_edc_query] = ds_query_total 
-	  results[:doc_edc_stats] = (doc_count == 0 ? 0 : (ds_query_total * 100 / (1.0 * doc_count)))
       render json: results
     end
     #申报关区部分
@@ -250,7 +270,7 @@ class DocumentHistoriesController < ApplicationController
         query_stats_by[k] = { :num_docs => num_docs,
           :num_pages => num_pages,
           :num_queries => num_queries,
-          :percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v,:precision => 2),
+          :percentage_q => num_docs == 0 ? 0 : number_to_percentage(num_queries * 100.0 / num_docs,:precision => 2),
           :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
         }
       }
@@ -260,12 +280,19 @@ class DocumentHistoriesController < ApplicationController
     def search_condition_orginfo(function_params)
       queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
       query_stats_by = {}
-      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org")
-      docs_stats = document_org.count
-      docs_stats_T = Document.order("org").group("org").count
-      pages_stats = document_org.sum("pages")
 
-      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org").count
+      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org")
+#符合条件的档案总数
+      docs_stats = document_org.count
+
+#符合条件的各个关区档案总页数
+      pages_stats = document_org.sum("pages")
+#各个关区总的档案数
+      docs_stats_T = Document.order("org").group("org").count
+
+#各个关区总的查阅数
+	  no_admin = ["user_id not in (?)",[1,2,5]]
+      query_stats = queries.where(no_admin).where(where_clause).where(org_condition).where(docType_condition).order("org").group("org").count
 
 	  OrgInfo.order("org").group("org").each do |org|
 		ois = OrgInfo.where(:org => org.org)
@@ -283,10 +310,15 @@ class DocumentHistoriesController < ApplicationController
 				num_pages += pages_stats[k]
 			end
 		end
+		logger.info "=================" 
+		logger.info v 
+		logger.info num_docs
+		logger.info num_pages
+		logger.info num_queries
 		query_stats_by[org.org] = { :num_docs => num_docs,
 				:num_pages => num_pages,
 				:num_queries => num_queries,
-				:percentage_q => v == 0 ? 0 : number_to_percentage(num_queries * 100.0 / v,:precision => 2),
+				:percentage_q => num_docs == 0 ? 0 : number_to_percentage(num_queries * 100.0 / num_docs,:precision => 2),
 				:percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
 		}
 	  end
@@ -417,7 +449,8 @@ class DocumentHistoriesController < ApplicationController
 	
 			logger.info "### CREATED  DATE:#{where_clause} ###"
 			logger.info "### ORG CONDITION:#{org_condition}#{docType_condition} ###"
-			document_stats = DocumentStat.select("org,sum(docs) as docs,sum(pages) as pages,sum(queries) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
+			#document_stats = DocumentStat.select("org,sum(docs) as docs,sum(pages) as pages,sum(queries) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
+			document_stats = DocumentStat.select("org,sum(docs) as docs,sum(pages) as pages,sum(query) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
 	
           	query_stats_by[key] = document_stats.collect { |obj|
 			
@@ -430,7 +463,7 @@ class DocumentHistoriesController < ApplicationController
             { :org			=> obj[:org],
               :num_docs 	=> obj[:docs],
               :num_pages 	=> obj[:pages],
-              :num_queries	=> obj[:queries],
+              :num_queries	=> obj[:queries].to_i,
 			  :percentage_q => number_to_percentage(percent_q * 100 ,:precision => 2),
 			  :percentage_qq=> number_to_percentage(percent_qq* 100 ,:precision => 2)
 			  #:percentage_qq=> percent_qq.to_s + " %"

@@ -1,7 +1,9 @@
 class DocumentStat < ActiveRecord::Base
 	def self.generate_batch
-		begin_date = "2013-01-01".to_date
-		now = DateTime.now.to_date
+		begin_date = "2013-02-25".to_date
+		#begin_date = "2012-03-01".to_date
+		#now = DateTime.now.to_date
+		now = "2013-02-25".to_date
 		(begin_date .. now).each{|date|
 			puts date	
 			DocumentStat.generate(date)
@@ -11,12 +13,15 @@ class DocumentStat < ActiveRecord::Base
 	def self.generate(now = Time.now)
 		puts "==== GENRATE START ==== #{now}"
 		result = []
+		no_admin = [" user_id not in (1,2,5)"]
 		#today
 		today = now.to_date
 		#end of date
 		end_of_date = today
 		#begin date
 		begin_date = today.prev_day
+
+		condition_date = { :created_at => begin_date .. end_of_date }
 		#clear already datas ..
 		puts "clear already data at #{begin_date}"
 		DocumentStat.delete_all(:created_date => begin_date) 
@@ -26,8 +31,6 @@ class DocumentStat < ActiveRecord::Base
 		doc_type_years = [ 3, 5, 7, 11 ]
 		#orgs
 		org_list = DictionaryInfo.select(:dic_num).where(:dic_type => 'org').collect(&:dic_num)
-		#query total
-		query_total = QueryHistory.where("doc_id IS NOT NULL").count
 		#each code blok ..
 		org_list.each { |org| #2233
 			doc_type_dirs.each{ |dir|#JK
@@ -35,49 +38,78 @@ class DocumentStat < ActiveRecord::Base
 					
 					doc_type = "#{dir}#{year}Y"[0,4] #fix a bug .
 					#condition
-					condition = { :created_at => begin_date .. end_of_date, :org => org, :doc_type => doc_type }
+					condition = { :org => org, :doc_type => doc_type }
 					#puts condition
 					########  BEGIN #########
 					#document stats
-					documents = Document.where(condition).where("DATEDIFF(created_at,edc_date) < 60").order(:org).group(:org)
+					documents = Document.where(condition).where(condition_date).order(:org).group(:org)
+					documents_added = documents.where(:doc_flag => 0)
+					documents_saved = documents.where(:doc_flag => 1)
 					#queries ..
-					queries = QueryHistory.where("doc_id IS NOT NULL").where(condition).order(:org).group(:org)
-					query_stats = queries.count
-					docs_stats = documents.count
-					pages_stats = documents.sum(:pages)
+					query = QueryHistory.where("doc_id IS NOT NULL").where(condition).where(condition_date).where(no_admin).order(:org).group(:org)
+					query_added = query.where(:doc_flag => 0)
+					query_saved = query.where(:doc_flag => 1)
+
+					pages =  documents.sum(:pages)
+					pages_added =  documents_added.sum(:pages)
+					pages_saved =  documents_saved.sum(:pages)
+
+					count_query = query.count
+					count_query_saved = query_saved.count
+					count_query_added = query_added.count
+
+					count_docs = documents.count
+					count_docs_added = documents_added.count
+					count_docs_saved = documents_saved.count
+
+					count_pages = documents.sum(:pages)
+					count_pages_added = documents_added.sum(:pages)
+					count_pages_saved = documents_saved.sum(:pages)
+
 					#
-					modified =   ModifiedDocument.where( condition )#.where("DATEDIFF(created_at,edc_date) < 60")
-					#
-					keys = Set.new	
-					keys.merge(docs_stats.keys)
-					keys.merge(pages_stats.keys)
-					keys.merge(query_stats.keys)
-					#
-					arr =  keys.collect { |key| {
-						:org		=> key,
-						:docs		=> docs_stats.has_key?(key)  ? docs_stats[key]  : '',
-						:pages		=> pages_stats.has_key?(key) ? pages_stats[key].to_i + modified.where(:org => key).sum(:pages) : '',
-						:queries	=> query_stats.has_key?(key) ? query_stats[key] : ''
-						#:percent_q	=> query_stats.has_key?(key) ? (query_total == 0 ?
-						#			0
-						#			:
-						#			((query_stats[key] * 1.0) / query_total) * 100.0#calc percent %
-						#		) : ''
-						}
-					} 
-					#has a key , and arr set not is empty .	
-					if arr.length > 0
-						result.push arr
-						arr.each{ |ar|
-							#create a new data ..
-							document_stat = DocumentStat.new(ar)
-							document_stat[:created_date] = begin_date
-							document_stat[:doc_type] = doc_type
-							document_stat[:year] = begin_date.year
-							document_stat[:month] = begin_date.month
-							document_stat.save
-						}
+					
+
+
+					count_docs.keys.each do |key| 
+						p "======================#{key}========================="
+						#create a new data ..
+						DocumentStat.create do |ds|
+							ds.org			= key
+							ds.docs			= count_docs[key]
+							ds.docs_saved	= count_docs_saved[key]
+							ds.docs_added	= count_docs_added[key]
+							ds.pages		= count_pages[key]
+							ds.pages_saved	= count_pages_saved[key]
+							ds.pages_added	= count_pages_added[key]
+							ds.query		= count_query[key]
+							ds.query_saved	= count_query_saved[key]
+							ds.query_added	= count_query_added[key]
+							#
+							ds.year			= begin_date.year
+							ds.month		= begin_date.month
+							ds.doc_type		= doc_type
+							ds.created_date = begin_date
+						end
 					end
+					#=====================================================
+					modified =   ModifiedDocument.where( condition ).where(condition_date)
+					count_modified = modified.count
+					pages_modified = modified.sum(:pages)
+					if count_modified > 0 
+						DocumentStat.create do |ds|
+							ds.org          = "TSP_A" 
+							ds.docs         = count_modified
+							ds.docs_added   = count_modified
+							ds.pages        = pages_modified
+							ds.pages_added  = pages_modified
+
+							ds.year         = begin_date.year
+							ds.month        = begin_date.month
+							ds.doc_type     = doc_type
+							ds.created_date = begin_date
+						end
+					end
+					#
 					########   END  #########	
 				}
 			}		
