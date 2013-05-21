@@ -372,7 +372,7 @@ steal(
 				tipsElement.addClass('label-' + label_map[code]);
 				if(code == 0){
 					var hit = false;
-					$('.filter_docs').each(function(key,item){
+					el.closest('.requisition_detail_form').find('.filter_docs').each(function(key,item){
 						if(item != el[0] &&  item.value == el.val()){
 							hit = true;
 							return;
@@ -690,7 +690,7 @@ steal(
 		printPage : function(id){
 			var needHTML = document.getElementById(id).innerHTML;
 			//alert(needHTML);
-			var OpenWindow = window.open("print.htm", "print", "");
+			var OpenWindow = window.open('','print','');
 			//var OpenWindow = window.open("print.htm", "abc", "height=600, width=750, top=0, left=0,toolbar=no,menubar=no, scrollbars=no, resizable=no, location=no, status=no");
 			OpenWindow.document.write("<html>");
 			OpenWindow.document.write("<head>");

@@ -333,7 +333,8 @@ class DocumentHistoriesController < ApplicationController
 
       query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("user_id").group("user_id").count
       umap = {}
-      unames = User.all.each { |u| umap[u.id] = u.username }
+      #unames = User.all.each { |u| umap[u.id] = u.username }
+      unames = User.all.each { |u| umap[u.id] = u.fullname }
 
       doc_total_tmp = docs_total == 0 ? 0 : (100.0 / docs_total)
       query_total_tmp = query_total == 0 ? 0 : (100.0 / query_total)

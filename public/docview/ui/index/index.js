@@ -32,7 +32,7 @@ steal(
 
             var requisition = false;
             var requisitionActions = this.options.clientState.attr('access').attr('requisition_docs');
-            if (requisitionActions.attr('application') || requisitionActions.attr('approval')  || requisitionActions.attr('approval_guan') || requisitionActions.attr('register') || requisitionActions.attr('write_off') || requisitionActions.attr("lending_statistics")) {
+            if (requisitionActions.attr('application_nanhui') || requisitionActions.attr('application') || requisitionActions.attr('approval')  || requisitionActions.attr('approval_guan') || requisitionActions.attr('register') || requisitionActions.attr('write_off') || requisitionActions.attr("lending_statistics") || requisitionActions.attr("requisition_history") ) {
                 requisition = true;
             }
 
@@ -63,7 +63,7 @@ steal(
                 business_process: business_process,
                 manage_docs: manage_docs,
                 manage_accounts: manage_accounts,
-		message: message
+				message: message
             }));
 
         },

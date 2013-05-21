@@ -53,12 +53,12 @@ steal(
                 case "manage_accounts":
                 case "stats":
                     this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
-
                     this.element.find('li').removeClass('active');
                     
                     // If the user entered the page by manually entering the url with
                     // the subcategory, then it should be defined.
                 	var subcategory = $.route.attr('subcategory');
+
 					if (subcategory === 'sys-setting') {
 							$('#sys-setting').show();
 					}

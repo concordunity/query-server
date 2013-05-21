@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 namespace :update_for_tables do
 
+  desc 'update web_link number'
+  task :update_web_link_number => :environment do
+	filepath = File.join(Rails.root,"doc","webmenu.xls")	
+    book,sheet = open_excel(filepath)
+	sheet.each_with_index do |row,index|
+		if !row[0].blank?
+			wl = WebLink.find_by_name(row[0])
+			wl.menu_one = row[1]
+			wl.menu_two = row[2]
+			wl.save
+		end
+	end
+  end
 
   desc "update excel requisition'table by excel model"
   task :export_requisition => :environment do

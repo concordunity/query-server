@@ -35,7 +35,7 @@ steal(
 		requisition_docs : [ "application","application_nanhui" , "approval", "approval_guan", "register", "write_off", "lending_statistics", "requisition_history" ],
 		business_process : ["create_interchange_receipt","search_interchange_receipt","create_dishonored_bill","search_dishonored_bill","statistical_inquiry"],
 		manage_docs : ["print","testify","inquire","check","dh_report"],
-		manage_accounts : ["users","roles","system_upload"]
+		manage_accounts : ["users","roles","system_upload","business_agency_maintain","sys-setting"]
 	    };
 		var that = this;
 	    var init_option_result = {};

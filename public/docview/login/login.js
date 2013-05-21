@@ -160,6 +160,7 @@ steal(
 	    $('#user-info-display').html("当前登录用户 : " + permissions.fullname);
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {
+				console.log(permissions.web_links[i].action);
                 switch (permissions.web_links[i].action) {
                     // Search
                 case ("query"):
@@ -194,6 +195,10 @@ steal(
                     this.options.clientState.attr('access').attr('business_process').attr('statistical_inquiry', true);
                     this.setNavIfEmpty('business_process', 'statistical_inquiry');
                     break;                    
+				case ("requisition_history_index"):
+					this.options.clientState.attr('access') .attr('requisition_docs').attr('requisition_history', true);
+					this.setNavIfEmpty('requisition_docs', 'requisition_history');
+					break;
 				case ("application_index"):
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('application', true);
 					this.setNavIfEmpty('requisition_docs', 'application');
@@ -221,10 +226,6 @@ steal(
 				case ("lending_statistics_index"):
 					this.options.clientState.attr('access') .attr('requisition_docs').attr('lending_statistics', true);
 					this.setNavIfEmpty('requisition_docs', 'lending_statistics');
-					break;
-				case ("requisition_history_index"):
-					this.options.clientState.attr('access') .attr('requisition_docs').attr('requisition_history', true);
-					this.setNavIfEmpty('requisition_docs', 'requisition_history');
 					break;
 				case ("all_print"):
 /*
@@ -318,7 +319,7 @@ steal(
                 }
             }
 
-//            //console.log(this.options.clientState.attr('access'));
+            console.log(this.options.clientState.attr('access'));
             
             // load app
             this.loadApp(permissions);
@@ -333,6 +334,7 @@ steal(
 		},
         loadApp: function(user_info) {
             $('#login').hide();
+			console.log(this.options.clientState);
 			// Change background color
             $('body').removeClass('login-page');
         

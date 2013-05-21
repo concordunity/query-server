@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 namespace :web_link do
 
+  desc "test web_link"
+  task :test_web_link => :environment do 
+	if WebLink.where(:name => "aRequisitionRequisitionHistory").length == 0
+	  	  WebLink.create(:name => "aRequisitionRequisitionHistory",:description => "流转状态",:controller => "requisition",:action => "requisition_history_index")
+      else
+		WebLink.where(:name => "aRequisitionRequisitionHistory").delete_all
+	  	  WebLink.create(:name => "aRequisitionRequisitionHistory",:description => "流转状态",:controller => "requisition",:action => "requisition_history_index")
+      end
+
+  end
   desc "系统管理-机构维护"
   task :add_business_agency_maintain_for_web_link => :environment do
 

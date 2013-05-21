@@ -38,11 +38,11 @@ class User < ActiveRecord::Base
     if roles.where(:name => 'admin').empty?
        x=[]
        roles.each do |r|
-         r.web_links.empty? || x=x+r.web_links
+         r.web_links.empty? || x=x+r.web_links.order("menu_one,menu_two")
        end
        return x
     else
-      return WebLink.all
+      return WebLink.order("menu_one,menu_two")
     end
   end
 

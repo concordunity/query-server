@@ -140,7 +140,7 @@
 	<% var user = this.ctx.options.clientState.attr('user') %>
 	
 
-	<% if (this.tag) {%>
+	<% if (this.tag && action != 'register') {%>
 	全部打印<input type='checkbox' class='print_all'/>
 		<% }%>
 	<br />
