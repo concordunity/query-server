@@ -35,6 +35,19 @@ steal(
 				success:function(data){}
 				});	
 		},
+		"button.orginfo_data click" : function(el,ev){
+			ev.preventDefault();
+			console.log("=========");
+			$.ajax({
+				url: "/org_info/update_data",
+				data: {},
+				type: "get",
+				success: function(){
+						$.alterMessage(that,{msg:"关区业务点对应记录转换成功"});
+					}
+				});
+		},
+
 		"form[name=orginfo] submit" : function(el,ev){
 			ev.preventDefault();
 			var that = this;

@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 namespace :web_link do
+  desc "update gld web_link"
+  task :update_gld_web_link => :environment do 
+
+      if WebLink.where(:name => "aRequisitionApprovalGuan").length == 0
+	      WebLink.create(:name => "aRequisitionApprovalGuan",:description => "关处长审批",:controller => "requisition",:action => "approval_guan_index")
+      else
+	      a = WebLink.where(:name => "aRequisitionApprovalGuan").first
+	      a.description = "关处长审批"
+	      a.controller = "requisition" 
+	      a.action = "approval_guan_index"
+	      a.save
+      end
+  end
 
   desc "test web_link"
   task :test_web_link => :environment do 

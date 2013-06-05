@@ -18,8 +18,16 @@ class Test::SessionsController < Devise::SessionsController
 
     return invalid_login_attempt unless resource
     sign_in(resource_name, resource)
-      
+	#current_user.client_ip = 
+	logger.info request.env["HTTP_X_FORWARDED_FOR"]
+
+	u = User.find_by_username(resource.username)
+	u.current_sign_in_ip= request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip 
+	u.client_ip = request.env["HTTP_X_FORWARDED_FOR"]  || request.remote_ip 
+	u.save
     current_user = resource
+	u.last_sign_in_ip= request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip 
+	u.save
     links = current_user.web_links
     no_links = WebLink.all - links
 

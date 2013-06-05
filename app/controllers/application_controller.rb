@@ -17,6 +17,8 @@ class ApplicationController < ActionController::Base
         :status => 403  }
      end
   end
+
+
   def get_pages(params,records)
 	if  params[:goto_page].to_i > records.length || params[:goto_page].to_i < 1 || params[:goto_page].blank?
 		current_page = 1
@@ -36,11 +38,10 @@ class ApplicationController < ActionController::Base
   end
 #记录系统总日志
   def sys_log(params)
+	client_ip = 
 	p_action = params[:current_action]
 	p_describe = params[:describe]
 	if current_user
-	    logger.info "====ok======" 
-	    logger.info current_user.to_json
 	    role_id = current_user.roles[0].id	
 	    user_id = current_user.id
 	
@@ -55,10 +56,7 @@ class ApplicationController < ActionController::Base
 		sl.role_name = current_user.roles[0].name
 	    end
 	else
-	    logger.info "====error======" 
-	    logger.info params 
 	#    logger.info request.to_json
-	    logger.info request.remote_ip
 	    @user = User.find_by_username(params[:login_user])	
 	    user_id = @user.id
 	    role_id = @user.roles[0].id
@@ -93,7 +91,8 @@ class ApplicationController < ActionController::Base
 	    qh.doc_type = doc.doc_type
 	    qh.doc_id = doc.doc_id
 	    qh.bulkids = ids.join(" ") unless ids.nil?
-	    qh.ip = current_user.current_sign_in_ip
+	    qh.ip = current_user.client_ip || current_user.current_sign_in_ip
+	    #qh.ip = current_user.current_sign_in_ip
 	    qh.email = current_user.display_name
 	    qh.print = false
 		qh.status = params[:status] || true
@@ -119,7 +118,8 @@ class ApplicationController < ActionController::Base
 	    dh.org = doc.org 
 	    dh.doc_type = doc.doc_type 
 	    dh.doc_id = doc.doc_id 
-	    dh.ip = current_user.current_sign_in_ip
+	    dh.ip = current_user.client_ip || current_user.current_sign_in_ip
+	    #dh.ip = current_user.current_sign_in_ip
 	    dh.email = current_user.display_name
 		dh.status = params[:status] || true
 		dh.user_name = current_user.display_name
@@ -142,7 +142,8 @@ class ApplicationController < ActionController::Base
 			dh.org = doc.org 
 			dh.doc_type = doc.doc_type 
 			dh.doc_id = doc.doc_id 
-			dh.ip = current_user.current_sign_in_ip
+			dh.ip = current_user.client_ip || current_user.current_sign_in_ip
+			#dh.ip = current_user.current_sign_in_ip
 			dh.email = current_user.display_name
 			dh.status = params[:status] || true
 			dh.filters = f

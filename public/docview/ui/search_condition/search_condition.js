@@ -18,22 +18,43 @@ steal(
 	    //var dicController =  $("#dictionary-tag").controller();
 	    //var orgsDic = dicController.getDictionary("org");
 	    var orgsDic = orgArrayDictionary;
-            this.element.html(this.view('init',{orgsDic : orgsDic}));
+	    var orgInfoDic = org_infoArrayDictionary;
+            this.element.html(this.view('init',{orgsDic : orgsDic, orgInfoDic: orgInfoDic}));
             this.element.find('div.daterange-holder-2').docview_ui_daterange({
                 dateOptions : {
                     labelString: ""
                 }
             });
-            this.setOrgVisible(false);
-            this.setDateRangeVisible(false);
+	    this.setHideLabel("init");
+	    this.setDateRangeVisible(false);
             $("#frm_docType_years_select").html(this.view("frm_docType_years",{}));
         },
+	setHideLabel : function(tag){
+            this.setCheckOrgVisible(false);
+	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
+	    var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.control-group');
+	    if (tag == false){
+		el.hide();
+		org_info.show();
+	    } else if (tag == true){
+	    	el.show();
+		org_info.hide();
+	    } else {
+	    	el.hide();
+		org_info.hide();
+	    }
+	},
         setOrgVisible : function(toShow) {
 	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
+	    var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.control-group');
+	    el.hide();
+	    org_info.hide();
             if (toShow) {
               el.show();
+	      org_info.hide();
             } else {
               el.hide();
+	      org_info.show();
             }
         },
         setDateRangeVisible : function(toShow) {
@@ -44,13 +65,41 @@ steal(
               el.hide();
             }
         },
+	setCheckOrgVisible : function(toShow) {
+	    var el = $(".docview_ui_search_condition div.check_org");
+            if (toShow) {
+	      var cov = $(".docview_ui_search_condition div.check_org input[name='check_org']:checked").val(); 
+	      console.log(toShow,cov);
+	      if (cov == 0){
+		      this.setHideLabel(false);
+	      }else if (cov == 1){
+		      this.setHideLabel(true);
+	      } else{
+		      this.setHideLabel("init");
+	      }
+              el.show();
+            } else {
+              el.hide();
+            }
+
+        },
 	".docview_ui_search_condition select[name='groupby'] change" : function(el,ev){
 	    var el_value = $(el).attr("value");
-	    if (el_value == 0 || el_value == 1 || el_value == 5) {
-	        this.setOrgVisible(false);
+	    if (el_value == 0 || el_value == 1 || el_value == 5 || el_value == 4) {
+	        this.setCheckOrgVisible(false);
+		this.setHideLabel("init");
 	    } else {
-	        this.setOrgVisible(true);
+	        this.setCheckOrgVisible(true);
 	    }
+	},
+	"input[name='check_org'] click" : function(el,ev){
+		var org_value = $(el).attr("value");
+		if(org_value == 0){
+		    this.setOrgVisible(false); 
+		}else{
+		    this.setOrgVisible(true); 
+		}
+
 	},
 	"input[name='timerange'] click" : function(el,ev){
 		var timerange_value = $(el).attr("value");

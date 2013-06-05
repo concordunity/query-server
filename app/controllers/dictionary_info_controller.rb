@@ -159,6 +159,23 @@ class DictionaryInfoController < ApplicationController
 	 logger.info(result)
   end
 
+  def update_data
+  	ois = OrgInfo.group("org")
+	 result = ActiveSupport::OrderedHash.new 
+	 dic_type = "org_info"
+	 oi_arr = []
+	 oi_json = []
+	 ois.each do |oi| 
+	    ois_org  = OrgInfo.where(:org => oi.org).collect(&:subjection_org)
+	    oi_arr << "{'dic_num' : '#{ois_org.join(",")}', 'dic_name' : '#{oi.org}', 'dic_type' : '#{dic_type}'}" 
+	    oi_json << "'" + oi.org + "' : '" + ois_org.join(",")+ "'"
+	end
+	tmp_arr = "#{dic_type}ArrayDictionary = [" + oi_arr.join(",") + "]"
+	tmp_json  = "#{dic_type}JsonDictionary = {" + oi_json.join(",") + "}"
+	write_to_js(dic_type+"_arr.js", tmp_arr)
+	write_to_js(dic_type+"_json.js",tmp_json)
+	render json: "ok", status: 200
+  end
 private
 
   def write_to_js(filename, str)

@@ -121,8 +121,15 @@ steal(
 					{id: "hr_date", text: "日期" },
 					{id: "business_point", text: "业务点" },
 					{id: "number_customs", text: "报关单编号" },
+
+					{id: "business_units_encoding", text: "经营单位编码" },
+					{id: "name_business_units", text: "经营单位名称" },
+
 					{id: "commodity_number", text: "商品项号" },
 					{id: "product_number", text: "商品编号" },
+
+					{id: "product_name", text: "商品名称" },
+
 					{id: "unit_price", text: "单价" },
 					{id: "spatial_index_impact", text: "空间指数影响度" },
 					{id: "actual_reference_price", text: "全国均价" },

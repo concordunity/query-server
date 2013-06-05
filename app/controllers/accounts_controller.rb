@@ -39,10 +39,12 @@ class AccountsController < ApplicationController
   end
 
   def user_select
-    #r = Role.find_by_name('admin')
-	#@users = User.where(["subjection_org = ? AND id not in (?)", current_user.subjection_org ,r.users.collect(&:id)])
-		kz_user = User.includes(:roles).where(["subjection_org = ? and roles.name = ?",current_user.subjection_org,"单证借阅科长审批"])
-		gld_user = User.includes(:roles).where(["subjection_org = ? and roles.name = ?",current_user.subjection_org,"单证借阅关长审批"])
+	kz_user = User.includes(:roles).where(["subjection_org = ? and roles.name = ?",current_user.subjection_org,"单证借阅科长审批"])
+	oi = OrgInfo.find_by_subjection_org( current_user.subjection_org)
+	ois = OrgInfo.where(:org => oi.org).collect(&:subjection_org)
+	tmp_users = ois.blank? ? ["true"] : ["users.subjection_org in (?)",ois]
+	users = User.includes("roles").where(["roles.name like ?","%单证借阅关处长审批%"]).where(tmp_users)
+	gld_user = users
 	respond_with(:kz_users => kz_user, :gld_users => gld_user)
   end
  
@@ -146,6 +148,7 @@ class AccountsController < ApplicationController
         no_links = WebLink.all - links
 
         user_info = { :error => "Success",
+          #:last_ip 		=> current_user.client_ip || current_user.last_sign_in_ip,
           :last_ip 		=> current_user.last_sign_in_ip,
           :last_time 	=> current_user.last_sign_in_at,
           :fullname 	=> current_user.fullname,

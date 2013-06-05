@@ -17,7 +17,8 @@ class BusinessAgencyMaintainController < ApplicationController
 	@bam = BusinessAgencyMaintain.new(params[:agency])
 	@bam.org = current_user.subjection_org
 	@bam.org_name = DictionaryInfo.find_by_dic_type_and_dic_num("org",current_user.subjection_org).dic_name
-		if @bam.save
+	bams = BusinessAgencyMaintain.find_by_org_and_name(current_user.subjection_org,@bam.name)
+		if bams.nil? && @bam.save
 			render json: {:message => 'ok'}, :status => 200		
 		else
 			render json: {:message => 'failure'}, :status => 500		

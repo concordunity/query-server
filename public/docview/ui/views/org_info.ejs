@@ -1,0 +1,17 @@
+<div class="control-group">
+<label  class="control-label"><%= label %></label>
+<div class="controls">
+<select name="<%= name %>" >
+<% 
+	for(var i=0;(this.orgsDic!= 'undefined') && i < this.orgsDic.length;i++){
+		var org = this.orgsDic[i];
+	    if (org.dic_num == "2200" ) { 
+			%><option value="" selected ><%= (this.type == undefined) ? "不限" : "总关"%></option><%
+		}else{
+			%><option value="<%= org.dic_num %>"><%= org.dic_name%>(<%=  org.dic_num%>)</option><% 
+		}
+	}
+%>
+</select>
+</div>
+</div>

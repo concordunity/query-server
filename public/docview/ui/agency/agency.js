@@ -66,10 +66,13 @@ steal(
 				data:{ agency:{ name: name ,org_name: orgJsonDictionary[that.subjection_org]} },
 				error:function(err){
 					console.log(err);
+					$.alertMessage(that,{msg:'机构添加失败',type:'error'});
 				},
 				success:function(data){
 					that.loadData();
-					$.alertMessage(that,{msg:'机构添加成功',type:'success',scroll:'.agency-list'});
+					$.alertMessage(that,{msg:'机构添加成功',type:'success'});
+					//$.alertMessage(that,{msg:'机构添加成功',type:'success',scroll:'.agency-list'});
+					el.find('input[name=agency_name]').val("");
 				}
 			});
 		},

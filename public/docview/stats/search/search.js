@@ -25,6 +25,8 @@ steal(
     'docview/ui/dictionary',
     'docview/ui/syslog',
     'libs/org_arr.js',
+    'libs/org_info_json.js',
+    'libs/org_info_arr.js',
     'libs/jquery.date.js',
     'libs/jquery.math.js'
     )
@@ -230,6 +232,7 @@ steal(
                 var to_date = dates.to;
 	    
                 var r = el.find('input[name="timerange"]:checked').val();
+                var check_org = el.find('input[name="check_org"]:checked').val();
 
                 if (r == 0) {
                     from_date = "";
@@ -238,14 +241,23 @@ steal(
 
                 var select_hash = {};
                 var org = el.find("select[name=org]").val();
+                var org_info = el.find("select[name=org_info]").val();
                 var doc_type = el.find("select[name=doc_type]").val();
                 var years = el.find("select[name=years]").val();
-                //console.log(org);
-                //console.log(doc_type);
-                //console.log(years);
-
+		console.log("===== check_org ===",check_org);
+		if (check_org == 0){
+			org = "";	
+		} else if (check_org == 1) {
+			org_info = "";
+		} else{
+			org = "";
+			org_info = "";
+			check_org = "";
+		}
                 select_hash = {
                     org:org,
+                    org_info:org_info,
+		    check_org:check_org,
                     doc_type:doc_type,
                     years:years
                 };
@@ -293,7 +305,8 @@ steal(
 		*/
 		console.log(data,this.element.find('select[name="groupby"]').val() ,this.element.find('select[name="groupby"]').val() == '4');
 		 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
-                if (this.element.find('select[name="groupby"]').val() == '4') {
+                var group_value = this.element.find('select[name="groupby"]').val(); 
+                if (group_value == "4"){ 
 		
                     dmstable_params = "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
                     this.element.find('div.stats_stats').html(this.view('stats_ty_month_init'));
@@ -301,11 +314,12 @@ steal(
                     this.search_result = data;
 					console.log("====== org");
                 //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
-                } else {
+                } else if (group_value == "0"){ 
+		
 		    		//console.info(data);
 					this.element.find('div.stats_stats').html(this.view('stats_total', data));
 					var tmp_count = (data.docs_total-data.doc_count)*1.0;	
-					$('.stats_total').html('档案总数为：<b>' 
+					$('.stats_total').html('档案增量总数为：<b>' 
 							+ $.thousands(data.docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.pages_total) 
@@ -313,7 +327,7 @@ steal(
 							+ $.thousands(data.query_total)
 							+ ' </b>份,查阅率为：<b> '
 							+ data.query_p 
-							+ '</b> ,<br />其中存量数为：<b>'
+							+ '</b> ,<br />档案存量总数为：<b>'
 							+ $.thousands(data.doc_count)
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.doc_edc_page)
@@ -330,6 +344,8 @@ steal(
 									'font-size':'20px'
 								});
 					
+		}else{
+					this.element.find('div.stats_stats').html(this.view('stats_total', data));
                 }
                 this.element.find('div.stats_stats table').dataTable({
                     "sDom": dmstable_params,

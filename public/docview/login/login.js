@@ -370,7 +370,8 @@ steal(
 	    	$('#stats-search-box').docview_stats_search({clientState: this.options.clientState});
 	    	$('#settings').docview_settings({clientState: this.options.clientState});
 	    	$('#system-upload').docview_ui_upload_user({clientState: this.options.clientState});
-			var login_info = " 最近一次登录时间 "+ $.date(user_info.last_time).format('yyyy-MM-dd hh:mm:ss') + ", IP 地址 " + user_info.last_ip;
+			var login_info = " 最近一次登录时间 "+ $.date(user_info.last_time).format('yyyy-MM-dd hh:mm:ss');
+			//var login_info = " 最近一次登录时间 "+ $.date(user_info.last_time).format('yyyy-MM-dd hh:mm:ss') + ", IP 地址 " + user_info.last_ip;
 			this.options.clientState.attr('login', {message: this.options.clientState.attr('user').attr('fullname') + login_info});
 			this.options.clientState.attr('alert', {
 				type: 'success',

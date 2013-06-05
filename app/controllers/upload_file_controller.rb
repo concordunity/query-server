@@ -314,17 +314,22 @@ class UploadFileController < ApplicationController
 			hr.subjection_org = row[2][0,4]#业务点
 			hr.number_customs = row[2]
 			hr.org = row[2][0,4]#关区号
-			hr.commodity_number = row[3]
-			hr.product_number = row[4]
-			hr.unit_price = row[5]
-			hr.spatial_index_impact = row[6]
-			hr.actual_reference_price = row[7]
+			hr.business_units_encoding = row[3]
+			hr.name_business_units = row[4]
+
+			hr.commodity_number = row[5]
+			hr.product_number = row[6]
+			hr.product_name = row[7]
+
+			hr.unit_price = row[8]
+			hr.spatial_index_impact = row[9]
+			hr.actual_reference_price = row[10]
 			hr.exists_in_system = false#是否存在
 			hr.table_type = num
 			if get_doc_ids(hr.number_customs.to_s)
-              hr.exists_in_system = true
-            end
-            tmp_arr << hr 
+			    hr.exists_in_system = true
+			end
+			tmp_arr << hr 
           end
         end
 		logger.info "=====destroy======="

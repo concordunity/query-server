@@ -162,12 +162,24 @@ class DocumentHistoriesController < ApplicationController
       where_clause = { :created_at => params[:from_date].to_date .. params[:to_date].to_date.next }
       where_clause_edc = { :created_date => params[:from_date].to_date .. params[:to_date].to_date}
     end
-    condition = {:doc_type => get_doc_type,:org => params[:condition_value][:org]||""}
+    condition = {:doc_type => get_doc_type,:org => params[:condition_value][:org]||"", :org_info => params[:condition_value][:org_info]||""}
     query_stats = {}
     query_stats_by = {}
+    org_condition = ["true"] 
+    cat = params[:groupby]
+    if cat == '2' &&  !params[:condition_value][:check_org].nil?
+	logger.info "----------------"
+	check_org = params[:condition_value][:check_org]
+	logger.info check_org 
 
+	if  check_org == "1" 
+		org_condition = ((condition[:org].nil? || condition[:org] == "") ? ["true"] : {:org => condition[:org]})
+	elsif check_org == "0" 
+		org_condition = {:org => condition[:org_info].split(",")} 
+	end
 
-    org_condition = ((condition[:org].nil? || condition[:org] == "") ? ["true"] : {:org => condition[:org]})
+	logger.info org_condition 
+    end
     docType_condition = ((condition[:doc_type].nil? || condition[:doc_type] == "") ? ["true"] : {:doc_type => condition[:doc_type]})
 #符合条件的总档案记录
 	documents = Document.where(org_condition).where( where_clause )
@@ -200,6 +212,9 @@ class DocumentHistoriesController < ApplicationController
 	search_queries = queries.where(where_clause).where(docType_condition)
 #符合条件的总增量的查阅量
     select_query_total = search_queries.where(:doc_flag => 0).count 
+logger.info '-----------'
+logger.info select_query_total 
+
 #符合条件的总存量的查阅量
 	save_query_total = search_queries.where(:doc_flag => 1).count 
 
@@ -224,11 +239,11 @@ class DocumentHistoriesController < ApplicationController
 
       cat = params[:groupby]
       results[:groupby] = cat
-      function_params = [queries,document_count,document_page_count,query_total,where_clause,["true"],docType_condition,condition]
+      function_params = [queries,document_count,document_page_count,select_query_total,where_clause,["true"],docType_condition,condition,where_clause_edc]
       #function_params = [queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition]
 
       if cat == '1'
-        query_stats_by = search_condition_org(function_params)
+        query_stats_by = search_condition_org_new(function_params)
       elsif cat == '2'
 	    function_params[5] = org_condition
         query_stats_by = search_condition_user(function_params)
@@ -237,23 +252,66 @@ class DocumentHistoriesController < ApplicationController
       elsif cat == '4'
         query_stats_by = search_condition_month2(function_params)
       elsif cat == '5'
-        query_stats_by = search_condition_orginfo(function_params)
+        query_stats_by = search_condition_orginfo_new(function_params)
       end
       results[:query_stats] = query_stats_by
       render json: results
     end
-    #申报关区部分
+    #业务点部分
+#新方法逻辑通顺,需要进行测试确认
+    def search_condition_org_new(function_params)
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
+      query_stats_by = {}
+      document_org = DocumentStat.where(where_clause_edc).where(docType_condition).order("org").group("org")
+      docs_stats = document_org.sum("docs_added")
+      pages_stats = document_org.sum("pages_added")
+      query_stats = document_org.sum("query_added")
+      logger.info "=======" 
+      logger.info query_total
+      logger.info query_stats["2201"] 
+      DictionaryInfo.where(:dic_type => "org").where(["dic_num not in (2200)"]).each do |do_row|
+      	    k = do_row.dic_num.to_s
+	    num_docs = 0
+	    num_pages = 0
+	    num_queries = 0
+	    num_docs = docs_stats[k] if docs_stats.has_key?(k)	
+	    num_pages = pages_stats[k] if pages_stats.has_key?(k)
+            num_queries = query_stats[k] if query_stats.has_key?(k)
+	    query_stats_by[k] = { :num_docs => num_docs, :num_pages => num_pages, :num_queries => num_queries,
+		    :percentage_q => num_docs == 0 ? 0 : number_to_percentage(num_queries * 100.0 / num_docs,:precision => 2),
+		    :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
+		}
+
+      end
+=begin
+	document_org.each do |do_row|
+	    k = do_row.org
+	    num_docs = 0
+	    num_pages = 0
+	    num_queries = 0
+	    num_docs = docs_stats[k] if docs_stats.has_key?(k)	
+	    num_pages = pages_stats[k] if pages_stats.has_key?(k)
+            num_queries = query_stats[k] if query_stats.has_key?(k)
+	    query_stats_by[k] = { :num_docs => num_docs, :num_pages => num_pages, :num_queries => num_queries,
+		    :percentage_q => num_docs == 0 ? 0 : number_to_percentage(num_queries * 100.0 / num_docs,:precision => 2),
+		    :percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
+		}
+        end
+=end
+	return query_stats_by
+    end
+
     def search_condition_org(function_params)
-      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
       query_stats_by = {}
 
 
-      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org")
+      document_org = Document.where(:doc_flag => 0).where(where_clause).where(docType_condition).order("org").group("org")
       docs_stats = document_org.count
-      docs_stats_T = Document.order("org").group("org").count
+      docs_stats_T = Document.where(:doc_flag => 0).order("org").group("org").count
       pages_stats = document_org.sum("pages")
 
-      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org").count
+      query_stats = queries.where(where_clause).where(docType_condition).order("org").group("org").count
 
       docs_stats_T.each { |k,v|
         num_queries = 0
@@ -276,34 +334,58 @@ class DocumentHistoriesController < ApplicationController
       }
       return query_stats_by
     end
-    #申报关区部分
+    #关区部分
+#新方法逻辑通顺,需要进行测试确认
+    def search_condition_orginfo_new(function_params)
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
+      query_stats_by = {}
+      document_org = DocumentStat.where(where_clause_edc).where(docType_condition).order("org").group("org")
+      docs_stats = document_org.sum("docs_added")
+      pages_stats = document_org.sum("pages_added")
+      query_stats = document_org.sum("query_added")
+
+      OrgInfo.order("org").group("org").each do |org|
+	ois = OrgInfo.where(:org => org.org)
+	sois = ois.collect(&:subjection_org)
+	num_docs = 0
+	num_pages = 0
+	num_queries = 0
+	sois.each do |k|
+	    num_docs += docs_stats[k] if docs_stats.has_key?(k)	
+	    num_pages += pages_stats[k] if pages_stats.has_key?(k)
+            num_queries += query_stats[k] if query_stats.has_key?(k)
+	end
+	query_stats_by[org.org] = { :num_docs => num_docs, :num_pages => num_pages, :num_queries => num_queries,
+				:percentage_q => num_docs == 0 ? 0 : number_to_percentage(num_queries * 100.0 / num_docs,:precision => 2),
+				:percentage_qq => query_total == 0 ? 0 : number_to_percentage(num_queries * 100.0 / query_total,:precision => 2),
+		}
+
+      end
+      return query_stats_by
+    end
     def search_condition_orginfo(function_params)
-      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
       query_stats_by = {}
 
-      document_org = Document.where(where_clause).where(org_condition).where(docType_condition).order("org").group("org")
+      document_org = Document.where(:doc_flag => 0).where(where_clause).where(docType_condition).order("org").group("org")
 #符合条件的档案总数
       docs_stats = document_org.count
 
 #符合条件的各个关区档案总页数
       pages_stats = document_org.sum("pages")
 #各个关区总的档案数
-      docs_stats_T = Document.order("org").group("org").count
+      docs_stats_T = Document.where(:doc_flag => 0).order("org").group("org").count
 
 #各个关区总的查阅数
-	  no_admin = ["user_id not in (?)",[1,2,5]]
-      query_stats = queries.where(no_admin).where(where_clause).where(org_condition).where(docType_condition).order("org").group("org").count
+      query_stats = queries.where(:doc_flag => 0).where(where_clause).where(docType_condition).order("org").group("org").count
 
 	  OrgInfo.order("org").group("org").each do |org|
 		ois = OrgInfo.where(:org => org.org)
 		sois = ois.collect(&:subjection_org)
-		dois = ois.collect(&:dictionary_info_id)
 		num_queries = 0
-        num_docs = 0
-        num_pages = 0
-		v = 0 
+		num_docs = 0
+		num_pages = 0
 		sois.each do |k|
-			v += docs_stats_T[k] if docs_stats_T.has_key?(k)	
 			num_queries += query_stats[k] if query_stats.has_key?(k)
 			if docs_stats.has_key?(k)
 				num_docs += docs_stats[k] 
@@ -311,7 +393,6 @@ class DocumentHistoriesController < ApplicationController
 			end
 		end
 		logger.info "=================" 
-		logger.info v 
 		logger.info num_docs
 		logger.info num_pages
 		logger.info num_queries
@@ -328,20 +409,25 @@ class DocumentHistoriesController < ApplicationController
 
     #用户部分
     def search_condition_user(function_params)
-      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
       query_stats_by = {}
 
-      query_stats = queries.where(where_clause).where(org_condition).where(docType_condition).order("user_id").group("user_id").count
+      docs_total = Document.where(:doc_flag => 0).where(where_clause).where(org_condition).where(docType_condition).order("org").count
+      query_total= queries.where(:doc_flag => 0).where(where_clause).where(org_condition).where(docType_condition).order("org").count
+
+      query_stats = queries.where(:doc_flag => 0).where(where_clause).where(org_condition).where(docType_condition).order("user_id").group("user_id").count
       umap = {}
       #unames = User.all.each { |u| umap[u.id] = u.username }
-      unames = User.all.each { |u| umap[u.id] = u.fullname }
+      org_value = org_condition.class == Array ? org_condition : {:subjection_org => org_condition.values} 
+      unames = User.where(org_value).all.each { |u| umap[u.id] = [u.username,u.fullname] }
 
       doc_total_tmp = docs_total == 0 ? 0 : (100.0 / docs_total)
       query_total_tmp = query_total == 0 ? 0 : (100.0 / query_total)
 
       query_stats.each { |k,v|
         if umap.has_key?(k)
-          query_stats_by[umap[k]] = {
+          query_stats_by[umap[k][1]] = {
+	    :username => umap[k][0],
             :num_queries => v,
             :percentage_q =>  number_to_percentage( v * doc_total_tmp,:precision => 2), 
             :percentage_qq => number_to_percentage( v * query_total_tmp,:precision => 2),
@@ -350,9 +436,10 @@ class DocumentHistoriesController < ApplicationController
       }
       return query_stats_by
     end
+
     #用户角色部分
     def search_condition_role(function_params)
-      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+      queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
       query_stats_by = {}
       rmap = {}
       Role.all.each { |r|
@@ -387,7 +474,7 @@ class DocumentHistoriesController < ApplicationController
       end
       #月份部分
       def search_condition_month(function_params)
-        queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+        queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
         query_stats_by = {}
         months = [Time.now.end_of_month]
         6.times do
@@ -430,7 +517,7 @@ class DocumentHistoriesController < ApplicationController
 
       #月份部分
       def search_condition_month2(function_params)
-		queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition = function_params
+		queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition,where_clause_edc = function_params
         query_stats_by = {}
         months = [Time.now.end_of_month]
         6.times do
@@ -445,19 +532,17 @@ class DocumentHistoriesController < ApplicationController
 		logger.info "### BEGIN LOAD DATA FROM DOCUMENT STATS ###"
 		
 		(0..(months.length - 2)).each { |i|
-        	key = months[i].strftime("%Y/%m")
-        	where_clause = { :created_date => (months[i + 1] + 1).to_date .. (months[i] ).to_date }
-	
+			key = months[i].strftime("%Y/%m")
+			where_clause = { :created_date => (months[i + 1] + 1).to_date .. (months[i] ).to_date }
 			logger.info "### CREATED  DATE:#{where_clause} ###"
 			logger.info "### ORG CONDITION:#{org_condition}#{docType_condition} ###"
 			#document_stats = DocumentStat.select("org,sum(docs) as docs,sum(pages) as pages,sum(queries) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
-			document_stats = DocumentStat.select("org,sum(docs) as docs,sum(pages) as pages,sum(query) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
+			document_stats = DocumentStat.select("org,sum(docs_added) as docs,sum(pages_added) as pages,sum(query_added) as queries").where(where_clause).where(org_condition).where(docType_condition).group(:org)
 	
           	query_stats_by[key] = document_stats.collect { |obj|
 			
 			docs = obj[:docs].to_i * 1.00 		
 			single_queries = obj[:queries].to_f
-			logger.info single_queries.to_s + "=====" + docs_total.to_s
 			percent_q = docs == 0 ? 0 : (single_queries / docs)  
 			percent_qq= query_total == 0 ? 0 : (single_queries / query_total) 
 

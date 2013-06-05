@@ -5,10 +5,21 @@ class RequisitionController < ApplicationController
 
   def requisitions
 	result = send(params[:type])
-
+    logger.info "*******" 
+=begin
+    logger.info request.env
+    logger.info request.env["HTTP_X_FORWARDED_FOR"] 
+	logger.info request.headers["X-Real-IP"]
+	logger.info request.ip
+    logger.info current_user.current_sign_in_ip
+=end
+    logger.info request.remote_ip
+    logger.info current_user.current_sign_in_ip
+    logger.info current_user.last_sign_in_ip
+    logger.info current_user.client_ip
     #render :json => result, :status => 200
     #render :json => {:result => result}, :status => 200
-	logger.info result
+#	logger.info result
     respond_with(result)
   end
 
@@ -410,6 +421,10 @@ class RequisitionController < ApplicationController
 				lent_reasons = requisition_details[:lent_reasons]
 				rationale_single_number =  requisition_details[:rationale_single_number]	
 				logger.info "===  four ====" 
+				unless rationale_single_number
+					result = false 
+					raise
+				end
 				RequisitionDetail.create do |rd|
 					rd.single_card_number = single_card_number
 					rd.rationale_single_number = rationale_single_number 
@@ -639,8 +654,15 @@ class RequisitionController < ApplicationController
 		elsif type == 11
 			condition = ["('status' is not null AND status <> 20) AND (two_approvers = ?)",current_user.username]
 		elsif type == 12
-			condition = ["('status' is not null AND status <> 20) AND (storage_sites = ?)",current_user.subjection_org]
-			condition_org = ["true"] 
+			go = GroupOrg.find_by_subjection_org(current_user.subjection_org)
+			gos = GroupOrg.where(:group_id => go.group_id) if go
+			#subjection_condition = ["(org in (#{gos.collect(&:subjection_org).join(",")}) or storage_sites in (#{gos.collect(&:subjection_org).join(",")}))"] if gos	
+			#condition_org = subjection_condition.nil? ? (["org = " + current_user.subjection_org + " or storage_sites = "+current_user.subjection_org]) : subjection_condition 
+			subjection_condition = ["storage_sites in (#{gos.collect(&:subjection_org).join(",")})"] if gos	
+			condition_org = subjection_condition.nil? ? (["storage_sites = "+current_user.subjection_org]) : subjection_condition 
+
+			condition = ["('status' is not null AND status <> 20)"]
+			#condition = ["('status' is not null AND status <> 20) AND (storage_sites = ?)",current_user.subjection_org]
 		else 
 			condition = ["('status' is not null AND status <> 20)"]
 		end

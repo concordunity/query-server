@@ -31,8 +31,19 @@
                     
           </div>
 	  </div>
-    <div class="daterange-holder-2"> </div>
-     <%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'org', orgsDic : this.orgsDic} ) %>
+    	<div class="daterange-holder-2"> </div>
+	<div class="type-equal-user control-group">
+	<div class="control-group check_org">
+          <label class="control-label" >过虑方式</label>
+          <div class="controls">
+             <input type="radio" name="check_org" class="check_org" value="0" />关区<br>
+             <input type="radio" name="check_org" class="check_org" value="1" />业务点<br>
+                    
+          </div>
+	  </div>
+    		<%== $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org_info', orgsDic : orgInfoDic} ) %>
+    		<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'org', orgsDic : this.orgsDic} ) %>
+	</div>
         <div id="frm_docType_years_select"></div>
     </fieldset>  
   <button type="submit" class="btn btn-large btn-primary"><i class="icon-search icon-white"></i>查看统计结果</button>

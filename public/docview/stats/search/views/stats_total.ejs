@@ -1,7 +1,7 @@
 <p class="stats_total">&nbsp;</p>
 
 <% if (groupby == '2' || groupby == '3') {
- var theading = '用户名';
+  var theading = '用户名';
   if (groupby == '3') {
       theading = '角色';
   }
@@ -9,9 +9,9 @@
 <table class="table table-condensed table-striped">
 <thead>
 <tr>
- <th><%== theading %></th>
- <th>查阅量</th>
- <th>查阅量占比</th>
+<th><%== theading %></th>
+<th>查阅量</th>
+<th>查阅量占比</th>
 </tr>
  </thead>
 
@@ -20,7 +20,8 @@
 
  $.each(query_stats, function(k, v) {
 %>
-<tr> <td><%== k %></td>
+<tr> 
+<td><%= $.display_user(v.username,k) %></td>
  <td><%== v.num_queries %></td>
  <td><%== v.percentage_qq %></td>
 </tr>
@@ -68,7 +69,13 @@ if (groupby == '1' || groupby == '4' || groupby == '5') {
  var i = 1;
  $.each(query_stats, function(key, value) {
 %>
-<tr> <td><%== key %></td>
+<tr> <td>
+ <% if (groupby == '1') { %>
+ <%== orgJsonDictionary[key]  %>
+<%} else {%>
+<%== key%>
+<%}%>
+</td>
  <td><%== value.num_docs %></td>
 
 <% if (groupby == '4') { %>

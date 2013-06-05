@@ -8,8 +8,7 @@ class User < ActiveRecord::Base
          :recoverable, :trackable, :validatable, :lockable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :fullname, :username, :password, :password_confirmation,  :last_sign_in_at,  :last_sign_in_ip, :current_sign_in_ip, :roles,  :roles_attributes, :orgs,:subjection_org ,:doc_type
-
+  attr_accessible :email, :fullname, :username, :password, :password_confirmation,  :last_sign_in_at,  :last_sign_in_ip, :current_sign_in_ip, :roles,  :roles_attributes, :orgs,:subjection_org ,:doc_type, :client_ip
 
   def self.find_record(login)
     where(["username = :value OR email = :value", { :value => login }]).first
@@ -32,7 +31,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  api_accessible :id, :email, :created_at, :last_sign_in_at,:last_sign_in_ip, :current_sign_in_at, :current_sign_in_ip, :fullname, :username, :orgs, :doc_type, :roles
+  api_accessible :id, :email, :created_at, :last_sign_in_at,:last_sign_in_ip, :current_sign_in_at, :current_sign_in_ip, :fullname, :username, :orgs, :doc_type, :roles, :client_ip
 
   def web_links
     if roles.where(:name => 'admin').empty?

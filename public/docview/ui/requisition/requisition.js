@@ -341,14 +341,18 @@ steal(
 			this.filterRequisitionDetails(doc_id);
 		},
 		'.filter_docs blur':function(el,ev){
-			
+			this.filter_info(el,ev);	
 		},
 		'.filter_docs keyup':function(el,ev){
+			//this.filter_info(el,ev);	
+		},
+		filter_info : function(el,ev){
 			el.asyncVerifyCode(function(code){  
 				var tipsElement = el.closest('tr').find('.tips');
 				tipsElement.removeClass('label-success label-info label-warning label-important');
 				tipsElement.show();
 				tipsElement.text($.parse_code_map[code]);
+				el.data('validate_state',code);
 				var label_map = {
 					'1':'important',
 					'-1':'info',	
@@ -381,6 +385,7 @@ steal(
 					if(hit){
 						tipsElement.text('重复记录');
 						tipsElement.addClass('label-warning');
+						el.data('validate_state',-19);
 						return;
 					}
 					Docview.Models.Requisition.filterDocs({ "doc_id" : el.val() },
@@ -437,6 +442,7 @@ steal(
 			var requisition_details = []; 
 			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
+
 			var kz_user = el.find('select[name=kz_users]');
 			if(!kz_user.find('option:eq(0)').text() && !kz_user.val()){
 				$.alertMessage(that,{msg:'请确认审批人员'});
@@ -444,6 +450,23 @@ steal(
 			}
 			if(!application_originally){
 				$.alertMessage(that,{msg:'抽单原由不能为空 ',title:'提示信息',type:'error'});
+				return;
+			}
+			$.each(el.find("input[name=rationale_single_number]"),function(index,item){
+				if(!item){
+					$.alertMessage(that,{msg:'理单号不能为空 ',title:'提示信息',type:'error'});
+					return;
+				}
+			});
+			var has_error = false;
+			el.find('input.filter_docs').each(function(key,item){
+				var $wallper = jQuery($(item).closest('tr'));
+				var validate_state = $(item).data('validate_state');
+				console.log(validate_state);
+				if(validate_state != undefined && validate_state !== 0 && validate_state != -1 && validate_state !== 200)has_error = true;
+			});
+			if(has_error){
+				$.alertMessage(that,{msg:'报关单号有误',title:'提示信息',type:'error'});
 				return;
 			}
 			el.find('input.filter_docs').each(function(key,item){
@@ -454,6 +477,8 @@ steal(
 						"single_card_number" 			: $wallper.find("input[name='single_card_number']").val(),
 						"rationale_single_number"		: $wallper.find("input[name=rationale_single_number]").val()
 					});
+				}else {
+					//alert("error");
 				}
 			});
 			if(requisition_details.length == 0){
