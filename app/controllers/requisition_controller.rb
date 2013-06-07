@@ -652,6 +652,7 @@ class RequisitionController < ApplicationController
 		if type == 10
 			condition = ["('status' is not null AND status <> 20) AND (approving_officer = ?)",current_user.username]
 		elsif type == 11
+			condition_org = ["true"]	
 			condition = ["('status' is not null AND status <> 20) AND (two_approvers = ?)",current_user.username]
 		elsif type == 12
 			go = GroupOrg.find_by_subjection_org(current_user.subjection_org)

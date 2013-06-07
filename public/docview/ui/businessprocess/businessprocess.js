@@ -58,10 +58,10 @@ steal(
                     }
 			});
 		   var orgs = this.options.clientState.attr('user').orgs;
-		   this.element.find('.new-dishonored .org').docview_ui_org({ name:'org', default_text:null });
+		   this.element.find('#new-dishonored .org').docview_ui_org({ name:'org', default_text:null });
 		   this.element.find('.statistical_inquiry .org').docview_ui_org({ name:'org', default_text: orgs == '2200' ? '不限':null });
-			$("div.search_interchange_receipt .show-detail").hide();
-			var create_interchange_receipt_table_options = {
+		   $("div.search_interchange_receipt .show-detail").hide();
+		   var create_interchange_receipt_table_options = {
 				aaData: [],
 				col_def_path : "//docview/ui/businessprocess/views/create_interchange_receipt/",
 				aoColumns: [
