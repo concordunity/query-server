@@ -762,8 +762,9 @@ steal(
 			OpenWindow.document.write("</head>");
 			OpenWindow.document.write("<body>");
 			OpenWindow.document.write("<div>");
-		   var subjection_org = this.options.clientState.attr('user').subjection_org;
-			OpenWindow.document.write("<h1 style='text-align: center;'>"+ orgJsonDictionary[subjection_org] +"电子化申请单</h1>");
+			var subjection_org = this.options.clientState.attr('user').subjection_org;
+			var sov = subjection_org == "2200" ? "总关" : orgJsonDictionary[subjection_org];
+			OpenWindow.document.write("<h1 style='text-align: center;'>"+ sov +"电子化申请单</h1>");
 			OpenWindow.document.write("<hr />");
 			OpenWindow.document.write("</div>");
 			OpenWindow.document.write("<div class='print-requisition-page'>");
