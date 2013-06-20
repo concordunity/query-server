@@ -156,7 +156,7 @@ class RequisitionController < ApplicationController
 				@requisition = Requisition.create do |r|
 					r.tel = tel 
 					r.department_name = department_name 
-					r.org = current_user.subjection_org
+					r.org = params[:subjection_org] || current_user.subjection_org
 					r.apply_staff = current_user.username
 					r.apply_staff_fullname = current_user.fullname
 					r.application_originally = params[:application_originally]
@@ -166,7 +166,7 @@ class RequisitionController < ApplicationController
 					rs = Requisition.where(:org => current_user.subjection_org).where(["year(created_at) = ?",DateTime.now.year]).count
 					r.serial_number = current_user.subjection_org + Time.now.strftime("%Y")+ format("%05d",rs+1)
 					r.status = params[:approving_officer].blank? ? 21 : 10 
-					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : current_user.subjection_org
+					r.storage_sites = (params[:type] == "application_nanhui") ? "2223" : r.org #current_user.subjection_org
 				end
 				logger.info "=== second ====" 
 				tag = create_requisition_details(params,@requisition)	

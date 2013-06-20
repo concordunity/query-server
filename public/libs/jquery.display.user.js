@@ -13,9 +13,9 @@
 		var result = "";
 		if (fullname) {
 			result += fullname;
-		}
 		if (username) {
 			result += "(" + ((/^22\d{5}$/.test(username) ) ? username.substr(2,4) : username) + ")";
+		}
 		}
 		return result;
 	} 

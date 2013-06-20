@@ -1,1 +1,5 @@
-<%= orgJsonDictionary[this.org] %>
+<%if(this.org == null || this.org == '' || this.org == "2200"){%>
+总关
+<%}else{%>
+    <%= orgJsonDictionary[this.org] %>
+<%}%>

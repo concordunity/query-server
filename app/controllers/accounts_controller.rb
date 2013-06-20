@@ -41,7 +41,7 @@ class AccountsController < ApplicationController
   def user_select
 	kz_user = User.includes(:roles).where(["subjection_org = ? and roles.name = ?",current_user.subjection_org,"单证借阅科长审批"])
 	oi = OrgInfo.find_by_subjection_org( current_user.subjection_org)
-	ois = OrgInfo.where(:org => oi.org).collect(&:subjection_org)
+	ois = oi.nil? ? ["2200"] : OrgInfo.where(:org => oi.org).collect(&:subjection_org) 
 	tmp_users = ois.blank? ? ["true"] : ["users.subjection_org in (?)",ois]
 	users = User.includes("roles").where(["roles.name like ?","%单证借阅关处长审批%"]).where(tmp_users)
 	gld_user = users

@@ -8,7 +8,14 @@
 <table class="table table-condensed table-striped text-decoration-right"   >
 <tr>
 	<td>业务点:</td>
-	<td><%= orgJsonDictionary[model.org] + "(" + model.org  + ")"  %>  </td> 
+
+<%
+var subjection_org = orgJsonDictionary[model.org]
+if(model.org == null || model.org == '' || model.org == "2200"){
+    subjection_org = "总关"; 
+}
+%>
+	<td><%= subjection_org + "(" + model.org  + ")"  %>  </td> 
 	<td>抽单原由:</td>
 	<td><%= model.application_originally %></td>
 </tr>
@@ -20,7 +27,15 @@
 </tr>
 <tr>
 	<td>存档地点:</td>
-	<td><span class=''><%= orgJsonDictionary[model.storage_sites]  %></span></td> 
+
+<%
+var storage_sites = orgJsonDictionary[model.storage_sites]
+if(model.storage_sites == null || model.storage_sites == '' || model.storage_sites == "2200"){
+    storage_sites= "总关"; 
+}
+%>
+
+	<td><span class=''><%= storage_sites  %></span></td> 
 	<td>借阅单证数量:</td>
 	<%
 		var n = 0;
@@ -89,18 +104,15 @@
 	<% 
 		var t = 0;
 		for(var j = 0; j < model.requisition_details.length; j++) { %>
-			<% console.log( model.requisition_details[j].is_check)%>
-			<% console.log( model.requisition_details[j].is_check == 'true')%>
-			<% console.log( !!!model.requisition_details[j].is_check)%>
-		<tr class='<%= !!!model.requisition_details[j].is_check  ? "" : "print_requisition_details  noprint" %>'>
-			<td><span class=""><%= model.requisition_details[j].single_card_number%></span></td>
+			<% var is_checked = model.requisition_details[j].is_check; %>
+			<tr class='<%= !!!is_checked  ? "" : "print_requisition_details  noprint" %>'>
+			<td><span class="<%=is_checked ? '': 'single_card_number' %>"><%= model.requisition_details[j].single_card_number%></span></td>
 			<td><span class=""><%= model.requisition_details[j].rationale_single_number%> </span></td>
 			<td><span class=""><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>
 			<td> 
 			<% if(action == 'register'){ %>
 				<input type="checkbox" value='<%= model.requisition_details[j].id %>' />
 			<%	}else if($.inArray(model.status,[13,14]) != -1){
-					var is_checked = model.requisition_details[j].is_check;
 					is_checked && t++;
 					%>
 					<input type="checkbox" value='<%= model.requisition_details[j].id %>' <%= is_checked ? 'checked' : ''  %> disabled='disabled'  />
@@ -158,7 +170,7 @@
 		<%
 		}
 		%>
-		<button type="button" class="btn btn-primary btn-accept" ><%= (action.indexOf('approval') == -1) ? "完成" : "通过" %></button>
+		<button type="button" class="btn btn-primary btn-accept" <%= (action == 'write_off') ? 'disabled':'' %> ><%= (action.indexOf('approval') == -1) ? "完成" : "通过" %></button>
 	<%	
 	}
 	%>
@@ -191,6 +203,8 @@
 	<!-- Revocation end -->
 	<button type="button" class="btn btn-info btn-print"><i class="icon-print icon-white"></i> 打印</button>
 	<button type="button" class="btn btn-cancel">取消</button>
+	
+	<input class="txt-check" type="text"  />
 	<br />
 </form>
 </div>

@@ -352,6 +352,7 @@ steal(
 				tipsElement.removeClass('label-success label-info label-warning label-important');
 				tipsElement.show();
 				tipsElement.text($.parse_code_map[code]);
+				console.log("====",code);
 				el.data('validate_state',code);
 				var label_map = {
 					'1':'important',
@@ -443,6 +444,12 @@ steal(
 			var department_name = el.find("select[name=department]").val();
 			var application_originally  = el.find("input[name=application_originally]").val();
 
+			var subjection_org = el.find('select[name=subjection_org]');
+			var so = this.options.clientState.attr('user').subjection_org;
+			if (subjection_org.length != 0){
+			    so= subjection_org.val(); 
+			    if (so == "") so = "2200";
+			}
 			var kz_user = el.find('select[name=kz_users]');
 			if(!kz_user.find('option:eq(0)').text() && !kz_user.val()){
 				$.alertMessage(that,{msg:'请确认审批人员'});
@@ -487,6 +494,7 @@ steal(
 			}
 			var requisition = {
 				type: action,
+				subjection_org: so, 
 				application_originally : application_originally,
 				approving_officer: kz_user.val(),
 				department_name: department_name,
@@ -711,6 +719,33 @@ steal(
 				$(this).closest('tr').prev().show('slow');
 				$(this).closest('tr').remove();
 			});
+
+			innerForm.find('.txt-check').keyup(function(ev){
+				var that = this;
+				if(ev.keyCode == 13){//enter key
+					var counter = 0;
+					innerForm.find('.single_card_number').each(function(key,item){
+						var $item = $(item);
+						if($item.hasClass('label-success')){
+							counter++;
+							
+						}else{
+							if($item.text() == that.value){
+								$item.addClass('label label-success');
+								counter++;
+							}
+						}
+					});
+					console.log(counter);
+					if(innerForm.find('.single_card_number').size() == counter){
+						innerForm.find('.btn-accept').attr('disabled',null)
+						console.log(innerForm.find('.btn-accept'));
+					}
+					
+				}
+			});
+
+
 		},
 		printPage : function(id){
 			var needHTML = document.getElementById(id).innerHTML;
