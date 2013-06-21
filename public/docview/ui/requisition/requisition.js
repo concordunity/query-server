@@ -332,7 +332,7 @@ steal(
 		    var tbody = element.find('.requisition-details-text-holder tbody');
 		    for(var i=0;i<rows.length;i++){
 			console.log(rows[i]);
-			var columns=rows[i].trim().split(/[\s|\t]+/);
+			var columns=$.trim(rows[i]).split(/[\s|\t]+/);
 			console.log(columns[1]);
 			if (i == 0){
 			    tbody.find('tr:last').find("td:eq(0) input:eq(0)").val(columns[0]);
