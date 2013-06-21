@@ -315,6 +315,41 @@ steal(
 			}	
 						
 		},
+		".import-requisition-details click" : function(el,ev){
+		    ev.preventDefault();
+		    el.closest('form').find(".modal").modal();
+
+		},
+		".modal .btn-close click":function(el,ev){
+			ev.preventDefault();
+			el.closest('.modal').modal('hide');	
+		},
+		".format_text click" : function(el,ev){
+		    ev.preventDefault();
+		    var frv = $(".format_record").val(); 
+		    var rows = frv.split(/[\n]+/); 
+		    var element = el.closest('#new-application-form');
+		    var tbody = element.find('.requisition-details-text-holder tbody');
+		    for(var i=0;i<rows.length;i++){
+			console.log(rows[i]);
+			var columns=rows[i].trim().split(/[\s|\t]+/);
+			console.log(columns[1]);
+			if (i == 0){
+			    tbody.find('tr:last').find("td:eq(0) input:eq(0)").val(columns[0]);
+			    tbody.find('tr:last').find("td:eq(1) input:eq(0)").val(columns[1]);
+			}else{
+			    tbody.append(this.view("//docview/ui/requisition/views/application/new_requisition_details_row.ejs"));
+			    tbody.find('tr:last').hide().show('');
+			    tbody.find('tr:last').find("td:eq(0) input:eq(0)").val(columns[0]);
+			    tbody.find('tr:last').find("td:eq(1) input:eq(0)").val(columns[1]);
+			    element.find('.remove-requisition-details').show('');
+			}
+			tbody.find('tr:last').find("td:eq(0) input:eq(0)").blur();
+		    }
+		    console.log(rows);
+
+		    $(".modal").modal("hide");
+		},
 		"#new-application-btn click" : function(el,ev){
 			$("#new-application").html(this.view("//docview/ui/requisition/views/application/new_application.ejs",{kz_users: this.kz_users}));
 		},
