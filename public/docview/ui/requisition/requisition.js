@@ -759,6 +759,7 @@ steal(
 				var that = this;
 				if(ev.keyCode == 13){//enter key
 					var counter = 0;
+					var flag = false;
 					innerForm.find('.single_card_number').each(function(key,item){
 						var $item = $(item);
 						if($item.hasClass('label-success')){
@@ -768,13 +769,20 @@ steal(
 							if($item.text() == that.value){
 								$item.addClass('label label-success');
 								counter++;
+								innerForm.find('.alert-tips').text('请输入号码进行校验');	
+								that.value = '';
+								flag = true;
 							}
 						}
 					});
-					console.log(counter);
 					if(innerForm.find('.single_card_number').size() == counter){
 						innerForm.find('.btn-accept').attr('disabled',null)
-						console.log(innerForm.find('.btn-accept'));
+						innerForm.find('.well-check').hide('fast');
+					}
+
+					if(!flag){
+						innerForm.find('.alert-tips').text('校验失败 , 没有找到匹配的号码');
+						that.select();
 					}
 					
 				}

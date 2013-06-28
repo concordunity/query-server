@@ -489,10 +489,13 @@ class RequisitionController < ApplicationController
 		end
 
     requisition.status = params[:status]
-	requisition.requisition_details.each do |rd|
-		rd.status = requisition.status
-		rd.save
-	end
+    requisition.requisition_details.each do |rd|
+	if [20,31,32,33,34].include?(params[:status].to_i)
+		rd.is_check = true 
+        end
+	rd.status = requisition.status
+	rd.save
+    end
     if params[:reject_text]
         requisition.termination_instructions = params[:reject_text]
     end

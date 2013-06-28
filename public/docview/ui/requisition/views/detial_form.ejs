@@ -203,9 +203,15 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 	<!-- Revocation end -->
 	<button type="button" class="btn btn-info btn-print"><i class="icon-print icon-white"></i> 打印</button>
 	<button type="button" class="btn btn-cancel">取消</button>
-	
-	<input class="txt-check" type="text"  />
 	<br />
+	<br />
+	<div class="well well-check">	
+		<legend>单证校验</legend>
+		<span class="alert alert-info alert-tips">只有报关单号全部校验成功后才可以提交</span>
+		<br />
+		<br />
+		<input class="txt-check" type="text" minlength='18' required  />
+	</div>
 </form>
 </div>
 </td>
