@@ -62,7 +62,7 @@ steal(
                 $("#div_query_form").docview_ui_syslog({clientState: this.options.clientState});
                 //                $("#div_stats").html(this.view("stats"));
 				//preload ..
-                $("#div_stats").docview_ui_search_condition();
+                $("#div_stats").docview_ui_search_condition({clientState: this.options.clientState});
                 $("#div_usage").html(this.view("usage"));
 				this.element.find('div.stats_query_quota').docview_ui_queryquota();
                 this.mainTabOn = false;

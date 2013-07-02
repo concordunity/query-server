@@ -140,6 +140,17 @@ class AccountsController < ApplicationController
 
 
   def get_links
+
+      orgs = current_user.orgs
+      result = {:org => "2200" ,:subjection_org => "2200" }
+      if orgs == "2200"
+	result = {:org => "2200" ,:subjection_org => "2200" }
+      else
+	org_names = OrgInfo.where(["subjection_org in (?)",orgs.split(",")]).order("org").group("org").collect(&:org)
+	subjection_orgs = OrgInfo.where(["org in (?)",org_names]).collect(&:subjection_org)
+	result = {:org => org_names,:subjection_org => subjection_orgs }
+      end
+
     respond_to do |format|
       format.html { super }
       format.json {
@@ -148,14 +159,15 @@ class AccountsController < ApplicationController
         no_links = WebLink.all - links
 
         user_info = { :error => "Success",
-          #:last_ip 		=> current_user.client_ip || current_user.last_sign_in_ip,
-          :last_ip 		=> current_user.last_sign_in_ip,
+          #:last_ip 	=> current_user.client_ip || current_user.last_sign_in_ip,
+          :last_ip 	=> current_user.last_sign_in_ip,
           :last_time 	=> current_user.last_sign_in_at,
           :fullname 	=> current_user.fullname,
-          :email 		=> current_user.email,
-		  :orgs			=> current_user.orgs,
-		  :roles		=> current_user.roles,
-		  :subjection_org => current_user.subjection_org
+          :email 	=> current_user.email,
+	  :orgs		=> current_user.orgs,
+	  :roles	=> current_user.roles,
+	  :group_org_infos=> result,
+	  :subjection_org => current_user.subjection_org
         }
         if current_user.admin?
           user_info["not_authorized"] = []

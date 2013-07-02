@@ -160,7 +160,7 @@ steal(
 	    $('#user-info-display').html("当前登录用户 : " + permissions.fullname);
             // Parse web_links
             for (var i = 0; i < permissions.web_links.length; i++) {
-				console.log(permissions.web_links[i].action);
+				//console.log(permissions.web_links[i].action);
                 switch (permissions.web_links[i].action) {
                     // Search
                 case ("query"):
@@ -319,7 +319,7 @@ steal(
                 }
             }
 
-            console.log(this.options.clientState.attr('access'));
+            //console.log(this.options.clientState.attr('access'));
             
             // load app
             this.loadApp(permissions);
@@ -334,7 +334,7 @@ steal(
 		},
         loadApp: function(user_info) {
             $('#login').hide();
-			console.log(this.options.clientState);
+			//console.log(this.options.clientState);
 			// Change background color
             $('body').removeClass('login-page');
         

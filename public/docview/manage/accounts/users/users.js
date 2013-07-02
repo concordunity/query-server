@@ -200,7 +200,7 @@ steal(
     // Creating a user
 	'#new-user-btn click': function() {
 		// Load up the creation form
-		console.log('------new-user----');
+		//console.log('------new-user----');
 	    //console.log(this.orgsDic);
 		$('#new-user').html(this.view('new_user', {cntl : this}));
 	    $('#new-user').find('div.org-selection-holder').docview_ui_orgui({orgs: this.orgsDic, form: "new-user-form"});
@@ -328,7 +328,7 @@ steal(
 		var row = this.tableController.getRowFrom(el);
 		var userRow = row.element;
 		var userInfo = row.model;  
-		console.log(userInfo);        
+		//console.log(userInfo);        
 	    var editHtml = this.view('edit_user',  {cntl : this, user: userInfo });
 	    userRow.after(editHtml);
 	    //userRow.next().find('div.edit-org-selection-holder').docview_ui_orgui();	
@@ -340,12 +340,12 @@ steal(
 
 	    userRow.next().find('div.edit-role-selection-holder').docview_ui_checkrole({form: "edit-user-form"});
 	    var ctrl_role =userRow.next().find('div.edit-role-selection-holder').controller();
-		console.log("===userInfo====",userInfo.roles);
+		//console.log("===userInfo====",userInfo.roles);
 		var roles = [];
 		for(var i=0;i<userInfo.roles.length;i++){
 			roles.push(userInfo.roles[i].id);	
 		}
-		console.log("===roleInfo====",roles.join(","));
+		//console.log("===roleInfo====",roles.join(","));
 	    ctrl_role.setRoles(roles.join(","));
 
         },
@@ -365,7 +365,7 @@ steal(
 			var roles = el.find('select[name="roles"]').val();
 
 
-			console.log('getRoles = ',roleController.getRoles());
+			//console.log('getRoles = ',roleController.getRoles());
             if (password !== confirmation) {
                 this.displayFormError(el,
 				      "password-confirm",
@@ -379,7 +379,7 @@ steal(
             //user.attr('roles', el.find('select').val());
 			var row = this.tableController.getRowFrom(user);
 			user = row.model;
-			console.log(user);
+			//console.log(user);
 			Docview.Models.User.update(
 							user.id,
 							{ role : roleController.getRoles(),

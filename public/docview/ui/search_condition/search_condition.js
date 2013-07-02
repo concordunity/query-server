@@ -25,14 +25,50 @@ steal(
                     labelString: ""
                 }
             });
+
+	    var user = this.options.clientState.attr('user');
+	    var orgs = user.group_org_infos.org;
+	    var subjection_orgs = user.group_org_infos.subjection_org;
+
+	    console.log(user,orgs,subjection_orgs);
+	    var dic_org = [];
+	    for(var i=0;i<orgInfoDic.length;i++){
+		var org = orgInfoDic[i];
+		for(var j=0;j<orgs.length;j++){
+		    if (orgs[j] == org.dic_name){
+			dic_org.push(org);
+			break;
+		    }
+		}
+	    } 
+	    if (orgs == "2200"){dic_org = orgInfoDic;} 
+
+	    var dic_subjection_org = [];
+	    for(var i=0;i<orgsDic.length;i++){
+		var org = orgsDic[i];
+		for(var j=0;j<subjection_orgs.length;j++){
+		    if (subjection_orgs[j] == org.dic_num){
+			dic_subjection_org.push(org);
+			break;
+		    }
+		}
+	    } 
+	    if (subjection_orgs == "2200"){dic_subjection_org = orgInfoDic;} 
+
+	    
+	    this.element.find('div.org-container').html(this.view('//docview/ui/views/org.ejs', { label: '关区', name : 'org_info', orgsDic : dic_org}));
+	    this.element.find('div.subjection-org-container').html(this.view('//docview/ui/views/org.ejs', { label: '业务点', name : 'org', orgsDic : dic_subjection_org}));
+
 	    this.setHideLabel("init");
 	    this.setDateRangeVisible(false);
             $("#frm_docType_years_select").html(this.view("frm_docType_years",{}));
         },
 	setHideLabel : function(tag){
             this.setCheckOrgVisible(false);
-	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
-	    var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.control-group');
+	    //var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
+	    //var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.control-group');
+	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.subjection-org-container');
+	    var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.org-container');
 	    if (tag == false){
 		el.hide();
 		org_info.show();
@@ -45,8 +81,10 @@ steal(
 	    }
 	},
         setOrgVisible : function(toShow) {
-	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
-	    var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.control-group');
+	    //var el = $(".docview_ui_search_condition select[name='org']").closest('div.control-group');
+	    //var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.control-group');
+	    var el = $(".docview_ui_search_condition select[name='org']").closest('div.subjection-org-container');
+	    var org_info  = $(".docview_ui_search_condition select[name='org_info']").closest('div.org-container');
 	    el.hide();
 	    org_info.hide();
             if (toShow) {
