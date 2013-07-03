@@ -648,11 +648,22 @@ class DocumentsController < ApplicationController
 		  end
 		  dsn = @document.serial_number
 		  if !dsn.nil? && dsn[0,1].upcase == "B"  
+		      begin
 		      rd = RequisitionDetail.find_by_single_card_number(@document.doc_id)  
-			  if rd
-			      rd.status = 1
-				  rd.save
+		      if rd
+		          rd.status = 1
+			  rd.save
+			  re = Requisition.where(["id = ? and status < 30 and status not in (20,1)" ,rd.requisition_id]).first
+			  stats_arr = re.requisition_details.collect(&:status).uniq
+			  if stats_arr.length == 1 && stats_arr[0] == 1
+				re.status = 1
+				re.save
 			  end
+		      end
+		      rescue => e
+		          logger.info "found error for updating requisition table"
+			  logger.info e 
+		      end
 		  end
 		
         format.html { redirect_to @document, notice: 'Document was successfully created.' }
