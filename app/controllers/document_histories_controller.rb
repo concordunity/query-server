@@ -151,13 +151,17 @@ class DocumentHistoriesController < ApplicationController
   def get_search_org
       orgs = current_user.orgs
       result = ['true']
+      cat = params[:groupby]
 
       if orgs == "2200"
 	result = ['true']
       else
-	org_names = OrgInfo.where(["subjection_org in (?)",orgs.split(",")]).collect(&:org)
-	subjection_orgs = OrgInfo.where(["org in (?)",org_names.uniq]).collect(&:subjection_org)
-	result = ['org in (?)',subjection_orgs]
+	  result = ['org in (?)',orgs.split(",")]
+          if cat == '5'
+	      org_names = OrgInfo.where(["subjection_org in (?)",orgs.split(",")]).collect(&:org)
+	      subjection_orgs = OrgInfo.where(["org in (?)",org_names.uniq]).collect(&:subjection_org)
+	      result = ['org in (?)',subjection_orgs]
+	  end
       end
       return result
   end
@@ -196,7 +200,7 @@ class DocumentHistoriesController < ApplicationController
     end
     docType_condition = ((condition[:doc_type].nil? || condition[:doc_type] == "") ? ["true"] : {:doc_type => condition[:doc_type]})
 #符合条件的总档案记录
-	documents = Document.where(org_condition).where( where_clause ).where(search_org_condition)
+	documents = Document.where(org_condition).where( where_clause ).where(search_org_condition).where(docType_condition)
     # first check the time range.
     doc_count = 0
 #符合条件的存量记录
@@ -215,11 +219,11 @@ class DocumentHistoriesController < ApplicationController
 #符合条件的增量总页数
     pages_total = docs_records.sum("pages")
 	#sum modefy document pages
-	pages_total +=  ModifiedDocument.where(search_org_condition).where(where_clause).sum("pages");
+	pages_total +=  ModifiedDocument.where(search_org_condition).where(where_clause).where(docType_condition).sum("pages")
 
 
 #总查阅记录
-    queries = QueryHistory.where(no_admin).where(search_org_condition).where("doc_id IS NOT NULL")
+    queries = QueryHistory.where(no_admin).where(search_org_condition).where("doc_id IS NOT NULL").where(docType_condition)
 #总查阅量
     query_total = queries.count 
 #符合条件的总查阅记录

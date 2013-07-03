@@ -90,9 +90,12 @@ steal(
             if (toShow) {
               el.show();
 	      org_info.hide();
-            } else {
+            } else if(toShow == false){
               el.hide();
 	      org_info.show();
+	    }else{
+              el.hide();
+	      org_info.hide();
             }
         },
         setDateRangeVisible : function(toShow) {
@@ -134,8 +137,10 @@ steal(
 		var org_value = $(el).attr("value");
 		if(org_value == 0){
 		    this.setOrgVisible(false); 
-		}else{
+		}else if(org_value == 1){
 		    this.setOrgVisible(true); 
+		}else{
+		    this.setOrgVisible(); 
 		}
 
 	},

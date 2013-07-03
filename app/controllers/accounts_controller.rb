@@ -144,10 +144,11 @@ class AccountsController < ApplicationController
       orgs = current_user.orgs
       result = {:org => "2200" ,:subjection_org => "2200" }
       if orgs == "2200"
-	result = {:org => "2200" ,:subjection_org => "2200" }
+	result = {:org => "2200" ,:subjection_org => current_user.subjection_org }
       else
 	org_names = OrgInfo.where(["subjection_org in (?)",orgs.split(",")]).order("org").group("org").collect(&:org)
-	subjection_orgs = OrgInfo.where(["org in (?)",org_names]).collect(&:subjection_org)
+	subjection_orgs = orgs.split(",") 
+	#subjection_orgs = OrgInfo.where(["org in (?)",org_names]).collect(&:subjection_org)
 	result = {:org => org_names,:subjection_org => subjection_orgs }
       end
 
