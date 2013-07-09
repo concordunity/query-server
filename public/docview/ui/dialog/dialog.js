@@ -9,11 +9,11 @@ steal(
 ).then(
     //"./jquery-ui-1.8.12.custom.css"
 ).then(
-    './views/init.ejs'
+//    './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.dialog', {}, {
         init : function() {
-           this.element.html(this.view('init'));
+ //          this.element.html(this.view('init'));
 	   $(this.options.dialog_id).dialog({
 		autoOpen: false,
 		width: 538,

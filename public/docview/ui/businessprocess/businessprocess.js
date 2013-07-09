@@ -27,7 +27,7 @@ steal(
     './views/statistical_inquiry.ejs',
     './views/business_process.ejs'
 ).then(
-    './views/init.ejs'
+//    './views/init.ejs'
 ).then(function($) {
     $.Controller('Docview.Ui.Businessprocess', {}, {
         init : function() {
@@ -348,13 +348,15 @@ steal(
 			}
 		},
 		'input.doc-group blur':function(el,ev){
-			var tr = el.closest('tr');
-			var begin	= tr.find('input[name=begin]');
-			var end		= tr.find('input[name=end]');
-			var package = tr.find('input[name=package]');
-			var span	= tr.find('.verify-tips span');
-			var icon	= tr.find('.verify-tips i');
-			var doc_start = $.trim(begin.val()),doc_end = $.trim(end.val()),doc_package = $.trim(package.val());
+                        var tr = el.closest('tr'); 
+                        var begin=tr.find('input[name=begin]');
+                        var end = tr.find('input[name=end]');
+			var package_input = tr.find('input[name=package]');
+			var span= tr.find('.verify-tips span');
+			var icon=tr.find('.verify-tips i');
+			var doc_start = $.trim(begin.val());
+			var doc_end = $.trim(end.val());
+			var doc_package = $.trim(package_input.val());
 				
 			var showTips = function(flag){
 				if(flag !== undefined && span.hasClass('label')){
@@ -398,12 +400,13 @@ steal(
 			var data = [ ];
 			for(var i=1;i<=9;i++){
 				var tr = el.find('tr.doc-type-' + i );
-			
-				var begin	= tr.find('input[name=begin]');
-				var end		= tr.find('input[name=end]');
-				var package = tr.find('input[name=package]');
-				
-				var doc_type = i,doc_start = begin.val(),doc_end = end.val(),doc_package = package.val();
+				var begin = tr.find('input[name=begin]');
+			        var end = tr.find('input[name=end]');
+			        var package_input = tr.find('input[name=package]');
+				var doc_type = i;
+				var doc_start = begin.val();
+			        var doc_end = end.val();
+				var doc_package = package_input.val();
 				if((doc_start && doc_end && doc_package) || ((i==7 || i==8 || i==9) && doc_package)){
 					data.push({ 'doc_type': doc_type ,'doc_start':doc_start, 'doc_end': doc_end, 'package': doc_package });
 				}

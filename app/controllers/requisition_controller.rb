@@ -101,7 +101,7 @@ class RequisitionController < ApplicationController
 	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
     @document = Document.find_by_doc_id(doc_id)
     logger.info "===  1 ===="
-	rd = RequisitionDetail.where(["status not in(20,31,32,33) AND status is not null"]).where(:single_card_number => doc_id)
+	rd = RequisitionDetail.where(["status not in(20,31,32,33,34) AND status is not null"]).where(:single_card_number => doc_id)
 
     logger.info "===  2 ===="
     if @document.blank? && rd.blank? && !ofd.blank?

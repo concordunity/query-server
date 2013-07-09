@@ -31,7 +31,7 @@ steal(
     './views/requisition_history.ejs',
 //    './views/detial_form.ejs',
     './views/lending_statistics.ejs',
-    './views/init.ejs',
+    //'./views/init.ejs',
 	'libs/jquery.single_card_number.js'
 ).then(function($) {
     $.Controller('Docview.Ui.requisition', {}, {
@@ -634,6 +634,17 @@ steal(
 						error:that.proxy('failure')
 					});
 			};
+			//撤销申请
+			innerForm.find('.btn-reject-cancel').popinput({
+				callback:function(text){
+					//console.log(arguments);
+					//ev.preventDefault();
+					data.reject_text = text;//$("#requisition-docs input[name=reject_text]").val();
+					data.status = 20;//
+					postData(data);
+				}
+			});
+
 			//拒绝
 			innerForm.find('.btn-reject').popinput({
 				callback:function(text){

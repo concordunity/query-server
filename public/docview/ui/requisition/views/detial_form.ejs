@@ -183,6 +183,7 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 		<%
 	}
 	%>
+
 	<!-- Reject end -->
 	<!-- Revoaction -->
 	<%if(action == 'requisition_history' &&  name_map[model.status] && name_map[model.status].fullname == user.fullname){ %>
@@ -201,6 +202,13 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 		<%}%>	
 	<%}%>	
 	<!-- Revocation end -->
+
+
+	<%if(action == 'requisition_history' &&  name_map[model.status] && name_map[model.status].fullname == user.fullname && model.status == 11){ %>
+		<button type="button" class="btn btn-danger btn-reject-cancel" rel="popover" data-placement="right" data-content="请输入撤销申请的理由" data-original-title="撤销申请" >撤销申请</button>	
+	<% } %>
+
+
 	<button type="button" class="btn btn-info btn-print"><i class="icon-print icon-white"></i> 打印</button>
 	<button type="button" class="btn btn-cancel">取消</button>
 	<br />
