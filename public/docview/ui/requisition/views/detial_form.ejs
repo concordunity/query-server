@@ -204,7 +204,7 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 	<!-- Revocation end -->
 
 
-	<%if(action == 'requisition_history' &&  name_map[model.status] && name_map[model.status].fullname == user.fullname && model.status == 11){ %>
+	<%if(action == 'requisition_history' && model.approving_officer_fullname && model.approving_officer_fullname == user.fullname ){ %>
 		<button type="button" class="btn btn-danger btn-reject-cancel" rel="popover" data-placement="right" data-content="请输入撤销申请的理由" data-original-title="撤销申请" >撤销申请</button>	
 	<% } %>
 
@@ -213,6 +213,7 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 	<button type="button" class="btn btn-cancel">取消</button>
 	<br />
 	<br />
+	<% if (action == "write_off") {%>	
 	<div class="well well-check">	
 		<legend>单证校验</legend>
 		<span class="alert alert-info alert-tips">只有报关单号全部校验成功后才可以提交</span>
@@ -220,6 +221,7 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 		<br />
 		<input class="txt-check" type="text" minlength='18' required  />
 	</div>
+	<% } %>
 </form>
 </div>
 </td>
