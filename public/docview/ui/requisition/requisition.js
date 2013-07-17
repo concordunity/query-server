@@ -659,7 +659,8 @@ steal(
 							data.status = 32;
 							break;
 						case 'write_off':
-							data.status = 33;
+							data.status = 15;
+							//data.status = 33;
 							break;
 					}
 					postData(data);

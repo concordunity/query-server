@@ -95,6 +95,7 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 <table class="table " >
 		<caption><legend>抽单信息</legend></caption>
 		<tr>
+			<th>序号</th>
 			<th>报关单号</th>
 			<th>理单号码</th>
 			<th>状态</th>
@@ -106,6 +107,7 @@ if(model.storage_sites == null || model.storage_sites == '' || model.storage_sit
 		for(var j = 0; j < model.requisition_details.length; j++) { %>
 			<% var is_checked = model.requisition_details[j].is_check; %>
 			<tr class='<%= !!!is_checked  ? "" : "print_requisition_details  noprint" %>'>
+			<td><span class=""><%= j+1 %></span></td>
 			<td><span class="<%=is_checked ? '': 'single_card_number' %>"><%= model.requisition_details[j].single_card_number%></span></td>
 			<td><span class=""><%= model.requisition_details[j].rationale_single_number%> </span></td>
 			<td><span class=""><%= model.requisition_details[j].status == 1 ? "已经电子化" : "尚未电子化"%> </span></td>

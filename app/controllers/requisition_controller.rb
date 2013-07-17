@@ -472,6 +472,7 @@ class RequisitionController < ApplicationController
             requisition.registration_staff = current_user.username
             requisition.registration_staff_fullname = current_user.fullname
             requisition.check_in_time = Time.now
+	    requisition.termination_instructions = "" 
 			RequisitionDetail.where(:id => params[:ids].keys).each do |rd|
 				rd.is_check = params[:ids][rd.id.to_s] == "true" 
 				rd.save
@@ -660,6 +661,7 @@ class RequisitionController < ApplicationController
 		elsif type == 12
 			go = GroupOrg.find_by_subjection_org(current_user.subjection_org)
 			gos = GroupOrg.where(:group_id => go.group_id) if go
+			condition_status = {:status => [12,15]}
 			#subjection_condition = ["(org in (#{gos.collect(&:subjection_org).join(",")}) or storage_sites in (#{gos.collect(&:subjection_org).join(",")}))"] if gos	
 			#condition_org = subjection_condition.nil? ? (["org = " + current_user.subjection_org + " or storage_sites = "+current_user.subjection_org]) : subjection_condition 
 			subjection_condition = ["storage_sites in (#{gos.collect(&:subjection_org).join(",")})"] if gos	
