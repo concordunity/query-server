@@ -331,7 +331,7 @@ steal(
 							+ $.thousands(data.doc_count)
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.doc_edc_page)
-							+ ' </b>份,查阅量为：<b> '
+							+ ' </b>页,查阅量为：<b> '
 							+ $.thousands(data.doc_edc_query)
 							+ ' </b>份,查阅率为：<b> '
 							+ (data.doc_edc_stats)
