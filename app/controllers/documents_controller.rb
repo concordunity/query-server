@@ -649,12 +649,12 @@ class DocumentsController < ApplicationController
 		  dsn = @document.serial_number
 		  if !dsn.nil? && dsn[0,1].upcase == "B"  
 		      begin
-		      rd = RequisitionDetail.find_by_single_card_number(@document.doc_id)  
+		      rd = RequisitionDetail.find_by_single_card_number_and_is_check(@document.doc_id,0)  
 		      if rd
 		          rd.status = 1
 			  rd.save
 			  re = Requisition.where(["id = ? and status < 30 and status not in (20,1)" ,rd.requisition_id]).first
-			  stats_arr = re.requisition_details.collect(&:status).uniq
+			  stats_arr = re.requisition_details.where(:is_check => 0).collect(&:status).uniq
 			  if stats_arr.length == 1 && stats_arr[0] == 1
 				re.status = 1
 				re.save
