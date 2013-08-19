@@ -2,57 +2,19 @@
 class AdminController < ApplicationController
 
   before_filter :load_layout , :except => [:system_log]
-=begin
-  def find_log
-	  logger.info params
-	  logger.info params[:url]
-	  url = params[:url]
-	  username = params[:username] == "" ? ["true"] : ["user_name like ?","%" + params[:username] + "%"]
-	  rolename = params[:rolename].blank? ? ["true"] : ["role_name like ?","%" + params[:rolename] + "%"]
-	  org = params[:org].blank? ? ["true"] : {:org => params[:org]}
-	  doc_id = params[:doc_id].blank? ? ["true"] : {:doc_id => params[:doc_id]}
-      daterange = {:created_at => params[:from_date].to_date .. (params[:to_date].to_date + 1.day)} if (!params[:from_date].blank? && !params[:to_date].blank?)
-	  result = []
-      begin 
-	  if url == "system"
-	    logger.info "system ======start"
-	    logger.info username 
-	    logger.info rolename 
-	    logger.info daterange.length 
-		result = SysLog.where(username).where(rolename).where(daterange).all	
-	    logger.info "system ======end"
-	  elsif url == "query" 
-		result = QueryHistory.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
-	  elsif url == "document"
-		result = DocumentHistory.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
-	  elsif url == "doctype"
-		result = QueryDoctypeLog.where(username).where(rolename).where(daterange).where(doc_id).where(org)	
-	  end
-      rescue => e
-	    logger.info "error======"
-		logger.info e
-	  end
-      render :json => {:results => result, :url => url}, :status => 200
+
+  def get_error_docs
+
+     error_docs_path = File.join(Rails.root,"public","record_doc.error")
+     send_file error_docs_path
   end
 
-  #接收格式：｛:action => '', :describe => ""｝
-  def system_log
-	sys_log(params)	
-	render :nothing => true 
+  def get_storge_rate
+
+     storge_rate_path = File.join(Rails.root,"public","storge_rate.log")
+     send_file storge_rate_path
   end
 
-  def query_log
-	sys_log(params)	
-	query_history_log(params)
-	render :nothing => true 
-  end
-
-  def document_log
-	sys_log(params)	
-	document_history_log(params)
-	render :nothing => true 
-  end
-=end
   def dictionary
       
   end

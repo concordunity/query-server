@@ -1,5 +1,8 @@
 Dms::Application.routes.draw do
 
+  get "/admin/download_error_docs" => "admin#get_error_docs"
+  get "/admin/download_storge_rate" => "admin#get_storge_rate"
+
   get "/org_info/update_data" => "dictionary_info#update_data"
   get "/get_user_info" => "accounts#get_user_info"
   get "org_info/index"
