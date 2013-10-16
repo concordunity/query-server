@@ -84,3 +84,56 @@
 		this.val($.date(date).format('yyyy-MM-dd'));
 	};
 })(jQuery);
+
+(function(){
+
+    var utc_to_gmt = function(UTC){
+        //console.log("-------utc_to_gmt----",UTC);
+	var date_string = format_utc_time(UTC);
+	//console.log('-----format_utc_time----',date_string);
+	var date = addDate(date_string,-8);	
+	var date = UTC2GMTString(date.toString());
+        return date;	
+    };
+    var addDate = function(dd,hadd){  
+    	var a = new Date(dd); 
+	a = a.valueOf();  
+	a = a + hadd * 60 * 60 * 1000; 
+	a = new Date(a); 
+	return a;  
+    };  
+    var format_utc_time = function(UTC){
+    //2013-07-31T22:48:43+08:00
+    //2013-08-01T23:34:57+08:00
+        //console.log('======utc====',UTC);
+	var regex = /(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2})/;
+	var match =  UTC.match(regex);
+	var year = match[1];
+	var month = match[2];
+	var day = match[3];
+	var time = match[4].split(":");
+	var date_string = month + "/" + day + "/" + year + " " + time[0] + ":" + time[1] + ":" + time[2];
+	return date_string; 
+
+    };
+    var UTC2GMTString = function(UTC){
+	    //Thu, 1 Aug 2013 15:34:57 UTC
+	//Thu Aug 1 15:34:57 UTC+0800 2013
+        //console.log('======UTC2GMTString====',UTC);
+	var regex = /\w+ (\w+) (\d+) (\d{2}:\d{2}:\d{2}) UTC\+\d{4} (\d{4})/;
+	var match =  UTC.match(regex);
+	var year = match[4];
+	var month = match[1];
+	var day = match[2];
+	var time = match[3];
+	//console.log("====year====",year);
+	//console.log("====month====",month);
+	//console.log("====day====",day);
+	//console.log("====time====",time);
+
+	var months = ["Jan" , "Feb", "Mar" ,"Apr", "May" ,"Jun", "Jul" ,"Aug","Sep","Oct","Nov","Dec"];
+	return  year + "-" + ($.inArray(month,months) + 1 )+ "-" + day + " " + time;
+    };
+
+    window.UTCTOGMT = utc_to_gmt;
+})();

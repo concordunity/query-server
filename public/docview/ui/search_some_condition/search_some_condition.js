@@ -380,11 +380,13 @@ steal(
 				var message = days_num+"天" +hours_num + "小时";
 				d.overall_operating_hours_hours = message;
 
-				tmp_adt = d.accept_declaration_time.replace("T"," ")
-				tmp_rt = d.release_time.replace("T"," ")
+				console.log(d.accept_declaration_time);
+				//2013-07-31T22:48:43+08:00
+				var adt = UTCTOGMT(d.accept_declaration_time);
+				var rt = UTCTOGMT(d.release_time);
 
-				d.accept_declaration_time = tmp_adt.split("+")[0];
-				d.release_time = tmp_rt.split("+")[0];
+				d.accept_declaration_time = adt;
+				d.release_time = rt; 
 				data[i]=d;
 			}
 			$("#search_results").html(this.view('import_most_time_org_doc_info',data));
