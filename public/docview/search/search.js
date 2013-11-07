@@ -67,25 +67,18 @@ steal(
 	    this.element.find('div.upload_file').docview_ui_upload({clientState: this.options.clientState});
 	    //this.element.find('div.all-print-action').docview_ui_print({clientState: this.options.clientState});
             //this.element.find('div.search_condition').docview_ui_search_some_condition({clientState: this.options.clientState});
-/*
-	   $('form.multi,form.advanced,form.by_doc_source').submit(function() {
-		var $form = $(this);
-		var $btn = $form.find('button[data-toggle]');
-		var $target = $($btn.attr('data-target'));
-		if($target.hasClass('in')){
-			$btn.click();
-		}
-	    });
-*/
-		$("#search-results").docview_ui_pagingtable({
-			columns:[
-				{ "id": "doc_id",text:'报关单号' },
-				{ "id": "doc_type",text:'报关单类别' },
-				{ "id": "serial_number",text:'理单号' },
-				{ "id": "pages",text:'总页数' }
-			],
-			disable_ejs:true
-		});
+	    $("#search-results").docview_ui_pagingtable({
+		columns:[
+		    { "id": "doc_id",text:'报关单号' },
+		    { "id": "doc_type",text:'报关单类别' },
+		    { "id": "serial_number",text:'理单号' },
+		    { "id": "pages",text:'总页数' }
+		    ],
+		disable_ejs:true
+	});
+
+	    this.old_category_value='';
+	    this.old_subcategory_value='';
 	},
 	"button.button-option click" : function(el,ev){
 	    var button_name = $(el).attr("name");
@@ -137,36 +130,48 @@ steal(
 	reshow : function() {
 	    this.element.show();
 
-		var sub_cat = $.route.attr('subcategory');
+	    var sub_cat = $.route.attr('subcategory');
+	    var category = $.route.attr('category');
 	    var to_show = sub_cat;
-
-	    if (!sub_cat) {
-				to_show = this.element.find("form")[0].className;
+	    //alert("= search.js==reshow==category:"+category+", subcategory:"+to_show);
+	    if (this.old_category_value == "document" && this.old_subcategory_value == undefined){
+		//alert("--search.js----reshow--test--");
 	    }
-		this.element.find('.' + to_show).show();
+	    if (!sub_cat) {
+		to_show = this.element.find("form")[0].className;
+	    }
+	    this.element.find('.' + to_show).show();
 
-		if(to_show == 'advanced'){
-			org_el = this.element.find('.' + to_show + ' .adv.org' );
-			var orgs = [];
-			var org_nums = this.options.clientState.attr('user').attr('orgs');
-			if(org_nums == '2200'){
-				orgs = orgArrayDictionary;	
-			}else{
-				org_nums = ( org_nums == undefined || org_nums == '' ) ? [ 0 ] : org_nums.split( ',' );
+	    if(to_show == 'advanced'){
+		    //alert('=search.js==to_show:advanced  ===2');
+		org_el = this.element.find('.' + to_show + ' .adv.org' );
+		var orgs = [];
+		var org_nums = this.options.clientState.attr('user').attr('orgs');
+		var tag_tmp = true;
+		if(org_nums == '2200'){
+		    orgs = orgArrayDictionary;	
+		}else if (org_nums == undefined || org_nums == '') {
+		    tag_tmp = false;
+		}else{
+		    org_nums = org_nums.split( ',' );
 			
-				for(var i=0;i<org_nums.length;i++){
-					orgs.push({dic_num: org_nums[i],dic_name:orgJsonDictionary[ org_nums[i] ]});
-				}
-			}
-			org_el.html( $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgs } ) );
-			($.inArray(0,org_nums) != -1 ) && org_el.hide();
+		    for(var i=0;i<org_nums.length;i++){
+		        orgs.push({dic_num: org_nums[i],dic_name:orgJsonDictionary[ org_nums[i] ]});
+		    }
 		}
+		if( tag_tmp == false){
+		    org_el.hide();
+		}else{
+		    org_el.html( $.View('//docview/ui/views/org.ejs', { label: '关区', name : 'org' , orgsDic: orgs } ) );
+		}
+	    }
 
 	    if (sub_cat == 'by_doc_source') {
-				this.reloadESH();
+		this.reloadESH();
 	    }	   
-		if(sub_cat == '.advanced'){
-		} 
+	    if(sub_cat == 'advanced'){
+		    //alert('======3');
+	    } 
 /*
 	    var to_show_class = ['single','multi','advanced','by_doc_source','personal_history','upload_file'];
 	    $.each(to_show_class,function(index,value){
@@ -176,33 +181,39 @@ steal(
 	    });
 */
             if (to_show != 'single') {
-					this.element.find('.single').hide();
-			}
-			if (to_show != 'multi') {
-					this.element.find('.multi').hide();
-			}
-			if (to_show != 'advanced') {
-					this.element.find('.advanced').hide();
-			}
-			if (to_show != 'by_doc_source') {
-					this.element.find('.by_doc_source').hide();
-			}
-			if (to_show != 'personal_history') {
-					this.element.find('.personal_history').hide();
-			}
-			if (to_show != 'upload_file') {
-					this.element.find('.upload_file').hide();
-			}
-			if (to_show != 'search_condition') {
-					$('#search-some-conditions').hide();
-					$('#search-box').show();
-					//this.element.find('.search_condition').hide();
-			} else {
-				$('#search-box').hide();
-				$('#search-some-conditions').show();
-			}
-			 },
+		this.element.find('.single').hide();
+	    }
+	    if (to_show != 'multi') {
+	        this.element.find('.multi').hide();
+	    }
+	    if (to_show != 'advanced') {
+		this.element.find('.advanced').hide();
+	    }
+	    if (to_show != 'by_doc_source') {
+	        this.element.find('.by_doc_source').hide();
+	    }
+	    if (to_show != 'personal_history') {
+	        this.element.find('.personal_history').hide();
+	    }
+	    if (to_show != 'upload_file') {
+	        this.element.find('.upload_file').hide();
+	    }
+	    if (to_show != 'search_condition') {
+		$('#search-some-conditions').hide();
+		$('#search-box').show();
+		//this.element.find('.search_condition').hide();
+	    } else {
+		if (to_show === 'advanced') {
+		    //alert('=search.js=====4');
+		    $('#search-box').show();
+		} else {
+		    $('#search-box').hide();
+		    $('#search-some-conditions').show();
+		}
+	    }
+	},
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
+	    this.old_category_value=oldVal;
             if (newVal === "search") {	
 		this.mainTabOn = true;
 		this.reshow();
@@ -216,44 +227,53 @@ steal(
 	    this.clearFilters();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
-			if (newVal == undefined) {
-				return;
+	    //alert("search.js===subcategory change new :=" + newVal+"==list ====");
+	    this.old_subcategory_value=oldVal;
+            if (newVal == undefined) {
+	        return;
+	    }
+	    if (this.mainTabOn) {
+	        //$('#search-results').docview_search_results('clearResults');		
+		//$('#alerts div.alert').alert('close');
+		if (newVal == undefined && oldVal == "single" && $.route.attr('category') === 'document') {
+		    return;
+		}
+		if (newVal == undefined && oldVal == "multi") {
+		    this.element.hide();
+		    return;
+		}
+		if (oldVal == undefined && oldVal == "advanced") {
+		    //this.element.show();
+		    this.element.hide();
+		    //alert('search.js======subcategory change oldVal == undefined && newVal == "advanced"');
+		    //$('#search-results').show();
+		    return;
+		}
+
+		if (oldVal !== undefined) {
+		    this.element.find('.' + oldVal).hide();
+		}
+		if (newVal !== undefined) {
+			this.reshow();
+			$.route.attr('id', -1);
+			if (newVal != 'single') {
+				$('#document-details').hide();
 			}
-			if (this.mainTabOn) {
-				//$('#search-results').docview_search_results('clearResults');		
-				//$('#alerts div.alert').alert('close');
-					if (newVal == undefined && oldVal == "single" && $.route.attr('category') === 'document') {
-							return;
-					}
-					if (newVal == undefined && oldVal == "multi") {
-							this.element.hide();
-							return;
-					}
+		}
+		this.element.find('li').removeClass('active');
+		this.element.find('a[href="#advanced"]').closest('li').addClass('active');
 
-					if (oldVal !== undefined) {
-							this.element.find('.' + oldVal).hide();
-					}
-					if (newVal !== undefined) {
-							this.reshow();
-							$.route.attr('id', -1);
-							if (newVal != 'single') {
-									$('#document-details').hide();
-							}
-					}
-					this.element.find('li').removeClass('active');
-					this.element.find('a[href="#advanced"]').closest('li').addClass('active');
+		this.element.find('li.nav-pills').removeClass('active');
+		this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
 
-					this.element.find('li.nav-pills').removeClass('active');
-					this.element.find('li a[href="#'+newVal+'"]').closest('li').addClass('active');
-
-					//this.options.clientState.attr('nav').attr(newVal, subcategory);
-					//this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
-					//this.element.find('li').removeClass('active');
-			}
-		},
-		verifyDocId : function(num) {
-	    	return /^\d+$/.test(num);
-		},
+		//this.options.clientState.attr('nav').attr(newVal, subcategory);
+		//this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
+		//this.element.find('li').removeClass('active');
+	    }
+	},
+	verifyDocId : function(num) {
+	    return /^\d+$/.test(num);
+	},
         '.single submit': function(el, ev) {
             ev.preventDefault();
 	    this.options.clientState.attr('searchMode', 'single');
@@ -369,11 +389,11 @@ steal(
 
 	},
 	'.advanced submit': function(el, ev) {
-		this.removeFormErrors(el);
-		ev.preventDefault();
-	   	$('#search-results').docview_search_results('clearResults');
-        this.options.clientState.attr('searchMode', 'advanced');
-		this.setFilters(el);
+	    this.removeFormErrors(el);
+	    ev.preventDefault();
+	    $('#search-results').docview_search_results('clearResults');
+	    this.options.clientState.attr('searchMode', 'advanced');
+	    this.setFilters(el);
 	    var cntrl = this.element.find('div.daterange-holder').controller();
 	    var dates = cntrl.getInputs(el);
 	    if (dates === "") {
@@ -387,7 +407,7 @@ steal(
 	    if (this.verifyDocId(total) == false) {
 			this.displayInputError(el, "frm_total", "随机的份数必须为数字");
         	return true;
-        }
+	    }
 	    var maxn = 50;
 	    $.ajax({
 			url: '/settings',
@@ -421,36 +441,25 @@ steal(
 	    if (isMod_or_isTax == "isMod") {
 			isMod = "1";
 	    }
-            /*
-	    if (el.find('input[name="isTax"]')[0].checked) {
-		isTax = "1";
-	    }
-	    if (el.find('input[name="isMod"]')[0].checked) {
-		isMod = "1";
-	    }
-            */
+           
 	    var org = el.find("select[name=org]").val();
-	    //var org = el.find("input[name='org']").val();
-		//if (org == "other"){
-		//	org = el.find("select[name='select_org']").val();
-		//}
 	    this.options.clientState.attr('search', {
-			total : total,
-			org : org, 
-			org_applied : el.find('select[name="org_applied"]').val(),
-			docType : el.find("input[name='frm_docType']").val(),
-			years : el.find('select[name="years"]').val(),
-			edcStartDate: from_date,
-			edcEndDate : to_date,
-			isTax: isTax,
-			isMod : isMod,
+		total : total,
+		org : org, 
+		org_applied : el.find('select[name="org_applied"]').val(),
+		docType : el.find("input[name='frm_docType']").val(),
+		years : el.find('select[name="years"]').val(),
+		edcStartDate: from_date,
+		edcEndDate : to_date,
+		isTax: isTax,
+		isMod : isMod,
                 isMod_or_isTax : isMod_or_isTax,
                 filters: this.filters
 	    });
 	    //el.find('.filters :checked').prop("checked", false);
 	    //this.setFilters(el);
 	    //this.options.clientState.attr('search', { filters: this.filters});
-	    	$.createMask();
+	    $.createMask();
     },
 	'div.well div.personal_history form submit' : function(el, ev) {
 	    ev.preventDefault();
@@ -502,43 +511,6 @@ steal(
             form.find('.error .help-inline').remove();
             form.find('.error').removeClass('error');
         },
-        /*
-        '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
-            switch (newVal) {
-                case "search":
-                case "manage_docs":
-                case "manage_accounts":
-                case "stats":
-                    this.element.find('ul').html(this.view(newVal, this.options.clientState.attr('access').attr(newVal)));
-
-                    this.element.find('li').removeClass('active');
-
-                    // If the user entered the page by manually entering the url with
-                    // the subcategory, then it should be defined.
-                    var subcategory = $.route.attr('subcategory');
-                    if (subcategory !== undefined) {
-                       // Restore subcategory state from $.route
-                       this.element.find('a[href="#' + subcategory + '"]').closest('li').addClass('active');
-                       this.options.clientState.attr('nav').attr(newVal, subcategory);
-                    } else {
-                        // Restore subcategory state from clientState
-
-			subcategory = this.options.clientState.attr('nav').attr(newVal);
-
-                       this.element.find('a[href="#' + subcategory + '"]')
-                           .closest('li').addClass('active');
-                       $.route.attr('subcategory', subcategory);
-                    }
-
-                    this.element.show();
-                    break;
-	    case "document":
-		break;
-            default:
-                    this.element.hide();
-            }
-        },
-        */
         getHrefNoHash: function(el) {
             var shref = el.attr('href');
             var pos = shref.indexOf('#');

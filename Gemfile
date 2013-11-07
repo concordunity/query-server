@@ -6,7 +6,7 @@ gem 'rails', '3.2.0'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 #gem "query_reviewer", :git => "git://github.com/nesquena/query_reviewer.git"
 #gem "query_reviewer", "~> 0.1.8"
-gem 'request-log-analyzer'
+#gem 'request-log-analyzer'
 
 gem 'bullet'
 gem 'mysql2'
@@ -19,6 +19,7 @@ gem 'rb-readline'
 gem 'spreadsheet'
 gem "activerecord-import", "~> 0.2.10"
 gem "will_paginate", "3.0.4"
+gem "execjs"
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -26,7 +27,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer'
+  gem 'therubyracer'
 
   gem 'uglifier', '>= 1.0.3'
 end

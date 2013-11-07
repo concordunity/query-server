@@ -48,6 +48,8 @@ steal(
 
             this.to_show = false;
             this.hide();
+	    this.old_category_value='';
+	    this.old_subcategory_value='';
         },
 	
         hide : function() {
@@ -55,13 +57,24 @@ steal(
         // this.showing = false;
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
+	
+	    if ( oldVal == "search") {
+	    	if ($.route.attr('subcategory') === "advanced") {
+			this.old_category_value=oldVal;
+			this.old_subcategory_value='advanced';
+		}
+	    }
             if (newVal === "document") {
                 this.to_show = true; // this.element.show();
+		this.old_category_value=oldVal;
             } else {
                 $('#downloadFrame').hide();
                 this.to_show = false;
                 this.hide();
             }
+        },
+        '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
+		this.old_subcategory_value=oldVal;
         },
         '{$.route} page change': function(el, ev, attr, how, newVal, oldVal) {
             // this will have problems when you refresh the page and the event is an add and we
@@ -136,6 +149,20 @@ steal(
 	    }
 	},
 */
+
+	'#back-results click' : function(el,ev){
+	    ev.preventDefault();
+	
+	    $('#downloadFrame').hide();
+	    this.to_show = false;
+	    this.hide();
+	    
+	    //alert("detail.js ======"+this.old_category_value+"_"+this.old_subcategory_value);
+            $.route.attrs({category: this.old_category_value, subcategory: this.old_subcategory_value}, true);
+	    if (this.old_category_value === "search" && this.old_subcategory_value === "advanced") {
+	        $("#search-results").show();
+	    }
+	},
 	'.commit-comments click' : function(el, ev) {
 	    ev.preventDefault();
 	    var doc = this.docManager.getNthDoc(el.data('doc-index'));
@@ -146,10 +173,10 @@ steal(
 		    //console.log(status);
 		},{});
 
-		console.log("current status is ",status);
+		//console.log("current status is ",status);
 
 		if (status == true) {
-			console.log("current doc is ",doc);
+			//console.log("current doc is ",doc);
 			Docview.Models.File.commitComments({doc_id : doc.getDocId(), json_text : doc.getJsonString(), folder_id : doc.folder_id, is_mod : doc.isSpecialDoc},
 						   this.proxy("commitOk"),this.proxy("failure"));
 		}else{
@@ -163,8 +190,8 @@ steal(
             var message = '成功修改单证标签种类。';
             var docid = $.route.attr('id');
 
-	    console.log("=====commitOk");
-	    console.log(data);
+	    //console.log("=====commitOk");
+	    //console.log(data);
             if (data.status == 204) {
                 type = 'error';
                 message = '单证标签种类失败';
@@ -172,7 +199,7 @@ steal(
 	    this.options.clientState.attr('alert', { type: t, heading: h, message : message });
 	},
 	commitError : function() {
-	   console.log("=====commitError");
+	   //console.log("=====commitError");
 	  
 	   this.options.clientState.attr('alert', { type: "info", heading: "提示信息：", message : "单证标签种类失败"}); 
 	},
@@ -210,12 +237,12 @@ steal(
 
 	    var docIndex = 0;
 	    this.showOverview(docIndex);
-	    console.log("folderid is ",folderid);
+	    //console.log("folderid is ",folderid);
 	    if (folderid != undefined) {
 		docIndex = $("div.folder-id-"+folderid).attr("data-index");
-		console.log("div.folder-id-"+folderid);
-		console.log($("div.folder-id-"+folderid));
-		console.log("docIndex is ",docIndex);
+		//console.log("div.folder-id-"+folderid);
+		//console.log($("div.folder-id-"+folderid));
+		//console.log("docIndex is ",docIndex);
 		if (docIndex != undefined && docIndex != null){
 		    this.showOverview(docIndex);
 		}
@@ -229,11 +256,11 @@ steal(
             Docview.Models.File.findOne(docid, function(data){
 							var filters = that.options.clientState.attr('search').filters;
 							var filter_arr = [];
-							console.log(filters);
+							//console.log(filters);
 							$.each(filters,function(index,value){
 								filter_arr.push(value);
 							});
-							console.log(filter_arr);
+							//console.log(filter_arr);
 							log("query",{current_action: "search.search", describe: "成功查阅单证。", doc_id: docid, filters: filter_arr});    
 		    that.addDocumentData(data);	
 		},

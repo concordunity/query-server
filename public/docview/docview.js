@@ -33,6 +33,10 @@
 	    login: {
 		message: ""
 	    },
+	    menu: {
+		category: "",
+		subcategory: ""
+	    },
             // Initial access list
             access: {
                 search: {

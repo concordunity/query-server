@@ -86,7 +86,7 @@ steal(
                     message : '系统没有以下单证电子档案扫描图像信息: ' + not_found.join()
 		});
 	    }
-		console.log("1 current system time is :",new Date());    
+		//console.log("1 current system time is :",new Date());    
             this.element.html(this.view('results_table', data));
 	    if (data.totals != undefined) {
 	      var info = ("总共" + data.totals+ "条记录，单次最大1000条");
@@ -101,7 +101,7 @@ steal(
             });
 	    $('.advanced button[type=submit]').button('reset');
 	    //组织信息
-		console.log("2 current system time is :",new Date());    
+		//console.log("2 current system time is :",new Date());    
 	    var searchMode = this.options.clientState.attr('searchMode');
 	     if ('multi' == searchMode || searchMode == "advanced"){ 
 		     var denied_log = [];
@@ -135,7 +135,7 @@ steal(
 	     } else if (searchMode == "by_doc_source"){
 		     log("system",{current_action: "search."+ searchMode, describe: "查询成功",current_status: true});
 	     }
-		console.log("3 current system time is :",new Date());    
+		//console.log("3 current system time is :",new Date());    
 	    $.closeMask();
         },
         'td a click': function(el, ev) {

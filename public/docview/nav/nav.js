@@ -107,12 +107,12 @@ steal(
 				Docview.Models.User.logout(
 					function() {
 				//		log("system",{current_action: "system.logout", describe: "成功退出系统。"});
-						console.log('logout');
+						//console.log('logout');
 						window.location = "/";
                     },
 					function() {
 						window.location = "/";
-						console.log('out of date ?');
+						//console.log('out of date ?');
                     }
 				);
 			}else{
@@ -121,65 +121,65 @@ steal(
         },
         '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
             // Find corresponding nav icon and select it
-			 this.element.find('ul.main-nav li').removeClass('active');
-			 if (this.lastActiveA != undefined) {
-				 this.lastActiveA.closest('li').addClass('active');
-			 }
+            this.element.find('ul.main-nav li').removeClass('active');
+	    if (this.lastActiveA != undefined) {
+	        this.lastActiveA.closest('li').addClass('active');
+	    }
             //$('a[href="#' + oldVal + '"]').closest('li').removeClass('active');
             //$('a[href="#' + newVal + '"]').closest('li').addClass('active');
 
             if (newVal != 'manage_accounts') {
-				$('#sys-setting').hide();
-				$("#system-upload").hide();
-				//$("#manage-business-agency-maintain").hide();
-			} else {
-				var subcategory = $.route.attr('subcategory');
-				//console.log("cat and sub",newVal,subcategory);
+	        $('#sys-setting').hide();
+		$("#system-upload").hide();
+		//$("#manage-business-agency-maintain").hide();
+	    } else {
+		var subcategory = $.route.attr('subcategory');
+		//console.log("cat and sub",newVal,subcategory);
 
-				if (subcategory === 'business_agency_maintain') {
-				//	alert("======");
-				//	$("#manage-business-agency-maintain").show();
-				//	$('#sys-setting').docview_ui_agency('loadData');
-				} else {
-				//	$("#manage-business-agency-maintain").hide();
-				}
-				if (subcategory === 'sys-setting') {
-					$('#sys-setting').show();
-					$('#sys-setting').docview_ui_syssetting('loadData');
-				} else {
-					$('#sys-setting').hide();
-				}
-				if (subcategory === 'system_upload') {
-					$("#system-upload").show();
-				} else {
-					$("#system-upload").hide();
-				}
-			}
+		if (subcategory === 'business_agency_maintain') {
+		//	alert("======");
+		//	$("#manage-business-agency-maintain").show();
+		//	$('#sys-setting').docview_ui_agency('loadData');
+		} else {
+		//	$("#manage-business-agency-maintain").hide();
+		}
+		if (subcategory === 'sys-setting') {
+		    $('#sys-setting').show();
+		    $('#sys-setting').docview_ui_syssetting('loadData');
+		} else {
+		    $('#sys-setting').hide();
+		}
+		if (subcategory === 'system_upload') {
+		    $("#system-upload").show();
+		} else {
+			$("#system-upload").hide();
+		}
+	    }
 
+	    if (newVal != 'stats') {
+		    $('#stats-export').hide();
+		    $('#group-docs').hide();
+	    } else {
+	        var subcategory = $.route.attr('subcategory');
+		if (subcategory === 'stats_export') {
+		    $('#stats-export').show();
+		} else {
+		    $('#stats-export').hide();
+		}
+		if (subcategory === 'create_group') {
+		    $('#group-docs').show();
+		} else {
+			$('#group-docs').hide();
+		}
+	    }
 
-			if (newVal != 'stats') {
-				$('#stats-export').hide();
-				$('#group-docs').hide();
-			} else {
-				var subcategory = $.route.attr('subcategory');
-				if (subcategory === 'stats_export') {
-					$('#stats-export').show();
-				} else {
-					$('#stats-export').hide();
-				}
-				if (subcategory === 'create_group') {
-					$('#group-docs').show();
-				} else {
-					$('#group-docs').hide();
-				}
-			}
-
-			if (newVal === "search") {
-				/*
-                // Save the search so when we come back it's shown immediately.
-                if (this.options.clientState.attr('id') !== "") {
-                    $.route.attr('id', this.options.clientState.attr('id'));                
-                }
+	    if (newVal === "search") {
+		    this.options.clientState.attr('menu').attr("category", oldVal);
+		    /*
+		    // Save the search so when we come back it's shown immediately.
+		    if (this.options.clientState.attr('id') !== "") {
+		    $.route.attr('id', this.options.clientState.attr('id'));                
+		    }
                 if (this.options.clientState.attr('page') !== "") {
                     $.route.attr('page', this.options.clientState.attr('page'));
                 }*/
