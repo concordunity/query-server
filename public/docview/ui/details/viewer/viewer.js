@@ -90,7 +90,7 @@ steal(
         },
 
 	updateComment : function(data) {
-	    console.log('updateComment :',data);
+	    //console.log('updateComment :',data);
 	    this.options.docManager.updateCommentData(data);
 	    this.displayCommentsControl({code: data.subcode,
 					 label : data.info});
@@ -113,7 +113,7 @@ steal(
 		    alert ("选择的种类没有变化");
 	    } else {
 		    var pageInfo = this.currentPageInfo; 
-		    console.log('已经点击了反馈信息的选项,创建新的修改单证种类(addComments),当前pageInfo的内容如下：',pageInfo);
+		   // console.log('已经点击了反馈信息的选项,创建新的修改单证种类(addComments),当前pageInfo的内容如下：',pageInfo);
 		    //console.log(pageInfo);
 		    if (pageInfo.nthPage == pageInfo.doc.pageBT[pageInfo.nthPage-1]){
 		        Docview.Models.File.addComments(pageInfo.doc.getDocId(),
@@ -132,7 +132,7 @@ steal(
 	},
 	'button.comments click' : function(el, ev) {
 	    ev.preventDefault();
-	    console.log('进行反馈意见的确认时，当前单证的信息：',this.currentPageInfo);
+	    //console.log('进行反馈意见的确认时，当前单证的信息：',this.currentPageInfo);
 	    if (this.commentsController) {
 		this.commentsController.setCommentsUI(this.currentPageInfo);
 	    } else {
@@ -181,8 +181,8 @@ steal(
 		
 		this.element.find('li.comments').hide();
 		this.element.find('li.error-comments').hide();
-		console.log('2、===currentPageInfo  in displayCommentsControl :',this.currentPageInfo);
-		console.log('3、===proposedPageType  in displayCommentsControl :',proposedPageType);
+		//console.log('2、===currentPageInfo  in displayCommentsControl :',this.currentPageInfo);
+		//console.log('3、===proposedPageType  in displayCommentsControl :',proposedPageType);
 		$('#comments').html(this.view('comment', {proposedPageType : proposedPageType, searchMode : this.options.clientState.attr("searchMode")}));
 	    } else {
 		this.element.find('li.comments').show();
@@ -209,7 +209,7 @@ steal(
 	    this.currentPageInfo = pageInfo;
 
 	    $('#comments').html('');
-	    console.log('1、====pageInfo in showPage ',pageInfo);
+	    //console.log('1、====pageInfo in showPage ',pageInfo);
 	    //console.log(pageInfo);
 	    //console.log(pageInfo.doc);
 	    //console.log(pageInfo.doc.comments);

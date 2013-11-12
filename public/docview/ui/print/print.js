@@ -25,7 +25,7 @@ steal(
 	},
         show : function() {
 	   this.createHtml();
-	   console.log("====");
+	   //console.log("====");
 	   this.element.show();
         },
         '{$.route} subcategory change': function(el, ev, attr, how, newVal, oldVal)  {
@@ -48,12 +48,12 @@ steal(
             if (this.oTable != undefined) {
                 this.oTable.fnClearTable();
             }
-	    console.log("=====clearResults=====");
+	    //console.log("=====clearResults=====");
 	    $('div#all-print-list').html("");
         },
 	".all_print submit" : function(el,ev){
             ev.preventDefault();
-	    console.log("=====print-all=====");
+	    //console.log("=====print-all=====");
 	    this.printAll({doc_ids : ['222520121250004811']})
 	},
 	printAllDoc : function(files) {
@@ -75,7 +75,7 @@ steal(
   	   },this.proxy("failure")); 
 	},
 	printAll : function(data) {
-	    console.log("will print doc_ids is ",data);
+	    //console.log("will print doc_ids is ",data);
 		that = this;
 	    Docview.Models.Doc.findAllPrint({doc_ids: data.doc_ids},function(data){
 			that.showList(data);

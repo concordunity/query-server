@@ -13,7 +13,9 @@ steal(
     './doc_manager.js',
     './document.js',
     './views/init.ejs',
-    'libs/comments_arr.js',
+     'jquery/jquery.js',
+    'libs/jquery.log.js',
+   'libs/comments_arr.js',
     'docview/docview.css'
 ).then(function($) {
     $.Controller('Docview.Ui.Details', {}, {
@@ -50,6 +52,7 @@ steal(
             this.hide();
 	    this.old_category_value='';
 	    this.old_subcategory_value='';
+	    this.query_id="";
         },
 	
         hide : function() {
@@ -269,6 +272,7 @@ steal(
         },
 
 	displayDoc: function(docid) {
+	    this.query_id=docid;
 	    this.treeControl.clearDocTree();
 	    this.docManager.clear();
 	    this.to_show = true;
@@ -411,11 +415,11 @@ steal(
             } else if (jqXHR.status == 500) {
                 message = '系统内部错误';
             } else if (jqXHR.status == 407) {
-					message = '系统安全子系统未初始化，请联系管理员。';
-			} else if (jqXHR.status == 400) {
-					message = '系统内部错误： 无法获取单证电子图像。';
-			} else if (jqXHR.status == 401) {
-					message = '系统内部错误： 系统繁忙，请稍后再试。';
+		message = '系统安全子系统未初始化，请联系管理员。';
+	    } else if (jqXHR.status == 400) {
+		message = '系统内部错误： 无法获取单证电子图像。';
+	    } else if (jqXHR.status == 401) {
+		message = '系统内部错误： 系统繁忙，请稍后再试。';
             }
             this.options.clientState.attr('alert', {
                 type: t,
@@ -424,11 +428,15 @@ steal(
             });
 			
             if (jqXHR.status == 403.1) {
-                	var message_var = '无法查阅单证'+ docid + '，此单证已经被涉案。';
-					log("query",{current_action: "search.search", describe: message_var, doc_id: docid, current_status: false});    
-			} else {
-					log("query",{current_action: "search.search", describe: message, doc_id: docid});    
-			}
+		var message_var = '无法查阅单证'+ docid + '，此单证已经被涉案。';
+		log("query",{current_action: "search.search", describe: message_var, doc_id: docid, current_status: false});    
+	    } else {
+		if(docid == undefined){
+		    docid = this.query_id.replace(/\#/,'');
+		}	
+		//alert(message+":"+docid);
+		log("query",{current_action: "search.search", describe: message, doc_id: docid,current_status: false});    
+	    }
         //console.log("[Error]", data);
         }
     });

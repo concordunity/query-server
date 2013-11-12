@@ -94,9 +94,9 @@ Document.prototype.updateCommentData = function(comment) {
     var is_tag = false;
     for (i=0; i < this.comments.length; i++) {
 	if (this.comments[i] && this.comments[i].page == nth) {
-	    console.log("for current page",nth);
-	    console.log('current comment is ',this.comments[i]);
-	    console.log('it will update comment is ',comment);
+	   //console.log("for current page",nth);
+	   //console.log('current comment is ',this.comments[i]);
+	   //console.log('it will update comment is ',comment);
 	    this.comments[i] = comment;
 	    is_tag = true;
 	    break;

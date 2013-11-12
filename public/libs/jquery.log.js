@@ -12,7 +12,7 @@
 	@create at 2013-01-09
 */
 (function($){
-	    
+
     var appendLog = function(url,params) {
         $.ajax({
             url : '/' + url + "_log",
@@ -20,14 +20,22 @@
             data : params,
             success : function(){
 				//development log , can be remove ..
-				console.log('log:',url,params);
+				//console.log('log:',url,params);
 			},
-            error : '',
+            error : function(){
+
+			},
 	    async : true,
             dataType : '' 
         });
     }
-	
+    if (!("console" in window )) {
+	window.console = {
+	    log: function(){
+
+	    }
+	};
+    } 
     window.log = appendLog;
 })(jQuery)
 
