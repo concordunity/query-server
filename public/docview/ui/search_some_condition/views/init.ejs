@@ -1,109 +1,101 @@
 <div class="well">
-	<fieldset>
-		<table width="100%" class='search-condition-table table-size'>
-			<tr><th></th><th width="20%"></th><th width="20%"></th></tr>
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class='search-option'>查获率为0的重点查验企业</div>
-						<div class="search-content">说明：重点查验企业是指查验率大于一定值的企业</div>
-					</div>
-				</td>
-				<td class="zero_org_applied" ></td>
-				<td>
-					<div>
-						<button type="button" class="find-zero-rate btn btn-primary"  data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class="search-option">一般贸易进口价格偏低报关单记录</div>
-						<div class="search-content">说明：价格偏低记录是指价格低于统计价格高低参数实际下限的报关单记录</div>
-					</div>
-				</td>
-				<td class="normal_org_applied"></td>
-				<td>
-					<div><button type="button" class="normal-import-record btn btn-primary"  data-loading-text="Search...." autocomplete="off" ><%= $.i18n._('btn.search')  %></button></div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class="search-option">进口通关时间超长报关单</div>
-						<div class="search-content">说明：通关时间超长报关单是指剔除递单、缴税时间后，通关作业时间大于15天的报关单</div>
-					</div>
-				</td>
-				<td class="import_org_applied"></td>
-				<td>
-					<div><button type="button" class="import-most-time btn btn-primary"  data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class="search-option">一般贸易进口价格影响度较大报关单</div>
-						<div class="search-content">说明：反应进口一般贸易项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
-					</div>
-				</td>
-				<td class="select_org"></td>
-				<td>
-					<div><button type="button" class="high-risk btn btn-primary" data-value='3' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class="search-option">一般贸易出口价格影响度较大报关单</div>
-						<div class="search-content">说明：反应出口一般贸易项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
-					</div>
-				</td>
-				<td class="select_org"></td>
-				<td>
-					<div><button type="button" class="high-risk btn btn-primary" data-value='4' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
-				</td>
-			</tr>
-
-
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class="search-option">料件内销进口价格影响度较大报关单</div>
-						<div class="search-content">说明：反应料件内销进口项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
-					</div>
-				</td>
-				<td class="select_org"></td>
-				<td>
-					<div><button type="button" class="high-risk btn btn-primary" data-value='5' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
-				</td>
-			</tr>
-
-
-			<tr>
-				<td>
-					<div class='search-condition-model'>
-						<div class="search-option">料件加贸进口价格影响度较大报关单</div>
-						<div class="search-content">说明：反应料件加贸进口项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
-					</div>
-				</td>
-				<td class="select_org"></td>
-				<td>
-					<div><button type="button" class="high-risk btn btn-primary" data-value='6' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
-				</td>
-			</tr>
-
-		</table>
-	</fieldset>
-
+  <fieldset>
+    <table width="100%" class='search-condition-table table-size'>
+      <tr><th></th><th width="20%"></th><th width="20%"></th></tr>
+      <tr>
+      <td>
+        <div class='search-condition-model'>
+	  <div class='search-option'>查获率为0的重点查验企业</div>
+	  <div class="search-content">说明：重点查验企业是指查验率大于一定值的企业</div>
+	</div>
+      </td>
+      <td class="select_org" ></td>
+      <td>
+        <div>
+	  <button type="button" class="find-zero-rate btn btn-primary" data-value='0' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class='search-condition-model'>
+          <div class="search-option">一般贸易进口价格偏低报关单记录</div>
+	  <div class="search-content">说明：价格偏低记录是指价格低于统计价格高低参数实际下限的报关单记录</div>
+        </div>
+      </td>
+      <td class="select_org"></td>
+      <td>
+        <div><button type="button" class="normal-import-record btn btn-primary" data-value='1' data-loading-text="Search...." autocomplete="off" ><%= $.i18n._('btn.search')  %></button></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class='search-condition-model'>
+	  <div class="search-option">进口通关时间超长报关单</div>
+	  <div class="search-content">说明：通关时间超长报关单是指剔除递单、缴税时间后，通关作业时间大于15天的报关单</div>
+        </div>
+      </td>
+      <td class="select_org"></td>
+      <td>
+        <div><button type="button" class="import-most-time btn btn-primary" data-value='2' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class='search-condition-model'>
+          <div class="search-option">一般贸易进口价格影响度较大报关单</div>
+	  <div class="search-content">说明：反应进口一般贸易项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
+        </div>
+      </td>
+      <td class="select_org"></td>
+      <td>
+        <div><button type="button" class="high-risk btn btn-primary" data-value='3' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class='search-condition-model'>
+	  <div class="search-option">一般贸易出口价格影响度较大报关单</div>
+	  <div class="search-content">说明：反应出口一般贸易项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
+        </div>
+      </td>
+      <td class="select_org"></td>
+      <td>
+        <div><button type="button" class="high-risk btn btn-primary" data-value='4' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class='search-condition-model'>
+	  <div class="search-option">料件内销进口价格影响度较大报关单</div>
+	  <div class="search-content">说明：反应料件内销进口项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
+        </div>
+      </td>
+      <td class="select_org"></td>
+      <td>
+        <div><button type="button" class="high-risk btn btn-primary" data-value='5' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class='search-condition-model'>
+	  <div class="search-option">料件加贸进口价格影响度较大报关单</div>
+	  <div class="search-content">说明：反应料件加贸进口项下商品单价与全国均价之间的价格影响度的绝对值较大的报关单</div>
+        </div>
+      </td>
+      <td class="select_org"></td>
+      <td>
+        <div><button type="button" class="high-risk btn btn-primary" data-value='6' data-loading-text="Search...." autocomplete="off"  ><%= $.i18n._('btn.search')  %></button></div> 
+      </td>
+    </tr>
+    </table>
+  </fieldset>
 </div>
 <h3 id="showTitle" ></h3>
-
 <div class="">
-
-	<input type="hidden" name="hidden-paging-header-type" value="" ></input>
-	<div id="search_pages"></div>
-	<div id="search_results"></div>
-	<div id="second_results"></div>
+  <input type="hidden" name="hidden-paging-header-type" value="" ></input>
+  <div id="search_pages"></div>
+  <div id="search_results"></div>
+  <div id="second_results"></div>
 </div>
 

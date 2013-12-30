@@ -335,7 +335,15 @@ steal(
 							+ $.thousands(data.doc_edc_query)
 							+ ' </b>份,查阅率为：<b> '
 							+ (data.doc_edc_stats)
-							+ " </b>"
+							+ '</b> ,<br />特殊票总数为：<b>'
+							+ $.thousands(data.modified_docs_total) 
+							+ ' </b>份，总计页数为：<b>'
+							+ $.thousands(data.modified_pages_total) 
+							+ '</b> ,<br />借阅总数为：<b>'
+							+ $.thousands(data.rds_docs_total) 
+							+ ' </b>份，总计页数为：<b>'
+							+ $.thousands(data.rds_pages_total) 
+							+ '</b>'
 							).show('slow')
 							.addClass('alert alert-info')
 							.css({

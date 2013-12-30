@@ -84,7 +84,17 @@ class User < ActiveRecord::Base
       end
 
       #doc_org = doc_id[0,4]
-      return !self.orgs.index(doc.org).nil?
+		  tag = false
+      doc_org = [doc.doc_id[9,2],doc.doc_id[9,3]]
+		  org_for_docs = OrgForDoc.where(["org_number in (?)",doc_org])
+			if org_for_docs
+				org_for_docs.each do |item|
+					return true if self.orgs.include?(item.org) 
+				end
+		  end
+			return tag
+		
+     # return !self.orgs.index(doc.org).nil?
     end
 
     def check_doc_type?(doc_id)

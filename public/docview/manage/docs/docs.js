@@ -235,21 +235,38 @@ steal(
 		}
 	},
 	checkoutOk : function(data) {
-	    if (data.status && data.status == 400) {
-		this.options.clientState.attr('alert', {
+	  if (data.status && data.status == 400) {
+		  this.options.clientState.attr('alert', {
 		    type: 'error',
 		    heading: '错误提示：',
 		    message : data.message
-		});
-		return;
-	    }
+		  });
+		  return;
+	  }
 
-	    this.options.clientState.attr('alert', {
-		type: 'info',
-		heading: '操作成功：',
-		message : '单证已增加借出标记'
-	    });
-	    for(var i=0;i<data.docs.length;i++){
+		
+		var messages = '单证已增加借出标记';
+/*		
+		console.log(data.no_found);
+		console.log(data.no_found);
+	  if(data.no_found =! null && data.no_found.lenth !=  0){
+			messages += ",以下单证存在问题：";
+	    for(var i=0;i<data.no_found.length;i++){
+				if(data.no_found[i] != null){	
+					var item = data.no_found[i]+" ";
+					console.log(data.no_found[i]);
+					console.log(item);
+				  messages += item;
+				}
+		  }
+		}
+*/
+	  this.options.clientState.attr('alert', {
+		  type: 'info',
+			heading: '操作成功：',
+			message : messages 
+	  });
+	  for(var i=0;i<data.docs.length;i++){
 			log("document",{current_action: "manage_docs.checkout", describe: '单证已增加借出标记', doc_id: data.docs[i].doc_id});
 		}
 	},
@@ -292,113 +309,117 @@ steal(
 		}
 	},
 	inquireFailed : function(jqXHR, textStatus, errorThrown) {
-            var handled = true;
-            var t = 'error';
-            var h = '错误提示：';
-            var message = '需要用户认证，请重新登录系统。';
-	
-            switch(jqXHR.status) {
-            case 401:
-		break;
-            case 404:
-		type = 'info';
-		message = '系统中没有相关单证' + this.error_context;
-		break;
-	    case 500:
-		message = '系统内部错误';	    
-		break;
-            case 403:
-		type = 'info';
-		message = this.error_context + '失败，权限不足。';
-		break;
-	    default:
-		break;
-	    }
-	    this.options.clientState.attr('alert', {
-		type: t,
-		heading: h,
-		message : message
-	    });
-	},
-	'.checkout submit' : function(el, ev) {
-	    ev.preventDefault();
-	    var ctrl = $('#manage-docs-container div form.checkout div.multi_holder').controller();
-	    if (ctrl.validateInput(el)) {
-		var ids = ctrl.getIds();
-	    
-		$.ajax({
-		    url : '/documents/checkout',
-		    type : 'POST',
-		    data: { doc_ids : ids,
-			    caction : "checkout"
-			  },
-		    dataType : 'json',
-		    success : this.proxy('checkoutOk'),
-		    error : this.proxy('inquireFailed')
-		});
-	    }
-	},
-	'#removeCheckout click' : function(el, ev) {
-	    var frm = $('#manage-docs-container div form.checkout');
-	    ev.preventDefault();
-	    var ctrl = $('#manage-docs-container div form.checkout div.multi_holder').controller();
-	    
+    var handled = true;
+		var t = 'error';
+		var h = '错误提示：';
+		var message = '需要用户认证，请重新登录系统。';
 
-	    if (ctrl.validateInput(frm)) {
-		var ids = ctrl.getIds();
-		$.ajax({
-		    url : '/documents/checkout',
-		    type : 'POST',
-		    data: { doc_ids : ids,
-			    caction : "checkin"
-			  },
-		    dataType : 'json',
-		    success : this.proxy('checkinOk'),
-		    error : this.proxy('inquireFailed')
-		});
-	    } else {
+		switch(jqXHR.status) {
+			case 401:
+				break;
+			case 404:
+				type = 'info';
+				message = '系统中没有相关单证' + this.error_context;
+				var result = JSON.parse(jqXHR.responseText);
+			  if(result.not_found != undefined){
+					message = "以下单证没有权限：" + result.not_found.join(","); 
+				}	
+				break;
+			case 500:
+				message = '系统内部错误';	    
+				break;
+			case 403:
+				type = 'info';
+				message = this.error_context + '失败，权限不足。';
+				break;
+			default:
+				break;
+		}
+		this.options.clientState.attr('alert', {
+type: t,
+heading: h,
+message : message
+});
+},
+				'.checkout submit' : function(el, ev) {
+								ev.preventDefault();
+								var ctrl = $('#manage-docs-container div form.checkout div.multi_holder').controller();
+								if (ctrl.validateInput(el)) {
+												var ids = ctrl.getIds();
 
-	    }
-	},
-	'#removeInquire click' : function(el, ev) {
-	    ev.preventDefault();
-	    var frm = $('#manage-docs-container div form.inquire');
-	    var ctrl = $('#manage-docs-container div form.inquire div.multi_holder').controller();
-	    
+												$.ajax({
+url : '/documents/checkout',
+type : 'POST',
+data: { doc_ids : ids,
+caction : "checkout"
+},
+dataType : 'json',
+success : this.proxy('checkoutOk'),
+error : this.proxy('inquireFailed')
+});
+}
+},
+				'#removeCheckout click' : function(el, ev) {
+								var frm = $('#manage-docs-container div form.checkout');
+								ev.preventDefault();
+								var ctrl = $('#manage-docs-container div form.checkout div.multi_holder').controller();
 
-	    if (ctrl.validateInput(frm)) {
-		var ids = ctrl.getIds();
-		$.ajax({
-		    url : '/documents/inquire',
-		    type : 'POST',
-		    data: { doc_ids : ids,
-			    caction : "remove"
-			  },
-		    dataType : 'json',
-		    success : this.proxy('inquireRemoveOk'),
-		    error : this.proxy('inquireFailed')
-		});
-	    } else {
 
-	    }
-	},
-	'.court_doc submit' : function(el, ev) {
-	    ev.preventDefault();
-	    $.route.attr('id', -1);
-	    this.options.clientState.attr('searchMode', 'court');
-	    var ctrl = $('#manage-docs-container div form.court_doc div.single_holder').controller();
+								if (ctrl.validateInput(frm)) {
+												var ids = ctrl.getIds();
+												$.ajax({
+url : '/documents/checkout',
+type : 'POST',
+data: { doc_ids : ids,
+caction : "checkin"
+},
+dataType : 'json',
+success : this.proxy('checkinOk'),
+error : this.proxy('inquireFailed')
+});
+} else {
 
-	    if (ctrl.validateInput(el)) {
-		var docId = ctrl.getId();
-		$.route.attrs({category: 'document', id: docId}, true);
-		$('#document-details').docview_ui_details('queryDoc', docId);
-		this.element.hide();
-	    }	    
-	},
-	// print all docs
-	"form.all_print submit" : function(el,ev) {
-	    ev.preventDefault();	
-	    //console.log("all print");
+}
+},
+				'#removeInquire click' : function(el, ev) {
+								ev.preventDefault();
+								var frm = $('#manage-docs-container div form.inquire');
+								var ctrl = $('#manage-docs-container div form.inquire div.multi_holder').controller();
+
+
+								if (ctrl.validateInput(frm)) {
+												var ids = ctrl.getIds();
+												$.ajax({
+url : '/documents/inquire',
+type : 'POST',
+data: { doc_ids : ids,
+caction : "remove"
+},
+dataType : 'json',
+success : this.proxy('inquireRemoveOk'),
+error : this.proxy('inquireFailed')
+});
+} else {
+
+}
+},
+				'.court_doc submit' : function(el, ev) {
+								ev.preventDefault();
+								$.route.attr('id', -1);
+								this.options.clientState.attr('searchMode', 'court');
+								var ctrl = $('#manage-docs-container div form.court_doc div.single_holder').controller();
+
+								if (ctrl.validateInput(el)) {
+												var docId = ctrl.getId();
+												$.route.attrs({category: 'document', id: docId}, true);
+												$('#document-details').docview_ui_details('queryDoc', docId);
+												this.element.hide();
+								}	    
+				},
+				// print all docs
+				"form.all_print submit" : function(el,ev) {
+								ev.preventDefault();	
+								//console.log("all print");
 	    var src=document.activeElement;
 		//console.log(src);
 	    //console.log(src.name);

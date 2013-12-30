@@ -5,6 +5,71 @@ class OperateDataController < ApplicationController
   skip_before_filter :authenticate_user!
   include ActionView::Helpers::NumberHelper
 
+  def export_high_risk(table)
+    if  params[:search_condition].to_i < 3
+      conditons = params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["org_applied = ?",params[:org_applied]]
+      if params[:search_condition] == "normal_import_price_less_record"
+        result = NormalImportPriceLessRecord.where(:exists_in_system => true).where(conditons)
+      elsif params[:search_condition] == "zero_find_check_info"
+        result = ZeroFindCheckInfo.where(:exists_in_system => true).order("operating_name").group("operating_name").where(conditons)
+      elsif params[:search_condition] == "import_most_time_org_doc_info"
+        result = ImportMostTimeOrgDocInfo.where(:exists_in_system => true).where(conditons).order("release_time desc")
+      end
+    else
+      conditions = params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["subjection_org = ?",params[:org_applied]]
+      result = HighRisk.where(:table_type =>  params[:search_condition].to_i,:exists_in_system => true).where(conditions)
+    end
+    send("#{table}(result)")
+  end
+
+  def set_excel_info
+    excel_name = "search_result"
+    export_data = JSON.parse(params[:tableData])
+
+    new_path = File.join(Rails.root,"public","docview","export_data", Time.now.to_i.to_s)
+    Dir.mkdir(new_path) unless Dir.exists?(new_path)
+    book = new_excel(excel_name)
+    book_excel = book[0]
+    book_sheet = book[1]
+    file_name = File.join(new_path , excel_name + ".xls")
+    book_excel.write(file_name)
+    file_name = file_name.sub(File.join(Rails.root,"public"),'')
+
+  end
+
+  def format_excel_data
+    result.each_with_index do |new_sheet,index|
+      book_sheet.insert_row(count+1,new_sheet)
+    end
+  end
+
+  def table_one
+    send_file file_name
+  end
+
+  def table_two
+    
+  end
+
+  def table_three
+
+  end
+
+  def table_four
+
+  end
+
+  def table_five
+
+  end
+
+  def table_six
+
+  end
+
+  def table_seven
+
+  end
 
   def export_search
 
@@ -120,6 +185,9 @@ class OperateDataController < ApplicationController
   def filter_html_tags(str)
     if str.nil?
       return ""
+    end
+    if str.class == Fixnum
+      return str
     end
     str = str.gsub(/\n/, ' ');
     # filter out <span> tag

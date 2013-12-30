@@ -551,8 +551,9 @@ class DocumentsController < ApplicationController
     find_documents_by_ids(false)
 
     if @documents.empty?
-      raise ActiveRecord::RecordNotFound
-    end
+      #raise ActiveRecord::RecordNotFound
+      render json: { :results => @documents, :not_found => @no_found_documents,:status => 404}, :status => 404 
+		else
 
     if params[:caction] == 'add'
       caction = 'add inquiry'
@@ -571,22 +572,24 @@ class DocumentsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to document_url }
-      format.json { render json: { :dh_info => dh, :docs => docs} }
+      format.json { render json: { :dh_info => dh, :docs => docs, :not_found => @no_found_documents} }
     end 
 
+    end
   end
 
   def checkout
-
     if (!check_document_state)
       return
     end
 
-
     find_documents_by_ids(false)
+
+
     if @documents.empty?
-      raise ActiveRecord::RecordNotFound
-    end
+      #raise ActiveRecord::RecordNotFound
+      render json: { :results => @documents, :not_found => @no_found_documents,:status => 404}, :status => 404 
+	  else
 
     if params[:caction] == 'checkout'
       caction = 'document checkout'
@@ -595,20 +598,19 @@ class DocumentsController < ApplicationController
     end
     
     dh = []
-	docs = []
+	  docs = []
     @documents.each { |d| 
       d.checkedout = (params[:caction] == 'checkout')
       #dh.push(add_history(d, caction))
       d.save
-	  docs.push(d)
+	    docs.push(d)
     }
-
+		  
     respond_to do |format|
       format.html { redirect_to document_url }
-      format.json { render json: { :dh_info => dh, :docs => docs} }
+      format.json { render json: { :dh_info => dh, :docs => docs, :no_found =>  @no_found_documents} }
     end 
-
-
+		end
   end
 
   # POST /documents
@@ -886,9 +888,10 @@ class DocumentsController < ApplicationController
 		current_user.can_view?(d) && (!d.inquired || (can? :inquire, Document) && (!d.checkedout || (can? :checkedout ,Document)))
       }
     else
-      @documents = @documents.keep_if {
-        |d| current_user.can_view?(d)
-      }
+      @no_found_documents = @documents.collect { |d| d.doc_id if !current_user.can_view?(d) }
+      @no_found_documents ||= []
+
+      @documents = @documents.keep_if { |d| current_user.can_view?(d) }
     end
   end
   # return true if the user is authorized

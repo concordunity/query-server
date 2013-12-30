@@ -218,8 +218,23 @@ class DocumentHistoriesController < ApplicationController
     docs_total = docs_records.count
 #符合条件的增量总页数
     pages_total = docs_records.sum("pages")
+
+  # this is info about total pages and count for modified_document 
+	modified_documents =  ModifiedDocument.where(search_org_condition).where(where_clause).where(docType_condition)
+	modified_docs_total =  modified_documents.length
+	modified_pages_total =  modified_documents.sum("pages")
+  
+  
+  # this is info for requisition_details
+	rds = RequisitionDetail.where(:status => 1)
+	rds = rds.where(:updated_at => where_clause[:created_at]) unless  where_clause[:created_at].blank?
+	rds_doc_ids = rds.collect {|item| item.single_card_number}
+  rds_docs = documents.where(:doc_id => rds_doc_ids)
+	rds_docs_total = rds_docs.length
+  rds_pages_total = rds_docs.sum("pages")
+
 	#sum modefy document pages
-	pages_total +=  ModifiedDocument.where(search_org_condition).where(where_clause).where(docType_condition).sum("pages")
+	pages_total +=  modified_pages_total 
 
 
 #总查阅记录
@@ -253,14 +268,18 @@ logger.info select_query_total
 #doc_edc_query => 符合条件的总存量的查阅量
 #doc_edc_stats => 符合条件的存量查阅率
 
-    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => select_query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (select_query_total * 100 / (1.0 * docs_total)),:precision => 2) ,:doc_count => doc_count, :doc_edc_page => doc_edc_page, :doc_edc_query => save_query_total, :doc_edc_stats => number_to_percentage(doc_count == 0 ? 0 : (save_query_total * 100 / (1.0 * doc_count)),:precision => 2)}
+    results = { :docs_total => docs_total, :pages_total => pages_total, :query_total => select_query_total, :query_p => number_to_percentage(docs_total == 0 ? 0 : (select_query_total * 100 / (1.0 * docs_total)),:precision => 2) ,:doc_count => doc_count, :doc_edc_page => doc_edc_page, :doc_edc_query => save_query_total, :doc_edc_stats => number_to_percentage(doc_count == 0 ? 0 : (save_query_total * 100 / (1.0 * doc_count)),:precision => 2),:rds_docs_total => rds_docs_total, :rds_pages_total => rds_pages_total, :modified_docs_total => modified_docs_total, :modified_pages_total => modified_pages_total}
 
       cat = params[:groupby]
       results[:groupby] = cat
       function_params = [queries,document_count,document_page_count,select_query_total,where_clause,["true"],docType_condition,condition,where_clause_edc,search_org_condition]
       #function_params = [queries,docs_total,pages_total,query_total,where_clause,org_condition,docType_condition,condition]
 
-      if cat == '1'
+      if cat == '0'
+				if false
+					
+				end	
+      elsif cat == '1'
         query_stats_by = search_condition_org_new(function_params)
       elsif cat == '2'
 	    function_params[5] = org_condition
