@@ -246,21 +246,8 @@ steal(
 
 		
 		var messages = '单证已增加借出标记';
-/*		
-		console.log(data.no_found);
-		console.log(data.no_found);
-	  if(data.no_found =! null && data.no_found.lenth !=  0){
-			messages += ",以下单证存在问题：";
-	    for(var i=0;i<data.no_found.length;i++){
-				if(data.no_found[i] != null){	
-					var item = data.no_found[i]+" ";
-					console.log(data.no_found[i]);
-					console.log(item);
-				  messages += item;
-				}
-		  }
-		}
-*/
+		if(data.not_found && data.not_found.length > 0)
+			messages += " , 以下单证存在问题:" + data.not_found.join(',')
 	  this.options.clientState.attr('alert', {
 		  type: 'info',
 			heading: '操作成功：',
@@ -298,15 +285,17 @@ steal(
 		});
 		return;
 	    }
-
+			var msg = "单证已解除涉案标记";
+			if( data.not_found && data.not_found.length > 0 )
+				msg += " , 以下单证存在问题:" + data.not_found.join(',');
 	    this.options.clientState.attr('alert', {
-		type: 'info',
-		heading: '操作成功：',
-		message : '单证已解除涉案标记'
-	    });
+				type: 'info',
+				heading: '操作成功：',
+				message : msg 
+			});
 	    for(var i=0;i<data.docs.length;i++){
-			log("document",{current_action: "manage_docs.checkout", describe: '单证已解除涉案标记', doc_id: data.docs[i].doc_id});
-		}
+				log("document",{current_action: "manage_docs.checkout", describe: '单证已解除涉案标记', doc_id: data.docs[i].doc_id});
+			}
 	},
 	inquireFailed : function(jqXHR, textStatus, errorThrown) {
     var handled = true;

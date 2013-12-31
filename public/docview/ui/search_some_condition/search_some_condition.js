@@ -37,6 +37,7 @@ steal(
       var orgsDic = orgArrayDictionary;
       this.element.html(this.view('init',{orgsDic: orgsDic}));
       this.element.hide();
+			this.last_params = new Object;
       $('#search_pages').docview_ui_paging();
       var user = this.options.clientState.attr('user');
       var orgs = user.orgs;
@@ -92,7 +93,12 @@ steal(
       return;
     },
     "#export_data click" : function(el,ev){
-      this.highRiskTableController.saveToExcel();
+      //this.highRiskTableController.saveToExcel();
+			if($(el).closest("#second_results").length > 0){
+				this.subInfoController.saveToFile(this.last_params);
+			}else{
+      	this.highRiskTableController.saveToFile(this.last_params);
+			}
     },
     ".high-risk click" : function(el,ev){
       ev.preventDefault();	
@@ -229,8 +235,15 @@ steal(
 		  }
 
 		  var url = "/search_condition";
+		  var is_all = false;
 			var select_value =  $(el).closest("tr").find("select[name='select_org']").val(); 
+
+			if(options.is_all != undefined){
+				is_all = options.is_all;
+			}
+
 			var params = {
+						"is_all": is_all,
 						"search_condition": $(el).attr("data-value") , 
 						"org_applied": $(el).closest("tr").find("select[name='select_org']").val()};
 
@@ -261,6 +274,7 @@ steal(
         },
         success: function(data){ 
           that.getMessage(options["tag"],select_value);
+					that.last_params = data.last_params;
           $('#search_pages').docview_ui_paging('showPages',data.aaData);
           $.closeMask();
         }

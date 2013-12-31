@@ -608,7 +608,7 @@ class DocumentsController < ApplicationController
 		  
     respond_to do |format|
       format.html { redirect_to document_url }
-      format.json { render json: { :dh_info => dh, :docs => docs, :no_found =>  @no_found_documents} }
+      format.json { render json: { :dh_info => dh, :docs => docs, :not_found =>  @no_found_documents} }
     end 
 		end
   end
@@ -888,9 +888,9 @@ class DocumentsController < ApplicationController
 		current_user.can_view?(d) && (!d.inquired || (can? :inquire, Document) && (!d.checkedout || (can? :checkedout ,Document)))
       }
     else
-      @no_found_documents = @documents.collect { |d| d.doc_id if !current_user.can_view?(d) }
+      @no_found_documents = @documents.collect { |d| d.doc_id if !current_user.can_view?(d)}
+      @no_found_documents = @no_found_documents.delete_if {|item| item.nil?}
       @no_found_documents ||= []
-
       @documents = @documents.keep_if { |d| current_user.can_view?(d) }
     end
   end

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+require 'export_excel'
 class SearchConditionController < ApplicationController
+  include ExportExcel
 
   def search_condition
+    logger.info "-----test--------"
+		self.test_model
     table_type =  params[:search_condition].to_i
     logger.info "-------------"
     logger.info table_type 
@@ -19,20 +23,45 @@ class SearchConditionController < ApplicationController
       result = HighRisk.where(:table_type =>  params[:search_condition].to_i,:exists_in_system => true).where(conditions)
       #render json: filter_proc(result) 
     end
-		data = filter_proc(result) 
-		logger.info "======="
-		logger.info data  
-		if table_type == 0 
-			data[:iTotalRecords] = data[:iTotalRecords].values.inject(0) {|result,item| result + item} 
-			data[:iTotalDisplayRecords] = data[:iTotalDisplayRecords].values.inject(0) {|result,item| result + item} 
-    end
-    render json: data 
+		data = is_print(result,params)
+		#data = filter_proc(result) 
+		if params[:is_all] != 'true' 
+		  if table_type == 0 
+			  #data[:iTotalRecords] = data[:iTotalRecords].values.inject(0) {|result,item| result + item} 
+				#data[:iTotalDisplayRecords] = data[:iTotalDisplayRecords].values.inject(0) {|result,item| result + item} 
+			  data[:iTotalRecords] = data[:iTotalRecords].length
+				data[:iTotalDisplayRecords] = data[:iTotalDisplayRecords].length
+      end
+		  data[:last_params] = params
+      render json: data 
+		else
+      render text: data 
+		end
   end
 
   def get_son_table 
     son_condition =  params[:org_applied].nil? || params[:org_applied] == "" ? ["true"] : ["org_applied = ?", params[:org_applied]]
     @operatings = ZeroFindCheckInfo.where({:operating_name =>params[:operating_name], :exists_in_system => true }).order("operating_name").where(son_condition)
-	  render json: filter_proc(@operatings) 
+
+		data = is_print(@operatings,params)
+		#data = filter_proc(@operatings) 
+		if params[:is_all] != 'true'
+		  data[:last_params] = params
+			render json: data 
+		else
+      render text: data 
+		end
+  end
+
+  def is_print(data,params)
+		if params[:is_all] == 'true'
+		  result = self.all_filter_proc(data,params) 
+  	  result = self.all_export_excel(result[:aaData],params)
+		else
+			result = filter_proc(data) 
+		end
+		logger.info result
+		return result
   end
 
   def get_pages_info(data,count_num=nil,start_index_num=nil)

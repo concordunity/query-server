@@ -217,6 +217,33 @@ steal(
 				}
 			});
 		},
+		saveToFile : function(options) {
+			var th_list = [];
+			var title_list = [];
+			$.each(this.options.aoColumns, function(index, v) {
+				if(v.mDataProp != null){
+				  th_list.push(v.mLabel);
+					title_list.push(v.mDataProp);
+				}
+			});
+
+			console.log(this.options);
+			console.log(options);
+			var options = $.extend({type: "single", tableHeader: th_list,tableTitle: title_list,tableFile: this.options.file_name, type: options.type},options);
+			options.is_all = true;
+			$.ajax({
+				url: this.options.url,
+				data : options,
+				type : 'get',
+				datatype : "json",
+				success : function(data) {
+					console.log(data);
+					window.location.href=data;
+				},
+       error : function(error, textStatus, jqXHR) {
+       }
+     });
+		},
 		saveToExcel : function(options) {
             var th_list = [];
             var title_list = [];
