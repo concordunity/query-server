@@ -305,41 +305,53 @@ steal(
 		*/
 		console.log(data,this.element.find('select[name="groupby"]').val() ,this.element.find('select[name="groupby"]').val() == '4');
 		 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
-                var group_value = this.element.find('select[name="groupby"]').val(); 
-                if (group_value == "4"){ 
-		
-                    dmstable_params = "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
-                    this.element.find('div.stats_stats').html(this.view('stats_ty_month_init'));
-                    this.element.find('div.stats_total_list').html(this.view('stats_by_month', data));
-                    this.search_result = data;
-					console.log("====== org");
-                //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
-                } else if (group_value == "0"){ 
-		
-		    		//console.info(data);
-					this.element.find('div.stats_stats').html(this.view('stats_total', data));
-					var tmp_count = (data.docs_total-data.doc_count)*1.0;	
-					$('.stats_total').html('档案增量总数为：<b>' 
+          var group_value = this.element.find('select[name="groupby"]').val(); 
+          if (group_value == "4"){ 
+              dmstable_params = "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
+              this.element.find('div.stats_stats').html(this.view('stats_ty_month_init'));
+              this.element.find('div.stats_total_list').html(this.view('stats_by_month', data));
+              this.search_result = data;
+							console.log("====== org");
+              //this.element.find('div.stats_stats').html(this.view('stats_by_month', data));
+          } else if (group_value == "0"){ 
+		    	//console.info(data);
+					    this.element.find('div.stats_stats').html(this.view('stats_total', data));
+							var tmp_count = (data.docs_total-data.doc_count)*1.0;	
+							var total_docs = data.docs_total + data.doc_count;
+							var total_pages = data.pages_total + data.doc_edc_page;
+							var total_query = data.query_total + data.doc_edc_query;
+							var total_rate = total_docs == 0 ? "0.00%" : (total_query/total_docs*100).toFixed(2) + "%";
+							$('.stats_total').html(
+							 '档案处理总数为：<b>'
+							+ $.thousands(total_docs) 
+							+ ' </b>份，总计页数为：<b>'
+							+ $.thousands(total_pages) 
+							+ ' </b>页，总查阅量为：<b> '
+							+ $.thousands(total_query) 
+							+ ' </b>份，查阅率为：<b> '
+							+ total_rate 
+							+ '</b> ,<br />&nbsp;&nbsp;&nbsp;&nbsp;档案增量总数为：<b>' 
 							+ $.thousands(data.docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.pages_total) 
 							+ ' </b>页，查阅量为：<b> '
 							+ $.thousands(data.query_total)
-							+ ' </b>份,查阅率为：<b> '
+							+ ' </b>份，查阅率为：<b> '
 							+ data.query_p 
-							+ '</b> ,<br />档案存量总数为：<b>'
+							+ '</b> ，<br />&nbsp;&nbsp;&nbsp;&nbsp;档案存量总数为：<b>'
 							+ $.thousands(data.doc_count)
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.doc_edc_page)
-							+ ' </b>页,查阅量为：<b> '
+							+ ' </b>页，查阅量为：<b> '
 							+ $.thousands(data.doc_edc_query)
-							+ ' </b>份,查阅率为：<b> '
+							+ ' </b>份，查阅率为：<b> '
 							+ (data.doc_edc_stats)
-							+ '</b> ,<br />特殊票总数为：<b>'
+							+ '</b> ，<br />其中：<b>'
+							+ '</b> <br />&nbsp;&nbsp;&nbsp;&nbsp;补充单证总数为：<b>'
 							+ $.thousands(data.modified_docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.modified_pages_total) 
-							+ '</b> ,<br />借阅总数为：<b>'
+							+ '</b> ，<br />&nbsp;&nbsp;&nbsp;&nbsp;借阅单证总数为：<b>'
 							+ $.thousands(data.rds_docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.rds_pages_total) 
