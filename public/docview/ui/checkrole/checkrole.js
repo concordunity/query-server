@@ -49,7 +49,8 @@ steal(
 			this.roles = [];	
 			that = this;
 			console.log('this.roleDic = ',this.roleDic);
-			this.element.find('form :checked').each(function() {
+			//fix a bug.
+			this.element.find('input:checked').each(function() {
 				var id = $(this).val();
 				that.roles.push(parseInt(id));
 			});
@@ -64,7 +65,8 @@ steal(
 				$("form." +  this.form + " "  + "#role-selected").append(this.view("role_label",label));
 			}
 		},
-		".role-check change" : function(el,ev){
+		".role-check click" : function(el,ev){
+			console.log('HERE!!!');
 			this.setSelectionValues();	
 		},
         show : function() {
