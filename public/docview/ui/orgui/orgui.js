@@ -77,18 +77,21 @@ steal(
 	    this.wildcard_selected = false;
 	},
 	setSelectionValues : function() {
+	    var that = this;
 	    this.wildcard_selected = false;
 	    this.orgs = [];
-	    var that = this;
-	    this.element.find('form :checked').each(function() {
-		var org = $(this).val();
-		
-		if (org === '2200') {
-		    that.wildcard_selected = true;
-		    return false;
-		}
-		that.orgs.push(org);
-            });
+			//fix a bug .
+	    //var checked_orgs = this.element.find('form :checked');
+	    var checked_orgs = this.element.find('input:checked');
+	    checked_orgs.each(function() {
+				var org = $(this).val();
+				if (org === '2200') {
+		    	that.wildcard_selected = true;
+		    	return false;
+				}
+				that.orgs.push(org);
+			});
+		//console.log('select orgs is : ', this.orgs);
 	    var label = '';
 	    if (this.wildcard_selected) {
 		label = this.labelMap['2200'];
