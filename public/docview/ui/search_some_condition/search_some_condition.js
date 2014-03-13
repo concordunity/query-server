@@ -222,12 +222,12 @@ steal(
       this.createViewOption(el,options)
       this.options.clientState.attr('searchMode', 'high-risk');
       $("#search_results").hide();
-      that = this;
       //this.importMostTimeController.reload();
       $("#search_results").show();
       $("#second_results").hide();
     },
     createViewOption : function(el,options) {
+      var that = this;
 			var is_son_table = options["tag"] == 'son_table';
 			var tempController = this.element.find(is_son_table ? '#second_results' : '#search_results').controller();
 			if(tempController != undefined){
@@ -474,7 +474,8 @@ steal(
 					this.createViewOption(el,options)
 	  			break;
 				case "high_risk_btn":
-	  			var row = this.subInfoController.getRowFrom(el);
+	  			//var row = this.subInfoController.getRowFrom(el);
+	  			var row = this.highRiskTableController.getRowFrom(el);
 					var rowModel = row.model;
 					declarations_number = rowModel.declarations_number; 
 					if(declarations_number == undefined){

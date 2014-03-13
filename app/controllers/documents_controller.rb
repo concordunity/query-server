@@ -244,24 +244,32 @@ class DocumentsController < ApplicationController
       a = a.where(:doc_type => doc_type)
     end
 
+    if !params[:isMod].blank?
+      a = a.where(:mtype => 0)
+    end
+    if !params[:isTax].blank?
+      a = a.where(:mtype => 1)
+    end
+=begin
     if params[:isMod].blank?
       a = a.where(:mtype => 1)
     end
     if params[:isTax].blank?
       a = a.where(:mtype => 0)
     end
+=end
 
     return a
   end
 
   def search_docs
-#    logger.info "=====search_docs===1"
+    logger.info "=====search_docs===1"
     if !params[:filters].blank? && !params[:filters].empty?
       self.do_filter_search
       return
     end
 
-#    logger.info "=====search_docs===2"
+    logger.info "=====search_docs===2"
     doc_type = get_doc_type_search 
     if doc_type == 'NONE'
       render json: []
@@ -271,42 +279,45 @@ class DocumentsController < ApplicationController
 	sql_condition = []
 	sql_condition = ['pages < 50']
 
-#    logger.info "=====search_docs===3"
+    logger.info "=====search_docs===3"
     #@documents = Document.order(:doc_id).where('pages < 50')
     if (!params[:isMod].blank? || !params[:isTax].blank?)
       a = search_special_docs(doc_type)
-    logger.info " is a empty?"
       #if a.empty?
       #  logger.info " a is  empty?"
       #  render json: []
       #  return
       #else
       unless a.empty?
+			  logger.info " modified_documents isn't a empty?"
         doc_ids = a.collect { |x| x.doc_id }
-	where_condition[:doc_id] = doc_ids 
+				where_condition[:doc_id] = doc_ids 
+			else
+      	render json: { :results => []}, :status => 200     
+        return
       end
       #@documents = @documents.where(:doc_id => doc_ids)
     end
 
-#    logger.info "=====search_docs===4"
+    logger.info "=====search_docs===4"
     if !doc_type.blank?
 	  where_condition[:doc_type] = doc_type 
       #@documents = @documents.where(:doc_type => doc_type)
     end 
 
-#    logger.info "=====search_docs===5"
+    logger.info "=====search_docs===5"
     if !params[:org].blank?
 	  where_condition[:org] = params[:org] 
       #@documents = @documents.where(:org => params[:org])
     end
 
-#    logger.info "=====search_docs===6"
+    logger.info "=====search_docs===6"
     if !params[:org_applied].blank?
 	  where_condition[:org_applied] = params[:org_applied] 
       #@documents = @documents.where(:org_applied => params[:org_applied])
     end
 
-#    logger.info "=====search_docs===7"
+    logger.info "=====search_docs===7"
     if !params[:edcStartDate].blank? && !params[:edcEndDate].blank?
       start_date = params[:edcStartDate]
       end_date = params[:edcEndDate]
@@ -315,13 +326,13 @@ class DocumentsController < ApplicationController
       #@documents = @documents.where(:edc_date => start_date.to_date .. end_date.to_date.next)
     end
 
-#    logger.info "=====search_docs===8"
+    logger.info "=====search_docs===8"
     if params[:docInquired] == '1'
 	  where_condition[:inquired] = true 
       #@documents = @documents.where(:inquired => true)
     end
 
-#    logger.info "=====search_docs===9"
+    logger.info "=====search_docs===9"
     if params[:checkedout] == '1'
 	  where_condition[:checkedout] = true
       #@documents = @documents.where(:checkedout => true)
@@ -335,7 +346,7 @@ class DocumentsController < ApplicationController
     end
 =end
 
-#    logger.info "=====search_docs===10"
+    logger.info "=====search_docs===10"
     if !params[:total].blank?
       limitN = params[:total].to_i
     end
@@ -346,7 +357,7 @@ class DocumentsController < ApplicationController
 	#	user.where(where_condition).where(sql_condition.join(" AND ")).reorder("rand_weight desc").limit(limitN)
 	#end
 
-#    logger.info "=====search_docs===11"
+    logger.info "=====search_docs===11"
 =begin	
 	count = Document.where(where_condition).where(sql_condition).count
 	limit = 2000 

@@ -9,6 +9,7 @@ steal(
     './views/init.ejs',
     'docview/ui/dictionary',
     'libs/org_arr.js',
+    'libs/org_info_arr.js',
     'docview/ui/daterange'
     ).then(function($) {
     $.Controller('Docview.Ui.search_condition', {}, {
@@ -19,12 +20,14 @@ steal(
 	    //var orgsDic = dicController.getDictionary("org");
 	    var orgsDic = orgArrayDictionary;
 	    var orgInfoDic = org_infoArrayDictionary;
-            this.element.html(this.view('init',{orgsDic : orgsDic, orgInfoDic: orgInfoDic}));
-            this.element.find('div.daterange-holder-2').docview_ui_daterange({
-                dateOptions : {
-                    labelString: ""
-                }
-            });
+			
+		  console.log("====1======");
+		  console.log(orgsDic);
+		  console.log("====2======");
+		  console.log(orgInfoDic);
+		  console.log("====3======");
+			this.element.html(this.view('init',{orgsDic : orgsDic, orgInfoDic: orgInfoDic}));
+			this.element.find('div.daterange-holder-2').docview_ui_daterange({ dateOptions : { labelString: "" } });
 
 	    var user = this.options.clientState.attr('user');
 	    var orgs = user.group_org_infos.org;
@@ -44,16 +47,18 @@ steal(
 	    if (orgs == "2200"){dic_org = orgInfoDic;} 
 
 	    var dic_subjection_org = [];
-	    for(var i=0;i<orgsDic.length;i++){
-		var org = orgsDic[i];
-		for(var j=0;j<subjection_orgs.length;j++){
-		    if (subjection_orgs[j] == org.dic_num){
-			dic_subjection_org.push(org);
-			break;
-		    }
-		}
+			for(var i=0;i<orgsDic.length;i++){
+				var org = orgsDic[i];
+				for(var j=0;j<subjection_orgs.length;j++){
+		    	if (subjection_orgs[j] == org.dic_num){
+						dic_subjection_org.push(org);
+						break;
+		      }
+				}
 	    } 
-	    if (subjection_orgs == "2200"){dic_subjection_org = orgInfoDic;} 
+	    if (subjection_orgs == "2200"){dic_subjection_org = orgsDic;} 
+			console.log('------------111');
+			console.log(subjection_orgs);
 
 	    
 	    this.element.find('div.org-container').html(this.view('//docview/ui/views/org.ejs', { label: '关区', name : 'org_info', orgsDic : dic_org}));

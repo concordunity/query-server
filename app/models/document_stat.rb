@@ -5,8 +5,9 @@ require 'activerecord-import'
 
 class DocumentStat < ActiveRecord::Base
 	def self.generate_batch
-		begin_date = "2012-03-01".to_date
-		now = DateTime.now.to_date
+		begin_date = "2013-11-01".to_date
+		#now = DateTime.now.to_date
+		now = "2013-11-03".to_date
 		(begin_date .. now).each{|date|
 			puts date	
 			DocumentStat.generate(date)
@@ -33,7 +34,7 @@ class DocumentStat < ActiveRecord::Base
 		#type of doc type .
 		doc_type_dirs = [ 'JK', 'CK' ]
 		#years of doc type 
-		doc_type_years = [ 3, 5, 7, 11 ]
+		doc_type_years = [ 3, 5, 11 ]# remove '7'
 		#orgs
 		org_list = DictionaryInfo.select(:dic_num).where(:dic_type => 'org').collect(&:dic_num)
 		#each code blok ..
@@ -78,48 +79,64 @@ class DocumentStat < ActiveRecord::Base
 
 					#create a new data ..
 					ds = DocumentStat.new do |ds|
+						#关区
 						ds.org			= key
+						#本关区的档案总数
 						ds.docs			= count_docs[key]
+						#存量档案数
 						ds.docs_saved	= count_docs_saved[key]
+						#增量档案数
 						ds.docs_added	= count_docs_added[key]
+						#本关区档案总页数
 						ds.pages		= count_pages[key]
+						#存量页数
 						ds.pages_saved	= count_pages_saved[key]
+						#增量页数
 						ds.pages_added	= count_pages_added[key]
+						#查阅总数
 						ds.query		= count_query[key]
+						#存量查阅数
 						ds.query_saved	= count_query_saved[key]
+						#增量查阅数
 						ds.query_added	= count_query_added[key]
-#
+						#
 						ds.year			= begin_date.year
 						ds.month		= begin_date.month
 						ds.doc_type		= doc_type
 						ds.created_date = begin_date
 					end
+					puts "create new record for #{ds}"
 					new_record << ds 
-					#=====================================================
-					modified =   ModifiedDocument.where( condition ).where(condition_date)
-					count_modified = modified.count
-					pages_modified = modified.sum(:pages)
-					if count_modified > 0 
-						DocumentStat.new do |ds|
-							ds.org          = "TSP_A" 
-							ds.docs         = count_modified
-							ds.docs_added   = count_modified
-							ds.pages        = pages_modified
-							ds.pages_added  = pages_modified
-
-							ds.year         = begin_date.year
-							ds.month        = begin_date.month
-							ds.doc_type     = doc_type
-							ds.created_date = begin_date
-							new_record << ds 
-						end
-					end
-					#
 					########   END  #########	
 				}
 			}		
 
 		}
+		#=====================================================
+		modified =   ModifiedDocument.where(condition_date)#.where( condition )
+		count_modified = modified.count
+		pages_modified = modified.sum(:pages)
+		if count_modified > 0 
+			DocumentStat.new do |ds|
+				#特殊票关区标识
+				ds.org          = "TSP_A" 
+				#特殊票总数
+				ds.docs         = count_modified
+				ds.docs_added   = count_modified
+				#特殊票总页数
+				ds.pages        = pages_modified
+				ds.pages_added  = pages_modified
+
+				ds.year         = begin_date.year
+				ds.month        = begin_date.month
+				#ds.doc_type     = doc_type
+				ds.created_date = begin_date
+				new_record << ds 
+				puts "\033[32;49;1m create new record for [TSP] #{ds} \033[39;49;0m"
+			end
+		end
+		#
+		puts "import data form new_record."
 		DocumentStat.import new_record	
 		end
 		puts "==== GENRATE STOP ==== #{new_record.count}"

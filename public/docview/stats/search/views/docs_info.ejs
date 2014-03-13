@@ -1,0 +1,52 @@
+<%
+  var total_docs = data.docs_total + data.doc_count;
+	var total_pages = data.pages_total + data.doc_edc_page;
+	var total_query = data.query_total + data.doc_edc_query;
+	var total_rate = total_docs == 0 ? "0.00%" : (total_query/total_docs*100).toFixed(2) + "%";
+%>
+<table>
+<thead>
+</thead>
+<tbody>
+<tr>
+	<td>档案处理总数为：</td><td class='doc_info'><b><%== $.thousands(total_docs)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;总计页数为：</td><td class='doc_info'><b><%==  $.thousands(total_pages)%></b>页,</td>
+	<td>&nbsp;&nbsp;&nbsp;总查阅量为：</td><td class='doc_info'><b><%== $.thousands(total_query)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;查阅率为：</td><td class='doc_info'><b><%==  total_rate%></b></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;档案增量总数为：</td><td class='doc_info'><b><%==  $.thousands(data.docs_total)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;总计页数为：</td><td class='doc_info'><b><%== $.thousands(data.pages_total)%></b>页,</td>
+	<td>&nbsp;&nbsp;&nbsp;查阅量为：</td><td class='doc_info'><b><%== $.thousands(data.query_total)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;查阅率为：</td><td class='doc_info'><b><%== data.query_p%></b></td>
+</tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;档案存量总数为：</td><td class='doc_info'><b><%== $.thousands(data.doc_count)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;总计页数为：</td><td class='doc_info'><b><%==  $.thousands(data.doc_edc_page)%></b>页,</td>
+	<td>&nbsp;&nbsp;&nbsp;查阅量为：</td><td class='doc_info'><b><%== $.thousands(data.doc_edc_query)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;查阅率为：</td><td class='doc_info'><b><%== (data.doc_edc_stats)%></b></td>
+</tr>
+
+<tr>
+	<td colspan='4'>其中：</td>
+</tr>
+
+<% if(data.doc_type == "true"){ %>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;补充单证总数为：</td><td class='doc_info'><b><%== $.thousands(data.modified_docs_total)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;总计页数为：</td><td class='doc_info'><b><%== $.thousands(data.modified_pages_total)%></b>页,</td>
+	<td>&nbsp;&nbsp;&nbsp;</td><td class='doc_info'><b><%== %></b></td>
+	<td>&nbsp;&nbsp;&nbsp;</td><td class='doc_info'><b><%== %></b></td>
+</tr>
+<%}%>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;借阅单证总数为：</td><td class='doc_info'><b><%== $.thousands(data.rds_docs_total)%></b>份,</td>
+	<td>&nbsp;&nbsp;&nbsp;总计页数为：</td><td class='doc_info'><b><%==  $.thousands(data.rds_pages_total)%></b>页,</td>
+	<td>&nbsp;&nbsp;&nbsp;</td><td class='doc_info'><b><%== %></b></td>
+	<td>&nbsp;&nbsp;&nbsp;</td><td class='doc_info'><b><%== %></b></td>
+</tr>
+
+</tbody>
+</table>

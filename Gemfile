@@ -20,6 +20,14 @@ gem 'spreadsheet'
 gem "activerecord-import", "~> 0.2.10"
 gem "will_paginate", "3.0.4"
 gem "execjs"
+
+#mongodb
+gem 'mongoid','~> 3.0.0'
+gem 'bson_ext'
+
+source "http://gemcutter.org"
+gem "mongo_mapper"
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

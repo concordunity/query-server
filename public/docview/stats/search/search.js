@@ -17,7 +17,8 @@ steal(
 
 // View templates
 .then(
-    './views/search_box.ejs'
+    './views/search_box.ejs',
+    './views/docs_info.ejs'
     )
 //
 .then(
@@ -110,7 +111,7 @@ steal(
                     success :function(data){
 			//$('.stats_stats h1.legend-h1 div').html('截止到 '+ $.date(new Date).format('yyyy-MM-dd') + '为止，系统中单证电子档案查阅总数为：<b>'+data.query_total+'</b> 份，查阅率为：<b>'+data.query_p+' </b><div id="stats_total" style="display:inline" ></div>');
 		    }, //this.proxy('show_stats'),
-                    error : this.proxy('failure')
+                    error : function(){}//this.proxy('failure')
                 });
             },
             '{$.route} category change': function(el, ev, attr, how, newVal, oldVal)  {
@@ -305,7 +306,7 @@ steal(
 		*/
 		console.log(data,this.element.find('select[name="groupby"]').val() ,this.element.find('select[name="groupby"]').val() == '4');
 		 var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
-          var group_value = this.element.find('select[name="groupby"]').val(); 
+		 var group_value = this.element.find('select[name="groupby"]').val(); 
           if (group_value == "4"){ 
               dmstable_params = "<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
               this.element.find('div.stats_stats').html(this.view('stats_ty_month_init'));
@@ -321,6 +322,20 @@ steal(
 							var total_pages = data.pages_total + data.doc_edc_page;
 							var total_query = data.query_total + data.doc_edc_query;
 							var total_rate = total_docs == 0 ? "0.00%" : (total_query/total_docs*100).toFixed(2) + "%";
+              var modified_info = ""; 
+              if(data.doc_type == "true"){
+                modified_info = '<br />&nbsp;&nbsp;&nbsp;&nbsp;补充单证总数为：<b>' + $.thousands(data.modified_docs_total) + ' </b>份，总计页数为：<b>' + $.thousands(data.modified_pages_total) + '</b>页，';
+              }
+
+							$('.stats_total').html(this.view("docs_info",{data: data})).show('slow')
+							.addClass('alert alert-info')
+							.css({
+									'border-color':'#E3E3E3',
+									"background":'whiteSmoke',
+									'font-size':'20px'
+								});
+							$(".stats_total").find(".doc_info").css({float: "right"});
+/*
 							$('.stats_total').html(
 							 '档案处理总数为：<b>'
 							+ $.thousands(total_docs) 
@@ -337,8 +352,8 @@ steal(
 							+ ' </b>页，查阅量为：<b> '
 							+ $.thousands(data.query_total)
 							+ ' </b>份，查阅率为：<b> '
-							+ data.query_p 
-							+ '</b> ，<br />&nbsp;&nbsp;&nbsp;&nbsp;档案存量总数为：<b>'
+							+ (data.query_p)
+              + '</b> ，<br />&nbsp;&nbsp;&nbsp;&nbsp;档案存量总数为：<b>'
 							+ $.thousands(data.doc_count)
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.doc_edc_page)
@@ -346,16 +361,13 @@ steal(
 							+ $.thousands(data.doc_edc_query)
 							+ ' </b>份，查阅率为：<b> '
 							+ (data.doc_edc_stats)
-							+ '</b> ，<br />其中：<b>'
-							+ '</b> <br />&nbsp;&nbsp;&nbsp;&nbsp;补充单证总数为：<b>'
-							+ $.thousands(data.modified_docs_total) 
-							+ ' </b>份，总计页数为：<b>'
-							+ $.thousands(data.modified_pages_total) 
-							+ '</b> ，<br />&nbsp;&nbsp;&nbsp;&nbsp;借阅单证总数为：<b>'
+							+ '</b> ，<br />其中：'
+              + modified_info
+              + '<br />&nbsp;&nbsp;&nbsp;&nbsp;借阅单证总数为：<b>'
 							+ $.thousands(data.rds_docs_total) 
 							+ ' </b>份，总计页数为：<b>'
 							+ $.thousands(data.rds_pages_total) 
-							+ '</b>'
+							+ '</b>页'
 							).show('slow')
 							.addClass('alert alert-info')
 							.css({
@@ -363,11 +375,14 @@ steal(
 									"background":'whiteSmoke',
 									'font-size':'20px'
 								});
+*/
 					
 		}else{
 					this.element.find('div.stats_stats').html(this.view('stats_total', data));
-                }
-                this.element.find('div.stats_stats table').dataTable({
+		}
+		
+    if (group_value != "0"){ 
+		this.element.find('div.stats_stats table').dataTable({
                     "sDom": dmstable_params,
                     "oTableTools": {
                         "aButtons": [
@@ -390,6 +405,7 @@ steal(
                         "sUrl" : "media/language/ch_ZN.txt"
                     }
                 });
+		}
 
 				log('system',{current_action:'stats.stats_stats',describe:'绩效统计查询'});
             },
@@ -467,6 +483,7 @@ steal(
                 var h = '错误提示：';
                 var message = '需要用户认证，请重新登录系统。';
 	
+		console.log("===== status===",jqXHR.status);
                 switch(jqXHR.status) {
                     case 401:
                         break;
