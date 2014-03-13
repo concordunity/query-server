@@ -7,7 +7,7 @@
             <fieldset class="control-group">
 
 <% if (this.subjection_org == "2200"){%>
-			<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'subjection_org', orgsDic : orgArrayDictionary ,type: "users"} ) %>
+			<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'subjection_org', orgsDic : orgArrayDictionary ,type: "users",no_default: true} ) %>
 <% }else{%>
 			<%== $.View('//docview/ui/views/org_subjection.ejs',this) %>
 <%}%>
