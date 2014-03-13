@@ -383,11 +383,14 @@ steal(
 		},
 		filter_info : function(el,ev){
 			el.asyncVerifyCode(function(code){  
+				var regex = new RegExp("^"+ $('select[name=subjection_org]').val());
+				if(!regex.test(el.val())){
+					code = 1;
+				}
 				var tipsElement = el.closest('tr').find('.tips');
 				tipsElement.removeClass('label-success label-info label-warning label-important');
 				tipsElement.show();
 				tipsElement.text($.parse_code_map[code]);
-				console.log("====",code);
 				el.data('validate_state',code);
 				var label_map = {
 					'1':'important',
