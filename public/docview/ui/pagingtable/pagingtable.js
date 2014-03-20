@@ -130,7 +130,6 @@ steal(
 			this.element.html(this.view('init',this.options));
 			//custom your html .
 			this.element.find('.panel_dom').append($(this.options.panel_dom));
-			console.log(this.options.panel_dom);
 			//find columns template
 			var tableElement = this.element.find('thead tr:eq(0)');
 			//render columns ..

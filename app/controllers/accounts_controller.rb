@@ -2,6 +2,18 @@
 class AccountsController < ApplicationController 
 
   respond_to  :json
+
+	def	accessible_org
+		all_orgs = {}
+		DictionaryInfo.where(:dic_type => 'org').each{ |dic| all_orgs[dic.dic_num] = dic.dic_name unless dic.dic_num == 2200 }
+		if current_user.orgs == "2200"
+			render json: all_orgs 
+		else
+			user_orgs = {}
+			current_user.orgs.split(',').map{ |m| user_orgs[m.to_i] = all_orgs[m.to_i] }
+			render json: user_orgs
+		end
+	end
   
   def get_user_info
 	render json: current_user

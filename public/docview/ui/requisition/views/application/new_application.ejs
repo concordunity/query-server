@@ -5,12 +5,8 @@
     <div class="row-fluid">
         <div class="span6">
             <fieldset class="control-group">
-
-<% if (this.subjection_org == "2200"){%>
-			<%== $.View('//docview/ui/views/org.ejs', { label: '业务点', name : 'subjection_org', orgsDic : orgArrayDictionary ,type: "users",no_default: true} ) %>
-<% }else{%>
-			<%== $.View('//docview/ui/views/org_subjection.ejs',this) %>
-<%}%>
+							<label>关区</label>
+							<select name="subjection_org" ></select>	
             </fieldset>
      </div>
 	 <div class="span6">

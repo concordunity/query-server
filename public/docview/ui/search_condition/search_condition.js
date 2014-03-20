@@ -21,11 +21,6 @@ steal(
 	    var orgsDic = orgArrayDictionary;
 	    var orgInfoDic = org_infoArrayDictionary;
 			
-		  console.log("====1======");
-		  console.log(orgsDic);
-		  console.log("====2======");
-		  console.log(orgInfoDic);
-		  console.log("====3======");
 			this.element.html(this.view('init',{orgsDic : orgsDic, orgInfoDic: orgInfoDic}));
 			this.element.find('div.daterange-holder-2').docview_ui_daterange({ dateOptions : { labelString: "" } });
 
@@ -33,7 +28,6 @@ steal(
 	    var orgs = user.group_org_infos.org;
 	    var subjection_orgs = user.group_org_infos.subjection_org;
 
-	    console.log(user,orgs,subjection_orgs);
 	    var dic_org = [];
 	    for(var i=0;i<orgInfoDic.length;i++){
 		var org = orgInfoDic[i];
@@ -57,8 +51,6 @@ steal(
 				}
 	    } 
 	    if (subjection_orgs == "2200"){dic_subjection_org = orgsDic;} 
-			console.log('------------111');
-			console.log(subjection_orgs);
 
 	    
 	    this.element.find('div.org-container').html(this.view('//docview/ui/views/org.ejs', { label: '关区', name : 'org_info', orgsDic : dic_org}));
@@ -115,7 +107,6 @@ steal(
 	    var el = $(".docview_ui_search_condition div.check_org");
             if (toShow) {
 	      var cov = $(".docview_ui_search_condition div.check_org input[name='check_org']:checked").val(); 
-	      console.log(toShow,cov);
 	      if (cov == 0){
 		      this.setHideLabel(false);
 	      }else if (cov == 1){
@@ -212,7 +203,6 @@ steal(
 
         },
         show_stats :function (data) {
-			console.log("=======   show stats");
             var dmstable_params = "T<'row-fluid'<'span6'l><'pull-right'f>r>t<'row-fluid'<'span6'i><'pull-right'p>>";
             if (this.element.find('select[name="groupby"]').val() == '4') {
 

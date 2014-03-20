@@ -84,9 +84,9 @@ class RequisitionController < ApplicationController
     #respond_with(result)
   end
   def filter_org
-	doc_id = params[:doc_id]
-	a = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id, doc_id[0,2]])
-	a = a.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
+		doc_id = params[:doc_id]
+		a = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id, doc_id[0,2]])
+		a = a.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
 	render json: a
   end
 
@@ -94,22 +94,23 @@ class RequisitionController < ApplicationController
 	logger.info "===   filter_docs ===="
     result = {:status => false,:message => ""}
     doc_id = params[:doc_id] || params[:single_card_number]
-    logger.info doc_id 
-    org = params[:org]
-	ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id[9,3], doc_id[9,2]])
-    logger.info "===  0 ===="
-	ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
+    org = params[:org] # not in use ?!!
+		ofd = OrgForDoc.where(["(org_number = ? OR org_number = ?)", doc_id[9,3], doc_id[9,2]])
+		# begin by lsong 验证DOC_ID 与前端选择的关区是否匹配
+		selected_subjection_org = params[:selected_subjection_org]
+		if selected_subjection_org.blank?
+			ofd = ofd.where(:org => current_user.orgs.split(",")) if current_user.orgs != "2200"
+		else
+			ofd = ofd.where(:org => selected_subjection_org)
+		end
+		# end by lsong
+		rd = RequisitionDetail.where(["status not in(20,31,32,33,34) AND status is not null"]).where(:single_card_number => doc_id)
     @document = Document.find_by_doc_id(doc_id)
-    logger.info "===  1 ===="
-	rd = RequisitionDetail.where(["status not in(20,31,32,33,34) AND status is not null"]).where(:single_card_number => doc_id)
-
-    logger.info "===  2 ===="
     if @document.blank? && rd.blank? && !ofd.blank?
-		logger.info "===  系统无此单证 ===="
-        result[:status] = 200 
-        result[:message] = "此单证：" + doc_id + ",可以正常添加。"
+			result[:status] = 200 
+			result[:message] = "此单证：" + doc_id + ",可以正常添加。"
     else
-		logger.info "===  系统存在此单证 ===="
+			logger.info "===  系统存在此单证 ===="
 		if !@document.blank?
 			result[:message] = "此单证：" + doc_id + "，不能添加，系统中已经电子化了。"
 			result[:status] = 201 
@@ -126,8 +127,8 @@ class RequisitionController < ApplicationController
 			result[:status] = 204 
 		end
     end
-	logger.info result[:message] 
-	return result
+		logger.info result[:message] 
+		return result
   end
 
   def filter_requisition(params)

@@ -1,5 +1,6 @@
 Dms::Application.routes.draw do
 
+	get '/user/accessible_org'	=> 'accounts#accessible_org'
   get "/admin/download_error_docs" => "admin#get_error_docs"
   get "/admin/download_storge_rate" => "admin#get_storge_rate"
 

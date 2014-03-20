@@ -36,6 +36,7 @@ steal(
 ).then(function($) {
     $.Controller('Docview.Ui.requisition', {}, {
 		init : function(){
+			var that = this;
 			//this.element.find('.user-list').docview_ui_dmstable({table_options : table_options});
 			//this.tableController = this.element.find('.user-list').controller();
 		   this.filter_tag = undefined;
@@ -46,7 +47,6 @@ steal(
 		   var requisition =  this.options.clientState.attr('access').attr('requisition_docs');
 		   var subjection_org = this.options.clientState.attr('user').subjection_org;
 		   this.element.html(this.view('requisition', requisition));
-			
 		   // Hide box until route conditions are met
 		   this.element.hide();
 		   // Hide search types until route conditions are met
@@ -59,6 +59,14 @@ steal(
 		    this.element.find("div.write_off").html(this.view("write_off"));	
 		    this.element.find("div.lending_statistics").html(this.view("lending_statistics"));	
 		    this.element.find("div.requisition_history").html(this.view("requisition_history"));	
+				this.subjection_org_element = this.element.find('select[name=subjection_org]');	
+				$.get('/user/accessible_org',function(data){
+					$.each(data,function(i,text){
+						var option_element = $('<option />').val(i).text(text);
+						that.subjection_org_element.append(option_element);
+					});
+				});
+
 			this.element.find('div.lending-date').docview_ui_daterange({
 				dateOptions : {
                         labelString: "日期"
@@ -331,7 +339,7 @@ steal(
 		    var element = el.closest('#new-application-form');
 		    var tbody = element.find('.requisition-details-text-holder tbody');
 		    for(var i=0;i<rows.length;i++){
-			console.log(rows[i]);
+								console.log(rows[i]);
 			var columns=$.trim(rows[i]).split(/[\s|\t]+/);
 			console.log(columns[1]);
 			if (i == 0){
@@ -382,11 +390,8 @@ steal(
 			//this.filter_info(el,ev);	
 		},
 		filter_info : function(el,ev){
+			var that = this;
 			el.asyncVerifyCode(function(code){  
-				var regex = new RegExp("^"+ $('select[name=subjection_org]').val());
-				if(!regex.test(el.val())){
-					code = 1;
-				}
 				var tipsElement = el.closest('tr').find('.tips');
 				tipsElement.removeClass('label-success label-info label-warning label-important');
 				tipsElement.show();
@@ -427,7 +432,8 @@ steal(
 						el.data('validate_state',-19);
 						return;
 					}
-					Docview.Models.Requisition.filterDocs({ "doc_id" : el.val() },
+					var selected_subjection_org = $('select[name=subjection_org]').val();
+					Docview.Models.Requisition.filterDocs({ "doc_id" : el.val(),'selected_subjection_org': selected_subjection_org },
 					//
 					function(data){
 						code = data.status || 204;
